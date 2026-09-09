@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1B — Produit scalaire : applications (Al-Kashi, cercle, normes)</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+:root{
+  --bg:#faf8f5; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+  --accent:#2563eb; --accent-soft:#e8efff; --coral:#f97362; --coral-soft:#ffe9e5;
+  --green:#22a06b; --green-soft:#e3f6ec; --amber:#d97706; --amber-soft:#fff3dc;
+  --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;font-size:16px;overflow-x:hidden}
+h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2;margin:0}
+header{padding:48px 20px 28px;text-align:center;background:linear-gradient(180deg,#eef3ff 0%,var(--bg) 100%)}
+header h1{font-size:clamp(1.6rem,5.5vw,2.6rem);color:var(--accent);opacity:0;transform:translateY(18px);animation:rise .9s ease-out forwards}
+header .sub{margin-top:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:.8rem;opacity:0;animation:fade 1.2s .4s ease-out forwards}
+header .lead{max-width:640px;margin:14px auto 0;color:var(--ink);opacity:0;animation:fade 1.2s .7s ease-out forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+nav.sticky{position:sticky;top:0;z-index:50;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid #e5e1da;padding:8px 10px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav.sticky::-webkit-scrollbar{display:none}
+nav.sticky a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:999px;background:#fff;border:1px solid #e5e1da;color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
+nav.sticky a.active,nav.sticky a:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:12px 14px 40px}
+section{margin:28px 0}
+section>h2{font-size:1.7rem;color:var(--ink);margin:0 0 6px 4px}
+section>.intro{color:var(--muted);margin:0 4px 16px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 18px;margin:14px 0}
+.card h3{font-size:1.15rem;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-family:system-ui,sans-serif;font-size:.9rem;flex:0 0 auto}
+.box{border-radius:12px;padding:12px 14px;margin:10px 0}
+.box.formula{background:var(--accent-soft);border-left:4px solid var(--accent)}
+.box.example{background:#f6f4ef;border-left:4px solid #b8b2a7}
+.box.warn{background:var(--coral-soft);border-left:4px solid var(--coral)}
+.box.ok{background:var(--green-soft);border-left:4px solid var(--green)}
+.box.deep{background:var(--amber-soft);border-left:4px solid var(--amber)}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-left:6px;vertical-align:middle;font-family:system-ui,sans-serif}
+.tag.demo{background:var(--coral);color:#fff}
+.tag.deep{background:var(--amber);color:#fff}
+.tag.first{background:var(--green);color:#fff}
+details{margin:8px 0}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);min-height:44px;display:flex;align-items:center;list-style:none;padding:4px 0}
+details summary::before{content:"▸";display:inline-block;margin-right:8px;transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details summary::-webkit-details-marker{display:none}
+.steps{padding-left:0;list-style:none;counter-reset:s}
+.steps li{position:relative;padding:6px 0 6px 40px;counter-increment:s}
+.steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.btn{min-height:44px;padding:10px 18px;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.25);font-family:system-ui,sans-serif;touch-action:manipulation}
+.btn.secondary{background:#fff;color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+.btn.ghost{background:#f1efe9;color:var(--ink);box-shadow:none}
+.btn:active{transform:translateY(1px)}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+input.answer{min-height:44px;font-size:1.05rem;padding:8px 12px;border:2px solid #d8d3cb;border-radius:10px;width:140px;max-width:100%;font-family:system-ui,sans-serif}
+input.answer:focus{outline:none;border-color:var(--accent)}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:10px;font-weight:600;display:none}
+.feedback.ok{display:block;background:var(--green-soft);color:#14663f}
+.feedback.ko{display:block;background:var(--coral-soft);color:#b2331c}
+.correction{display:none;margin-top:12px;padding:14px;border-radius:12px;background:#f6f4ef;border-left:4px solid var(--green)}
+.correction.show{display:block}
+.correction p{margin:6px 0}
+.enonce{font-size:1.05rem}
+.enonce b{color:var(--accent)}
+.diff{font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-family:system-ui,sans-serif}
+/* Visualisation */
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{min-height:44px;padding:8px 16px;border-radius:12px;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:600;cursor:pointer;font-family:system-ui,sans-serif;font-size:.95rem}
+.tabs button.active{background:var(--accent);color:#fff}
+.viz-panel{display:none}
+.viz-panel.active{display:block}
+.svgwrap{width:100%;background:#fff;border-radius:12px;border:1px solid #e5e1da;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.svgwrap svg{display:block;width:100%;height:auto}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.readout .cell{background:#f6f4ef;border-radius:10px;padding:10px 12px}
+.readout .cell .lab{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-family:system-ui,sans-serif}
+.readout .cell .val{font-size:1.15rem;font-weight:700;font-family:Georgia,serif}
+.readout .cell.a{border-top:3px solid var(--coral)}
+.readout .cell.b{border-top:3px solid var(--green)}
+.readout .cell.c{border-top:3px solid var(--accent)}
+.check{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);font-family:Georgia,serif;font-size:1.05rem;line-height:1.7}
+.check .eq{font-weight:700}
+.sliders{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.sliders label{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:8px;font-size:.9rem}
+.sliders input[type=range]{width:100%;min-height:36px;accent-color:var(--accent)}
+.status{margin-top:12px;padding:12px 14px;border-radius:12px;font-weight:600;font-size:1.05rem;transition:background .2s}
+.status.on{background:var(--green-soft);color:#14663f}
+.status.in{background:var(--accent-soft);color:#1e40af}
+.status.out{background:var(--coral-soft);color:#b2331c}
+.hint{font-size:.85rem;color:var(--muted);margin-top:8px}
+/* QCM */
+.q{margin:14px 0;padding-bottom:12px;border-bottom:1px dashed #e5e1da}
+.q:last-child{border-bottom:none}
+.q .qt{font-weight:600;margin-bottom:8px}
+.choices{display:grid;grid-template-columns:1fr;gap:8px}
+.choices button{min-height:44px;text-align:left;padding:10px 14px;border-radius:10px;border:2px solid #e5e1da;background:#fff;font-size:1rem;cursor:pointer;font-family:system-ui,sans-serif;color:var(--ink);display:flex;gap:10px;align-items:center}
+.choices button .lt{font-weight:700;color:var(--accent);flex:0 0 22px}
+.choices button.right{background:var(--green-soft);border-color:var(--green)}
+.choices button.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.choices button:disabled{cursor:default;opacity:.95}
+.qexpl{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:#f6f4ef;font-size:.95rem}
+.qexpl.show{display:block}
+.score{margin-top:14px;padding:14px;border-radius:12px;background:var(--accent-soft);font-weight:700;font-size:1.1rem;display:none;text-align:center}
+.score.show{display:block}
+footer{max-width:860px;margin:0 auto;padding:24px 18px 48px;color:var(--muted);font-size:.9rem;text-align:center;border-top:1px solid #e5e1da}
+footer b{color:var(--ink)}
+@media (min-width:600px){.choices{grid-template-columns:1fr 1fr}.sliders{grid-template-columns:1fr 1fr}}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+.scroll-x{overflow-x:auto}
+table.meth{border-collapse:collapse;width:100%;font-size:.95rem}
+table.meth th,table.meth td{border:1px solid #e5e1da;padding:8px 10px;text-align:left;vertical-align:top}
+table.meth th{background:#f6f4ef;font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Produit scalaire : applications</h1>
+  <div class="sub">Première · Mathématiques</div>
+  <p class="lead">Fiche 1B — développer \(\|\vec u+\vec v\|^2\), formule d'Al-Kashi, cercle de diamètre \([AB]\), et choisir la bonne méthode de calcul.</p>
+</header>
+
+<nav class="sticky" id="nav">
+  <a href="#cours">Cours</a>
+  <a href="#methode">Méthode</a>
+  <a href="#visualisation">Visualisation</a>
+  <a href="#exercices">Exercices</a>
+  <a href="#qcm">QCM</a>
+</nav>
+
+<main>
+<!-- ===================== COURS ===================== -->
+<section id="cours">
+  <h2>Cours</h2>
+  <p class="intro">Prérequis (fiche 1A) : \(\vec u\cdot\vec v=\|\vec u\|\,\|\vec v\|\cos(\vec u,\vec v)\), \(\vec u\cdot\vec u=\|\vec u\|^2\), symétrie et bilinéarité.</p>
+
+  <div class="card">
+    <h3><span class="num">1</span> Développer une norme au carré</h3>
+    <p>Comme \(\vec u\cdot\vec u=\|\vec u\|^2\), on développe un carré de norme exactement comme une identité remarquable, grâce à la bilinéarité et à la symétrie :</p>
+    <div class="box formula">
+      \[\|\vec u+\vec v\|^2=\|\vec u\|^2+2\,\vec u\cdot\vec v+\|\vec v\|^2\qquad\qquad \|\vec u-\vec v\|^2=\|\vec u\|^2-2\,\vec u\cdot\vec v+\|\vec v\|^2\]
+      <p style="margin:6px 0 0;font-size:.9rem">En texte : ‖u+v‖² = ‖u‖² + 2 u·v + ‖v‖² et ‖u−v‖² = ‖u‖² − 2 u·v + ‖v‖².</p>
+    </div>
+    <details><summary>Pourquoi ? (2 lignes)</summary>
+      <p>\(\|\vec u+\vec v\|^2=(\vec u+\vec v)\cdot(\vec u+\vec v)=\vec u\cdot\vec u+\vec u\cdot\vec v+\vec v\cdot\vec u+\vec v\cdot\vec v\), et comme \(\vec v\cdot\vec u=\vec u\cdot\vec v\), on obtient \(\|\vec u\|^2+2\,\vec u\cdot\vec v+\|\vec v\|^2\).</p>
+    </details>
+    <div class="box example">
+      <b>Exemple.</b> \(\|\vec u\|=3\), \(\|\vec v\|=2\), \(\vec u\cdot\vec v=-4\).<br>
+      \(\|\vec u+\vec v\|^2=9+2\times(-4)+4=5\), donc \(\|\vec u+\vec v\|=\sqrt5\approx2{,}24\).<br>
+      \(\|\vec u-\vec v\|^2=9-2\times(-4)+4=21\), donc \(\|\vec u-\vec v\|=\sqrt{21}\approx4{,}58\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span> Formule de polarisation : calculer avec les normes seules</h3>
+    <p>En isolant \(\vec u\cdot\vec v\) dans l'identité précédente, on obtient le produit scalaire <b>sans angle et sans coordonnées</b>, uniquement avec trois longueurs :</p>
+    <div class="box formula">
+      \[\vec u\cdot\vec v=\frac12\left(\|\vec u+\vec v\|^2-\|\vec u\|^2-\|\vec v\|^2\right)=\frac12\left(\|\vec u\|^2+\|\vec v\|^2-\|\vec u-\vec v\|^2\right)\]
+      <p style="margin:6px 0 0;font-size:.9rem">En texte : u·v = ½(‖u+v‖² − ‖u‖² − ‖v‖²).</p>
+    </div>
+    <div class="box example">
+      <b>Exemple.</b> Dans un triangle \(ABC\), \(AB=5\), \(AC=7\), \(BC=6\). Calculer \(\vec{AB}\cdot\vec{AC}\).<br>
+      On remarque que \(\vec{AC}-\vec{AB}=\vec{BC}\). Donc
+      \(\vec{AB}\cdot\vec{AC}=\dfrac12\left(AB^2+AC^2-BC^2\right)=\dfrac12(25+49-36)=\dfrac{38}{2}=19\).
+    </div>
+    <div class="box ok"><b>À retenir :</b> dans un triangle, \(\vec{AB}\cdot\vec{AC}=\dfrac{AB^2+AC^2-BC^2}{2}\). C'est la forme « normes seules » du choix de méthode.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span> Formule d'Al-Kashi <span class="tag demo">démonstration exigible</span></h3>
+    <p>Dans un triangle \(ABC\), on note \(a=BC\), \(b=AC\), \(c=AB\) (le côté \(a\) est opposé au sommet \(A\)). Alors :</p>
+    <div class="box formula">
+      \[a^2=b^2+c^2-2\,bc\cos\hat A\]
+      <p style="margin:6px 0 0;font-size:.9rem">En texte : BC² = AC² + AB² − 2·AC·AB·cos(Â). Idem pour les autres sommets : \(b^2=a^2+c^2-2ac\cos\hat B\), \(c^2=a^2+b^2-2ab\cos\hat C\).</p>
+    </div>
+    <p>C'est le <b>théorème de Pythagore généralisé</b> : si \(\hat A=90^\circ\), \(\cos\hat A=0\) et on retrouve \(a^2=b^2+c^2\).</p>
+    <details open><summary>Démonstration (à savoir refaire)</summary>
+      <ol class="steps">
+        <li>Relation de Chasles : \(\vec{BC}=\vec{BA}+\vec{AC}=\vec{AC}-\vec{AB}\).</li>
+        <li>On élève au carré (norme au carré) : \(BC^2=\|\vec{AC}-\vec{AB}\|^2=\|\vec{AC}\|^2-2\,\vec{AC}\cdot\vec{AB}+\|\vec{AB}\|^2\).</li>
+        <li>Or \(\vec{AC}\cdot\vec{AB}=AC\times AB\times\cos\hat A=bc\cos\hat A\).</li>
+        <li>Donc \(a^2=b^2+c^2-2bc\cos\hat A\). \(\blacksquare\)</li>
+      </ol>
+    </details>
+    <div class="box example">
+      <b>Exemple (longueur).</b> \(AB=4\), \(AC=6\), \(\hat A=60^\circ\).<br>
+      \(BC^2=6^2+4^2-2\times6\times4\times\cos60^\circ=36+16-48\times0{,}5=28\), d'où \(BC=\sqrt{28}=2\sqrt7\approx5{,}3\).
+    </div>
+    <div class="box example">
+      <b>Exemple (angle).</b> \(a=7\), \(b=5\), \(c=8\). On isole le cosinus :
+      \(\cos\hat A=\dfrac{b^2+c^2-a^2}{2bc}=\dfrac{25+64-49}{80}=\dfrac{40}{80}=0{,}5\), donc \(\hat A=60^\circ\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span> Transformer \(\vec{MA}\cdot\vec{MB}\) avec le milieu \(I\)</h3>
+    <p>Soit \(I\) le milieu de \([AB]\). Pour tout point \(M\) du plan :</p>
+    <div class="box formula">
+      \[\vec{MA}\cdot\vec{MB}=MI^2-\frac{AB^2}{4}\]
+      <p style="margin:6px 0 0;font-size:.9rem">En texte : MA·MB = MI² − AB²/4 (ce qui vaut aussi \(MI^2-IA^2\) puisque \(IA=AB/2\)).</p>
+    </div>
+    <details><summary>Preuve (2 lignes, à connaître)</summary>
+      <p>\(\vec{MA}=\vec{MI}+\vec{IA}\) et \(\vec{MB}=\vec{MI}+\vec{IB}=\vec{MI}-\vec{IA}\) car \(I\) est le milieu.<br>
+      Donc \(\vec{MA}\cdot\vec{MB}=(\vec{MI}+\vec{IA})\cdot(\vec{MI}-\vec{IA})=MI^2-IA^2=MI^2-\dfrac{AB^2}{4}\).</p>
+    </details>
+    <div class="box example">
+      <b>Exemple.</b> \(AB=6\) et \(MI=5\). Alors \(\vec{MA}\cdot\vec{MB}=25-\dfrac{36}{4}=25-9=16\).<br>
+      Si \(MI=2\) : \(\vec{MA}\cdot\vec{MB}=4-9=-5\) (négatif : \(M\) est « entre » \(A\) et \(B\), à l'intérieur du cercle, voir point 5).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span> Le cercle de diamètre \([AB]\) <span class="tag demo">démonstration exigible</span></h3>
+    <div class="box formula">
+      <p style="margin:0"><b>Théorème.</b> L'ensemble des points \(M\) tels que \(\vec{MA}\cdot\vec{MB}=0\) est le <b>cercle de diamètre \([AB]\)</b>.</p>
+    </div>
+    <details open><summary>Démonstration (à savoir refaire)</summary>
+      <p>Soit \(I\) le milieu de \([AB]\). D'après le point 4 :</p>
+      \[\vec{MA}\cdot\vec{MB}=0\iff MI^2-\frac{AB^2}{4}=0\iff MI^2=\left(\frac{AB}{2}\right)^2\iff MI=\frac{AB}{2}.\]
+      <p>Or l'ensemble des points \(M\) tels que \(MI=\dfrac{AB}{2}\) est le cercle de centre \(I\) et de rayon \(\dfrac{AB}{2}\), c'est-à-dire le cercle de diamètre \([AB]\). \(\blacksquare\)</p>
+    </details>
+    <p>Interprétation : si \(M\neq A,B\), \(\vec{MA}\cdot\vec{MB}=0\) signifie que le triangle \(AMB\) est <b>rectangle en \(M\)</b> — on retrouve le « triangle inscrit dans un demi-cercle ».</p>
+    <div class="box example">
+      <b>Exemple.</b> \(A(-2\,;\,0)\), \(B(4\,;\,0)\). Le point \(M(1\,;\,3)\) est-il sur le cercle de diamètre \([AB]\) ?<br>
+      \(\vec{MA}(-3\,;\,-3)\), \(\vec{MB}(3\,;\,-3)\) : \(\vec{MA}\cdot\vec{MB}=-9+9=0\). Oui ! (Vérification : \(I(1;0)\), \(MI=3=AB/2\).)
+    </div>
+    <div class="box ok"><b>Signe.</b> \(\vec{MA}\cdot\vec{MB}&lt;0\) ⟺ \(M\) est à l'intérieur du cercle ; \(&gt;0\) ⟺ à l'extérieur. (Onglet « Cercle » de la visualisation.)</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span> Théorème de la médiane <span class="tag deep">approfondissement</span></h3>
+    <p>Non exigible au programme, mais utile et démontrable avec les mêmes outils. Si \(I\) est le milieu de \([AB]\) :</p>
+    <div class="box deep">
+      \[MA^2+MB^2=2\,MI^2+\frac{AB^2}{2}\]
+      <p style="margin:6px 0 0;font-size:.9rem">Preuve : on écrit \(MA^2=\|\vec{MI}+\vec{IA}\|^2\) et \(MB^2=\|\vec{MI}-\vec{IA}\|^2\), on développe les deux et on additionne : les doubles produits s'annulent.</p>
+    </div>
+    <div class="box example">
+      <b>Exemple.</b> \(AB=8\), \(MA=5\), \(MB=7\). Alors \(2MI^2=25+49-32=42\), donc \(MI=\sqrt{21}\approx4{,}6\) : longueur de la médiane sans aucun angle.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span> Choisir la méthode de calcul de \(\vec u\cdot\vec v\)</h3>
+    <div class="scroll-x">
+    <table class="meth">
+      <tr><th>Ce que l'on connaît</th><th>Formule à utiliser</th><th>Exemple</th></tr>
+      <tr><td>Un projeté orthogonal (figure avec angle droit)</td><td>\(\vec{AB}\cdot\vec{AC}=\vec{AB}\cdot\vec{AH}=\pm AB\times AH\)</td><td>\(AB=4\), \(AH=3\) même sens : \(12\)</td></tr>
+      <tr><td>Des coordonnées (repère orthonormé)</td><td>\(\vec u\cdot\vec v=xx'+yy'\)</td><td>\((2;3)\cdot(-1;4)=-2+12=10\)</td></tr>
+      <tr><td>Deux normes et l'angle</td><td>\(\|\vec u\|\,\|\vec v\|\cos\theta\)</td><td>\(3\times2\times\cos120^\circ=-3\)</td></tr>
+      <tr><td>Trois normes (triangle sans angle)</td><td>\(\frac12\left(\|\vec u\|^2+\|\vec v\|^2-\|\vec u-\vec v\|^2\right)\)</td><td>\(AB=5,AC=7,BC=6\) : \(19\)</td></tr>
+    </table>
+    </div>
+    <p class="hint">Règle simple : angle droit visible → projection ; repère → coordonnées ; angle donné → cosinus ; seulement des longueurs → normes seules (ou Al-Kashi).</p>
+  </div>
+</section>
+<!-- ===================== MÉTHODE ===================== -->
+<section id="methode">
+  <h2>Méthode</h2>
+  <p class="intro">Les quatre types d'exercices du chapitre, pas à pas. Calculatrice en <b>degrés</b> (vérifie le mode avant tout calcul).</p>
+
+  <div class="card">
+    <h3>Calculer une longueur avec Al-Kashi</h3>
+    <p><i>Données : deux côtés et l'angle <b>entre</b> ces deux côtés.</i></p>
+    <ol class="steps">
+      <li>Nommer : le côté cherché est <b>opposé</b> à l'angle connu. Si l'angle est \(\hat A\), le côté cherché est \(BC=a\).</li>
+      <li>Écrire la formule avec les bonnes lettres : \(a^2=b^2+c^2-2bc\cos\hat A\).</li>
+      <li>Remplacer, calculer \(\cos\hat A\) (calculatrice en degrés), garder le signe : si \(\hat A&gt;90^\circ\), \(\cos\hat A&lt;0\) et « \(-2bc\cos\hat A\) » devient <b>positif</b>.</li>
+      <li>Prendre la racine carrée : \(a=\sqrt{\dots}\), puis arrondir comme demandé.</li>
+    </ol>
+    <div class="box example"><b>Exemple.</b> \(b=5\), \(c=8\), \(\hat A=120^\circ\) : \(a^2=25+64-80\times(-0{,}5)=89+40=129\), \(a=\sqrt{129}\approx11{,}4\).</div>
+  </div>
+
+  <div class="card">
+    <h3>Calculer un angle avec Al-Kashi</h3>
+    <p><i>Données : les trois côtés.</i></p>
+    <ol class="steps">
+      <li>Choisir l'angle cherché ; le côté opposé va « seul » à gauche : \(a^2=b^2+c^2-2bc\cos\hat A\).</li>
+      <li>Isoler le cosinus : \(\cos\hat A=\dfrac{b^2+c^2-a^2}{2bc}\).</li>
+      <li>Calculer la valeur (entre \(-1\) et \(1\), sinon erreur de calcul).</li>
+      <li>Appliquer \(\arccos\) (touche <code>cos⁻¹</code> ou <code>acos</code>) en mode degrés, puis arrondir.</li>
+    </ol>
+    <div class="box example"><b>Exemple.</b> \(a=9\), \(b=6\), \(c=7\) : \(\cos\hat A=\dfrac{36+49-81}{84}=\dfrac{4}{84}\approx0{,}0476\), \(\hat A\approx87{,}3^\circ\).</div>
+  </div>
+
+  <div class="card">
+    <h3>Montrer qu'un ensemble de points est un cercle</h3>
+    <ol class="steps">
+      <li>Repérer la forme \(\vec{MA}\cdot\vec{MB}=k\) (souvent \(k=0\)).</li>
+      <li>Introduire \(I\) milieu de \([AB]\) et écrire \(\vec{MA}\cdot\vec{MB}=MI^2-\dfrac{AB^2}{4}\).</li>
+      <li>Résoudre : \(MI^2=k+\dfrac{AB^2}{4}\). Si le membre de droite est \(&gt;0\), c'est le cercle de centre \(I\) et de rayon \(\sqrt{k+AB^2/4}\) ; s'il vaut \(0\), le seul point \(I\) ; s'il est \(&lt;0\), l'ensemble vide.</li>
+      <li>Conclure en nommant centre et rayon (pour \(k=0\) : cercle de diamètre \([AB]\)).</li>
+    </ol>
+    <div class="box example"><b>Exemple.</b> \(AB=10\) et \(\vec{MA}\cdot\vec{MB}=11\) : \(MI^2=11+25=36\), cercle de centre \(I\) et de rayon \(6\).</div>
+  </div>
+
+  <div class="card">
+    <h3>Calculer \(\vec u\cdot\vec v\) quand on connaît trois normes</h3>
+    <ol class="steps">
+      <li>Identifier le troisième vecteur : est-ce \(\vec u+\vec v\) ou \(\vec u-\vec v\) ? Dans un triangle, \(\vec{AC}-\vec{AB}=\vec{BC}\) (différence).</li>
+      <li>Écrire l'identité adaptée : \(\|\vec u-\vec v\|^2=\|\vec u\|^2-2\vec u\cdot\vec v+\|\vec v\|^2\).</li>
+      <li>Isoler : \(\vec u\cdot\vec v=\dfrac12\left(\|\vec u\|^2+\|\vec v\|^2-\|\vec u-\vec v\|^2\right)\).</li>
+      <li>Remplacer et calculer. Le signe du résultat renseigne sur l'angle (négatif ⟹ angle obtus).</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Erreurs fréquentes</h3>
+    <div class="box warn"><b>Le signe de \(-2bc\cos\hat A\).</b> Avec un angle obtus, \(\cos\hat A&lt;0\) : « moins par moins » donne un <b>plus</b>. Écris le calcul intermédiaire \(2bc\cos\hat A=\dots\) avec son signe avant de soustraire.</div>
+    <div class="box warn"><b>Oublier la racine.</b> Al-Kashi donne \(a^2\), pas \(a\). Si tu trouves \(a=129\) pour un triangle de côtés 5 et 8, c'est impossible : \(a&lt;b+c=13\).</div>
+    <div class="box warn"><b>Degrés / radians.</b> \(\cos60^\circ=0{,}5\) mais \(\cos(60\text{ rad})\approx-0{,}95\). Vérifie le mode de la calculatrice (souvent <code>DEG</code> / <code>RAD</code> affiché en haut).</div>
+    <div class="box warn"><b>Mauvais côté opposé.</b> Le côté « seul » à gauche est toujours celui qui est <b>en face</b> de l'angle utilisé.</div>
+    <div class="box warn"><b>Confondre \(\vec u+\vec v\) et \(\vec u-\vec v\).</b> Dans un triangle \(ABC\), \(\vec{AB}\) et \(\vec{AC}\) partent du même point : leur <b>différence</b> est \(\vec{BC}\), pas leur somme.</div>
+  </div>
+</section>
+
+<!-- ===================== VISUALISATION ===================== -->
+<section id="visualisation">
+  <h2>Visualisation</h2>
+  <p class="intro">Déplace les points avec le doigt ou la souris (ou utilise les curseurs). Tout se recalcule en direct.</p>
+
+  <div class="card">
+    <div class="tabs" id="vizTabs">
+      <button type="button" data-tab="tri" class="active">Triangle &amp; Al-Kashi</button>
+      <button type="button" data-tab="cir">Cercle de diamètre [AB]</button>
+    </div>
+
+    <!-- --- Onglet triangle --- -->
+    <div class="viz-panel active" id="panel-tri">
+      <div class="svgwrap" id="wrapTri">
+        <svg id="svgTri" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" aria-label="Triangle ABC déplaçable">
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#efece6" stroke-width="1"/></pattern>
+          </defs>
+          <rect width="400" height="320" fill="url(#grid)"/>
+          <path id="arcA" fill="rgba(249,115,98,.28)" stroke="#f97362" stroke-width="1.5"/>
+          <path id="arcB" fill="rgba(34,160,107,.25)" stroke="#22a06b" stroke-width="1.5"/>
+          <path id="arcC" fill="rgba(37,99,235,.22)" stroke="#2563eb" stroke-width="1.5"/>
+          <polygon id="triPoly" fill="rgba(37,99,235,.06)" stroke="none"/>
+          <line id="sideA" stroke="#f97362" stroke-width="3.5" stroke-linecap="round"/>
+          <line id="sideB" stroke="#22a06b" stroke-width="3.5" stroke-linecap="round"/>
+          <line id="sideC" stroke="#2563eb" stroke-width="3.5" stroke-linecap="round"/>
+          <text id="lblA_side" font-size="13" fill="#b2331c" font-family="Georgia,serif" font-style="italic"></text>
+          <text id="lblB_side" font-size="13" fill="#14663f" font-family="Georgia,serif" font-style="italic"></text>
+          <text id="lblC_side" font-size="13" fill="#1e40af" font-family="Georgia,serif" font-style="italic"></text>
+          <g id="hA" class="handle" style="cursor:grab"><circle r="16" fill="rgba(249,115,98,.15)"/><circle r="7" fill="#f97362" stroke="#fff" stroke-width="2"/></g>
+          <g id="hB" class="handle" style="cursor:grab"><circle r="16" fill="rgba(34,160,107,.15)"/><circle r="7" fill="#22a06b" stroke="#fff" stroke-width="2"/></g>
+          <g id="hC" class="handle" style="cursor:grab"><circle r="16" fill="rgba(37,99,235,.15)"/><circle r="7" fill="#2563eb" stroke="#fff" stroke-width="2"/></g>
+          <text id="lblA" font-size="16" font-weight="bold" fill="#1f2937" font-family="Georgia,serif">A</text>
+          <text id="lblB" font-size="16" font-weight="bold" fill="#1f2937" font-family="Georgia,serif">B</text>
+          <text id="lblC" font-size="16" font-weight="bold" fill="#1f2937" font-family="Georgia,serif">C</text>
+        </svg>
+      </div>
+      <div class="readout">
+        <div class="cell a"><div class="lab">a = BC (opposé à A)</div><div class="val" id="rA">–</div></div>
+        <div class="cell b"><div class="lab">b = AC (opposé à B)</div><div class="val" id="rB">–</div></div>
+        <div class="cell c"><div class="lab">c = AB (opposé à C)</div><div class="val" id="rC">–</div></div>
+        <div class="cell a"><div class="lab">Angle Â</div><div class="val" id="angA">–</div></div>
+        <div class="cell b"><div class="lab">Angle B̂</div><div class="val" id="angB">–</div></div>
+        <div class="cell c"><div class="lab">Angle Ĉ</div><div class="val" id="angC">–</div></div>
+      </div>
+      <div class="check" id="checkAK">
+        <div>Vérification d'Al-Kashi en A :</div>
+        <div><span class="eq">a² = <span id="ak_left">–</span></span></div>
+        <div>b² + c² − 2bc·cos Â = <span id="ak_terms">–</span> = <span class="eq" id="ak_right">–</span></div>
+        <div id="ak_note" style="font-family:system-ui,sans-serif;font-size:.9rem;color:#6b7280"></div>
+      </div>
+      <div class="sliders">
+        <label>A : x <input type="range" id="sAx" min="20" max="380" value="80"><span id="vAx"></span></label>
+        <label>A : y <input type="range" id="sAy" min="20" max="300" value="250"><span id="vAy"></span></label>
+        <label>B : x <input type="range" id="sBx" min="20" max="380" value="330"><span id="vBx"></span></label>
+        <label>B : y <input type="range" id="sBy" min="20" max="300" value="250"><span id="vBy"></span></label>
+        <label>C : x <input type="range" id="sCx" min="20" max="380" value="170"><span id="vCx"></span></label>
+        <label>C : y <input type="range" id="sCy" min="20" max="300" value="70"><span id="vCy"></span></label>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn ghost" id="btnRight">Rendre Â droit (90°)</button>
+        <button type="button" class="btn ghost" id="btnObtus">Â obtus</button>
+        <button type="button" class="btn ghost" id="btnReset">Réinitialiser</button>
+      </div>
+      <p class="hint">Unité : 1 carreau = 20 px, longueurs affichées en unités de 20 px. Quand Â = 90°, le terme −2bc·cos Â disparaît : Al-Kashi devient Pythagore.</p>
+    </div>
+
+    <!-- --- Onglet cercle --- -->
+    <div class="viz-panel" id="panel-cir">
+      <div class="svgwrap" id="wrapCir">
+        <svg id="svgCir" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" aria-label="Cercle de diamètre AB avec point M">
+          <defs>
+            <pattern id="gridCir" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#efece6" stroke-width="1"/></pattern>
+          </defs>
+          <rect width="400" height="320" fill="url(#gridCir)"/>
+          <circle id="circAB" cx="200" cy="160" r="110" fill="rgba(37,99,235,.06)" stroke="#2563eb" stroke-width="2" stroke-dasharray="6 5"/>
+          <line id="diamAB" x1="90" y1="160" x2="310" y2="160" stroke="#9ca3af" stroke-width="2"/>
+          <line id="segMA" stroke="#f97362" stroke-width="3" stroke-linecap="round"/>
+          <line id="segMB" stroke="#22a06b" stroke-width="3" stroke-linecap="round"/>
+          <line id="segMI" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <path id="rightMark" fill="none" stroke="#22a06b" stroke-width="2"/>
+          <circle cx="90" cy="160" r="6" fill="#1f2937"/><text x="72" y="152" font-size="16" font-weight="bold" font-family="Georgia,serif">A</text>
+          <circle cx="310" cy="160" r="6" fill="#1f2937"/><text x="318" y="152" font-size="16" font-weight="bold" font-family="Georgia,serif">B</text>
+          <circle cx="200" cy="160" r="4" fill="#2563eb"/><text x="206" y="178" font-size="14" font-family="Georgia,serif" fill="#2563eb">I</text>
+          <g id="hM" style="cursor:grab"><circle r="18" fill="rgba(37,99,235,.12)"/><circle id="dotM" r="8" fill="#2563eb" stroke="#fff" stroke-width="2"/></g>
+          <text id="lblM" font-size="16" font-weight="bold" font-family="Georgia,serif">M</text>
+        </svg>
+      </div>
+      <div class="status" id="cirStatus">–</div>
+      <div class="readout">
+        <div class="cell a"><div class="lab">MA</div><div class="val" id="cMA">–</div></div>
+        <div class="cell b"><div class="lab">MB</div><div class="val" id="cMB">–</div></div>
+        <div class="cell c"><div class="lab">MI (rayon = AB/2 = 5,5)</div><div class="val" id="cMI">–</div></div>
+        <div class="cell c"><div class="lab">MI² − AB²/4</div><div class="val" id="cForm">–</div></div>
+        <div class="cell a"><div class="lab">Angle AMB</div><div class="val" id="cAng">–</div></div>
+      </div>
+      <div class="sliders">
+        <label>M : x <input type="range" id="sMx" min="10" max="390" value="150"><span id="vMx"></span></label>
+        <label>M : y <input type="range" id="sMy" min="10" max="310" value="60"><span id="vMy"></span></label>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn ghost" id="btnSnap">Poser M sur le cercle</button>
+        <button type="button" class="btn ghost" id="btnInside">M dans le cercle</button>
+        <button type="button" class="btn ghost" id="btnOutside">M hors du cercle</button>
+      </div>
+      <p class="hint">Vert : \(\vec{MA}\cdot\vec{MB}\approx0\), M est sur le cercle et l'angle AMB est droit. Bleu : produit négatif, M à l'intérieur. Corail : produit positif, M à l'extérieur. Unité : 1 carreau = 20 px.</p>
+    </div>
+  </div>
+</section>
+<!-- ===================== EXERCICES ===================== -->
+<section id="exercices">
+  <h2>Exercices</h2>
+  <p class="intro">Trois exercices génératifs de difficulté croissante. Réponds avec une virgule ou un point pour les décimales.</p>
+
+  <div class="card" id="ex1">
+    <div class="diff">Niveau 1 · application directe</div>
+    <h3>Produit scalaire avec normes et angle</h3>
+    <div class="enonce" id="ex1_enonce"></div>
+    <div class="btn-row" style="align-items:center">
+      <label for="ex1_in">\(\vec u\cdot\vec v\approx\)</label>
+      <input class="answer" id="ex1_in" type="text" inputmode="decimal" placeholder="valeur décimale">
+      <button type="button" class="btn" id="ex1_check">Vérifier</button>
+      <button type="button" class="btn secondary" id="ex1_new">Nouvel exercice</button>
+      <button type="button" class="btn ghost" id="ex1_corr">Voir la correction</button>
+    </div>
+    <div class="feedback" id="ex1_fb"></div>
+    <div class="correction" id="ex1_correction"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <div class="diff">Niveau 2 · deux étapes</div>
+    <h3>Al-Kashi : calculer le troisième côté</h3>
+    <div class="enonce" id="ex2_enonce"></div>
+    <div class="btn-row" style="align-items:center">
+      <label for="ex2_in" id="ex2_lab">BC ≈</label>
+      <input class="answer" id="ex2_in" type="text" inputmode="decimal" placeholder="au dixième">
+      <button type="button" class="btn" id="ex2_check">Vérifier</button>
+      <button type="button" class="btn secondary" id="ex2_new">Nouvel exercice</button>
+      <button type="button" class="btn ghost" id="ex2_corr">Voir la correction</button>
+    </div>
+    <div class="feedback" id="ex2_fb"></div>
+    <div class="correction" id="ex2_correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <div class="diff">Niveau 3 · problème</div>
+    <h3>Angle d'un triangle dont on connaît les trois côtés</h3>
+    <div class="enonce" id="ex3_enonce"></div>
+    <div class="btn-row" style="align-items:center">
+      <label for="ex3_in" id="ex3_lab">Angle ≈</label>
+      <input class="answer" id="ex3_in" type="text" inputmode="decimal" placeholder="en degrés">
+      <span>°</span>
+      <button type="button" class="btn" id="ex3_check">Vérifier</button>
+      <button type="button" class="btn secondary" id="ex3_new">Nouvel exercice</button>
+      <button type="button" class="btn ghost" id="ex3_corr">Voir la correction</button>
+    </div>
+    <div class="feedback" id="ex3_fb"></div>
+    <div class="correction" id="ex3_correction"></div>
+  </div>
+</section>
+
+<!-- ===================== QCM ===================== -->
+<section id="qcm">
+  <h2>QCM</h2>
+  <p class="intro">Quatre questions tirées au hasard dans une banque. Une seule bonne réponse par question.</p>
+  <div class="card">
+    <div id="qcmBody"></div>
+    <div class="score" id="qcmScore"></div>
+    <div class="btn-row">
+      <button type="button" class="btn secondary" id="qcmNew">Nouveau QCM</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+  <p>Fiche 1B · Produit scalaire (Première, BO 2019) · Suite : fiche 1C Géométrie repérée.</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     Fiche 1B — Produit scalaire : applications
+     Script principal : navigation, visualisations, exercices, QCM
+     ============================================================ */
+
+  /* ---------- Utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function fmt(x, d) {
+    if (d === undefined) d = 2;
+    if (!isFinite(x)) return '–';
+    var p = Math.pow(10, d);
+    var s = (Math.round(x * p) / p).toFixed(d);
+    if (d > 0) { s = s.replace(/0+$/, '').replace(/\.$/, ''); }
+    return s.replace('.', ',');
+  }
+  function parseNum(str) {
+    if (str === null || str === undefined) return NaN;
+    var s = String(str).trim().replace(/\s+/g, '').replace(',', '.').replace(/−/g, '-');
+    if (s === '') return NaN;
+    return Number(s);
+  }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'ok' : 'ko');
+    el.textContent = msg;
+  }
+  function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+  function deg(r) { return r * 180 / Math.PI; }
+
+  /* ---------- 1. Navigation sticky ---------- */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+  var navSections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.pageYOffset + 130, current = 0;
+    navSections.forEach(function (s, i) { if (s && s.offsetTop <= y) current = i; });
+    if (window.pageYOffset + window.innerHeight >= document.body.scrollHeight - 4) {
+      current = navLinks.length - 1;
+    }
+    navLinks.forEach(function (a, i) { a.classList.toggle('active', i === current); });
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  window.addEventListener('resize', updateNav);
+  navLinks.forEach(function (a) {
+    a.addEventListener('click', function () {
+      navLinks.forEach(function (b) { b.classList.remove('active'); });
+      a.classList.add('active');
+    });
+  });
+  updateNav();
+
+  /* ---------- 2. Onglets de visualisation ---------- */
+  var tabBtns = Array.prototype.slice.call(document.querySelectorAll('#vizTabs button'));
+  tabBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var name = btn.getAttribute('data-tab');
+      ['tri', 'cir'].forEach(function (n) {
+        var p = $('panel-' + n);
+        if (p) p.classList.toggle('active', n === name);
+      });
+      if (name === 'tri') drawTri(); else drawCir();
+    });
+  });
+
+  /* ---------- Drag générique sur un SVG (souris + tactile) ---------- */
+  function svgPoint(svg, evt) {
+    var r = svg.getBoundingClientRect();
+    var vb = svg.viewBox.baseVal;
+    var w = vb && vb.width ? vb.width : r.width;
+    var h = vb && vb.height ? vb.height : r.height;
+    return {
+      x: (evt.clientX - r.left) * (w / r.width),
+      y: (evt.clientY - r.top) * (h / r.height)
+    };
+  }
+  function makeDraggable(handle, svg, onMove) {
+    if (!handle) return;
+    var dragging = false;
+    handle.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      dragging = true;
+      handle.style.cursor = 'grabbing';
+      if (handle.setPointerCapture) { try { handle.setPointerCapture(e.pointerId); } catch (err) {} }
+      onMove(svgPoint(svg, e));
+    });
+    handle.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      e.preventDefault();
+      onMove(svgPoint(svg, e));
+    });
+    function stop(e) {
+      if (!dragging) return;
+      dragging = false;
+      handle.style.cursor = 'grab';
+      if (handle.releasePointerCapture) { try { handle.releasePointerCapture(e.pointerId); } catch (err) {} }
+    }
+    handle.addEventListener('pointerup', stop);
+    handle.addEventListener('pointercancel', stop);
+  }
+
+  /* ============================================================
+     3. Visualisation — onglet « Triangle & Al-Kashi »
+     Unité : 1 carreau = 20 px
+     ============================================================ */
+  var U = 20;                        // pixels par unité
+  var DEF = { Ax: 80, Ay: 250, Bx: 330, By: 250, Cx: 170, Cy: 70 };
+  var T = { Ax: DEF.Ax, Ay: DEF.Ay, Bx: DEF.Bx, By: DEF.By, Cx: DEF.Cx, Cy: DEF.Cy };
+  var svgTri = $('svgTri');
+
+  function dist(p, q) { return Math.sqrt((p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y)); }
+
+  // Secteur angulaire au sommet P, entre les demi-droites [PQ) et [PR)
+  function anglePath(P, Q, R, radius) {
+    var a1 = Math.atan2(Q.y - P.y, Q.x - P.x);
+    var a2 = Math.atan2(R.y - P.y, R.x - P.x);
+    var d = a2 - a1;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    var n = 18, s = 'M ' + P.x.toFixed(2) + ' ' + P.y.toFixed(2);
+    for (var i = 0; i <= n; i++) {
+      var t = a1 + d * (i / n);
+      s += ' L ' + (P.x + radius * Math.cos(t)).toFixed(2) + ' ' + (P.y + radius * Math.sin(t)).toFixed(2);
+    }
+    return s + ' Z';
+  }
+
+  function setLine(id, p, q) {
+    var el = $(id);
+    el.setAttribute('x1', p.x.toFixed(2)); el.setAttribute('y1', p.y.toFixed(2));
+    el.setAttribute('x2', q.x.toFixed(2)); el.setAttribute('y2', q.y.toFixed(2));
+  }
+  function setText(id, x, y, txt) {
+    var el = $(id);
+    el.setAttribute('x', x.toFixed(2)); el.setAttribute('y', y.toFixed(2));
+    if (txt !== undefined) el.textContent = txt;
+  }
+
+  function drawTri() {
+    var A = { x: T.Ax, y: T.Ay }, B = { x: T.Bx, y: T.By }, C = { x: T.Cx, y: T.Cy };
+    var G = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 };
+
+    // longueurs en pixels puis en unités
+    var aPx = dist(B, C), bPx = dist(A, C), cPx = dist(A, B);
+    var a = aPx / U, b = bPx / U, c = cPx / U;
+    var eps = 1e-6;
+
+    // angles (théorème d'Al-Kashi inversé)
+    function angFrom(op, s1, s2) {
+      if (s1 < eps || s2 < eps) return NaN;
+      return Math.acos(clamp((s1 * s1 + s2 * s2 - op * op) / (2 * s1 * s2), -1, 1));
+    }
+    var Ar = angFrom(a, b, c), Br = angFrom(b, a, c), Cr = angFrom(c, a, b);
+
+    // tracé
+    $('triPoly').setAttribute('points', A.x + ',' + A.y + ' ' + B.x + ',' + B.y + ' ' + C.x + ',' + C.y);
+    setLine('sideA', B, C);   // a = BC (corail)
+    setLine('sideB', A, C);   // b = AC (vert)
+    setLine('sideC', A, B);   // c = AB (bleu)
+
+    var rA = Math.min(30, 0.34 * Math.min(bPx, cPx));
+    var rB = Math.min(30, 0.34 * Math.min(aPx, cPx));
+    var rC = Math.min(30, 0.34 * Math.min(aPx, bPx));
+    $('arcA').setAttribute('d', anglePath(A, B, C, rA));
+    $('arcB').setAttribute('d', anglePath(B, A, C, rB));
+    $('arcC').setAttribute('d', anglePath(C, A, B, rC));
+
+    // étiquettes des côtés, décalées vers l'extérieur
+    function outward(p, q) {
+      var m = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+      var dx = m.x - G.x, dy = m.y - G.y, n = Math.sqrt(dx * dx + dy * dy) || 1;
+      return { x: clamp(m.x + 16 * dx / n, 12, 388), y: clamp(m.y + 16 * dy / n + 4, 14, 314) };
+    }
+    var pa = outward(B, C), pb = outward(A, C), pc = outward(A, B);
+    setText('lblA_side', pa.x, pa.y, 'a = ' + fmt(a, 2));
+    setText('lblB_side', pb.x, pb.y, 'b = ' + fmt(b, 2));
+    setText('lblC_side', pc.x, pc.y, 'c = ' + fmt(c, 2));
+
+    // poignées et noms des sommets
+    $('hA').setAttribute('transform', 'translate(' + A.x + ',' + A.y + ')');
+    $('hB').setAttribute('transform', 'translate(' + B.x + ',' + B.y + ')');
+    $('hC').setAttribute('transform', 'translate(' + C.x + ',' + C.y + ')');
+    function labelPos(P) {
+      var dx = P.x - G.x, dy = P.y - G.y, n = Math.sqrt(dx * dx + dy * dy) || 1;
+      return { x: clamp(P.x + 20 * dx / n - 5, 8, 386), y: clamp(P.y + 20 * dy / n + 5, 16, 314) };
+    }
+    var la = labelPos(A), lb = labelPos(B), lc = labelPos(C);
+    setText('lblA', la.x, la.y); setText('lblB', lb.x, lb.y); setText('lblC', lc.x, lc.y);
+
+    // lectures
+    $('rA').textContent = fmt(a, 2);
+    $('rB').textContent = fmt(b, 2);
+    $('rC').textContent = fmt(c, 2);
+    $('angA').textContent = isNaN(Ar) ? '–' : fmt(deg(Ar), 1) + '°';
+    $('angB').textContent = isNaN(Br) ? '–' : fmt(deg(Br), 1) + '°';
+    $('angC').textContent = isNaN(Cr) ? '–' : fmt(deg(Cr), 1) + '°';
+
+    // vérification numérique d'Al-Kashi en A
+    var cosA = isNaN(Ar) ? 0 : Math.cos(Ar);
+    var terme = 2 * b * c * cosA;
+    var right = b * b + c * c - terme;
+    $('ak_left').textContent = fmt(a * a, 2);
+    $('ak_terms').textContent = fmt(b * b, 2) + ' + ' + fmt(c * c, 2) + ' − ' + fmt(terme, 2);
+    $('ak_right').textContent = fmt(right, 2);
+    var note;
+    if (isNaN(Ar)) {
+      note = 'Triangle aplati : déplace un sommet.';
+    } else if (Math.abs(deg(Ar) - 90) < 0.6) {
+      note = 'Â ≈ 90° : cos Â = 0, le terme −2bc·cos Â disparaît — Al-Kashi devient Pythagore a² = b² + c².';
+    } else if (deg(Ar) > 90) {
+      note = 'Â obtus : cos Â < 0, donc −2bc·cos Â > 0 et a² > b² + c².';
+    } else {
+      note = 'Â aigu : cos Â > 0, donc a² < b² + c².';
+    }
+    $('ak_note').textContent = note + ' (les deux lignes coïncident toujours : la formule est une identité.)';
+
+    // curseurs synchronisés
+    var pairs = [['sAx', 'vAx', T.Ax], ['sAy', 'vAy', T.Ay], ['sBx', 'vBx', T.Bx],
+                 ['sBy', 'vBy', T.By], ['sCx', 'vCx', T.Cx], ['sCy', 'vCy', T.Cy]];
+    pairs.forEach(function (p) {
+      var s = $(p[0]);
+      if (s && Number(s.value) !== Math.round(p[2])) s.value = Math.round(p[2]);
+      var v = $(p[1]);
+      if (v) v.textContent = Math.round(p[2]);
+    });
+  }
+
+  // curseurs du triangle
+  [['sAx', 'Ax'], ['sAy', 'Ay'], ['sBx', 'Bx'], ['sBy', 'By'], ['sCx', 'Cx'], ['sCy', 'Cy']].forEach(function (p) {
+    var s = $(p[0]);
+    if (!s) return;
+    s.addEventListener('input', function () { T[p[1]] = Number(s.value); drawTri(); });
+  });
+
+  // poignées déplaçables
+  [['hA', 'Ax', 'Ay'], ['hB', 'Bx', 'By'], ['hC', 'Cx', 'Cy']].forEach(function (h) {
+    makeDraggable($(h[0]), svgTri, function (pt) {
+      T[h[1]] = clamp(pt.x, 20, 380);
+      T[h[2]] = clamp(pt.y, 20, 300);
+      drawTri();
+    });
+  });
+
+  $('btnRight').addEventListener('click', function () {
+    // On garde A et B ; on place C tel que l'angle en A vaille 90°.
+    var dx = T.Bx - T.Ax, dy = T.By - T.Ay, n = Math.sqrt(dx * dx + dy * dy) || 1;
+    var px = dy / n, py = -dx / n;                  // perpendiculaire « vers le haut »
+    var L = Math.min(150, Math.max(70, Math.sqrt(Math.pow(T.Cx - T.Ax, 2) + Math.pow(T.Cy - T.Ay, 2))));
+    T.Cx = clamp(T.Ax + px * L, 20, 380);
+    T.Cy = clamp(T.Ay + py * L, 20, 300);
+    drawTri();
+  });
+  $('btnObtus').addEventListener('click', function () {
+    // Angle en A de 120° (obtus)
+    var dx = T.Bx - T.Ax, dy = T.By - T.Ay, n = Math.sqrt(dx * dx + dy * dy) || 1;
+    var ux = dx / n, uy = dy / n;
+    var th = -120 * Math.PI / 180;
+    var vx = ux * Math.cos(th) - uy * Math.sin(th);
+    var vy = ux * Math.sin(th) + uy * Math.cos(th);
+    var L = 120;
+    T.Cx = clamp(T.Ax + vx * L, 20, 380);
+    T.Cy = clamp(T.Ay + vy * L, 20, 300);
+    drawTri();
+  });
+  $('btnReset').addEventListener('click', function () {
+    T.Ax = DEF.Ax; T.Ay = DEF.Ay; T.Bx = DEF.Bx; T.By = DEF.By; T.Cx = DEF.Cx; T.Cy = DEF.Cy;
+    drawTri();
+  });
+
+  drawTri();
+
+  /* ============================================================
+     4. Visualisation — onglet « Cercle de diamètre [AB] »
+     A(90;160)  B(310;160)  I(200;160)  R = 110 px = 5,5 unités
+     ============================================================ */
+  var svgCir = $('svgCir');
+  var PA = { x: 90, y: 160 }, PB = { x: 310, y: 160 }, PI = { x: 200, y: 160 }, R = 110;
+  var M = { x: 150, y: 60 };
+
+  function drawCir() {
+    M.x = clamp(M.x, 10, 390);
+    M.y = clamp(M.y, 10, 310);
+
+    setLine('segMA', M, PA);
+    setLine('segMB', M, PB);
+    setLine('segMI', M, PI);
+    $('hM').setAttribute('transform', 'translate(' + M.x.toFixed(2) + ',' + M.y.toFixed(2) + ')');
+
+    var mA = dist(M, PA) / U, mB = dist(M, PB) / U, mI = dist(M, PI) / U;
+    var AB = dist(PA, PB) / U;                       // = 11
+    var prod = mI * mI - (AB * AB) / 4;              // MA·MB = MI² − AB²/4
+
+    // angle AMB
+    var ang = NaN;
+    if (mA > 1e-6 && mB > 1e-6) {
+      var ux = PA.x - M.x, uy = PA.y - M.y, vx = PB.x - M.x, vy = PB.y - M.y;
+      var cosM = (ux * vx + uy * vy) / (Math.sqrt(ux * ux + uy * uy) * Math.sqrt(vx * vx + vy * vy));
+      ang = deg(Math.acos(clamp(cosM, -1, 1)));
+    }
+
+    $('cMA').textContent = fmt(mA, 2);
+    $('cMB').textContent = fmt(mB, 2);
+    $('cMI').textContent = fmt(mI, 2);
+    $('cForm').textContent = fmt(prod, 2);
+    $('cAng').textContent = isNaN(ang) ? '–' : fmt(ang, 1) + '°';
+
+    // code couleur
+    var st = $('cirStatus'), tol = 0.25;
+    if (Math.abs(prod) <= tol) {
+      st.className = 'status on';
+      st.textContent = 'MA·MB ≈ 0 → M est sur le cercle de diamètre [AB] : le triangle AMB est rectangle en M (angle ≈ 90°).';
+    } else if (prod < 0) {
+      st.className = 'status in';
+      st.textContent = 'MA·MB = ' + fmt(prod, 2) + ' < 0 → M est à l\u2019intérieur du cercle (angle AMB obtus).';
+    } else {
+      st.className = 'status out';
+      st.textContent = 'MA·MB = ' + fmt(prod, 2) + ' > 0 → M est à l\u2019extérieur du cercle (angle AMB aigu).';
+    }
+
+    // marque d'angle droit quand M est sur le cercle
+    var rm = $('rightMark');
+    if (!isNaN(ang) && Math.abs(ang - 90) < 2 && mA > 0.2 && mB > 0.2) {
+      var s = 14;
+      var e1x = (PA.x - M.x) / (mA * U), e1y = (PA.y - M.y) / (mA * U);
+      var e2x = (PB.x - M.x) / (mB * U), e2y = (PB.y - M.y) / (mB * U);
+      rm.setAttribute('d',
+        'M ' + (M.x + e1x * s).toFixed(1) + ' ' + (M.y + e1y * s).toFixed(1) +
+        ' L ' + (M.x + (e1x + e2x) * s).toFixed(1) + ' ' + (M.y + (e1y + e2y) * s).toFixed(1) +
+        ' L ' + (M.x + e2x * s).toFixed(1) + ' ' + (M.y + e2y * s).toFixed(1));
+      rm.setAttribute('stroke-opacity', '1');
+    } else {
+      rm.setAttribute('d', '');
+      rm.setAttribute('stroke-opacity', '0');
+    }
+
+    setText('lblM', clamp(M.x + 12, 8, 384), clamp(M.y - 12, 16, 314));
+
+    var sx = $('sMx'), sy = $('sMy');
+    if (sx && Number(sx.value) !== Math.round(M.x)) sx.value = Math.round(M.x);
+    if (sy && Number(sy.value) !== Math.round(M.y)) sy.value = Math.round(M.y);
+    if ($('vMx')) $('vMx').textContent = Math.round(M.x);
+    if ($('vMy')) $('vMy').textContent = Math.round(M.y);
+  }
+
+  $('sMx').addEventListener('input', function () { M.x = Number(this.value); drawCir(); });
+  $('sMy').addEventListener('input', function () { M.y = Number(this.value); drawCir(); });
+  makeDraggable($('hM'), svgCir, function (pt) { M.x = pt.x; M.y = pt.y; drawCir(); });
+
+  $('btnSnap').addEventListener('click', function () {
+    var dx = M.x - PI.x, dy = M.y - PI.y, n = Math.sqrt(dx * dx + dy * dy);
+    if (n < 1) { dx = Math.cos(-1.05); dy = Math.sin(-1.05); n = 1; }
+    M.x = PI.x + R * dx / n;
+    M.y = PI.y + R * dy / n;
+    drawCir();
+  });
+  $('btnInside').addEventListener('click', function () {
+    var th = Math.random() * 2 * Math.PI, r = R * (0.15 + 0.55 * Math.random());
+    M.x = PI.x + r * Math.cos(th);
+    M.y = PI.y + r * Math.sin(th);
+    drawCir();
+  });
+  $('btnOutside').addEventListener('click', function () {
+    var th = Math.random() * 2 * Math.PI, r = R * (1.15 + 0.25 * Math.random());
+    M.x = clamp(PI.x + r * Math.cos(th), 12, 388);
+    M.y = clamp(PI.y + r * Math.sin(th) * 0.9, 12, 308);
+    if (Math.abs(dist(M, PI) - R) < 6) { M.y = clamp(M.y - 25, 12, 308); }
+    drawCir();
+  });
+
+  drawCir();
+
+  /* ============================================================
+     5. Exercices génératifs
+     ============================================================ */
+  var ANG = [
+    { d: 30,  c: Math.sqrt(3) / 2,  tex: '\\dfrac{\\sqrt3}{2}' },
+    { d: 45,  c: Math.SQRT1_2,      tex: '\\dfrac{\\sqrt2}{2}' },
+    { d: 60,  c: 0.5,               tex: '\\dfrac12' },
+    { d: 90,  c: 0,                 tex: '0' },
+    { d: 120, c: -0.5,              tex: '-\\dfrac12' },
+    { d: 135, c: -Math.SQRT1_2,     tex: '-\\dfrac{\\sqrt2}{2}' },
+    { d: 150, c: -Math.sqrt(3) / 2, tex: '-\\dfrac{\\sqrt3}{2}' }
+  ];
+
+  function resetEx(n) {
+    $('ex' + n + '_in').value = '';
+    var fb = $('ex' + n + '_fb');
+    fb.className = 'feedback';
+    fb.textContent = '';
+    $('ex' + n + '_correction').classList.remove('show');
+    $('ex' + n + '_corr').textContent = 'Voir la correction';
+  }
+  function wireCorr(n) {
+    $('ex' + n + '_corr').addEventListener('click', function () {
+      var c = $('ex' + n + '_correction');
+      c.classList.toggle('show');
+      this.textContent = c.classList.contains('show') ? 'Masquer la correction' : 'Voir la correction';
+      if (c.classList.contains('show')) typeset(c);
+    });
+  }
+
+  /* --- Exercice 1 : u·v à partir des normes et de l'angle --- */
+  var ex1 = {};
+  function genEx1() {
+    var nu = rnd(2, 9), nv = rnd(2, 9), ag = pick(ANG);
+    ex1 = { nu: nu, nv: nv, ag: ag, ans: nu * nv * ag.c };
+    $('ex1_enonce').innerHTML =
+      'On donne \\(\\|\\vec u\\|=' + nu + '\\), \\(\\|\\vec v\\|=' + nv + '\\) et ' +
+      '\\((\\vec u,\\vec v)=' + ag.d + '^\\circ\\).<br>Calculer \\(\\vec u\\cdot\\vec v\\) ' +
+      '(valeur décimale arrondie au centième).';
+    $('ex1_correction').innerHTML =
+      '<p><b>1.</b> Formule avec les normes et l\u2019angle : \\(\\vec u\\cdot\\vec v=\\|\\vec u\\|\\,\\|\\vec v\\|\\cos(\\vec u,\\vec v)\\).</p>' +
+      '<p><b>2.</b> On remplace : \\(\\vec u\\cdot\\vec v=' + nu + '\\times' + nv + '\\times\\cos ' + ag.d + '^\\circ\\).</p>' +
+      '<p><b>3.</b> Valeur exacte du cosinus : \\(\\cos ' + ag.d + '^\\circ=' + ag.tex + '\\), donc ' +
+      '\\(\\vec u\\cdot\\vec v=' + nu * nv + '\\times' + ag.tex + '\\approx ' + fmt(ex1.ans, 2).replace(',', '{,}') + '\\).</p>' +
+      '<p><b>Signe :</b> ' + (ag.d < 90 ? 'angle aigu, le produit scalaire est positif.'
+        : (ag.d === 90 ? 'angle droit : les vecteurs sont orthogonaux, le produit scalaire est nul.'
+        : 'angle obtus, \\(\\cos\\) est négatif donc le produit scalaire est négatif.')) + '</p>';
+    resetEx(1);
+    typeset($('ex1'));
+  }
+  $('ex1_new').addEventListener('click', genEx1);
+  $('ex1_check').addEventListener('click', function () {
+    var v = parseNum($('ex1_in').value);
+    if (isNaN(v)) { setFeedback($('ex1_fb'), false, 'Écris une valeur décimale (le point ou la virgule sont acceptés).'); return; }
+    var tol = Math.max(0.06, Math.abs(ex1.ans) * 0.005);
+    if (Math.abs(v - ex1.ans) <= tol) {
+      setFeedback($('ex1_fb'), true, 'Correct ! u·v ≈ ' + fmt(ex1.ans, 2) + '.');
+    } else if (Math.abs(v + ex1.ans) <= tol && ex1.ans !== 0) {
+      setFeedback($('ex1_fb'), false, 'Bonne valeur mais mauvais signe : cos ' + ex1.ag.d + '° est ' + (ex1.ag.c < 0 ? 'négatif' : 'positif') + '.');
+    } else {
+      setFeedback($('ex1_fb'), false, 'Pas encore. Calcule ‖u‖ × ‖v‖ × cos(' + ex1.ag.d + '°) en mode degrés.');
+    }
+  });
+  wireCorr(1);
+
+  /* --- Exercice 2 : Al-Kashi, troisième côté --- */
+  var ex2 = {};
+  function genEx2() {
+    var cfg = pick([
+      { v: 'A', s1: 'AB', s2: 'AC', opp: 'BC' },
+      { v: 'B', s1: 'BA', s2: 'BC', opp: 'AC' },
+      { v: 'C', s1: 'CA', s2: 'CB', opp: 'AB' }
+    ]);
+    var x = rnd(3, 12), y = rnd(3, 12), ag = pick(ANG);
+    var carre = x * x + y * y - 2 * x * y * ag.c;
+    ex2 = { cfg: cfg, x: x, y: y, ag: ag, carre: carre, ans: Math.sqrt(carre) };
+    $('ex2_lab').innerHTML = '\\(' + cfg.opp + '\\approx\\)';
+    $('ex2_enonce').innerHTML =
+      'Dans le triangle \\(ABC\\) : \\(' + cfg.s1 + '=' + x + '\\), \\(' + cfg.s2 + '=' + y + '\\) et ' +
+      '\\(\\widehat{' + cfg.v + '}=' + ag.d + '^\\circ\\).<br>Calculer la longueur \\(' + cfg.opp + '\\), arrondie au <b>dixième</b>.';
+    $('ex2_correction').innerHTML =
+      '<p><b>1.</b> Le côté cherché \\(' + cfg.opp + '\\) est <b>opposé</b> au sommet \\(' + cfg.v + '\\) : c\u2019est bien lui qui est seul à gauche.</p>' +
+      '<p><b>2.</b> Al-Kashi : \\(' + cfg.opp + '^2=' + cfg.s1 + '^2+' + cfg.s2 + '^2-2\\times ' + cfg.s1 + '\\times ' + cfg.s2 + '\\times\\cos\\widehat{' + cfg.v + '}\\).</p>' +
+      '<p><b>3.</b> On remplace : \\(' + cfg.opp + '^2=' + x * x + '+' + y * y + '-2\\times' + x + '\\times' + y + '\\times' + ag.tex + '\\).</p>' +
+      '<p><b>4.</b> Le terme \\(2\\times' + x + '\\times' + y + '\\times\\cos ' + ag.d + '^\\circ\\approx ' + fmt(2 * x * y * ag.c, 2).replace(',', '{,}') + '\\)' +
+      (ag.c < 0 ? ' est <b>négatif</b> : on le soustrait, donc on <b>ajoute</b> sa valeur absolue.' : '.') + '</p>' +
+      '<p><b>5.</b> \\(' + cfg.opp + '^2\\approx ' + fmt(carre, 2).replace(',', '{,}') + '\\), donc \\(' + cfg.opp + '\\approx\\sqrt{' + fmt(carre, 2).replace(',', '{,}') + '}\\approx ' + fmt(ex2.ans, 1).replace(',', '{,}') + '\\).</p>' +
+      '<p class="hint">Contrôle : la longueur trouvée doit être inférieure à ' + (x + y) + ' (inégalité triangulaire) et supérieure à ' + Math.abs(x - y) + '.</p>';
+    resetEx(2);
+    typeset($('ex2'));
+  }
+  $('ex2_new').addEventListener('click', genEx2);
+  $('ex2_check').addEventListener('click', function () {
+    var v = parseNum($('ex2_in').value);
+    if (isNaN(v)) { setFeedback($('ex2_fb'), false, 'Écris une valeur décimale, par exemple 11,4.'); return; }
+    if (Math.abs(v - ex2.ans) <= 0.08) {
+      setFeedback($('ex2_fb'), true, 'Correct ! ' + ex2.cfg.opp + ' ≈ ' + fmt(ex2.ans, 1) + '.');
+    } else if (Math.abs(v - ex2.carre) <= 0.5) {
+      setFeedback($('ex2_fb'), false, 'Tu as trouvé ' + ex2.cfg.opp + '², pas ' + ex2.cfg.opp + ' : il reste à prendre la racine carrée.');
+    } else if (Math.abs(v - Math.sqrt(Math.abs(ex2.x * ex2.x + ex2.y * ex2.y + 2 * ex2.x * ex2.y * ex2.ag.c))) <= 0.08) {
+      setFeedback($('ex2_fb'), false, 'Erreur de signe sur le terme −2bc·cos : recopie-le avec son signe avant de soustraire.');
+    } else {
+      setFeedback($('ex2_fb'), false, 'Pas encore. Vérifie la calculatrice en mode degrés et le signe de cos ' + ex2.ag.d + '°.');
+    }
+  });
+  wireCorr(2);
+
+  /* --- Exercice 3 : angle d'un triangle dont on connaît les trois côtés --- */
+  var ex3 = {};
+  function genEx3() {
+    var a, b, c, cfg, cosv, guard = 0;
+    // a = BC, b = AC, c = AB
+    do {
+      a = rnd(4, 14); b = rnd(4, 14); c = rnd(4, 14);
+      cfg = pick([
+        { v: 'A', op: 'a', o1: 'b', o2: 'c' },
+        { v: 'B', op: 'b', o1: 'a', o2: 'c' },
+        { v: 'C', op: 'c', o1: 'a', o2: 'b' }
+      ]);
+      var val = { a: a, b: b, c: c };
+      cosv = (val[cfg.o1] * val[cfg.o1] + val[cfg.o2] * val[cfg.o2] - val[cfg.op] * val[cfg.op]) /
+             (2 * val[cfg.o1] * val[cfg.o2]);
+      guard++;
+    } while (guard < 400 && !(a + b > c + 1 && b + c > a + 1 && a + c > b + 1 && Math.abs(cosv) < 0.95));
+
+    var V = { a: a, b: b, c: c };
+    var num = V[cfg.o1] * V[cfg.o1] + V[cfg.o2] * V[cfg.o2] - V[cfg.op] * V[cfg.op];
+    var den = 2 * V[cfg.o1] * V[cfg.o2];
+    var angle = deg(Math.acos(clamp(cosv, -1, 1)));
+    ex3 = { a: a, b: b, c: c, cfg: cfg, cosv: cosv, ans: angle, num: num, den: den };
+
+    var nom = { a: 'BC', b: 'AC', c: 'AB' };
+    $('ex3_lab').innerHTML = '\\(\\widehat{' + cfg.v + '}\\approx\\)';
+    $('ex3_enonce').innerHTML =
+      'Dans le triangle \\(ABC\\) : \\(BC=' + a + '\\), \\(AC=' + b + '\\), \\(AB=' + c + '\\).<br>' +
+      'Calculer l\u2019angle \\(\\widehat{' + cfg.v + '}\\), arrondi au <b>degré</b> près.';
+    $('ex3_correction').innerHTML =
+      '<p><b>1.</b> Le côté opposé au sommet \\(' + cfg.v + '\\) est \\(' + nom[cfg.op] + '=' + V[cfg.op] + '\\) : c\u2019est lui qui est seul à gauche dans Al-Kashi.</p>' +
+      '<p><b>2.</b> \\(' + nom[cfg.op] + '^2=' + nom[cfg.o1] + '^2+' + nom[cfg.o2] + '^2-2\\times ' + nom[cfg.o1] + '\\times ' + nom[cfg.o2] + '\\times\\cos\\widehat{' + cfg.v + '}\\).</p>' +
+      '<p><b>3.</b> On isole le cosinus : \\(\\cos\\widehat{' + cfg.v + '}=\\dfrac{' + nom[cfg.o1] + '^2+' + nom[cfg.o2] + '^2-' + nom[cfg.op] + '^2}{2\\times ' + nom[cfg.o1] + '\\times ' + nom[cfg.o2] + '}' +
+      '=\\dfrac{' + V[cfg.o1] * V[cfg.o1] + '+' + V[cfg.o2] * V[cfg.o2] + '-' + V[cfg.op] * V[cfg.op] + '}{' + den + '}' +
+      '=\\dfrac{' + num + '}{' + den + '}\\approx ' + fmt(cosv, 4).replace(',', '{,}') + '\\).</p>' +
+      '<p><b>4.</b> Avec la touche \\(\\cos^{-1}\\) (calculatrice en degrés) : \\(\\widehat{' + cfg.v + '}\\approx ' + fmt(angle, 1).replace(',', '{,}') + '^\\circ\\), soit \\(' + Math.round(angle) + '^\\circ\\) au degré près.</p>' +
+      '<p class="hint">' + (cosv < 0 ? 'Le cosinus est négatif : l\u2019angle est obtus (plus grand que 90°).'
+        : 'Le cosinus est positif : l\u2019angle est aigu (plus petit que 90°).') + '</p>';
+    resetEx(3);
+    typeset($('ex3'));
+  }
+  $('ex3_new').addEventListener('click', genEx3);
+  $('ex3_check').addEventListener('click', function () {
+    var v = parseNum($('ex3_in').value);
+    if (isNaN(v)) { setFeedback($('ex3_fb'), false, 'Écris une valeur en degrés, par exemple 87.'); return; }
+    if (Math.abs(v - ex3.ans) <= 1.0) {
+      setFeedback($('ex3_fb'), true, 'Correct ! L\u2019angle vaut environ ' + fmt(ex3.ans, 1) + '° (soit ' + Math.round(ex3.ans) + '°).');
+    } else if (Math.abs(v - Math.abs(ex3.cosv)) <= 0.02 || Math.abs(v - ex3.cosv) <= 0.02) {
+      setFeedback($('ex3_fb'), false, 'Tu as donné le cosinus, pas l\u2019angle : applique la touche cos⁻¹.');
+    } else if (Math.abs(v - 180 + ex3.ans) <= 1.0) {
+      setFeedback($('ex3_fb'), false, 'C\u2019est l\u2019angle supplémentaire (180° − angle) : vérifie le signe du numérateur.');
+    } else {
+      setFeedback($('ex3_fb'), false, 'Pas encore. Calcule cos = (o1² + o2² − opposé²)/(2·o1·o2), puis cos⁻¹ en mode degrés.');
+    }
+  });
+  wireCorr(3);
+
+  genEx1(); genEx2(); genEx3();
+
+  /* ============================================================
+     6. QCM — banque de questions, 4 tirées au hasard
+     ============================================================ */
+  var qcmBank = [
+    {
+      q: 'Dans un triangle \\(ABC\\) avec \\(a=BC\\), \\(b=AC\\), \\(c=AB\\), la formule d\u2019Al-Kashi s\u2019écrit :',
+      choices: [
+        '\\(a^2=b^2+c^2-2bc\\cos\\widehat A\\)',
+        '\\(a^2=b^2+c^2+2bc\\cos\\widehat A\\)',
+        '\\(a^2=b^2+c^2-2bc\\cos\\widehat B\\)',
+        '\\(a=b+c-2bc\\cos\\widehat A\\)'
+      ],
+      correct: 0,
+      expl: 'Le côté seul à gauche est celui opposé à l\u2019angle utilisé, et le signe est un « moins ».'
+    },
+    {
+      q: 'Dans un triangle, \\(AB=4\\), \\(AC=5\\) et \\(\\widehat A=60^\\circ\\). Alors \\(BC^2\\) vaut :',
+      choices: ['\\(41\\)', '\\(21\\)', '\\(61\\)', '\\(9\\)'],
+      correct: 1,
+      expl: '\\(BC^2=16+25-2\\times4\\times5\\times0{,}5=41-20=21\\).'
+    },
+    {
+      q: 'Si \\(\\|\\vec u\\|=3\\), \\(\\|\\vec v\\|=4\\) et l\u2019angle entre eux vaut \\(120^\\circ\\), alors \\(\\vec u\\cdot\\vec v\\) vaut :',
+      choices: ['\\(6\\)', '\\(12\\)', '\\(-6\\)', '\\(-12\\)'],
+      correct: 2,
+      expl: '\\(3\\times4\\times\\cos120^\\circ=12\\times(-0{,}5)=-6\\) : angle obtus, produit négatif.'
+    },
+    {
+      q: 'Le développement de \\(\\|\\vec u+\\vec v\\|^2\\) est :',
+      choices: [
+        '\\(\\|\\vec u\\|^2+\\|\\vec v\\|^2\\)',
+        '\\(\\|\\vec u\\|^2+2\\,\\vec u\\cdot\\vec v+\\|\\vec v\\|^2\\)',
+        '\\(\\|\\vec u\\|^2-2\\,\\vec u\\cdot\\vec v+\\|\\vec v\\|^2\\)',
+        '\\(\\|\\vec u\\|^2+\\vec u\\cdot\\vec v+\\|\\vec v\\|^2\\)'
+      ],
+      correct: 1,
+      expl: 'On développe comme une identité remarquable ; la symétrie donne le facteur 2.'
+    },
+    {
+      q: 'Si \\(I\\) est le milieu de \\([AB]\\), pour tout point \\(M\\) :',
+      choices: [
+        '\\(\\vec{MA}\\cdot\\vec{MB}=MI^2-\\dfrac{AB^2}{4}\\)',
+        '\\(\\vec{MA}\\cdot\\vec{MB}=MI^2+\\dfrac{AB^2}{4}\\)',
+        '\\(\\vec{MA}\\cdot\\vec{MB}=MI^2-AB^2\\)',
+        '\\(\\vec{MA}\\cdot\\vec{MB}=2MI^2-AB^2\\)'
+      ],
+      correct: 0,
+      expl: 'On écrit \\(\\vec{MA}=\\vec{MI}+\\vec{IA}\\), \\(\\vec{MB}=\\vec{MI}-\\vec{IA}\\), puis \\(MI^2-IA^2\\) avec \\(IA=AB/2\\).'
+    },
+    {
+      q: 'L\u2019ensemble des points \\(M\\) tels que \\(\\vec{MA}\\cdot\\vec{MB}=0\\) est :',
+      choices: [
+        'la médiatrice de \\([AB]\\)',
+        'la droite \\((AB)\\)',
+        'le cercle de diamètre \\([AB]\\)',
+        'le cercle de centre \\(A\\) et de rayon \\(AB\\)'
+      ],
+      correct: 2,
+      expl: 'Avec \\(I\\) milieu : \\(MI^2=\\left(\\dfrac{AB}{2}\\right)^2\\), donc \\(MI=\\dfrac{AB}{2}\\).'
+    },
+    {
+      q: 'Dans un triangle où \\(AB=5\\), \\(AC=7\\) et \\(BC=6\\), \\(\\vec{AB}\\cdot\\vec{AC}\\) vaut :',
+      choices: ['\\(19\\)', '\\(38\\)', '\\(-19\\)', '\\(55\\)'],
+      correct: 0,
+      expl: '\\(\\vec{AB}\\cdot\\vec{AC}=\\dfrac{AB^2+AC^2-BC^2}{2}=\\dfrac{25+49-36}{2}=19\\).'
+    },
+    {
+      q: 'Si l\u2019angle \\(\\widehat A\\) est obtus, alors :',
+      choices: [
+        '\\(a^2<b^2+c^2\\)',
+        '\\(a^2=b^2+c^2\\)',
+        '\\(a^2>b^2+c^2\\)',
+        'on ne peut pas conclure'
+      ],
+      correct: 2,
+      expl: '\\(\\cos\\widehat A<0\\) donc \\(-2bc\\cos\\widehat A>0\\) : on ajoute une quantité positive.'
+    },
+    {
+      q: 'Si \\(\\vec{MA}\\cdot\\vec{MB}<0\\), le point \\(M\\) est :',
+      choices: [
+        'à l\u2019extérieur du cercle de diamètre \\([AB]\\)',
+        'sur le cercle de diamètre \\([AB]\\)',
+        'à l\u2019intérieur du cercle de diamètre \\([AB]\\)',
+        'sur la droite \\((AB)\\) uniquement'
+      ],
+      correct: 2,
+      expl: '\\(MI^2-\\dfrac{AB^2}{4}<0\\) signifie \\(MI<\\dfrac{AB}{2}\\) : \\(M\\) est plus près de \\(I\\) que le rayon.'
+    },
+    {
+      q: 'Un triangle a pour côtés \\(a=7\\), \\(b=5\\), \\(c=8\\). L\u2019angle \\(\\widehat A\\) vaut :',
+      choices: ['\\(30^\\circ\\)', '\\(45^\\circ\\)', '\\(60^\\circ\\)', '\\(90^\\circ\\)'],
+      correct: 2,
+      expl: '\\(\\cos\\widehat A=\\dfrac{25+64-49}{2\\times5\\times8}=\\dfrac{40}{80}=0{,}5\\), donc \\(\\widehat A=60^\\circ\\).'
+    },
+    {
+      q: 'On a \\(AB=10\\) et on cherche les points \\(M\\) tels que \\(\\vec{MA}\\cdot\\vec{MB}=11\\). L\u2019ensemble est :',
+      choices: [
+        'le cercle de centre \\(I\\) (milieu de \\([AB]\\)) et de rayon \\(6\\)',
+        'le cercle de centre \\(I\\) et de rayon \\(11\\)',
+        'le cercle de diamètre \\([AB]\\)',
+        'l\u2019ensemble vide'
+      ],
+      correct: 0,
+      expl: '\\(MI^2=11+\\dfrac{100}{4}=36\\), donc \\(MI=6\\).'
+    },
+    {
+      q: 'En isolant le cosinus dans Al-Kashi, on obtient :',
+      choices: [
+        '\\(\\cos\\widehat A=\\dfrac{b^2+c^2-a^2}{2bc}\\)',
+        '\\(\\cos\\widehat A=\\dfrac{a^2-b^2-c^2}{2bc}\\)',
+        '\\(\\cos\\widehat A=\\dfrac{b^2+c^2-a^2}{bc}\\)',
+        '\\(\\cos\\widehat A=\\dfrac{a^2+b^2-c^2}{2ab}\\)'
+      ],
+      correct: 0,
+      expl: 'De \\(a^2=b^2+c^2-2bc\\cos\\widehat A\\) on tire \\(2bc\\cos\\widehat A=b^2+c^2-a^2\\).'
+    },
+    {
+      q: 'Avec \\(\\|\\vec u\\|=3\\), \\(\\|\\vec v\\|=2\\) et \\(\\vec u\\cdot\\vec v=-4\\), \\(\\|\\vec u-\\vec v\\|^2\\) vaut :',
+      choices: ['\\(5\\)', '\\(13\\)', '\\(21\\)', '\\(-3\\)'],
+      correct: 2,
+      expl: '\\(9-2\\times(-4)+4=9+8+4=21\\) : attention au double signe « moins ».'
+    },
+    {
+      q: 'Dans un triangle \\(ABC\\), quel vecteur est égal à \\(\\vec{AC}-\\vec{AB}\\) ?',
+      choices: ['\\(\\vec{BC}\\)', '\\(\\vec{CB}\\)', '\\(\\vec{BA}\\)', '\\(\\vec{AB}+\\vec{AC}\\)'],
+      correct: 0,
+      expl: 'Relation de Chasles : \\(\\vec{AC}-\\vec{AB}=\\vec{BA}+\\vec{AC}=\\vec{BC}\\).'
+    }
+  ];
+
+  var qcmMap = {};
+  var qcmAnswered = 0, qcmPoints = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var body = $('qcmBody');
+    body.innerHTML = '';
+    qcmMap = {};
+    qcmAnswered = 0;
+    qcmPoints = 0;
+    var sc = $('qcmScore');
+    sc.className = 'score';
+    sc.textContent = '';
+
+    var chosen = shuffle(qcmBank).slice(0, 4);
+
+    chosen.forEach(function (item, i) {
+      // on mélange aussi les propositions : l'indice correct est recalculé
+      var order = shuffle([0, 1, 2, 3]);
+      var newCorrect = order.indexOf(item.correct);
+      qcmMap[i] = { correct: newCorrect, expl: item.expl };
+
+      var wrap = document.createElement('div');
+      wrap.className = 'q';
+
+      var qt = document.createElement('div');
+      qt.className = 'qt';
+      qt.innerHTML = (i + 1) + '. ' + item.q;
+      wrap.appendChild(qt);
+
+      var ch = document.createElement('div');
+      ch.className = 'choices';
+      order.forEach(function (origIdx, k) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        var lt = document.createElement('span');
+        lt.className = 'lt';
+        lt.textContent = LETTERS[k];
+        var tx = document.createElement('span');
+        tx.innerHTML = item.choices[origIdx];
+        btn.appendChild(lt);
+        btn.appendChild(tx);
+        btn.addEventListener('click', function () { answerQcm(i, k, ch, ex); });
+        ch.appendChild(btn);
+      });
+      wrap.appendChild(ch);
+
+      var ex = document.createElement('div');
+      ex.className = 'qexpl';
+      wrap.appendChild(ex);
+
+      body.appendChild(wrap);
+    });
+
+    typeset(body);
+  }
+
+  function answerQcm(i, k, container, explBox) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+
+    var btns = Array.prototype.slice.call(container.querySelectorAll('button'));
+    btns.forEach(function (b, idx) {
+      b.disabled = true;
+      if (idx === info.correct) b.classList.add('right');
+      else if (idx === k) b.classList.add('wrong');
+    });
+
+    var ok = (k === info.correct);
+    if (ok) qcmPoints++;
+    qcmAnswered++;
+
+    explBox.innerHTML = (ok ? '<b style="color:#14663f">Bonne réponse.</b> ' : '<b style="color:#b2331c">Réponse ' + LETTERS[info.correct] + '.</b> ') + info.expl;
+    explBox.classList.add('show');
+    typeset(explBox);
+
+    if (qcmAnswered === 4) {
+      var sc = $('qcmScore');
+      var msg;
+      if (qcmPoints === 4) msg = ' — parfait !';
+      else if (qcmPoints === 3) msg = ' — presque, relis l\u2019explication de l\u2019erreur.';
+      else if (qcmPoints === 2) msg = ' — relis la section Méthode puis refais un QCM.';
+      else msg = ' — reprends le Cours point par point, puis refais un QCM.';
+      sc.textContent = 'Score : ' + qcmPoints + ' / 4' + msg;
+      sc.className = 'score show';
+      sc.style.color = qcmPoints >= 3 ? '#14663f' : (qcmPoints === 2 ? '#b45309' : '#b2331c');
+    }
+  }
+
+  $('qcmNew').addEventListener('click', renderQcm);
+  renderQcm();
+
+  /* ---------- Rendu initial des formules ---------- */
+  typeset();
+})();
+</script>
+
+</body>
+</html>

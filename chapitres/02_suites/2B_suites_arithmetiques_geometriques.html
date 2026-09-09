@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2B · Suites arithmétiques et géométriques</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+  :root {
+    --bg: #faf8f5; --card: #ffffff; --ink: #1f2933; --muted: #5b6672;
+    --blue: #2563eb; --blue-soft: #e8efff; --coral: #f97362; --coral-soft: #ffe9e5;
+    --green: #22a06b; --green-soft: #e3f6ec; --amber: #d97706; --amber-soft: #fff3df;
+    --violet: #7c3aed; --violet-soft: #f0e9ff; --line: #e6e1da;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55; font-size: 16px; }
+  h1, h2, h3, h4 { font-family: Georgia, "Times New Roman", serif; margin: 0 0 .5em; line-height: 1.2; }
+  h2 { font-size: 1.6rem; color: var(--blue); margin-bottom: .8em; }
+  h3 { font-size: 1.15rem; margin-top: .2em; }
+  p { margin: .4em 0 .8em; }
+  header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #60a5fa 100%); color: #fff; padding: 2.4rem 1.2rem 2rem; text-align: center; overflow: hidden; }
+  header h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); margin: 0; opacity: 0; transform: translateY(18px); animation: rise .9s ease-out forwards; }
+  header .sub { margin-top: .5rem; font-size: 1rem; letter-spacing: .08em; text-transform: uppercase; opacity: 0; animation: fade 1.2s ease-out .5s forwards; }
+  header .chip { display: inline-block; margin-top: 1rem; padding: .3rem .9rem; border-radius: 999px; background: rgba(255,255,255,.18); font-size: .9rem; opacity: 0; animation: fade 1.2s ease-out .9s forwards; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @keyframes fade { to { opacity: 1; } }
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(250,248,245,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); display: flex; overflow-x: auto; gap: .4rem; padding: .5rem .8rem; }
+  nav a { flex: 0 0 auto; text-decoration: none; color: var(--blue); font-weight: 600; padding: .6rem .9rem; min-height: 44px; display: flex; align-items: center; border-radius: 10px; border: 1px solid transparent; }
+  nav a:hover, nav a.active { background: var(--blue-soft); border-color: #c7d7ff; }
+  main { max-width: 900px; margin: 0 auto; padding: 1rem .9rem 3rem; }
+  section { margin-top: 2.2rem; scroll-margin-top: 70px; }
+  .card { background: var(--card); border-radius: 16px; box-shadow: 0 4px 18px rgba(31,41,51,.07); padding: 1.1rem 1.1rem; margin-bottom: 1rem; }
+  .card h3 { display: flex; align-items: center; gap: .5rem; }
+  .num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; font-family: system-ui, sans-serif; font-size: .95rem; font-weight: 700; flex-shrink: 0; }
+  .box { border-left: 4px solid var(--blue); background: var(--blue-soft); padding: .7rem .9rem; border-radius: 8px; margin: .7rem 0; }
+  .box.green { border-color: var(--green); background: var(--green-soft); }
+  .box.coral { border-color: var(--coral); background: var(--coral-soft); }
+  .box.amber { border-color: var(--amber); background: var(--amber-soft); }
+  .box.violet { border-color: var(--violet); background: var(--violet-soft); }
+  .box .lbl { font-weight: 700; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: .2rem; }
+  .box.green .lbl { color: var(--green); } .box.coral .lbl { color: #c2410c; } .box.amber .lbl { color: var(--amber); } .box.violet .lbl { color: var(--violet); } .box .lbl { color: var(--blue); }
+  details { margin: .6rem 0; }
+  summary { cursor: pointer; font-weight: 600; color: var(--blue); padding: .5rem .2rem; min-height: 44px; display: flex; align-items: center; }
+  .demo { border: 1px dashed var(--violet); border-radius: 10px; padding: .6rem .9rem; background: #fcfaff; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+  table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+  th, td { border: 1px solid var(--line); padding: .35rem .5rem; text-align: center; }
+  th { background: #f3f0eb; }
+  .tablewrap { overflow-x: auto; margin: .5rem 0; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre { background: #1f2933; color: #f5f1ea; padding: .8rem 1rem; border-radius: 10px; overflow-x: auto; font-size: .9rem; line-height: 1.5; }
+  ul { padding-left: 1.2rem; } li { margin: .25rem 0; }
+  button { font: inherit; cursor: pointer; min-height: 44px; padding: .55rem 1.1rem; border-radius: 12px; border: none; background: var(--blue); color: #fff; font-weight: 600; transition: transform .1s, background .2s; }
+  button:hover { background: #1d4ed8; } button:active { transform: scale(.97); }
+  button.ghost { background: #fff; color: var(--blue); border: 2px solid var(--blue); }
+  button.ghost:hover { background: var(--blue-soft); }
+  .btnrow { display: flex; flex-wrap: wrap; gap: .6rem; margin: .6rem 0; }
+  .tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+  .tabs button { background: #fff; color: var(--blue); border: 2px solid var(--line); }
+  .tabs button.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .ctrl { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .6rem .9rem; margin: .6rem 0; }
+  .ctrl label { display: block; font-size: .92rem; font-weight: 600; }
+  .ctrl input[type=range] { width: 100%; height: 44px; accent-color: var(--blue); }
+  .ctrl input[type=number] { width: 100%; font: inherit; padding: .5rem; border: 1px solid var(--line); border-radius: 8px; min-height: 44px; }
+  .val { font-weight: 700; color: var(--blue); }
+  svg { width: 100%; height: auto; display: block; }
+  .svgwrap { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: .5rem 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: .8rem; font-size: .9rem; margin: .4rem 0; }
+  .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; }
+  .legend .la::before { background: var(--blue); } .legend .lg::before { background: var(--coral); } .legend .lc::before { background: var(--green); }
+  .info { background: #f3f0eb; border-radius: 10px; padding: .6rem .9rem; margin: .5rem 0; font-size: .95rem; }
+  .exo .enonce { font-size: 1.02rem; }
+  .answer { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .5rem 0; }
+  .answer input { font: inherit; padding: .55rem .7rem; border: 2px solid var(--line); border-radius: 10px; min-height: 44px; width: 150px; }
+  .answer input:focus { outline: none; border-color: var(--blue); }
+  .fb { margin: .4rem 0; padding: .55rem .8rem; border-radius: 10px; font-weight: 600; display: none; }
+  .fb.ok { display: block; background: var(--green-soft); color: var(--green); }
+  .fb.ko { display: block; background: var(--coral-soft); color: #c2410c; }
+  .corr { display: none; margin-top: .6rem; border-top: 1px solid var(--line); padding-top: .6rem; }
+  .corr.show { display: block; }
+  .diff { font-size: .8rem; font-weight: 700; padding: .15rem .6rem; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-left: auto; }
+  .qcm-q { margin-bottom: 1rem; }
+  .opts { display: grid; gap: .5rem; margin-top: .5rem; }
+  .opts button { background: #fff; color: var(--ink); border: 2px solid var(--line); text-align: left; font-weight: 500; padding: .6rem .9rem; }
+  .opts button:hover { border-color: var(--blue); background: var(--blue-soft); }
+  .opts button.right { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 700; }
+  .opts button.wrong { background: var(--coral-soft); border-color: var(--coral); color: #c2410c; }
+  .opts button:disabled { cursor: default; }
+  .qexpl { margin-top: .4rem; font-size: .95rem; display: none; }
+  .score { font-size: 1.2rem; font-weight: 700; text-align: center; padding: .8rem; border-radius: 12px; display: none; }
+  .score.show { display: block; background: var(--blue-soft); color: var(--blue); }
+  footer { text-align: center; padding: 1.6rem 1rem 2.5rem; color: var(--muted); font-size: .95rem; border-top: 1px solid var(--line); margin-top: 2rem; }
+  .small { font-size: .88rem; color: var(--muted); }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin: .6rem 0; }
+  .cmp > div { border-radius: 10px; padding: .6rem .8rem; }
+  .cmp .a { background: var(--blue-soft); } .cmp .g { background: var(--coral-soft); }
+  .cmp h4 { margin-bottom: .3rem; }
+  @media (max-width: 520px) { .cmp { grid-template-columns: 1fr; } }
+  .py { background: #0f172a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Suites arithmétiques et géométriques</h1>
+  <div class="sub">Première · Mathématiques</div>
+  <div class="chip">Fiche 2B · Reconnaître, terme général, sommes, modélisation</div>
+</header>
+<nav id="nav">
+  <a href="#cours">Cours</a>
+  <a href="#methode">Méthode</a>
+  <a href="#visu">Visualisation</a>
+  <a href="#exos">Exercices</a>
+  <a href="#qcm">QCM</a>
+</nav>
+<main>
+<!-- ===================== COURS ===================== -->
+<section id="cours">
+  <h2>Cours</h2>
+  <p class="small">Tout ce qui suit est au programme de <strong>Première</strong> (BO 2019). Les quatre démonstrations encadrées en violet sont <strong>exigibles</strong> : il faut savoir les refaire.</p>
+
+  <div class="card">
+    <h3><span class="num">1</span>Suite arithmétique : on ajoute toujours le même nombre</h3>
+    <div class="box">
+      <span class="lbl">Définition</span>
+      Une suite \((u_n)\) est <strong>arithmétique de raison \(r\)</strong> si, pour tout entier \(n\) : \(u_{n+1} = u_n + r\).<br>
+      Chaque terme s'obtient en ajoutant le même nombre \(r\) au précédent (\(r\) peut être négatif).
+    </div>
+    <p><strong>Exemple.</strong> \(u_0 = 5\), \(r = 3\) : \(5,\ 8,\ 11,\ 14,\ 17,\ \dots\) — on ajoute 3 à chaque fois.<br>
+    <strong>Exemple.</strong> Une salle de cinéma vend 200 places le premier jour et 15 de moins chaque jour : \(u_0 = 200\), \(r = -15\) : \(200,\ 185,\ 170,\ \dots\)</p>
+    <div class="box green">
+      <span class="lbl">Terme général</span>
+      \(u_n = u_0 + n\,r\) &nbsp;&nbsp; et plus généralement &nbsp; \(u_n = u_p + (n-p)\,r\).
+    </div>
+    <p>Avec \(u_0 = 5\), \(r = 3\) : \(u_{10} = 5 + 10\times 3 = 35\). Si on connaît \(u_4 = 17\) : \(u_{10} = 17 + (10-4)\times 3 = 35\). Même résultat.</p>
+    <details><summary>Démonstration à savoir refaire — terme général d'une suite arithmétique</summary>
+      <div class="demo">
+        <p>On écrit les relations de récurrence successives et on les ajoute membre à membre :</p>
+        \[u_1 = u_0 + r,\quad u_2 = u_1 + r,\quad \dots,\quad u_n = u_{n-1} + r\]
+        <p>En additionnant, tous les \(u_1, u_2, \dots, u_{n-1}\) apparaissent des deux côtés et se simplifient : il reste \(u_n = u_0 + n\,r\) (le nombre \(r\) a été ajouté \(n\) fois, une fois par relation).</p>
+        <p>Pour la version avec \(u_p\) : on part de \(u_{p+1} = u_p + r\) jusqu'à \(u_n = u_{n-1} + r\) ; il y a \(n-p\) relations, donc \(u_n = u_p + (n-p)\,r\).</p>
+      </div>
+    </details>
+    <div class="box amber">
+      <span class="lbl">Lien avec les fonctions affines</span>
+      \(u_n = r\,n + u_0\) est de la forme \(f(n) = a n + b\) avec \(a = r\) et \(b = u_0\). Les points \((n\,;u_n)\) sont donc <strong>alignés</strong> sur une droite de coefficient directeur \(r\) : c'est une <strong>croissance linéaire</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Suite géométrique : on multiplie toujours par le même nombre</h3>
+    <div class="box">
+      <span class="lbl">Définition</span>
+      Une suite \((u_n)\) est <strong>géométrique de raison \(q\)</strong> si, pour tout entier \(n\) : \(u_{n+1} = q\,u_n\).<br>
+      Chaque terme s'obtient en multipliant le précédent par le même nombre \(q\) (\(q\ne 0\)).
+    </div>
+    <p><strong>Exemple.</strong> \(u_0 = 3\), \(q = 2\) : \(3,\ 6,\ 12,\ 24,\ 48,\ \dots\) — on double à chaque fois.<br>
+    <strong>Exemple.</strong> \(u_0 = 80\), \(q = \tfrac12\) : \(80,\ 40,\ 20,\ 10,\ 5,\ \dots\)</p>
+    <div class="box green">
+      <span class="lbl">Terme général</span>
+      \(u_n = u_0\,q^{\,n}\) &nbsp;&nbsp; et plus généralement &nbsp; \(u_n = u_p\,q^{\,n-p}\).
+    </div>
+    <p>Avec \(u_0 = 3\), \(q = 2\) : \(u_{10} = 3\times 2^{10} = 3\times 1024 = 3072\). Si on connaît \(u_3 = 24\) : \(u_{10} = 24 \times 2^{7} = 24\times 128 = 3072\).</p>
+    <details><summary>Démonstration à savoir refaire — terme général d'une suite géométrique</summary>
+      <div class="demo">
+        <p>Même idée qu'au point 1, mais on <em>multiplie</em> les relations :</p>
+        \[u_1 = q\,u_0,\quad u_2 = q\,u_1,\quad \dots,\quad u_n = q\,u_{n-1}\]
+        <p>Le produit membre à membre donne \(u_1 u_2 \cdots u_n = q^{\,n}\, u_0 u_1 \cdots u_{n-1}\). Si les termes sont non nuls, on simplifie par \(u_1 u_2\cdots u_{n-1}\) : \(u_n = q^{\,n} u_0\). Le facteur \(q\) a été appliqué \(n\) fois.</p>
+        <p>De \(u_p\) à \(u_n\), on applique \(q\) exactement \(n-p\) fois : \(u_n = u_p\,q^{\,n-p}\).</p>
+      </div>
+    </details>
+    <div class="box amber">
+      <span class="lbl">Lien avec les évolutions à taux constant</span>
+      Augmenter de \(t\,\%\) revient à multiplier par \(q = 1 + \dfrac{t}{100}\) ; diminuer de \(t\,\%\), à multiplier par \(q = 1 - \dfrac{t}{100}\).<br>
+      <strong>Capital à 3 % par an</strong> : \(C_0 = 1000\) €, \(q = 1{,}03\), donc \(C_n = 1000\times 1{,}03^{\,n}\). Au bout de 10 ans : \(C_{10} \approx 1343{,}92\) €.<br>
+      <strong>Baisse de 5 %</strong> : \(q = 0{,}95\) (et non \(-0{,}05\) !). Les points \((n\,;u_n)\) ne sont plus alignés : c'est une <strong>croissance exponentielle</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Somme des premiers entiers et somme arithmétique</h3>
+    <div class="box green">
+      <span class="lbl">Formule</span>
+      \[1 + 2 + 3 + \dots + n = \frac{n(n+1)}{2}\]
+    </div>
+    <p>\(1 + 2 + \dots + 100 = \dfrac{100\times 101}{2} = 5050\).</p>
+    <details><summary>Démonstration à savoir refaire — \(1+2+\dots+n\)</summary>
+      <div class="demo">
+        <p>On note \(S = 1 + 2 + \dots + n\) et on l'écrit dans les deux sens, puis on ajoute colonne par colonne :</p>
+        \[\begin{array}{rcl} S &=& 1 + 2 + \dots + (n-1) + n \\ S &=& n + (n-1) + \dots + 2 + 1 \\ \hline 2S &=& (n+1) + (n+1) + \dots + (n+1) \end{array}\]
+        <p>Chaque colonne vaut \(n+1\) et il y a \(n\) colonnes : \(2S = n(n+1)\), donc \(S = \dfrac{n(n+1)}{2}\).</p>
+      </div>
+    </details>
+    <div class="box">
+      <span class="lbl">Somme de termes consécutifs d'une suite arithmétique</span>
+      \[S = (\text{nombre de termes})\times\frac{\text{premier terme} + \text{dernier terme}}{2}\]
+      Par exemple \(u_0 + u_1 + \dots + u_n = (n+1)\times\dfrac{u_0 + u_n}{2}\).
+    </div>
+    <p><strong>Exemple.</strong> \(u_n = 5 + 3n\). Calculer \(u_3 + u_4 + \dots + u_{10}\) : il y a \(10 - 3 + 1 = 8\) termes, \(u_3 = 14\), \(u_{10} = 35\), donc \(S = 8\times\dfrac{14+35}{2} = 8\times 24{,}5 = 196\).</p>
+    <p class="small">Pourquoi ça marche : la même astuce « écrire dans les deux sens » ; chaque colonne vaut \(u_{\text{premier}} + u_{\text{dernier}}\).</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Somme des puissances et somme géométrique</h3>
+    <div class="box green">
+      <span class="lbl">Formule (pour \(q \ne 1\))</span>
+      \[1 + q + q^2 + \dots + q^n = \frac{1 - q^{\,n+1}}{1 - q}\]
+    </div>
+    <p>\(1 + 2 + 4 + \dots + 2^{10} = \dfrac{1 - 2^{11}}{1 - 2} = \dfrac{1 - 2048}{-1} = 2047\). &nbsp; (Si \(q = 1\), la somme vaut simplement \(n+1\).)</p>
+    <details><summary>Démonstration à savoir refaire — \(1+q+\dots+q^n\)</summary>
+      <div class="demo">
+        <p>On note \(S = 1 + q + q^2 + \dots + q^n\) et on calcule \(qS\) :</p>
+        \[qS = q + q^2 + \dots + q^n + q^{\,n+1}\]
+        <p>En soustrayant, presque tout se simplifie (« télescopage ») : \(S - qS = 1 - q^{\,n+1}\), soit \((1-q)S = 1 - q^{\,n+1}\).</p>
+        <p>Comme \(q \ne 1\), on divise par \(1-q\) : \(S = \dfrac{1-q^{\,n+1}}{1-q}\).</p>
+      </div>
+    </details>
+    <div class="box">
+      <span class="lbl">Somme de termes consécutifs d'une suite géométrique</span>
+      \[S = \text{premier terme}\times\frac{1 - q^{\,\text{nombre de termes}}}{1 - q}\]
+      Par exemple \(u_0 + u_1 + \dots + u_n = u_0\,\dfrac{1 - q^{\,n+1}}{1-q}\) (on met \(u_0\) en facteur).
+    </div>
+    <p><strong>Exemple.</strong> \(u_n = 3\times 2^n\). \(u_0 + \dots + u_5 = 3\times\dfrac{1-2^6}{1-2} = 3\times 63 = 189\). Vérification : \(3+6+12+24+48+96 = 189\). ✓</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Sens de variation</h3>
+    <div class="cmp">
+      <div class="a"><h4>Arithmétique</h4>
+        \(u_{n+1} - u_n = r\), donc :
+        <ul><li>\(r > 0\) : croissante</li><li>\(r < 0\) : décroissante</li><li>\(r = 0\) : constante</li></ul>
+      </div>
+      <div class="g"><h4>Géométrique, \(u_0 > 0\)</h4>
+        \(u_{n+1} - u_n = u_0\,q^{\,n}(q-1)\), donc :
+        <ul><li>\(q > 1\) : croissante</li><li>\(0 < q < 1\) : décroissante</li><li>\(q = 1\) : constante</li><li>\(q < 0\) : ni l'un ni l'autre (signes alternés)</li></ul>
+      </div>
+    </div>
+    <p><strong>Exemples.</strong> \(u_n = 200 - 15n\) est décroissante (\(r = -15 < 0\)). \(C_n = 1000\times 1{,}03^n\) est croissante (\(q = 1{,}03 > 1\)). \(v_n = 80\times 0{,}5^n\) est décroissante. \(w_n = (-2)^n = 1, -2, 4, -8, \dots\) n'est ni croissante ni décroissante.</p>
+    <p class="small">Si \(u_0 < 0\), les variations d'une suite géométrique sont inversées : \(u_n = -5\times 2^n\) est décroissante.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Intuition de limite (sans formalisme)</h3>
+    <div class="box amber">
+      <span class="lbl">Comportement de \(q^n\) quand \(n\) devient grand</span>
+      <ul>
+        <li>Si \(0 < q < 1\) : \(q^n\) se rapproche de \(0\). Exemple : \(0{,}5^{10} \approx 0{,}001\), \(0{,}9^{50}\approx 0{,}005\).</li>
+        <li>Si \(q > 1\) : \(q^n\) dépasse n'importe quel nombre, on dit qu'il tend vers \(+\infty\). Exemple : \(1{,}03^{100} \approx 19{,}2\), \(2^{30}\) dépasse un milliard.</li>
+        <li>Si \(q = 1\) : \(q^n = 1\) pour tout \(n\).</li>
+      </ul>
+    </div>
+    <p>Conséquence : une suite arithmétique de raison \(r > 0\) et une suite géométrique de raison \(q > 1\) finissent toutes deux par dépasser tout seuil, mais la géométrique le fait <strong>beaucoup plus vite</strong> : avec \(u_n = 5 + 3n\) et \(v_n = 3\times 2^n\), \(u_{20} = 65\) alors que \(v_{20} = 3\,145\,728\).</p>
+    <p class="small">Aucune formalisation en Première : on observe, on conjecture. La définition rigoureuse de la limite et l'étude complète de \((q^n)\) sont au programme de Terminale (fiche 2C).</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span>Récapitulatif</h3>
+    <div class="tablewrap">
+    <table>
+      <tr><th></th><th>Arithmétique</th><th>Géométrique</th></tr>
+      <tr><td>Récurrence</td><td>\(u_{n+1} = u_n + r\)</td><td>\(u_{n+1} = q\,u_n\)</td></tr>
+      <tr><td>Terme général</td><td>\(u_n = u_0 + n r = u_p + (n-p) r\)</td><td>\(u_n = u_0 q^n = u_p q^{\,n-p}\)</td></tr>
+      <tr><td>Test</td><td>\(u_{n+1} - u_n\) constant</td><td>\(u_{n+1}/u_n\) constant</td></tr>
+      <tr><td>Somme de \(N\) termes</td><td>\(N\times\dfrac{\text{premier}+\text{dernier}}{2}\)</td><td>\(\text{premier}\times\dfrac{1-q^N}{1-q}\)</td></tr>
+      <tr><td>Modèle</td><td>linéaire (points alignés)</td><td>exponentiel (taux constant)</td></tr>
+      <tr><td>Variation</td><td>signe de \(r\)</td><td>\(q\) par rapport à 1 (si \(u_0>0\))</td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+<!-- ===================== MÉTHODE ===================== -->
+<section id="methode">
+  <h2>Méthode</h2>
+
+  <div class="card">
+    <h3><span class="num">A</span>Reconnaître une suite arithmétique ou géométrique</h3>
+    <ol>
+      <li>Calculer \(u_{n+1} - u_n\) <strong>pour tout \(n\)</strong> (avec l'expression générale, pas seulement sur trois valeurs). Si le résultat est une constante \(r\) : arithmétique de raison \(r\).</li>
+      <li>Sinon, calculer \(\dfrac{u_{n+1}}{u_n}\). Si c'est une constante \(q\) : géométrique de raison \(q\).</li>
+      <li>Sinon, la suite n'est ni l'une ni l'autre ; un <strong>contre-exemple numérique</strong> suffit pour le prouver.</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple 1</span>
+      \(u_n = 7 - 4n\). \(u_{n+1} - u_n = 7 - 4(n+1) - (7 - 4n) = -4\). Arithmétique, \(r = -4\), \(u_0 = 7\).
+    </div>
+    <div class="box">
+      <span class="lbl">Exemple 2</span>
+      \(v_n = 5\times 3^{n+1}\). \(\dfrac{v_{n+1}}{v_n} = \dfrac{5\times 3^{n+2}}{5\times 3^{n+1}} = 3\). Géométrique, \(q = 3\), \(v_0 = 15\).
+    </div>
+    <div class="box coral">
+      <span class="lbl">Contre-exemple</span>
+      \(w_n = n^2\) : \(w_0 = 0, w_1 = 1, w_2 = 4\). \(w_1 - w_0 = 1\) mais \(w_2 - w_1 = 3\) : pas arithmétique. \(w_1/w_0\) n'existe même pas : pas géométrique.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">B</span>Trouver le terme général</h3>
+    <ol>
+      <li>Identifier la nature (méthode A) et la raison.</li>
+      <li>Repérer le terme connu : est-ce \(u_0\) ? \(u_1\) ? \(u_p\) ?</li>
+      <li>Appliquer \(u_n = u_p + (n-p)\,r\) ou \(u_n = u_p\,q^{\,n-p}\).</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple</span>
+      Suite géométrique de raison \(q = 3\) avec \(u_2 = 18\). Alors \(u_n = 18\times 3^{\,n-2}\). Pour revenir à \(u_0\) : \(u_0 = 18/9 = 2\), donc aussi \(u_n = 2\times 3^n\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">C</span>Calculer une somme de termes consécutifs</h3>
+    <ol>
+      <li><strong>Compter le nombre de termes</strong> : de \(u_a\) à \(u_b\), il y en a \(b - a + 1\).</li>
+      <li>Arithmétique : \(S = N\times\dfrac{u_a + u_b}{2}\). Calculer d'abord \(u_a\) et \(u_b\).</li>
+      <li>Géométrique : \(S = u_a\times\dfrac{1 - q^{N}}{1 - q}\).</li>
+      <li>Vérifier l'ordre de grandeur (par exemple avec les deux ou trois premiers termes).</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple</span>
+      \(u_n = 2\times 3^n\), calculer \(u_2 + u_3 + \dots + u_6\). Nombre de termes : \(6 - 2 + 1 = 5\). \(u_2 = 18\). \(S = 18\times\dfrac{1-3^5}{1-3} = 18\times\dfrac{-242}{-2} = 18\times 121 = 2178\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">D</span>Modéliser une évolution à taux fixe</h3>
+    <ol>
+      <li>Traduire le taux en coefficient multiplicateur : \(+t\,\% \Rightarrow q = 1 + \frac{t}{100}\) ; \(-t\,\% \Rightarrow q = 1 - \frac{t}{100}\).</li>
+      <li>Poser \(u_0\) = valeur initiale (année de départ = rang 0) et \(u_{n+1} = q\,u_n\).</li>
+      <li>Conclure : \(u_n = u_0\,q^n\), puis calculer ce qui est demandé.</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple</span>
+      Une ville de 20 000 habitants gagne 2 % par an. \(q = 1{,}02\), \(u_n = 20\,000\times 1{,}02^n\). Dans 15 ans : \(u_{15}\approx 26\,917\) habitants.
+    </div>
+    <div class="box">
+      <span class="lbl">Accroissement constant</span>
+      Si au contraire la ville gagne 400 habitants par an (et non 2 %), la suite est <em>arithmétique</em> : \(u_n = 20\,000 + 400 n\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">E</span>Chercher un seuil (algorithme)</h3>
+    <p>« À partir de quel rang \(u_n\) dépasse-t-il \(S\) ? » En Première, on <strong>n'utilise pas le logarithme</strong> : on calcule les termes jusqu'à dépasser le seuil, à la main (tableau) ou avec une boucle <code>while</code>.</p>
+<pre class="py">u = 20000      # u_0
+n = 0
+while u &lt;= 30000:
+    u = u * 1.02
+    n = n + 1
+print(n)       # premier rang tel que u_n &gt; 30000</pre>
+    <p>Ici l'algorithme affiche <strong>21</strong> : \(u_{20}\approx 29\,719 < 30\,000\) et \(u_{21}\approx 30\,313 > 30\,000\). Toujours justifier avec les deux valeurs qui encadrent le seuil.</p>
+    <p class="small">Attention à la condition : <code>while u &lt;= S</code> s'arrête au premier rang où \(u_n > S\) ; la suite doit être croissante pour que cela ait un sens.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">!</span>Erreurs fréquentes</h3>
+    <div class="box coral"><span class="lbl">Nombre de termes</span> De \(u_3\) à \(u_{10}\), il y a \(10 - 3 + 1 = 8\) termes, <strong>pas 7</strong>. Compter sur un exemple court : de \(u_3\) à \(u_5\), on a \(u_3, u_4, u_5\) : 3 termes, et \(5-3+1 = 3\).</div>
+    <div class="box coral"><span class="lbl">Premier terme</span> \(u_n = u_0\,q^n\) et non \(u_1\,q^n\). Si la suite commence à \(u_1\), alors \(u_n = u_1\,q^{\,n-1}\).</div>
+    <div class="box coral"><span class="lbl">Taux négatif</span> Une baisse de 5 % donne \(q = 0{,}95\), pas \(q = -0{,}05\) ni \(q = -5\).</div>
+    <div class="box coral"><span class="lbl">Confusion \(+\) / \(\times\)</span> « augmente de 300 par an » : arithmétique ; « augmente de 3 % par an » : géométrique.</div>
+    <div class="box coral"><span class="lbl">Formule de somme</span> \(\dfrac{1-q^{N}}{1-q}\) avec \(N\) = nombre de termes, pas le dernier indice. \(u_0 + \dots + u_n\) a \(n+1\) termes, donc l'exposant est \(n+1\).</div>
+  </div>
+</section>
+<!-- ===================== VISUALISATION ===================== -->
+<section id="visu">
+  <h2>Visualisation</h2>
+  <div class="card">
+    <div class="tabs">
+      <button type="button" id="tabCmp" class="on">Arithmétique vs géométrique</button>
+      <button type="button" id="tabTaux">Évolution à taux constant</button>
+    </div>
+
+    <!-- ---------- Onglet 1 : comparaison ---------- -->
+    <div id="panelCmp">
+      <p>Deux suites de <strong>même premier terme</strong> \(u_0\) : l'une arithmétique de raison \(r\) (on ajoute), l'autre géométrique de raison \(q\) (on multiplie). Bouge les curseurs et regarde l'écart se creuser.</p>
+      <div class="ctrl">
+        <div><label for="vu0">\(u_0\) = <span class="val" id="vu0o">4</span></label><input type="range" id="vu0" min="1" max="10" step="1" value="4"></div>
+        <div><label for="vr">raison \(r\) (arithmétique) = <span class="val" id="vro">3</span></label><input type="range" id="vr" min="-4" max="10" step="1" value="3"></div>
+        <div><label for="vq">raison \(q\) (géométrique) = <span class="val" id="vqo">1,5</span></label><input type="range" id="vq" min="0.5" max="2.5" step="0.25" value="1.5"></div>
+        <div><label for="vn">nombre de termes \(N\) = <span class="val" id="vno">8</span></label><input type="range" id="vn" min="4" max="12" step="1" value="8"></div>
+      </div>
+      <div class="legend">
+        <span class="la">arithmétique \(u_n = u_0 + nr\)</span>
+        <span class="lg">géométrique \(v_n = u_0\,q^n\)</span>
+      </div>
+      <div class="svgwrap"><svg id="svgCmp" viewBox="0 0 420 300" role="img" aria-label="Nuages de points des deux suites"></svg></div>
+      <p class="small">Chaque bande colorée a pour hauteur la valeur d'un terme : l'aire totale des bandes d'une couleur, c'est la <strong>somme</strong> des termes de cette suite.</p>
+      <div class="tablewrap"><table id="cmpTable"></table></div>
+      <div class="box"><span class="lbl">Somme des \(N\) premiers termes — arithmétique</span><div id="cmpSumA"></div></div>
+      <div class="box coral"><span class="lbl">Somme des \(N\) premiers termes — géométrique</span><div id="cmpSumG"></div></div>
+      <div class="info" id="cmpNote"></div>
+    </div>
+
+    <!-- ---------- Onglet 2 : taux constant ---------- -->
+    <div id="panelTaux" hidden>
+      <p>Un capital placé à un taux annuel fixe suit une suite <strong>géométrique</strong> de raison \(q = 1 + \dfrac{t}{100}\). Cherche l'année où il dépasse un seuil : c'est exactement l'algorithme de seuil de la méthode E.</p>
+      <div class="ctrl">
+        <div><label for="tc0">Capital initial \(C_0\) (€)</label><input type="number" id="tc0" min="10" max="100000" step="10" value="1000"></div>
+        <div><label for="tt">Taux annuel \(t\) = <span class="val" id="tto">3</span> %</label><input type="range" id="tt" min="-10" max="15" step="0.5" value="3"></div>
+        <div><label for="tn">Nombre d'années affichées = <span class="val" id="tno">20</span></label><input type="range" id="tn" min="5" max="40" step="1" value="20"></div>
+        <div><label for="ts">Seuil à dépasser (€)</label><input type="number" id="ts" min="10" max="1000000" step="10" value="2000"></div>
+      </div>
+      <div class="legend">
+        <span class="lc">capital \(C_n = C_0\,q^n\)</span>
+        <span class="lg">seuil</span>
+      </div>
+      <div class="svgwrap"><svg id="svgTaux" viewBox="0 0 420 300" role="img" aria-label="Courbe du capital année par année"></svg></div>
+      <div class="box green"><span class="lbl">Formule</span><div id="tauxFormule"></div></div>
+      <div class="tablewrap"><table id="tauxTable"></table></div>
+      <div class="box amber"><span class="lbl">Recherche de seuil</span><div id="tauxSeuil"></div></div>
+    </div>
+  </div>
+</section>
+<!-- ===================== EXERCICES ===================== -->
+<section id="exos">
+  <h2>Exercices</h2>
+  <p class="small">Chaque bouton « Nouvel exercice » tire de nouveaux nombres. Écris les décimaux avec une virgule ou un point, au choix.</p>
+
+  <div class="card exo" id="ex1">
+    <h3><span class="num">1</span>Terme général et calcul d'un terme<span class="diff">niveau 1</span></h3>
+    <div class="enonce" id="ex1Stmt"></div>
+    <div class="answer">
+      <label for="ex1Sel">Terme général :</label>
+      <select id="ex1Sel" style="font:inherit;padding:.55rem .7rem;border:2px solid #e6e1da;border-radius:10px;min-height:44px;max-width:100%"></select>
+    </div>
+    <div class="answer">
+      <span id="ex1Lab"></span>
+      <input type="text" id="ex1In" inputmode="decimal" placeholder="valeur">
+    </div>
+    <div class="btnrow">
+      <button type="button" id="ex1Check">Vérifier</button>
+      <button type="button" id="ex1Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex1New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="fb" id="ex1Fb"></div>
+    <div class="corr" id="ex1CorrBox"></div>
+  </div>
+
+  <div class="card exo" id="ex2">
+    <h3><span class="num">2</span>Somme de termes consécutifs<span class="diff">niveau 2</span></h3>
+    <div class="enonce" id="ex2Stmt"></div>
+    <div class="answer">
+      <span>Nombre de termes \(N\) =</span>
+      <input type="text" id="ex2InN" inputmode="numeric" placeholder="N">
+    </div>
+    <div class="answer">
+      <span>\(S\) =</span>
+      <input type="text" id="ex2InS" inputmode="decimal" placeholder="somme">
+    </div>
+    <div class="btnrow">
+      <button type="button" id="ex2Check">Vérifier</button>
+      <button type="button" id="ex2Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex2New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="fb" id="ex2Fb"></div>
+    <div class="corr" id="ex2CorrBox"></div>
+  </div>
+
+  <div class="card exo" id="ex3">
+    <h3><span class="num">3</span>Modélisation et seuil<span class="diff">niveau 3</span></h3>
+    <div class="enonce" id="ex3Stmt"></div>
+    <div class="answer">
+      <span>Nombre d'années :</span>
+      <input type="text" id="ex3In" inputmode="numeric" placeholder="entier">
+    </div>
+    <div class="btnrow">
+      <button type="button" id="ex3Check">Vérifier</button>
+      <button type="button" id="ex3Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex3New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="fb" id="ex3Fb"></div>
+    <div class="corr" id="ex3CorrBox"></div>
+  </div>
+</section>
+<!-- ===================== QCM ===================== -->
+<section id="qcm">
+  <h2>QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard dans une banque. Une seule bonne réponse par question ; le score s'affiche à la fin.</p>
+    <div id="qcmBox"></div>
+    <div class="score" id="qcmScore"></div>
+    <div class="btnrow"><button type="button" id="qcmNew">Nouveau QCM</button></div>
+  </div>
+</section>
+</main>
+<footer>
+  Si tu bloques : relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <strong>indication</strong> (pas la solution).
+</footer>
+
+<script>
+/* ================= utilitaires ================= */
+function typeset(el){ if(window.MathJax && window.MathJax.typesetPromise){ window.MathJax.typesetPromise(el ? [el] : undefined).catch(function(){}); } }
+function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ var a=arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+/* nombre en écriture française : espace fine pour les milliers, virgule décimale */
+function nf(x, dec){
+  if(!isFinite(x)) return '—';
+  if(dec===undefined){ dec = 0; while(dec < 3 && Math.abs(x*Math.pow(10,dec) - Math.round(x*Math.pow(10,dec))) > 1e-9) dec++; }
+  var neg = x < 0; var v = Math.abs(x).toFixed(dec);
+  var parts = v.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (neg ? '−' : '') + parts[0] + (parts[1] ? ',' + parts[1] : '');
+}
+function nfx(x, dec){ return nf(x, dec); }
+/* lecture d'une réponse : virgule, espaces, fractions, signe moins typographique */
+function parseNum(s){
+  if(s===null || s===undefined) return NaN;
+  s = String(s).trim().replace(/[\s  ]/g,'').replace(/−/g,'-').replace(',','.').replace(/€|%/g,'');
+  if(s==='') return NaN;
+  var m = s.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+  if(m){ var d=parseFloat(m[2]); return d===0?NaN:parseFloat(m[1])/d; }
+  if(!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+/* tolérance numérique : petite marge absolue + marge relative pour les grands nombres */
+function approx(a,b){ if(!isFinite(a)) return false; return Math.abs(a-b) <= Math.max(0.011, Math.abs(b)*1e-6); }
+function setFb(el, ok, msg){ el.className = 'fb ' + (ok?'ok':'ko'); el.innerHTML = msg; typeset(el); }
+/* écriture LaTeX d'un nombre décimal à la française : 1{,}03 */
+function tex(x, dec){
+  if(dec===undefined){ dec = 0; while(dec < 4 && Math.abs(x*Math.pow(10,dec) - Math.round(x*Math.pow(10,dec))) > 1e-9) dec++; }
+  var s = Math.abs(x).toFixed(dec);
+  var pp = s.split('.');
+  pp[0] = pp[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\\,');
+  return (x<0?'-':'') + pp[0] + (pp[1] ? '{,}' + pp[1] : '');
+}
+function texSigned(x){ return (x<0 ? '- ' : '+ ') + tex(Math.abs(x)); }
+var SVGNS = 'http://www.w3.org/2000/svg';
+
+/* ================= navigation sticky : onglet actif ================= */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  function update(){
+    var best = 0, y = window.scrollY || window.pageYOffset;
+    for(var i=0;i<secs.length;i++){
+      if(secs[i] && secs[i].offsetTop - 90 <= y) best = i;
+    }
+    links.forEach(function(a,i){ a.classList.toggle('active', i===best); });
+  }
+  window.addEventListener('scroll', update, { passive:true });
+  window.addEventListener('resize', update);
+  links.forEach(function(a){ a.addEventListener('click', function(){ setTimeout(update, 350); }); });
+  update();
+})();
+
+/* ================= onglets de la visualisation ================= */
+(function(){
+  var tabCmp = document.getElementById('tabCmp'), tabTaux = document.getElementById('tabTaux');
+  var panelCmp = document.getElementById('panelCmp'), panelTaux = document.getElementById('panelTaux');
+  tabCmp.addEventListener('click', function(){
+    tabCmp.classList.add('on'); tabTaux.classList.remove('on');
+    panelCmp.hidden = false; panelTaux.hidden = true; drawCmp();
+  });
+  tabTaux.addEventListener('click', function(){
+    tabTaux.classList.add('on'); tabCmp.classList.remove('on');
+    panelTaux.hidden = false; panelCmp.hidden = true; drawTaux();
+  });
+})();
+</script>
+
+<script>
+/* ================= VISU 1 : arithmétique vs géométrique ================= */
+var vu0 = document.getElementById('vu0'), vr = document.getElementById('vr'),
+    vq  = document.getElementById('vq'),  vn = document.getElementById('vn');
+
+function drawCmp(){
+  var u0 = parseFloat(vu0.value), r = parseFloat(vr.value),
+      q  = parseFloat(vq.value),  N = parseInt(vn.value, 10);
+  document.getElementById('vu0o').textContent = nf(u0);
+  document.getElementById('vro').textContent  = nf(r);
+  document.getElementById('vqo').textContent  = nf(q);
+  document.getElementById('vno').textContent  = String(N);
+
+  var A = [], G = [], k;
+  for(k=0;k<N;k++){ A.push(u0 + k*r); G.push(u0*Math.pow(q,k)); }
+
+  var vmax = 0, vmin = 0;
+  for(k=0;k<N;k++){ vmax = Math.max(vmax, A[k], G[k]); vmin = Math.min(vmin, A[k], G[k]); }
+  if(vmax - vmin < 1e-9) vmax = vmin + 1;
+  vmax = vmin + (vmax - vmin)*1.08;
+
+  var ml=46, mr=10, mt=14, mb=32, W=420, H=300;
+  var pw = W-ml-mr, ph = H-mt-mb;
+  function X(i){ return ml + (i+0.5)*pw/N; }
+  function Y(v){ return H-mb - (v-vmin)/(vmax-vmin)*ph; }
+  var y0 = Y(0);
+  var bw = Math.min(13, pw/N*0.34);
+
+  var s = '';
+  /* fond et graduations horizontales */
+  var g;
+  for(g=0; g<=4; g++){
+    var vg = vmin + (vmax-vmin)*g/4;
+    s += '<line x1="'+ml+'" y1="'+Y(vg).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+Y(vg).toFixed(1)+'" stroke="#eeeae4" stroke-width="1"/>';
+    s += '<text x="'+(ml-5)+'" y="'+(Y(vg)+4).toFixed(1)+'" font-size="10" fill="#5b6672" text-anchor="end">'+nf(vg, (vmax-vmin)<8?1:0)+'</text>';
+  }
+  /* bandes = termes de la somme */
+  for(k=0;k<N;k++){
+    var ya = Y(A[k]), yg = Y(G[k]);
+    s += '<rect x="'+(X(k)-bw-1).toFixed(1)+'" y="'+Math.min(ya,y0).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.abs(y0-ya).toFixed(1)+'" fill="#2563eb" opacity="0.22"/>';
+    s += '<rect x="'+(X(k)+1).toFixed(1)+'" y="'+Math.min(yg,y0).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.abs(y0-yg).toFixed(1)+'" fill="#f97362" opacity="0.28"/>';
+  }
+  /* axes */
+  s += '<line x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(H-mb)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  s += '<line x1="'+ml+'" y1="'+y0.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y0.toFixed(1)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  /* points */
+  for(k=0;k<N;k++){
+    s += '<circle cx="'+(X(k)-bw/2-1).toFixed(1)+'" cy="'+Y(A[k]).toFixed(1)+'" r="4" fill="#2563eb"/>';
+    s += '<circle cx="'+(X(k)+bw/2+1).toFixed(1)+'" cy="'+Y(G[k]).toFixed(1)+'" r="4" fill="#f97362"/>';
+    s += '<text x="'+X(k).toFixed(1)+'" y="'+(H-mb+14)+'" font-size="10" fill="#5b6672" text-anchor="middle">'+k+'</text>';
+  }
+  s += '<text x="'+(W-mr)+'" y="'+(H-6)+'" font-size="10" fill="#5b6672" text-anchor="end">rang n</text>';
+  document.getElementById('svgCmp').innerHTML = s;
+
+  /* tableau des premiers termes */
+  var th = '<tr><th>n</th>', ra = '<tr><th>\\(u_n\\) arith.</th>', rg = '<tr><th>\\(v_n\\) géo.</th>';
+  for(k=0;k<N;k++){
+    th += '<th>'+k+'</th>';
+    ra += '<td>'+nf(A[k])+'</td>';
+    rg += '<td>'+nf(G[k])+'</td>';
+  }
+  document.getElementById('cmpTable').innerHTML = th+'</tr>'+ra+'</tr>'+rg+'</tr>';
+
+  /* sommes instanciées */
+  var SA = N*(A[0]+A[N-1])/2;
+  var SG = (Math.abs(q-1)<1e-9) ? N*u0 : u0*(1-Math.pow(q,N))/(1-q);
+  document.getElementById('cmpSumA').innerHTML =
+    '\\[S_A = u_0+\\dots+u_{'+(N-1)+'} = '+N+'\\times\\frac{'+tex(A[0])+' + '+tex(A[N-1])+'}{2} = '+tex(SA)+'\\]';
+  document.getElementById('cmpSumG').innerHTML = (Math.abs(q-1)<1e-9)
+    ? '\\[S_G = '+N+'\\times '+tex(u0)+' = '+tex(SG)+'\\quad (q=1)\\]'
+    : '\\[S_G = u_0\\,\\frac{1-q^{'+N+'}}{1-q} = '+tex(u0)+'\\times\\frac{1-'+tex(q)+'^{'+N+'}}{1-'+tex(q)+'} = '+tex(SG,2)+'\\]';
+
+  var note;
+  if(q > 1.0001 && r > 0){
+    note = 'Après '+N+' termes, la géométrique atteint '+nf(G[N-1],2)+' contre '+nf(A[N-1])+' pour l\'arithmétique, soit '+nf(G[N-1]/A[N-1],2)+' fois plus. Sa somme est '+nf(SG/SA,2)+' fois celle de la suite arithmétique.';
+  } else if(q < 0.9999){
+    note = 'Avec \\(0\\lt q\\lt 1\\), la géométrique se rapproche de 0 : ses bandes rétrécissent et sa somme se stabilise (ici '+nf(SG,2)+').';
+  } else {
+    note = 'Avec \\(q = 1\\), la suite géométrique est constante : toutes ses bandes ont la même hauteur.';
+  }
+  note += ' Les deux suites sont dessinées à la même échelle : quand \\(q\\) grandit, la bleue paraît écrasée, c\'est normal.';
+  document.getElementById('cmpNote').innerHTML = note;
+
+  typeset(document.getElementById('panelCmp'));
+}
+[vu0, vr, vq, vn].forEach(function(el){ el.addEventListener('input', drawCmp); });
+
+/* ================= VISU 2 : évolution à taux constant ================= */
+var tc0 = document.getElementById('tc0'), tt = document.getElementById('tt'),
+    tn  = document.getElementById('tn'),  ts = document.getElementById('ts');
+
+function drawTaux(){
+  var C0 = parseFloat(tc0.value); if(!isFinite(C0) || C0 <= 0) C0 = 1000;
+  var t  = parseFloat(tt.value);
+  var N  = parseInt(tn.value, 10);
+  var S  = parseFloat(ts.value); if(!isFinite(S) || S <= 0) S = 2*C0;
+  var q  = 1 + t/100;
+  document.getElementById('tto').textContent = nf(t);
+  document.getElementById('tno').textContent = String(N);
+
+  var C = [], n;
+  for(n=0;n<=N;n++) C.push(C0*Math.pow(q,n));
+
+  var vmax = Math.max(S, C[0], C[N]), vmin = 0;
+  for(n=0;n<=N;n++) vmax = Math.max(vmax, C[n]);
+  vmax = vmax*1.08;
+
+  var ml=52, mr=10, mt=14, mb=32, W=420, H=300;
+  var pw = W-ml-mr, ph = H-mt-mb;
+  function X(i){ return ml + i*pw/N; }
+  function Y(v){ return H-mb - (v-vmin)/(vmax-vmin)*ph; }
+
+  var s = '', g;
+  for(g=0; g<=4; g++){
+    var vg = vmin + (vmax-vmin)*g/4;
+    s += '<line x1="'+ml+'" y1="'+Y(vg).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+Y(vg).toFixed(1)+'" stroke="#eeeae4" stroke-width="1"/>';
+    s += '<text x="'+(ml-5)+'" y="'+(Y(vg)+4).toFixed(1)+'" font-size="10" fill="#5b6672" text-anchor="end">'+nf(vg,0)+'</text>';
+  }
+  /* seuil */
+  if(S >= vmin && S <= vmax){
+    s += '<line x1="'+ml+'" y1="'+Y(S).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+Y(S).toFixed(1)+'" stroke="#f97362" stroke-width="2" stroke-dasharray="6 4"/>';
+    s += '<text x="'+(ml+4)+'" y="'+(Y(S)-5).toFixed(1)+'" font-size="10" fill="#c2410c">seuil '+nf(S,0)+'</text>';
+  }
+  /* axes */
+  s += '<line x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(H-mb)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  s += '<line x1="'+ml+'" y1="'+(H-mb)+'" x2="'+(W-mr)+'" y2="'+(H-mb)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  /* courbe */
+  var pts = [];
+  for(n=0;n<=N;n++) pts.push(X(n).toFixed(1)+','+Y(C[n]).toFixed(1));
+  s += '<polyline points="'+pts.join(' ')+'" fill="none" stroke="#22a06b" stroke-width="2"/>';
+  var step = Math.max(1, Math.ceil(N/10));
+  for(n=0;n<=N;n++){
+    s += '<circle cx="'+X(n).toFixed(1)+'" cy="'+Y(C[n]).toFixed(1)+'" r="'+(N>25?2:3)+'" fill="#22a06b"/>';
+    if(n % step === 0 || n === N){
+      s += '<text x="'+X(n).toFixed(1)+'" y="'+(H-mb+14)+'" font-size="10" fill="#5b6672" text-anchor="middle">'+n+'</text>';
+    }
+  }
+  s += '<text x="'+(W-mr)+'" y="'+(H-6)+'" font-size="10" fill="#5b6672" text-anchor="end">années</text>';
+  document.getElementById('svgTaux').innerHTML = s;
+
+  document.getElementById('tauxFormule').innerHTML =
+    '\\[q = 1 '+(t<0?'-':'+')+' \\frac{'+tex(Math.abs(t))+'}{100} = '+tex(q)+',\\qquad C_n = '+tex(C0)+'\\times '+tex(q)+'^{\\,n}\\]'
+    + '<p class="small">Au bout de '+N+' ans : \\(C_{'+N+'} = '+tex(C0)+'\\times '+tex(q)+'^{'+N+'} \\approx '+tex(C[N],2)+'\\) €.</p>';
+
+  var st = Math.max(1, Math.ceil((N+1)/11));
+  var th = '<tr><th>année n</th>', rc = '<tr><th>\\(C_n\\) (€)</th>';
+  for(n=0;n<=N;n+=st){ th += '<th>'+n+'</th>'; rc += '<td>'+nf(C[n],2)+'</td>'; }
+  if((N % st) !== 0){ th += '<th>'+N+'</th>'; rc += '<td>'+nf(C[N],2)+'</td>'; }
+  document.getElementById('tauxTable').innerHTML = th+'</tr>'+rc+'</tr>';
+
+  /* recherche de seuil */
+  var msg;
+  if(Math.abs(q-1) < 1e-12){
+    msg = 'Avec \\(t = 0\\) %, le capital reste égal à '+nf(C0,2)+' € : il ne franchira jamais le seuil.';
+  } else if(q > 1){
+    if(C0 > S){
+      msg = 'Le capital de départ ('+nf(C0,2)+' €) dépasse déjà le seuil : la réponse est \\(n = 0\\).';
+    } else {
+      var u = C0, k = 0;
+      while(u <= S && k < 3000){ u = u*q; k++; }
+      msg = (k >= 3000)
+        ? 'Le seuil n\'est pas atteint avant 3 000 ans avec ce taux.'
+        : 'Le capital dépasse '+nf(S,0)+' € pour la première fois au bout de <strong>'+k+' ans</strong> : \\(C_{'+(k-1)+'} \\approx '+tex(C0*Math.pow(q,k-1),2)+'\\) €, puis \\(C_{'+k+'} \\approx '+tex(u,2)+'\\) €.'
+          + '<br><span class="small">C\'est ce que fait la boucle <code>while</code> de la méthode E : on multiplie par \\(q = '+tex(q)+'\\) et on compte les tours.</span>';
+    }
+  } else {
+    if(C0 < S){
+      msg = 'Le taux est négatif : le capital diminue à partir de '+nf(C0,2)+' € et ne dépassera jamais '+nf(S,0)+' €.';
+    } else {
+      var v = C0, j = 0;
+      while(v >= S && j < 3000){ v = v*q; j++; }
+      msg = 'Le taux est négatif : le capital <em>descend</em> sous '+nf(S,0)+' € au bout de <strong>'+j+' ans</strong> (\\(C_{'+j+'} \\approx '+tex(v,2)+'\\) €).';
+    }
+  }
+  document.getElementById('tauxSeuil').innerHTML = msg;
+  typeset(document.getElementById('panelTaux'));
+}
+[tc0, tt, tn, ts].forEach(function(el){ el.addEventListener('input', drawTaux); });
+</script>
+
+<script>
+/* ================= EXERCICE 1 : terme général et calcul d'un terme ================= */
+var ex1 = {};
+function ex1New(){
+  var isArith = Math.random() < 0.5;
+  var u0, r, q, n, ans, qStr, gen, distr;
+  if(isArith){
+    u0 = rnd(2,12);
+    r  = pick([-6,-5,-4,-3,-2,2,3,4,5,6,7,8]);
+    n  = rnd(8,20);
+    ans = u0 + n*r;
+    gen = 'u_n = ' + u0 + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n');
+    distr = [
+      'u_n = ' + u0 + ' × ' + r + '^n',
+      'u_n = ' + u0 + (r>0 ? ' + ' : ' − ') + '(n − 1) × ' + Math.abs(r),
+      'u_n = ' + (u0+r) + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n')
+    ];
+    ex1 = { type:'a', u0:u0, r:r, n:n, ans:ans, gen:gen };
+  } else {
+    var cas = pick(['q2','q3','qdemi']);
+    if(cas === 'q2'){ q = 2; qStr = '2'; u0 = rnd(2,6); n = rnd(8,16); }
+    else if(cas === 'q3'){ q = 3; qStr = '3'; u0 = rnd(2,5); n = rnd(8,10); }
+    else { q = 0.5; qStr = '0,5'; n = rnd(8,12); u0 = Math.pow(2, n + rnd(0,3)); }
+    ans = u0 * Math.pow(q, n);
+    gen = 'u_n = ' + nf(u0) + ' × ' + qStr + '^n';
+    distr = [
+      'u_n = ' + nf(u0) + ' + ' + qStr + 'n',
+      'u_n = ' + nf(u0) + ' × ' + qStr + '^(n − 1)',
+      'u_n = (' + nf(u0) + ' × ' + qStr + ')^n'
+    ];
+    ex1 = { type:'g', u0:u0, q:q, qStr:qStr, n:n, ans:ans, gen:gen };
+  }
+  var stmt;
+  if(ex1.type === 'a'){
+    stmt = '<p>Soit \\((u_n)\\) la suite <strong>arithmétique</strong> définie par \\(u_0 = ' + ex1.u0 + '\\) et \\(u_{n+1} = u_n ' + texSigned(ex1.r) + '\\).</p>'
+         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}\\).</p>';
+  } else {
+    stmt = '<p>Soit \\((u_n)\\) la suite <strong>géométrique</strong> définie par \\(u_0 = ' + tex(ex1.u0) + '\\) et \\(u_{n+1} = ' + tex(ex1.q) + '\\,u_n\\).</p>'
+         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}\\).</p>';
+  }
+  document.getElementById('ex1Stmt').innerHTML = stmt;
+  document.getElementById('ex1Lab').innerHTML = '\\(u_{' + ex1.n + '} = \\)';
+  var sel = document.getElementById('ex1Sel');
+  sel.innerHTML = '';
+  var opts = shuffle([gen].concat(distr));
+  ex1.correctOpt = gen;
+  var o0 = document.createElement('option'); o0.value=''; o0.textContent='— choisir —'; sel.appendChild(o0);
+  opts.forEach(function(txt){ var o=document.createElement('option'); o.value=txt; o.textContent=txt; sel.appendChild(o); });
+  document.getElementById('ex1In').value = '';
+  document.getElementById('ex1Fb').className = 'fb';
+  document.getElementById('ex1CorrBox').classList.remove('show');
+  typeset(document.getElementById('ex1'));
+}
+function ex1Check(){
+  var selOk = document.getElementById('ex1Sel').value === ex1.correctOpt;
+  var val = parseNum(document.getElementById('ex1In').value);
+  var numOk = approx(val, ex1.ans);
+  var fb = document.getElementById('ex1Fb');
+  if(selOk && numOk){
+    setFb(fb, true, 'Parfait : terme général correct et \\(u_{'+ex1.n+'} = '+tex(ex1.ans)+'\\).');
+  } else if(!selOk && numOk){
+    setFb(fb, false, 'La valeur est bonne, mais le terme général choisi ne l\'est pas : attention au décalage d\'indice et au rôle de la raison.');
+  } else if(selOk && !numOk){
+    setFb(fb, false, 'Bon terme général. La valeur numérique n\'y est pas : remplace \\(n\\) par '+ex1.n+' dans la formule que tu viens de choisir.');
+  } else {
+    setFb(fb, false, isNaN(val) ? 'Réponse manquante ou illisible : écris un nombre (virgule ou point).' : 'Ce n\'est pas cela. Repars de la définition : ' + (ex1.type==='a' ? 'on <strong>ajoute</strong> la raison à chaque étape.' : 'on <strong>multiplie</strong> par la raison à chaque étape.'));
+  }
+  ex1BuildCorr();
+}
+function ex1BuildCorr(){
+  var c = document.getElementById('ex1CorrBox'), h;
+  if(ex1.type === 'a'){
+    h = '<p><strong>a. Terme général.</strong> La suite est arithmétique de premier terme \\(u_0 = '+ex1.u0+'\\) et de raison \\(r = '+tex(ex1.r)+'\\). La formule du cours donne</p>'
+      + '\\[u_n = u_0 + n\\,r = '+ex1.u0+' '+texSigned(ex1.r)+'\\,n\\]'
+      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}\\).</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
+      + '\\[u_{'+ex1.n+'} = '+ex1.u0+' + '+ex1.n+'\\times '+(ex1.r<0 ? '('+tex(ex1.r)+')' : tex(ex1.r))+' = '+ex1.u0+' '+texSigned(ex1.n*ex1.r)+' = '+tex(ex1.ans)+'\\]'
+      + '<p class="small">Vérification rapide : les trois premiers termes sont '+nf(ex1.u0)+' ; '+nf(ex1.u0+ex1.r)+' ; '+nf(ex1.u0+2*ex1.r)+'. On ajoute bien '+nf(ex1.r)+' à chaque fois.</p>'
+      + '<p class="small">Erreur classique : écrire \\(u_n = u_0 + (n-1)r\\). Cette formule-là servirait si la suite commençait à \\(u_1\\).</p>';
+  } else {
+    h = '<p><strong>a. Terme général.</strong> La suite est géométrique de premier terme \\(u_0 = '+tex(ex1.u0)+'\\) et de raison \\(q = '+tex(ex1.q)+'\\). La formule du cours donne</p>'
+      + '\\[u_n = u_0\\,q^{\\,n} = '+tex(ex1.u0)+'\\times '+tex(ex1.q)+'^{\\,n}\\]'
+      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}\\).</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
+      + '\\[u_{'+ex1.n+'} = '+tex(ex1.u0)+'\\times '+tex(ex1.q)+'^{'+ex1.n+'} = '+tex(ex1.u0)+'\\times '+(ex1.q<1 ? '\\frac{1}{'+tex(Math.pow(2,ex1.n))+'}' : tex(Math.pow(ex1.q, ex1.n)))+' = '+tex(ex1.ans)+'\\]'
+      + '<p class="small">Vérification rapide : les trois premiers termes sont '+nf(ex1.u0)+' ; '+nf(ex1.u0*ex1.q)+' ; '+nf(ex1.u0*ex1.q*ex1.q)+'. On multiplie bien par '+nf(ex1.q)+' à chaque fois.</p>'
+      + '<p class="small">Erreur classique : confondre \\(u_0\\,q^n\\) et \\((u_0\\,q)^n\\). Seule la raison est élevée à la puissance \\(n\\).</p>';
+  }
+  c.innerHTML = h; c.classList.add('show'); typeset(c);
+}
+document.getElementById('ex1Check').addEventListener('click', ex1Check);
+document.getElementById('ex1Corr').addEventListener('click', ex1BuildCorr);
+document.getElementById('ex1New').addEventListener('click', ex1New);
+
+/* ================= EXERCICE 2 : somme de termes consécutifs ================= */
+var ex2 = {};
+function ex2New(){
+  var isArith = Math.random() < 0.5;
+  var u0, r, q, a, b, N, ua, ub, S, k;
+  if(isArith){
+    u0 = rnd(1,10);
+    r  = pick([-5,-4,-3,-2,2,3,4,5,6,7]);
+    a  = rnd(2,6);
+    b  = a + rnd(4,9);
+    N  = b - a + 1;
+    ua = u0 + a*r; ub = u0 + b*r;
+    S  = N*(ua+ub)/2;
+    ex2 = { type:'a', u0:u0, r:r, a:a, b:b, N:N, ua:ua, ub:ub, S:S };
+  } else {
+    q  = pick([2,3]);
+    u0 = rnd(1,4);
+    a  = rnd(0,3);
+    b  = a + rnd(3,6);
+    N  = b - a + 1;
+    ua = u0*Math.pow(q,a); ub = u0*Math.pow(q,b);
+    S  = ua*(Math.pow(q,N)-1)/(q-1);
+    ex2 = { type:'g', u0:u0, q:q, a:a, b:b, N:N, ua:ua, ub:ub, S:S };
+  }
+  var stmt;
+  if(ex2.type === 'a'){
+    stmt = '<p>Soit \\((u_n)\\) la suite arithmétique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(r = '+tex(ex2.r)+'\\).</p>'
+         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}\\).</p>'
+         + '<p class="small">Commence par compter le nombre de termes : c\'est là que se cachent la plupart des erreurs.</p>';
+  } else {
+    stmt = '<p>Soit \\((u_n)\\) la suite géométrique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(q = '+ex2.q+'\\).</p>'
+         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}\\).</p>'
+         + '<p class="small">Commence par compter le nombre de termes : c\'est l\'exposant qui apparaît dans la formule.</p>';
+  }
+  document.getElementById('ex2Stmt').innerHTML = stmt;
+  document.getElementById('ex2InN').value = '';
+  document.getElementById('ex2InS').value = '';
+  document.getElementById('ex2Fb').className = 'fb';
+  document.getElementById('ex2CorrBox').classList.remove('show');
+  typeset(document.getElementById('ex2'));
+}
+function ex2Check(){
+  var vN = parseNum(document.getElementById('ex2InN').value);
+  var vS = parseNum(document.getElementById('ex2InS').value);
+  var okN = approx(vN, ex2.N), okS = approx(vS, ex2.S);
+  var fb = document.getElementById('ex2Fb');
+  if(okN && okS){
+    setFb(fb, true, 'Exact : '+ex2.N+' termes et \\(S = '+tex(ex2.S)+'\\).');
+  } else if(!okN && okS){
+    setFb(fb, false, 'La somme est bonne, mais le nombre de termes est faux : de \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) il y en a \\('+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'\\).');
+  } else if(okN && !okS){
+    setFb(fb, false, 'Bon comptage ('+ex2.N+' termes). Reprends la formule de somme avec ce \\(N\\) : ' + (ex2.type==='a' ? '\\(S = N\\times\\frac{\\text{premier}+\\text{dernier}}{2}\\).' : '\\(S = \\text{premier}\\times\\frac{1-q^{N}}{1-q}\\).'));
+  } else {
+    setFb(fb, false, 'Pas encore. Étape 1 : compter les termes (\\('+ex2.b+' - '+ex2.a+' + 1\\)). Étape 2 : calculer le premier et le dernier terme de la somme.');
+  }
+  ex2BuildCorr();
+}
+function ex2BuildCorr(){
+  var c = document.getElementById('ex2CorrBox'), h, k, liste = [];
+  for(k=ex2.a; k<=ex2.b; k++){
+    liste.push(nf(ex2.type==='a' ? ex2.u0 + k*ex2.r : ex2.u0*Math.pow(ex2.q,k)));
+  }
+  h = '<p><strong>Étape 1 — nombre de termes.</strong> De \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) : \\(N = '+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'\\) termes.</p>';
+  if(ex2.type === 'a'){
+    h += '<p><strong>Étape 2 — premier et dernier terme.</strong> \\(u_n = '+ex2.u0+' '+texSigned(ex2.r)+'\\,n\\), donc</p>'
+      + '\\[u_{'+ex2.a+'} = '+ex2.u0+' '+texSigned(ex2.a*ex2.r)+' = '+tex(ex2.ua)+',\\qquad u_{'+ex2.b+'} = '+ex2.u0+' '+texSigned(ex2.b*ex2.r)+' = '+tex(ex2.ub)+'\\]'
+      + '<p><strong>Étape 3 — formule de la somme arithmétique.</strong></p>'
+      + '\\[S = N\\times\\frac{u_{'+ex2.a+'} + u_{'+ex2.b+'}}{2} = '+ex2.N+'\\times\\frac{'+tex(ex2.ua)+' + '+tex(ex2.ub)+'}{2} = '+ex2.N+'\\times '+tex((ex2.ua+ex2.ub)/2)+' = '+tex(ex2.S)+'\\]';
+  } else {
+    h += '<p><strong>Étape 2 — premier terme de la somme.</strong> \\(u_n = '+ex2.u0+'\\times '+ex2.q+'^{\\,n}\\), donc \\(u_{'+ex2.a+'} = '+ex2.u0+'\\times '+ex2.q+'^{'+ex2.a+'} = '+tex(ex2.ua)+'\\).</p>'
+      + '<p><strong>Étape 3 — formule de la somme géométrique.</strong> L\'exposant est le <em>nombre de termes</em> \\(N = '+ex2.N+'\\), pas le dernier indice :</p>'
+      + '\\[S = u_{'+ex2.a+'}\\times\\frac{1-q^{N}}{1-q} = '+tex(ex2.ua)+'\\times\\frac{1-'+ex2.q+'^{'+ex2.N+'}}{1-'+ex2.q+'} = '+tex(ex2.ua)+'\\times '+tex((Math.pow(ex2.q,ex2.N)-1)/(ex2.q-1))+' = '+tex(ex2.S)+'\\]';
+  }
+  h += '<p><strong>Vérification.</strong> Les termes sont : '+liste.join(' + ')+' = '+nf(ex2.S)+'. ✓</p>';
+  c.innerHTML = h; c.classList.add('show'); typeset(c);
+}
+document.getElementById('ex2Check').addEventListener('click', ex2Check);
+document.getElementById('ex2Corr').addEventListener('click', ex2BuildCorr);
+document.getElementById('ex2New').addEventListener('click', ex2New);
+
+/* ================= EXERCICE 3 : modélisation et seuil ================= */
+var ex3 = {};
+function ex3New(){
+  var P0, t, q, seuil, u, n, tries = 0;
+  /* on retire tant que la réponse n'est pas un nombre d'années raisonnable (3 à 30 ans) */
+  do {
+    P0 = rnd(12,45)*1000;
+    t  = pick([1.5, 2, 2.5, 3, 4, 5]);
+    q  = 1 + t/100;
+    seuil = Math.round(P0 * pick([1.2, 1.3, 1.4, 1.5, 1.6, 1.8]) / 500) * 500;
+    if(seuil <= P0) seuil = P0 + 2000;
+    u = P0; n = 0;
+    while(u <= seuil && n < 500){ u = u*q; n++; }
+    tries++;
+  } while((n < 3 || n > 30) && tries < 80);
+  var ville = pick(['Belleville', 'Sainte-Colombe', 'Montclair', 'Villeneuve', 'Roqueville', 'Bourg-les-Pins']);
+  ex3 = { P0:P0, t:t, q:q, seuil:seuil, ans:n, ville:ville, val:u };
+  document.getElementById('ex3Stmt').innerHTML =
+      '<p>En 2025, la commune de <strong>'+ville+'</strong> compte '+nf(P0)+' habitants. Les études prévoient une augmentation de <strong>'+nf(t)+' % par an</strong>.</p>'
+    + '<p>On note \\(u_n\\) le nombre d\'habitants \\(n\\) années après 2025, donc \\(u_0 = '+tex(P0)+'\\).</p>'
+    + '<p><strong>Au bout de combien d\'années la population dépassera-t-elle '+nf(seuil)+' habitants ?</strong> (réponse : un nombre entier d\'années)</p>'
+    + '<p class="small">Pas de logarithme : on teste les valeurs, à la calculatrice ou avec une boucle.</p>';
+  document.getElementById('ex3In').value = '';
+  document.getElementById('ex3Fb').className = 'fb';
+  document.getElementById('ex3CorrBox').classList.remove('show');
+  typeset(document.getElementById('ex3'));
+}
+function ex3Check(){
+  var v = parseNum(document.getElementById('ex3In').value);
+  var fb = document.getElementById('ex3Fb');
+  if(approx(v, ex3.ans)){
+    setFb(fb, true, 'Exact : au bout de '+ex3.ans+' ans, la population atteint environ '+nf(ex3.val,0)+' habitants et dépasse le seuil.');
+  } else if(isNaN(v)){
+    setFb(fb, false, 'Réponse manquante : donne un nombre entier d\'années.');
+  } else if(Math.abs(v - ex3.ans) === 1){
+    setFb(fb, false, 'Tout près ! Vérifie les deux valeurs qui encadrent le seuil : il faut le <strong>premier</strong> rang où \\(u_n\\) dépasse '+nf(ex3.seuil)+'.');
+  } else {
+    setFb(fb, false, 'Pas encore. Commence par le coefficient multiplicateur \\(q = 1 + \\frac{'+tex(ex3.t)+'}{100}\\), puis calcule \\(u_n = u_0\\,q^n\\) de proche en proche.');
+  }
+  ex3BuildCorr();
+}
+function ex3BuildCorr(){
+  var c = document.getElementById('ex3CorrBox');
+  var start = Math.max(0, ex3.ans - 4), k;
+  var th = '<tr><th>n</th>', rv = '<tr><th>\\(u_n\\)</th>';
+  for(k=start; k<=ex3.ans+1; k++){
+    var val = ex3.P0*Math.pow(ex3.q,k);
+    th += '<th>'+k+'</th>';
+    rv += '<td'+(k===ex3.ans?' style="background:#e3f6ec;font-weight:700"':'')+'>'+nf(val,0)+'</td>';
+  }
+  var h = '<p><strong>Étape 1 — modéliser.</strong> Augmenter de '+nf(ex3.t)+' % par an revient à multiplier par</p>'
+    + '\\[q = 1 + \\frac{'+tex(ex3.t)+'}{100} = '+tex(ex3.q)+'\\]'
+    + '<p>La suite \\((u_n)\\) est donc <strong>géométrique</strong> de raison \\(q = '+tex(ex3.q)+'\\) et de premier terme \\(u_0 = '+tex(ex3.P0)+'\\).</p>'
+    + '<p><strong>Étape 2 — terme général.</strong></p>'
+    + '\\[u_n = '+tex(ex3.P0)+'\\times '+tex(ex3.q)+'^{\\,n}\\]'
+    + '<p><strong>Étape 3 — chercher le seuil.</strong> On calcule les termes jusqu\'à dépasser '+nf(ex3.seuil)+' :</p>'
+    + '<div class="tablewrap"><table>'+th+'</tr>'+rv+'</tr></table></div>'
+    + '<p>On lit \\(u_{'+(ex3.ans-1)+'} \\approx '+tex(ex3.P0*Math.pow(ex3.q,ex3.ans-1),0)+' \\lt '+tex(ex3.seuil)+'\\) et \\(u_{'+ex3.ans+'} \\approx '+tex(ex3.val,0)+' \\gt '+tex(ex3.seuil)+'\\).</p>'
+    + '<div class="box green"><span class="lbl">Conclusion</span>La population dépasse '+nf(ex3.seuil)+' habitants au bout de <strong>'+ex3.ans+' ans</strong>, c\'est-à-dire en '+(2025+ex3.ans)+'.</div>'
+    + '<p><strong>Remarque — algorithme de seuil.</strong> Plutôt que de remplir un tableau, on programme la même recherche :</p>'
+    + '<pre class="py">u = '+ex3.P0+'\nn = 0\nwhile u &lt;= '+ex3.seuil+':\n    u = u * '+String(ex3.q)+'\n    n = n + 1\nprint(n)   # affiche '+ex3.ans+'</pre>'
+    + '<p class="small">La boucle s\'arrête au <em>premier</em> rang où la condition \\(u \\le '+tex(ex3.seuil)+'\\) devient fausse : c\'est bien le premier rang où la population dépasse le seuil. En Première on n\'utilise pas le logarithme pour résoudre \\(q^n \\gt k\\).</p>';
+  c.innerHTML = h; c.classList.add('show'); typeset(c);
+}
+document.getElementById('ex3Check').addEventListener('click', ex3Check);
+document.getElementById('ex3Corr').addEventListener('click', ex3BuildCorr);
+document.getElementById('ex3New').addEventListener('click', ex3New);
+</script>
+
+<script>
+/* ================= QCM ================= */
+var QCM_BANK = [
+  { q:'\\((u_n)\\) est arithmétique de raison \\(r = 4\\) et \\(u_0 = 7\\). Que vaut \\(u_{10}\\) ?',
+    opts:['\\(47\\)','\\(40\\)','\\(43\\)','\\(28\\)'], correct:0,
+    expl:'\\(u_n = u_0 + nr\\), donc \\(u_{10} = 7 + 10\\times 4 = 47\\).' },
+  { q:'\\((u_n)\\) est géométrique de raison \\(q = 3\\) et \\(u_0 = 2\\). Que vaut \\(u_4\\) ?',
+    opts:['\\(162\\)','\\(54\\)','\\(24\\)','\\(486\\)'], correct:0,
+    expl:'\\(u_4 = 2\\times 3^4 = 2\\times 81 = 162\\).' },
+  { q:'Une population baisse de \\(5\\,\\%\\) par an. Le coefficient multiplicateur est :',
+    opts:['\\(0{,}95\\)','\\(-0{,}05\\)','\\(1{,}05\\)','\\(-5\\)'], correct:0,
+    expl:'Baisser de \\(t\\,\\%\\) revient à multiplier par \\(1 - \\frac{t}{100} = 0{,}95\\).' },
+  { q:'Combien y a-t-il de termes dans la somme \\(u_4 + u_5 + \\dots + u_{15}\\) ?',
+    opts:['\\(12\\)','\\(11\\)','\\(15\\)','\\(13\\)'], correct:0,
+    expl:'De \\(u_a\\) à \\(u_b\\) il y a \\(b - a + 1\\) termes : \\(15 - 4 + 1 = 12\\).' },
+  { q:'Que vaut \\(1 + 2 + 3 + \\dots + 50\\) ?',
+    opts:['\\(1275\\)','\\(1250\\)','\\(2550\\)','\\(1225\\)'], correct:0,
+    expl:'\\(\\frac{n(n+1)}{2} = \\frac{50\\times 51}{2} = 1275\\).' },
+  { q:'Que vaut \\(1 + 2 + 4 + 8 + \\dots + 2^{6}\\) ?',
+    opts:['\\(127\\)','\\(128\\)','\\(63\\)','\\(126\\)'], correct:0,
+    expl:'\\(\\frac{1-2^{7}}{1-2} = \\frac{1-128}{-1} = 127\\) : il y a 7 termes, donc l\'exposant est 7.' },
+  { q:'Soit \\(u_n = 9 - 2n\\). La suite \\((u_n)\\) est :',
+    opts:['arithmétique de raison \\(-2\\)','géométrique de raison \\(-2\\)','arithmétique de raison \\(9\\)','ni l\'une ni l\'autre'], correct:0,
+    expl:'\\(u_{n+1} - u_n = 9-2(n+1) - (9-2n) = -2\\), constante : arithmétique de raison \\(-2\\).' },
+  { q:'Soit \\(v_n = 5\\times 4^{\\,n}\\). Alors \\(\\dfrac{v_{n+1}}{v_n}\\) vaut :',
+    opts:['\\(4\\)','\\(5\\)','\\(20\\)','\\(4^n\\)'], correct:0,
+    expl:'\\(\\frac{5\\times 4^{n+1}}{5\\times 4^{n}} = 4\\) : la suite est géométrique de raison 4.' },
+  { q:'\\((u_n)\\) est géométrique avec \\(u_0 \\gt 0\\) et \\(q = 0{,}8\\). Elle est :',
+    opts:['décroissante et se rapproche de 0','croissante','constante','décroissante puis croissante'], correct:0,
+    expl:'\\(0 \\lt q \\lt 1\\) avec un premier terme positif : les termes diminuent et \\(q^n\\) tend vers 0.' },
+  { q:'\\((u_n)\\) est arithmétique, \\(u_3 = 11\\) et \\(r = 5\\). Que vaut \\(u_9\\) ?',
+    opts:['\\(41\\)','\\(46\\)','\\(56\\)','\\(36\\)'], correct:0,
+    expl:'\\(u_9 = u_3 + (9-3)\\times 5 = 11 + 30 = 41\\).' },
+  { q:'Un capital de \\(2000\\) € placé à \\(2\\,\\%\\) par an vaut, au bout de \\(n\\) années :',
+    opts:['\\(2000\\times 1{,}02^{\\,n}\\)','\\(2000 + 0{,}02n\\)','\\(2000\\times 0{,}02^{\\,n}\\)','\\(2000\\times 1{,}2^{\\,n}\\)'], correct:0,
+    expl:'Taux constant \\(\\Rightarrow\\) suite géométrique de raison \\(q = 1{,}02\\), donc \\(C_n = C_0 q^n\\).' },
+  { q:'Une entreprise embauche \\(30\\) personnes de plus chaque année. Le nombre d\'employés suit une suite :',
+    opts:['arithmétique de raison 30','géométrique de raison 30','géométrique de raison \\(1{,}30\\)','ni arithmétique ni géométrique'], correct:0,
+    expl:'On <em>ajoute</em> toujours le même nombre : c\'est arithmétique, de raison 30.' },
+  { q:'Pour une suite géométrique commençant à \\(u_1\\), le terme général est :',
+    opts:['\\(u_n = u_1\\,q^{\\,n-1}\\)','\\(u_n = u_1\\,q^{\\,n}\\)','\\(u_n = u_1 + (n-1)q\\)','\\(u_n = (u_1 q)^{n-1}\\)'], correct:0,
+    expl:'De \\(u_1\\) à \\(u_n\\) on multiplie \\(n-1\\) fois par \\(q\\) : \\(u_n = u_1 q^{\\,n-1}\\).' },
+  { q:'Pour trouver le premier rang où \\(u_n\\) dépasse un seuil \\(S\\) en Première, on :',
+    opts:['calcule les termes jusqu\'à dépasser \\(S\\) (boucle while)','résout \\(q^n \\gt S\\) avec le logarithme','utilise la dérivée','ne peut pas répondre'], correct:0,
+    expl:'Le logarithme n\'est pas au programme de Première : on procède par essais successifs ou avec un algorithme de seuil.' },
+  { q:'\\(u_n = 6 + 2n\\). Que vaut \\(u_0 + u_1 + \\dots + u_{10}\\) ?',
+    opts:['\\(176\\)','\\(160\\)','\\(150\\)','\\(186\\)'], correct:0,
+    expl:'11 termes, \\(u_0 = 6\\), \\(u_{10} = 26\\) : \\(S = 11\\times\\frac{6+26}{2} = 11\\times 16 = 176\\).' },
+  { q:'Quelle suite finit par croître le plus vite ?',
+    opts:['\\(v_n = 2^{\\,n}\\)','\\(u_n = 100n\\)','\\(w_n = 1000 + 50n\\)','elles croissent pareil'], correct:0,
+    expl:'Une croissance exponentielle finit toujours par dépasser une croissance linéaire : \\(2^{20} \\gt 1\\,000\\,000\\) alors que \\(100\\times 20 = 2000\\).' }
+];
+var qcmMap = {};
+var qcmState = { answered:0, score:0, total:4 };
+
+function buildQcm(){
+  var box = document.getElementById('qcmBox');
+  box.innerHTML = '';
+  var sc = document.getElementById('qcmScore');
+  sc.className = 'score'; sc.textContent = '';
+  qcmMap = {};
+  qcmState = { answered:0, score:0, total:4 };
+  var chosen = shuffle(QCM_BANK).slice(0, 4);
+  chosen.forEach(function(item, i){
+    var order = shuffle([0,1,2,3]);
+    var correctIdx = order.indexOf(item.correct);
+    qcmMap[i] = { correct: correctIdx, expl: item.expl, done: false };
+    var div = document.createElement('div');
+    div.className = 'qcm-q'; div.id = 'q' + i;
+    var stem = document.createElement('div');
+    stem.innerHTML = '<strong>' + (i+1) + '.</strong> ' + item.q;
+    div.appendChild(stem);
+    var opts = document.createElement('div');
+    opts.className = 'opts';
+    order.forEach(function(oi, pos){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.innerHTML = '<strong>' + 'ABCD'[pos] + '.</strong> ' + item.opts[oi];
+      btn.addEventListener('click', function(){ answerQcm(i, pos); });
+      opts.appendChild(btn);
+    });
+    div.appendChild(opts);
+    var ex = document.createElement('div');
+    ex.className = 'qexpl'; ex.id = 'qexpl' + i;
+    div.appendChild(ex);
+    box.appendChild(div);
+  });
+  typeset(box);
+}
+
+function answerQcm(i, pos){
+  var m = qcmMap[i];
+  if(!m || m.done) return;
+  m.done = true;
+  var q = document.getElementById('q' + i);
+  var buttons = q.querySelectorAll('.opts button');
+  var ok = (pos === m.correct);
+  Array.prototype.forEach.call(buttons, function(b, idx){
+    b.disabled = true;
+    if(idx === m.correct) b.classList.add('right');
+    else if(idx === pos) b.classList.add('wrong');
+  });
+  var ex = document.getElementById('qexpl' + i);
+  ex.innerHTML = (ok ? '<strong style="color:#22a06b">Bravo !</strong> ' : '<strong style="color:#c2410c">Raté.</strong> ') + m.expl;
+  ex.style.display = 'block';
+  typeset(ex);
+  qcmState.answered++;
+  if(ok) qcmState.score++;
+  if(qcmState.answered === qcmState.total){
+    var s = qcmState.score;
+    var sc = document.getElementById('qcmScore');
+    sc.className = 'score show';
+    sc.textContent = 'Score : ' + s + ' / ' + qcmState.total + (s === 4 ? ' — sans faute, bravo !' : (s >= 2 ? ' — relis les explications puis retente un nouveau QCM.' : ' — reprends le cours et la méthode, puis recommence.'));
+  }
+}
+document.getElementById('qcmNew').addEventListener('click', buildQcm);
+
+/* ================= initialisation ================= */
+drawCmp();
+drawTaux();
+ex1New();
+ex2New();
+ex3New();
+buildQcm();
+</script>
+</body>
+</html>

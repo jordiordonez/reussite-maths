@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1A · Produit scalaire : définitions</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+:root {
+  --bg: #faf8f5; --card: #ffffff; --ink: #1f2937; --muted: #6b7280;
+  --accent: #2563eb; --accent-soft: #e8efff; --coral: #f97362; --coral-soft: #fdeae6;
+  --green: #22a06b; --green-soft: #e3f5ec; --amber: #d97706; --amber-soft: #fdf1dc;
+  --shadow: 0 4px 16px rgba(31, 41, 55, 0.08); --radius: 16px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55; font-size: 16px; }
+h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 600; margin: 0 0 0.5em; }
+h2 { font-size: 1.6rem; color: var(--accent); }
+h3 { font-size: 1.15rem; }
+p { margin: 0.4em 0; }
+header { text-align: center; padding: 2.2rem 1rem 1.4rem; }
+header h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); opacity: 0; transform: translateY(18px); animation: rise 0.9s ease-out forwards; }
+header .sub { color: var(--muted); font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; animation: fade 1.2s ease-out 0.5s forwards; }
+header .chapter { display: inline-block; margin-top: 0.6rem; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 0.25rem 0.9rem; font-size: 0.9rem; opacity: 0; animation: fade 1.2s ease-out 0.9s forwards; }
+@keyframes rise { to { opacity: 1; transform: translateY(0); } }
+@keyframes fade { to { opacity: 1; } }
+nav.sticky { position: sticky; top: 0; z-index: 20; background: rgba(250, 248, 245, 0.95); backdrop-filter: blur(6px); border-bottom: 1px solid #e5e1da; padding: 0.5rem 0.6rem; display: flex; gap: 0.4rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+nav.sticky a { flex: 0 0 auto; text-decoration: none; color: var(--accent); background: var(--card); border: 1px solid #dbe3f4; border-radius: 999px; padding: 0 1rem; min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; font-size: 0.95rem; box-shadow: var(--shadow); }
+nav.sticky a.active { background: var(--accent); color: #fff; }
+main { max-width: 900px; margin: 0 auto; padding: 0.6rem 0.8rem 3rem; }
+section { margin-top: 2rem; scroll-margin-top: 70px; }
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.1rem 1.1rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
+.card .num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; margin-right: 0.5rem; font-family: Georgia, serif; }
+.formula { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 10px; padding: 0.6rem 0.9rem; margin: 0.6rem 0; overflow-x: auto; }
+.example { background: #f6f4ef; border-radius: 10px; padding: 0.6rem 0.9rem; margin: 0.6rem 0; font-size: 0.97rem; }
+.example strong { color: var(--amber); }
+.warn { background: var(--coral-soft); border-left: 4px solid var(--coral); border-radius: 10px; padding: 0.6rem 0.9rem; margin: 0.6rem 0; }
+.ok { background: var(--green-soft); border-left: 4px solid var(--green); border-radius: 10px; padding: 0.6rem 0.9rem; margin: 0.6rem 0; }
+.tag { display: inline-block; font-size: 0.78rem; padding: 0.1rem 0.6rem; border-radius: 999px; background: var(--amber-soft); color: var(--amber); font-weight: 600; margin-left: 0.4rem; vertical-align: middle; }
+ol.steps { padding-left: 1.3rem; }
+ol.steps li { margin: 0.3rem 0; }
+button, .btn { font: inherit; cursor: pointer; min-height: 44px; padding: 0 1.1rem; border-radius: 12px; border: none; background: var(--accent); color: #fff; font-weight: 600; box-shadow: var(--shadow); transition: transform 0.1s, background 0.2s; }
+button:active { transform: scale(0.97); }
+button.secondary { background: var(--card); color: var(--accent); border: 2px solid var(--accent); }
+button.ghost { background: #f1efea; color: var(--ink); }
+.row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 0.6rem 0; }
+input[type="text"] { font: inherit; font-size: 1.05rem; min-height: 44px; padding: 0 0.8rem; border: 2px solid #d1d5db; border-radius: 12px; width: 130px; max-width: 100%; }
+input[type="text"]:focus { outline: none; border-color: var(--accent); }
+.feedback { min-height: 1.4em; font-weight: 600; margin-top: 0.4rem; }
+.feedback.good { color: var(--green); }
+.feedback.bad { color: var(--coral); }
+.correction { display: none; background: #f6f4ef; border-radius: 10px; padding: 0.8rem 1rem; margin-top: 0.7rem; }
+.correction.open { display: block; }
+.correction p { margin: 0.35em 0; }
+/* Visualisation */
+.viz-wrap { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 720px) { .viz-wrap { grid-template-columns: 1fr 1fr; align-items: start; } }
+svg#viz { width: 100%; height: auto; touch-action: none; background: #fff; border-radius: 12px; border: 1px solid #ece8e1; user-select: none; -webkit-user-select: none; }
+.slider { display: grid; grid-template-columns: 4.2rem 1fr 3.2rem; gap: 0.5rem; align-items: center; margin: 0.35rem 0; }
+.slider label { font-weight: 600; }
+.slider label.u { color: var(--accent); }
+.slider label.v { color: var(--amber); }
+input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--accent); }
+input[type="range"].v { accent-color: var(--amber); }
+.slider output { text-align: right; font-variant-numeric: tabular-nums; }
+.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-top: 0.6rem; }
+.stat { background: #f6f4ef; border-radius: 10px; padding: 0.5rem 0.7rem; }
+.stat .lbl { font-size: 0.8rem; color: var(--muted); }
+.stat .val { font-size: 1.25rem; font-weight: 700; font-family: Georgia, serif; font-variant-numeric: tabular-nums; }
+.stat.pos .val { color: var(--green); }
+.stat.neg .val { color: var(--coral); }
+.bilan { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-top: 0.8rem; }
+@media (min-width: 560px) { .bilan { grid-template-columns: 1fr 1fr 1fr; } }
+.bilan .col { border-radius: 12px; padding: 0.7rem 0.8rem; border: 2px solid #ece8e1; }
+.bilan .col h4 { margin: 0 0 0.3rem; font-family: Georgia, serif; font-size: 1rem; }
+.bilan .col .calc { font-size: 0.93rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bilan .col .res { font-size: 1.3rem; font-weight: 700; font-family: Georgia, serif; }
+.bilan .col.match { border-color: var(--green); background: var(--green-soft); }
+/* QCM */
+.qcm-q { margin-bottom: 1rem; }
+.qcm-q .question { font-weight: 600; margin-bottom: 0.5rem; }
+.choices { display: grid; grid-template-columns: 1fr; gap: 0.45rem; }
+@media (min-width: 560px) { .choices { grid-template-columns: 1fr 1fr; } }
+.choice { text-align: left; background: #f6f4ef; color: var(--ink); border: 2px solid transparent; box-shadow: none; padding: 0.55rem 0.9rem; min-height: 44px; border-radius: 12px; font-weight: 500; }
+.choice .letter { display: inline-block; width: 1.6em; font-weight: 700; color: var(--accent); }
+.choice.correct { background: var(--green-soft); border-color: var(--green); }
+.choice.wrong { background: var(--coral-soft); border-color: var(--coral); }
+.choice:disabled { cursor: default; opacity: 0.95; }
+.expl { margin-top: 0.4rem; font-size: 0.95rem; display: none; }
+.expl.show { display: block; }
+.score { font-size: 1.15rem; font-weight: 700; font-family: Georgia, serif; margin-top: 0.5rem; }
+footer { text-align: center; color: var(--muted); font-size: 0.92rem; padding: 1.5rem 1rem 2.5rem; border-top: 1px solid #e5e1da; margin-top: 2rem; }
+footer .tip { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.9rem 1rem; max-width: 640px; margin: 0 auto; color: var(--ink); }
+mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Produit scalaire : les définitions</h1>
+  <div class="sub">Première · Mathématiques</div>
+  <div class="chapter">Chapitre 1 · Fiche 1A</div>
+</header>
+
+<nav class="sticky" id="nav">
+  <a href="#cours">Cours</a>
+  <a href="#methode">Méthode</a>
+  <a href="#visualisation">Visualisation</a>
+  <a href="#exercices">Exercices</a>
+  <a href="#qcm">QCM</a>
+</nav>
+
+<main>
+
+<!-- ================= COURS ================= -->
+<section id="cours">
+  <h2>Cours</h2>
+  <p>Le produit scalaire de deux vecteurs \(\vec u\) et \(\vec v\) est un <strong>nombre réel</strong>, noté \(\vec u\cdot\vec v\). Il y a trois façons de le calculer : elles donnent toujours le même résultat.</p>
+
+  <div class="card">
+    <h3><span class="num">1</span>Définition par projection orthogonale</h3>
+    <p>On place \(\vec u=\vec{OA}\) et \(\vec v=\vec{OB}\). Soit \(H\) le projeté orthogonal de \(B\) sur la droite \((OA)\).</p>
+    <div class="formula">\[\vec u\cdot\vec v = OA\times OH \text{ si } \vec{OH} \text{ et } \vec{OA} \text{ sont de même sens},\qquad \vec u\cdot\vec v = -\,OA\times OH \text{ sinon.}\]</div>
+    <div class="example"><strong>Exemple.</strong> Si \(OA = 4\), \(OH = 3\) et que \(H\) est du côté de \(A\) : \(\vec u\cdot\vec v = 4\times 3 = 12\). Si \(H\) est de l'autre côté de \(O\) : \(\vec u\cdot\vec v = -12\). Si \(H = O\) (angle droit) : \(\vec u\cdot\vec v = 0\).</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Définition avec le cosinus</h3>
+    <p>Pour deux vecteurs non nuls, avec \((\vec u,\vec v)\) l'angle entre eux :</p>
+    <div class="formula">\[\vec u\cdot\vec v = \|\vec u\|\times\|\vec v\|\times\cos(\vec u,\vec v)\]</div>
+    <div class="example"><strong>Exemple.</strong> \(\|\vec u\| = 3\), \(\|\vec v\| = 2\), angle de \(60^\circ\) : \(\vec u\cdot\vec v = 3\times 2\times\cos 60^\circ = 6\times\tfrac12 = 3\).<br>Avec un angle de \(120^\circ\) : \(\vec u\cdot\vec v = 6\times\left(-\tfrac12\right) = -3\).</div>
+    <p>Si l'un des vecteurs est nul, le produit scalaire vaut \(0\).</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Expression dans une base orthonormée</h3>
+    <p>Si \(\vec u\,(x\,;\,y)\) et \(\vec v\,(x'\,;\,y')\) dans un repère <strong>orthonormé</strong> :</p>
+    <div class="formula">\[\vec u\cdot\vec v = xx' + yy'\]</div>
+    <div class="example"><strong>Exemple.</strong> \(\vec u\,(2\,;\,3)\) et \(\vec v\,(4\,;\,-1)\) : \(\vec u\cdot\vec v = 2\times 4 + 3\times(-1) = 8 - 3 = 5\).<br>\(\vec u\,(-1\,;\,5)\) et \(\vec v\,(3\,;\,2)\) : \(\vec u\cdot\vec v = -3 + 10 = 7\).</div>
+    <div class="warn">La formule \(xx'+yy'\) n'est valable que si le repère est <strong>orthonormé</strong> (axes perpendiculaires, même unité). C'est le cas dans presque tous les exercices, mais il faut le vérifier dans l'énoncé.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Norme et carré scalaire</h3>
+    <div class="formula">\[\vec u\cdot\vec u = \|\vec u\|^2 = x^2 + y^2 \qquad\text{donc}\qquad \|\vec u\| = \sqrt{x^2+y^2}\]</div>
+    <div class="example"><strong>Exemple.</strong> \(\vec u\,(3\,;\,4)\) : \(\|\vec u\|^2 = 9 + 16 = 25\), donc \(\|\vec u\| = 5\).<br>\(\vec v\,(1\,;\,-2)\) : \(\|\vec v\| = \sqrt{1+4} = \sqrt5 \approx 2{,}24\). On garde \(\sqrt5\) en valeur exacte.</div>
+    <p>Pour un segment : \(AB = \|\vec{AB}\|\). C'est la formule de la distance vue en Seconde.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Symétrie et bilinéarité</h3>
+    <div class="formula">\[\vec u\cdot\vec v = \vec v\cdot\vec u \qquad \vec u\cdot(\vec v+\vec w) = \vec u\cdot\vec v + \vec u\cdot\vec w \qquad (k\vec u)\cdot\vec v = k\,(\vec u\cdot\vec v)\]</div>
+    <p>On peut donc « développer » comme avec des nombres, en gardant les points \(\cdot\).</p>
+    <div class="example"><strong>Exemple.</strong> Si \(\vec u\cdot\vec v = 5\), alors \((2\vec u)\cdot(3\vec v) = 2\times 3\times 5 = 30\) et \(\vec u\cdot(-\vec v) = -5\).<br>Si \(\vec u\cdot\vec v = 5\) et \(\vec u\cdot\vec w = -2\), alors \(\vec u\cdot(\vec v + \vec w) = 5 + (-2) = 3\).</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Caractérisation de l'orthogonalité</h3>
+    <div class="formula">\[\vec u \perp \vec v \iff \vec u\cdot\vec v = 0 \qquad\text{(en coordonnées : } xx'+yy' = 0\text{)}\]</div>
+    <p>Par convention, le vecteur nul est orthogonal à tous les vecteurs.</p>
+    <div class="example"><strong>Exemple.</strong> \(\vec u\,(2\,;\,3)\) et \(\vec v\,(-3\,;\,2)\) : \(\vec u\cdot\vec v = -6 + 6 = 0\), donc \(\vec u\perp\vec v\).<br>Astuce : \((x\,;\,y)\) est toujours orthogonal à \((-y\,;\,x)\).</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span>Le signe renseigne sur l'angle</h3>
+    <p>Comme \(\|\vec u\|\) et \(\|\vec v\|\) sont positives, le signe de \(\vec u\cdot\vec v\) est celui de \(\cos(\vec u,\vec v)\) :</p>
+    <div class="ok">\(\vec u\cdot\vec v > 0\) : angle <strong>aigu</strong> (moins de \(90^\circ\)). &nbsp; \(\vec u\cdot\vec v = 0\) : angle <strong>droit</strong>. &nbsp; \(\vec u\cdot\vec v < 0\) : angle <strong>obtus</strong> (plus de \(90^\circ\)).</div>
+    <div class="example"><strong>Exemple.</strong> \(\vec u\,(1\,;\,2)\), \(\vec v\,(-4\,;\,1)\) : \(\vec u\cdot\vec v = -4 + 2 = -2 < 0\), l'angle \((\vec u,\vec v)\) est obtus. Et pour \(\vec u\cdot\vec v = \|\vec u\|\,\|\vec v\|\) (cosinus égal à 1), les vecteurs sont colinéaires de même sens.</div>
+  </div>
+</section>
+
+<!-- ================= MÉTHODE ================= -->
+<section id="methode">
+  <h2>Méthode</h2>
+
+  <div class="card">
+    <h3>Choisir la bonne formule selon les données</h3>
+    <ol class="steps">
+      <li><strong>On connaît les coordonnées</strong> (repère orthonormé) → \(\vec u\cdot\vec v = xx'+yy'\). C'est le cas le plus fréquent.</li>
+      <li><strong>On connaît les normes et l'angle</strong> → \(\vec u\cdot\vec v = \|\vec u\|\,\|\vec v\|\cos(\vec u,\vec v)\). Penser aux valeurs : \(\cos 30^\circ = \tfrac{\sqrt3}{2}\), \(\cos 45^\circ = \tfrac{\sqrt2}{2}\), \(\cos 60^\circ = \tfrac12\), \(\cos 90^\circ = 0\), \(\cos 120^\circ = -\tfrac12\).</li>
+      <li><strong>Figure avec un angle droit</strong> (carré, rectangle, triangle rectangle, hauteur) → projection orthogonale : on remplace un vecteur par son projeté sur l'autre, puis \(\pm OA\times OH\).</li>
+    </ol>
+    <div class="example"><strong>Exemple (projection).</strong> Dans un carré \(ABCD\) de côté \(4\) : \(\vec{AB}\cdot\vec{AC}\). Le projeté de \(C\) sur \((AB)\) est \(B\), donc \(\vec{AB}\cdot\vec{AC} = \vec{AB}\cdot\vec{AB} = AB^2 = 16\). Pas besoin de l'angle de \(45^\circ\) !</div>
+  </div>
+
+  <div class="card">
+    <h3>Démontrer une orthogonalité</h3>
+    <ol class="steps">
+      <li>Écrire les coordonnées des deux vecteurs (\(\vec{AB} = (x_B - x_A\,;\,y_B - y_A)\)).</li>
+      <li>Calculer \(xx' + yy'\).</li>
+      <li>Conclure : si le résultat est \(0\), les vecteurs sont orthogonaux (les droites sont perpendiculaires) ; sinon, ils ne le sont pas.</li>
+    </ol>
+    <div class="example"><strong>Exemple.</strong> \(A(1\,;\,2)\), \(B(4\,;\,3)\), \(C(0\,;\,5)\). \(\vec{AB}\,(3\,;\,1)\), \(\vec{AC}\,(-1\,;\,3)\), \(\vec{AB}\cdot\vec{AC} = -3 + 3 = 0\) : le triangle \(ABC\) est rectangle en \(A\).</div>
+  </div>
+
+  <div class="card">
+    <h3>Calculer un angle</h3>
+    <ol class="steps">
+      <li>Calculer \(\vec u\cdot\vec v\) avec les coordonnées.</li>
+      <li>Calculer \(\|\vec u\|\) et \(\|\vec v\|\) (garder les racines carrées exactes).</li>
+      <li>En déduire \(\cos(\vec u,\vec v) = \dfrac{\vec u\cdot\vec v}{\|\vec u\|\,\|\vec v\|}\).</li>
+      <li>Utiliser la calculatrice (\(\arccos\) ou \(\cos^{-1}\), en mode degrés) et arrondir comme demandé.</li>
+    </ol>
+    <div class="example"><strong>Exemple.</strong> \(\vec u\,(3\,;\,1)\), \(\vec v\,(1\,;\,2)\) : \(\vec u\cdot\vec v = 5\), \(\|\vec u\| = \sqrt{10}\), \(\|\vec v\| = \sqrt5\), \(\cos(\vec u,\vec v) = \dfrac{5}{\sqrt{50}} = \dfrac{\sqrt2}{2}\), donc l'angle vaut \(45^\circ\).</div>
+  </div>
+
+  <div class="card">
+    <h3>Erreurs fréquentes</h3>
+    <div class="warn"><strong>Le produit scalaire est un nombre, pas un vecteur.</strong> Écrire \(\vec u\cdot\vec v = (8\,;\,-3)\) est faux : il faut additionner, \(8 + (-3) = 5\).</div>
+    <div class="warn"><strong>Ne pas confondre \(\vec u\cdot\vec v\) et \(\|\vec u\|\times\|\vec v\|\).</strong> Le produit des normes n'est égal au produit scalaire que si l'angle est nul (\(\cos = 1\)). En général \(\vec u\cdot\vec v \le \|\vec u\|\,\|\vec v\|\).</div>
+    <div class="warn"><strong>Angle obtus → cosinus négatif.</strong> Si \(\vec u\cdot\vec v < 0\), le cosinus est négatif et l'angle dépasse \(90^\circ\). Un résultat négatif n'est pas une erreur de calcul !</div>
+    <div class="warn"><strong>Oublier la racine carrée</strong> : \(\|\vec u\|^2 = x^2+y^2\), mais \(\|\vec u\| = \sqrt{x^2+y^2}\).</div>
+  </div>
+</section>
+
+<!-- ================= VISUALISATION ================= -->
+<section id="visualisation">
+  <h2>Visualisation</h2>
+  <div class="card">
+    <p>Déplace les <strong>pointes des vecteurs</strong> (au doigt ou à la souris) ou utilise les curseurs. Le projeté orthogonal \(H\) de la pointe de \(\vec v\) sur la droite de \(\vec u\) est tracé en pointillés : la zone est <span style="color:var(--green);font-weight:600">verte</span> si \(\vec u\cdot\vec v > 0\), <span style="color:var(--coral);font-weight:600">corail</span> si \(\vec u\cdot\vec v < 0\).</p>
+    <div class="viz-wrap">
+      <div>
+        <svg id="viz" viewBox="0 0 480 480" aria-label="Deux vecteurs u et v et le projeté orthogonal">
+          <defs>
+            <marker id="arrowU" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/></marker>
+            <marker id="arrowV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d97706"/></marker>
+          </defs>
+          <g id="grid"></g>
+          <polygon id="zone" points="" fill="#22a06b" fill-opacity="0.18"></polygon>
+          <line id="lineU" x1="0" y1="0" x2="0" y2="0" stroke="#9ca3af" stroke-width="1" stroke-dasharray="3 4"></line>
+          <line id="projSeg" x1="240" y1="240" x2="240" y2="240" stroke="#22a06b" stroke-width="7" stroke-linecap="round" opacity="0.8"></line>
+          <line id="dropLine" x1="0" y1="0" x2="0" y2="0" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="5 4"></line>
+          <path id="rightAngle" d="" fill="none" stroke="#4b5563" stroke-width="1.2"></path>
+          <path id="arc" d="" fill="none" stroke="#7c3aed" stroke-width="2.5"></path>
+          <text id="arcLabel" x="0" y="0" font-size="13" fill="#7c3aed" font-weight="600"></text>
+          <line id="vecU" x1="240" y1="240" x2="240" y2="240" stroke="#2563eb" stroke-width="3.5" marker-end="url(#arrowU)"></line>
+          <line id="vecV" x1="240" y1="240" x2="240" y2="240" stroke="#d97706" stroke-width="3.5" marker-end="url(#arrowV)"></line>
+          <circle id="ptH" cx="240" cy="240" r="4" fill="#4b5563"></circle>
+          <text id="lblH" x="0" y="0" font-size="13" fill="#4b5563" font-weight="600">H</text>
+          <text id="lblU" x="0" y="0" font-size="15" fill="#2563eb" font-weight="700">u</text>
+          <text id="lblV" x="0" y="0" font-size="15" fill="#d97706" font-weight="700">v</text>
+          <circle id="handleU" cx="240" cy="240" r="16" fill="#2563eb" fill-opacity="0.18" stroke="#2563eb" stroke-width="1.5" style="cursor:grab"></circle>
+          <circle id="handleV" cx="240" cy="240" r="16" fill="#d97706" fill-opacity="0.18" stroke="#d97706" stroke-width="1.5" style="cursor:grab"></circle>
+        </svg>
+      </div>
+      <div>
+        <div class="slider"><label class="u" for="ux">u : x</label><input type="range" id="ux" min="-6" max="6" step="0.5" value="4"><output id="uxo">4</output></div>
+        <div class="slider"><label class="u" for="uy">u : y</label><input type="range" id="uy" min="-6" max="6" step="0.5" value="1"><output id="uyo">1</output></div>
+        <div class="slider"><label class="v" for="vx">v : x</label><input type="range" id="vx" class="v" min="-6" max="6" step="0.5" value="1"><output id="vxo">1</output></div>
+        <div class="slider"><label class="v" for="vy">v : y</label><input type="range" id="vy" class="v" min="-6" max="6" step="0.5" value="3"><output id="vyo">3</output></div>
+        <div class="row">
+          <button class="ghost" id="presetOrtho" type="button">Exemple orthogonal</button>
+          <button class="ghost" id="presetObtus" type="button">Exemple obtus</button>
+          <button class="ghost" id="presetReset" type="button">Réinitialiser</button>
+        </div>
+        <div class="stats">
+          <div class="stat" id="statDot"><div class="lbl">u · v</div><div class="val" id="dotVal">—</div></div>
+          <div class="stat"><div class="lbl">angle (u, v)</div><div class="val" id="angVal">—</div></div>
+          <div class="stat"><div class="lbl">‖u‖</div><div class="val" id="nuVal">—</div></div>
+          <div class="stat"><div class="lbl">‖v‖</div><div class="val" id="nvVal">—</div></div>
+        </div>
+        <p id="signMsg" style="margin-top:0.6rem;font-weight:600"></p>
+      </div>
+    </div>
+    <h3 style="margin-top:1rem">Les trois formules donnent le même nombre</h3>
+    <div class="bilan">
+      <div class="col" id="colCoord"><h4>Coordonnées</h4><div class="calc" id="calcCoord"></div><div class="res" id="resCoord"></div></div>
+      <div class="col" id="colCos"><h4>Normes et cosinus</h4><div class="calc" id="calcCos"></div><div class="res" id="resCos"></div></div>
+      <div class="col" id="colProj"><h4>Projection</h4><div class="calc" id="calcProj"></div><div class="res" id="resProj"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXERCICES ================= -->
+<section id="exercices">
+  <h2>Exercices</h2>
+  <p>Trois exercices de difficulté croissante. Les nombres changent à chaque « Nouvel exercice ». Tu peux écrire les décimaux avec une virgule ou un point.</p>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 <span class="tag">Niveau 1 · application directe</span></h3>
+    <div id="ex1-enonce"></div>
+    <div class="row">
+      <label for="ex1-rep">\(\vec u\cdot\vec v = \)</label>
+      <input type="text" id="ex1-rep" inputmode="decimal" placeholder="réponse">
+      <button id="ex1-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" id="ex1-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex1-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex1-correction"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 <span class="tag">Niveau 2 · orthogonalité avec paramètre</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="row">
+      <label for="ex2-rep">\(k = \)</label>
+      <input type="text" id="ex2-rep" inputmode="decimal" placeholder="réponse">
+      <button id="ex2-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 <span class="tag">Niveau 3 · calcul d'un angle</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="row">
+      <label for="ex3-rep">\(\widehat{BAC} \approx \)</label>
+      <input type="text" id="ex3-rep" inputmode="decimal" placeholder="degrés">
+      <span>°</span>
+      <button id="ex3-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div>
+</section>
+
+<!-- ================= QCM ================= -->
+<section id="qcm">
+  <h2>QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard. Réponds à chacune ; le score s'affiche à la fin.</p>
+    <div id="qcm-container"></div>
+    <div class="score" id="qcm-score"></div>
+    <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="tip"><strong>Si tu bloques :</strong> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <em>indication</em> (pas la solution).</div>
+  <p>Fiche 1A · Produit scalaire · Programme de Première (BO 2019)</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function rndNonZero(min, max) { var x = 0; while (x === 0) { x = rnd(min, max); } return x; }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function fmt(x, d) {
+    if (d === undefined) d = 2;
+    var s = (Math.round(x * Math.pow(10, d)) / Math.pow(10, d)).toString();
+    return s.replace('.', ',');
+  }
+  function fmtSigned(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  function parseNum(str) {
+    if (str === null || str === undefined) return NaN;
+    var s = String(str).trim().replace(/\s+/g, '').replace(',', '.').replace('−', '-');
+    if (s === '') return NaN;
+    return Number(s);
+  }
+  function coord(x, y) { return '(' + x + '\\,;\\,' + y + ')'; }
+  function sqrtTex(n) {
+    var r = Math.round(Math.sqrt(n));
+    if (r * r === n) return String(r);
+    return '\\sqrt{' + n + '}';
+  }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'good' : 'bad');
+    el.textContent = msg;
+  }
+
+  /* ---------- Navigation sticky ---------- */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+  var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.scrollY + 120, current = 0;
+    sections.forEach(function (s, i) { if (s && s.offsetTop <= y) current = i; });
+    navLinks.forEach(function (a, i) { a.classList.toggle('active', i === current); });
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  /* ---------- Visualisation ---------- */
+  var S = 36, C = 240, LIM = 6;
+  var state = { ux: 4, uy: 1, vx: 1, vy: 3 };
+  var svg = $('viz');
+
+  function toPx(x, y) { return { x: C + x * S, y: C - y * S }; }
+
+  (function buildGrid() {
+    var g = $('grid'), html = '';
+    for (var i = -LIM; i <= LIM; i++) {
+      var p = toPx(i, i);
+      var strong = (i === 0);
+      html += '<line x1="' + p.x + '" y1="' + (C - LIM * S) + '" x2="' + p.x + '" y2="' + (C + LIM * S) + '" stroke="' + (strong ? '#9ca3af' : '#eeeae3') + '" stroke-width="' + (strong ? 1.5 : 1) + '"/>';
+      html += '<line x1="' + (C - LIM * S) + '" y1="' + p.y + '" x2="' + (C + LIM * S) + '" y2="' + p.y + '" stroke="' + (strong ? '#9ca3af' : '#eeeae3') + '" stroke-width="' + (strong ? 1.5 : 1) + '"/>';
+      if (i !== 0) {
+        html += '<text x="' + (p.x + 2) + '" y="' + (C + 13) + '" font-size="10" fill="#9ca3af">' + i + '</text>';
+        html += '<text x="' + (C + 4) + '" y="' + (p.y - 2) + '" font-size="10" fill="#9ca3af">' + i + '</text>';
+      }
+    }
+    html += '<text x="' + (C + 4) + '" y="' + (C - 4) + '" font-size="11" fill="#6b7280">O</text>';
+    g.innerHTML = html;
+  })();
+
+  function updateViz() {
+    var ux = state.ux, uy = state.uy, vx = state.vx, vy = state.vy;
+    var dot = ux * vx + uy * vy;
+    var nu = Math.sqrt(ux * ux + uy * uy), nv = Math.sqrt(vx * vx + vy * vy);
+    var pu = toPx(ux, uy), pv = toPx(vx, vy), o = toPx(0, 0);
+
+    ['ux', 'uy', 'vx', 'vy'].forEach(function (k) { $(k).value = state[k]; $(k + 'o').textContent = fmt(state[k], 1); });
+
+    $('vecU').setAttribute('x2', pu.x); $('vecU').setAttribute('y2', pu.y);
+    $('vecV').setAttribute('x2', pv.x); $('vecV').setAttribute('y2', pv.y);
+    $('handleU').setAttribute('cx', pu.x); $('handleU').setAttribute('cy', pu.y);
+    $('handleV').setAttribute('cx', pv.x); $('handleV').setAttribute('cy', pv.y);
+    $('lblU').setAttribute('x', pu.x + 10); $('lblU').setAttribute('y', pu.y - 8);
+    $('lblV').setAttribute('x', pv.x + 10); $('lblV').setAttribute('y', pv.y - 8);
+
+    var nuTxt = fmt(nu), nvTxt = fmt(nv);
+    $('nuVal').textContent = nuTxt;
+    $('nvVal').textContent = nvTxt;
+    $('dotVal').textContent = fmt(dot);
+    var statDot = $('statDot');
+    statDot.className = 'stat ' + (dot > 1e-9 ? 'pos' : (dot < -1e-9 ? 'neg' : ''));
+
+    var angleDeg = null;
+    if (nu > 1e-9 && nv > 1e-9) {
+      var c = Math.max(-1, Math.min(1, dot / (nu * nv)));
+      angleDeg = Math.acos(c) * 180 / Math.PI;
+    }
+    $('angVal').textContent = angleDeg === null ? '—' : fmt(angleDeg, 1) + '°';
+
+    var msg = '';
+    if (angleDeg === null) msg = 'Un des vecteurs est nul : produit scalaire nul, angle non défini.';
+    else if (Math.abs(dot) < 1e-9) msg = 'u · v = 0 : les vecteurs sont orthogonaux (angle droit).';
+    else if (dot > 0) msg = 'u · v > 0 : angle aigu, le projeté H est du côté de u.';
+    else msg = 'u · v < 0 : angle obtus, le projeté H est du côté opposé à u.';
+    var signMsg = $('signMsg');
+    signMsg.textContent = msg;
+    signMsg.style.color = Math.abs(dot) < 1e-9 ? '#4b5563' : (dot > 0 ? '#22a06b' : '#f97362');
+
+    // Droite (OA), projection, zone
+    var lineU = $('lineU'), projSeg = $('projSeg'), dropLine = $('dropLine'), zone = $('zone'), ptH = $('ptH'), lblH = $('lblH'), ra = $('rightAngle');
+    if (nu > 1e-9) {
+      var ex = ux / nu, ey = uy / nu;
+      var far = LIM * 1.5;
+      var a1 = toPx(ex * far, ey * far), a2 = toPx(-ex * far, -ey * far);
+      lineU.setAttribute('x1', a1.x); lineU.setAttribute('y1', a1.y); lineU.setAttribute('x2', a2.x); lineU.setAttribute('y2', a2.y);
+      var t = dot / (nu * nu);
+      var hx = t * ux, hy = t * uy;
+      var ph = toPx(hx, hy);
+      var color = dot > 1e-9 ? '#22a06b' : (dot < -1e-9 ? '#f97362' : '#4b5563');
+      projSeg.setAttribute('x2', ph.x); projSeg.setAttribute('y2', ph.y); projSeg.setAttribute('stroke', color);
+      dropLine.setAttribute('x1', pv.x); dropLine.setAttribute('y1', pv.y); dropLine.setAttribute('x2', ph.x); dropLine.setAttribute('y2', ph.y);
+      zone.setAttribute('points', o.x + ',' + o.y + ' ' + ph.x + ',' + ph.y + ' ' + pv.x + ',' + pv.y);
+      zone.setAttribute('fill', color);
+      ptH.setAttribute('cx', ph.x); ptH.setAttribute('cy', ph.y);
+      lblH.setAttribute('x', ph.x + 6); lblH.setAttribute('y', ph.y + 16);
+      // petit carré de l'angle droit en H
+      var dHV = Math.hypot(pv.x - ph.x, pv.y - ph.y);
+      if (dHV > 12) {
+        var s = 8;
+        var d1x = ex * s, d1y = -ey * s; // direction de u en pixels
+        var d2x = (pv.x - ph.x) / dHV * s, d2y = (pv.y - ph.y) / dHV * s;
+        // orienter d1 vers O si H est au-delà, sinon vers u : on choisit le côté opposé à v sur la droite
+        var towardO = (o.x - ph.x) * d1x + (o.y - ph.y) * d1y;
+        if (Math.abs(towardO) < 1e-6) towardO = 1;
+        var sg = towardO > 0 ? 1 : -1;
+        d1x *= sg; d1y *= sg;
+        ra.setAttribute('d', 'M' + (ph.x + d1x) + ',' + (ph.y + d1y) + ' L' + (ph.x + d1x + d2x) + ',' + (ph.y + d1y + d2y) + ' L' + (ph.x + d2x) + ',' + (ph.y + d2y));
+      } else { ra.setAttribute('d', ''); }
+      var OH = Math.abs(t) * nu;
+      $('calcProj').textContent = (t < -1e-9 ? '− ' : '') + 'OA × OH = ' + (t < -1e-9 ? '− ' : '') + nuTxt + ' × ' + fmt(OH);
+      $('resProj').textContent = fmt(nu * t * nu);
+    } else {
+      lineU.setAttribute('x1', 0); lineU.setAttribute('y1', 0); lineU.setAttribute('x2', 0); lineU.setAttribute('y2', 0);
+      projSeg.setAttribute('x2', o.x); projSeg.setAttribute('y2', o.y);
+      dropLine.setAttribute('x1', 0); dropLine.setAttribute('y1', 0); dropLine.setAttribute('x2', 0); dropLine.setAttribute('y2', 0);
+      zone.setAttribute('points', '');
+      ptH.setAttribute('cx', o.x); ptH.setAttribute('cy', o.y);
+      lblH.setAttribute('x', o.x + 6); lblH.setAttribute('y', o.y + 16);
+      ra.setAttribute('d', '');
+      $('calcProj').textContent = 'u est nul';
+      $('resProj').textContent = '0';
+    }
+
+    // Arc d'angle
+    var arc = $('arc'), arcLabel = $('arcLabel');
+    if (angleDeg !== null) {
+      var r = 34;
+      var eux = ux / nu, euy = uy / nu, evx = vx / nv, evy = vy / nv;
+      var p1 = toPx(eux * r / S, euy * r / S), p2 = toPx(evx * r / S, evy * r / S);
+      var cross = ux * vy - uy * vx;
+      var sweep = cross > 0 ? 0 : 1;
+      if (Math.abs(dot) < 1e-9) {
+        // angle droit : petit carré
+        var q = 14;
+        var c1 = toPx(eux * q / S, euy * q / S), c2 = toPx((eux + evx) * q / S, (euy + evy) * q / S), c3 = toPx(evx * q / S, evy * q / S);
+        arc.setAttribute('d', 'M' + c1.x + ',' + c1.y + ' L' + c2.x + ',' + c2.y + ' L' + c3.x + ',' + c3.y);
+      } else if (Math.abs(cross) < 1e-9) {
+        arc.setAttribute('d', '');
+      } else {
+        arc.setAttribute('d', 'M' + p1.x + ',' + p1.y + ' A' + r + ',' + r + ' 0 0 ' + sweep + ' ' + p2.x + ',' + p2.y);
+      }
+      var bx = eux + evx, by = euy + evy, bn = Math.hypot(bx, by);
+      if (bn < 1e-6) { bx = -euy; by = eux; bn = 1; }
+      var pl = toPx(bx / bn * 52 / S, by / bn * 52 / S);
+      arcLabel.setAttribute('x', pl.x - 12); arcLabel.setAttribute('y', pl.y + 5);
+      arcLabel.textContent = fmt(angleDeg, 0) + '°';
+    } else {
+      arc.setAttribute('d', ''); arcLabel.textContent = '';
+    }
+
+    // Bilan des formules
+    $('calcCoord').textContent = fmt(ux, 1) + ' × ' + fmt(vx, 1) + ' + ' + fmt(uy, 1) + ' × ' + fmt(vy, 1);
+    $('resCoord').textContent = fmt(dot);
+    if (angleDeg !== null) {
+      $('calcCos').textContent = nuTxt + ' × ' + nvTxt + ' × cos(' + fmt(angleDeg, 1) + '°)';
+      $('resCos').textContent = fmt(nu * nv * Math.cos(angleDeg * Math.PI / 180));
+    } else {
+      $('calcCos').textContent = 'angle non défini';
+      $('resCos').textContent = '0';
+    }
+    ['colCoord', 'colCos', 'colProj'].forEach(function (id) { $(id).classList.add('match'); });
+  }
+
+  ['ux', 'uy', 'vx', 'vy'].forEach(function (k) {
+    $(k).addEventListener('input', function () { state[k] = Number(this.value); updateViz(); });
+  });
+  $('presetOrtho').addEventListener('click', function () { state = { ux: 3, uy: 2, vx: -2, vy: 3 }; updateViz(); });
+  $('presetObtus').addEventListener('click', function () { state = { ux: 4, uy: 1, vx: -3, vy: 3 }; updateViz(); });
+  $('presetReset').addEventListener('click', function () { state = { ux: 4, uy: 1, vx: 1, vy: 3 }; updateViz(); });
+
+  // Glisser-déposer des poignées (souris et tactile via Pointer Events)
+  function svgPoint(evt) {
+    var pt = svg.createSVGPoint();
+    pt.x = evt.clientX; pt.y = evt.clientY;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    var p = pt.matrixTransform(ctm.inverse());
+    return { x: (p.x - C) / S, y: (C - p.y) / S };
+  }
+  function snap(x) { return Math.max(-LIM, Math.min(LIM, Math.round(x * 2) / 2)); }
+  function makeDraggable(handleId, kx, ky) {
+    var h = $(handleId), dragging = false;
+    h.addEventListener('pointerdown', function (e) {
+      dragging = true; h.setPointerCapture(e.pointerId); h.style.cursor = 'grabbing'; e.preventDefault();
+    });
+    h.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var p = svgPoint(e);
+      if (!p) return;
+      state[kx] = snap(p.x); state[ky] = snap(p.y);
+      updateViz();
+    });
+    function stop(e) { dragging = false; h.style.cursor = 'grab'; try { h.releasePointerCapture(e.pointerId); } catch (err) {} }
+    h.addEventListener('pointerup', stop);
+    h.addEventListener('pointercancel', stop);
+  }
+  makeDraggable('handleU', 'ux', 'uy');
+  makeDraggable('handleV', 'vx', 'vy');
+  updateViz();
+
+  /* ---------- Exercices génératifs ---------- */
+  var ex = {};
+
+  function wireExercise(n, gen, check) {
+    var id = 'ex' + n;
+    function render() {
+      ex[n] = gen();
+      $(id + '-enonce').innerHTML = ex[n].enonce;
+      $(id + '-correction').innerHTML = ex[n].correction;
+      $(id + '-correction').classList.remove('open');
+      $(id + '-corr').textContent = 'Voir la correction';
+      $(id + '-rep').value = '';
+      $(id + '-fb').className = 'feedback'; $(id + '-fb').textContent = '';
+      typeset($(id));
+    }
+    $(id + '-check').addEventListener('click', function () {
+      var val = parseNum($(id + '-rep').value);
+      var fb = $(id + '-fb');
+      if (isNaN(val)) { setFeedback(fb, false, 'Écris un nombre (par exemple 12 ou -3,5).'); return; }
+      var res = check(ex[n], val);
+      setFeedback(fb, res.ok, res.msg);
+    });
+    $(id + '-rep').addEventListener('keydown', function (e) { if (e.key === 'Enter') $(id + '-check').click(); });
+    $(id + '-corr').addEventListener('click', function () {
+      var c = $(id + '-correction');
+      c.classList.toggle('open');
+      this.textContent = c.classList.contains('open') ? 'Masquer la correction' : 'Voir la correction';
+      if (c.classList.contains('open')) typeset(c);
+    });
+    $(id + '-new').addEventListener('click', render);
+    render();
+  }
+
+  // Exercice 1 : produit scalaire à partir des coordonnées
+  wireExercise(1, function () {
+    var a = rndNonZero(-7, 7), b = rndNonZero(-7, 7), c = rndNonZero(-7, 7), d = rndNonZero(-7, 7);
+    var res = a * c + b * d;
+    var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,' + coord(a, b) + '\\) et \\(\\vec v\\,' + coord(c, d) + '\\).</p><p>Calculer \\(\\vec u\\cdot\\vec v\\).</p>';
+    var correction = '<p><strong>Formule :</strong> en repère orthonormé, \\(\\vec u\\cdot\\vec v = xx\' + yy\'\\).</p>' +
+      '<p>\\(\\vec u\\cdot\\vec v = ' + a + '\\times' + fmtSigned(c) + ' + ' + fmtSigned(b) + '\\times' + fmtSigned(d) + ' = ' + (a * c) + ' + ' + fmtSigned(b * d) + ' = ' + res + '\\)</p>' +
+      '<p>Le produit scalaire est le <strong>nombre</strong> \\(' + res + '\\)' + (res > 0 ? ' (positif : angle aigu).' : (res < 0 ? ' (négatif : angle obtus).' : ' : les vecteurs sont orthogonaux.')) + '</p>';
+    return { a: a, b: b, c: c, d: d, res: res, enonce: enonce, correction: correction };
+  }, function (e, val) {
+    if (Math.abs(val - e.res) < 0.01) return { ok: true, msg: 'Correct ! u · v = ' + e.res + '.' };
+    if (Math.abs(val - (e.a * e.c - e.b * e.d)) < 0.01) return { ok: false, msg: 'Non : on ajoute les deux produits, on ne les soustrait pas.' };
+    if (Math.abs(val - (e.a * e.d + e.b * e.c)) < 0.01) return { ok: false, msg: 'Non : on multiplie x avec x\' et y avec y\', pas en croisé.' };
+    return { ok: false, msg: 'Non. Calcule x × x\' + y × y\' et vérifie les signes.' };
+  });
+
+  // Exercice 2 : paramètre k pour l'orthogonalité
+  wireExercise(2, function () {
+    var b = rndNonZero(-3, 3);
+    var m = rndNonZero(-4, 4);
+    var c = b * m;
+    var a = rndNonZero(-5, 5);
+    var k = -a * m; // k*b + a*c = 0  =>  k = -a*c/b = -a*m
+    var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,(k\\,;\\,' + a + ')\\) et \\(\\vec v\\,' + coord(b, c) + '\\), où \\(k\\) est un nombre réel.</p><p>Déterminer la valeur de \\(k\\) pour laquelle \\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux.</p>';
+    var correction = '<p><strong>Étape 1 :</strong> \\(\\vec u\\perp\\vec v \\iff \\vec u\\cdot\\vec v = 0\\).</p>' +
+      '<p><strong>Étape 2 :</strong> \\(\\vec u\\cdot\\vec v = k\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + b + 'k + ' + fmtSigned(a * c) + '\\).</p>' +
+      '<p><strong>Étape 3 :</strong> on résout \\(' + b + 'k + ' + fmtSigned(a * c) + ' = 0\\), soit \\(' + b + 'k = ' + (-a * c) + '\\), donc \\(k = \\dfrac{' + (-a * c) + '}{' + b + '} = ' + k + '\\).</p>' +
+      '<p><strong>Vérification :</strong> \\(' + k + '\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + (k * b) + ' + ' + fmtSigned(a * c) + ' = 0\\). ✓</p>';
+    return { a: a, b: b, c: c, k: k, enonce: enonce, correction: correction };
+  }, function (e, val) {
+    if (Math.abs(val - e.k) < 0.01) return { ok: true, msg: 'Correct ! Pour k = ' + e.k + ', le produit scalaire vaut 0.' };
+    if (Math.abs(val + e.k) < 0.01) return { ok: false, msg: 'Erreur de signe : reprends la résolution de ' + e.b + 'k + ' + fmtSigned(e.a * e.c) + ' = 0.' };
+    return { ok: false, msg: 'Non. Écris u · v = 0 sous la forme ' + e.b + 'k + (…) = 0 puis isole k.' };
+  });
+
+  // Exercice 3 : angle BAC au degré près
+  wireExercise(3, function () {
+    var A, B, C, abx, aby, acx, acy, dot, n1, n2, cosv, ang;
+    var tries = 0;
+    do {
+      A = [rnd(-4, 4), rnd(-4, 4)]; B = [rnd(-5, 5), rnd(-5, 5)]; C = [rnd(-5, 5), rnd(-5, 5)];
+      abx = B[0] - A[0]; aby = B[1] - A[1]; acx = C[0] - A[0]; acy = C[1] - A[1];
+      dot = abx * acx + aby * acy;
+      n1 = Math.hypot(abx, aby); n2 = Math.hypot(acx, acy);
+      tries++;
+      if (n1 < 1 || n2 < 1) continue;
+      cosv = dot / (n1 * n2);
+      ang = Math.acos(Math.max(-1, Math.min(1, cosv))) * 180 / Math.PI;
+    } while ((n1 < 1 || n2 < 1 || ang < 8 || ang > 172 || Math.abs(abx * acy - aby * acx) < 0.5) && tries < 200);
+    var n1sq = abx * abx + aby * aby, n2sq = acx * acx + acy * acy;
+    var angR = Math.round(ang);
+    var enonce = '<p>Dans un repère orthonormé, on donne \\(A' + coord(A[0], A[1]) + '\\), \\(B' + coord(B[0], B[1]) + '\\) et \\(C' + coord(C[0], C[1]) + '\\).</p><p>Déterminer une mesure de l\'angle \\(\\widehat{BAC}\\), arrondie au degré.</p>';
+    var correction = '<p><strong>Étape 1 : coordonnées des vecteurs.</strong> \\(\\vec{AB}\\,' + coord(abx, aby) + '\\) et \\(\\vec{AC}\\,' + coord(acx, acy) + '\\).</p>' +
+      '<p><strong>Étape 2 : produit scalaire.</strong> \\(\\vec{AB}\\cdot\\vec{AC} = ' + abx + '\\times' + fmtSigned(acx) + ' + ' + fmtSigned(aby) + '\\times' + fmtSigned(acy) + ' = ' + dot + '\\).</p>' +
+      '<p><strong>Étape 3 : normes.</strong> \\(AB = \\sqrt{' + abx + '^2 + ' + fmtSigned(aby) + '^2} = \\sqrt{' + n1sq + '} = ' + sqrtTex(n1sq) + (Math.round(Math.sqrt(n1sq)) ** 2 === n1sq ? '' : ' \\approx ' + fmt(n1, 3)) + '\\) et \\(AC = \\sqrt{' + n2sq + '} = ' + sqrtTex(n2sq) + (Math.round(Math.sqrt(n2sq)) ** 2 === n2sq ? '' : ' \\approx ' + fmt(n2, 3)) + '\\).</p>' +
+      '<p><strong>Étape 4 : cosinus.</strong> \\(\\cos\\widehat{BAC} = \\dfrac{\\vec{AB}\\cdot\\vec{AC}}{AB\\times AC} = \\dfrac{' + dot + '}{' + sqrtTex(n1sq) + '\\times' + sqrtTex(n2sq) + '} \\approx ' + fmt(cosv, 4) + '\\).</p>' +
+      '<p><strong>Étape 5 : angle.</strong> \\(\\widehat{BAC} = \\arccos(' + fmt(cosv, 4) + ') \\approx ' + fmt(ang, 1) + '^\\circ\\), soit environ \\(' + angR + '^\\circ\\)' + (dot < 0 ? ' (produit scalaire négatif : angle obtus, cohérent).' : (dot === 0 ? ' : angle droit.' : ' (produit scalaire positif : angle aigu, cohérent).')) + '</p>';
+    return { ang: ang, angR: angR, dot: dot, enonce: enonce, correction: correction };
+  }, function (e, val) {
+    if (Math.abs(val - e.ang) <= 1.01) return { ok: true, msg: 'Correct ! L\'angle vaut environ ' + e.angR + '°.' };
+    if (Math.abs((180 - val) - e.ang) <= 1.01) return { ok: false, msg: 'Tu as trouvé l\'angle supplémentaire : vérifie le signe du produit scalaire (' + e.dot + ').' };
+    return { ok: false, msg: 'Non. Calcule AB · AC, puis AB et AC, puis cos = (AB · AC)/(AB × AC) et arccos en degrés.' };
+  });
+
+  /* ---------- QCM ---------- */
+  // Chaque générateur renvoie { q, options: [4 chaînes], correct: index, expl }
+  var qcmBank = [
+    function () {
+      var a = rndNonZero(-6, 6), b = rndNonZero(-6, 6), c = rndNonZero(-6, 6), d = rndNonZero(-6, 6);
+      var good = a * c + b * d;
+      var opts = [good, a * c - b * d, a * d + b * c, good + 2 * Math.sign(good || 1)];
+      return build('Dans un repère orthonormé, \\(\\vec u\\,' + coord(a, b) + '\\) et \\(\\vec v\\,' + coord(c, d) + '\\). Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts.map(String), 0,
+        'On calcule xx\' + yy\' = ' + a + ' × ' + fmtSigned(c) + ' + ' + fmtSigned(b) + ' × ' + fmtSigned(d) + ' = ' + good + '.');
+    },
+    function () {
+      var a = rnd(2, 6), b = rnd(2, 6);
+      var good = a * b / 2;
+      var opts = [fmt(good), String(a * b), fmt(a * b * Math.sqrt(3) / 2), '0'];
+      return build('\\(\\|\\vec u\\| = ' + a + '\\), \\(\\|\\vec v\\| = ' + b + '\\) et \\((\\vec u,\\vec v) = 60^\\circ\\). Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts, 0,
+        'u · v = ‖u‖ × ‖v‖ × cos 60° = ' + a + ' × ' + b + ' × 1/2 = ' + fmt(good) + '.');
+    },
+    function () {
+      var a = rnd(2, 6), b = rnd(2, 6);
+      var good = -a * b / 2;
+      var opts = [fmt(good), fmt(a * b / 2), String(a * b), String(-a * b)];
+      return build('\\(\\|\\vec u\\| = ' + a + '\\), \\(\\|\\vec v\\| = ' + b + '\\) et \\((\\vec u,\\vec v) = 120^\\circ\\). Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts, 0,
+        'cos 120° = −1/2, donc u · v = ' + a + ' × ' + b + ' × (−1/2) = ' + fmt(good) + '. Angle obtus : résultat négatif.');
+    },
+    function () {
+      return build('Le produit scalaire \\(\\vec u\\cdot\\vec v\\) est…', ['un nombre réel', 'un vecteur', 'un point', 'un angle'], 0,
+        'Le produit scalaire est toujours un nombre (positif, négatif ou nul), jamais un vecteur.');
+    },
+    function () {
+      return build('\\(\\vec u\\) et \\(\\vec v\\) sont non nuls et \\(\\vec u\\cdot\\vec v = 0\\). Alors…', ['\\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux', '\\(\\vec u\\) et \\(\\vec v\\) sont colinéaires', '\\(\\vec u = \\vec v\\)', '\\(\\vec u = -\\vec v\\)'], 0,
+        'Un produit scalaire nul entre deux vecteurs non nuls caractérise l\'orthogonalité (cos = 0, angle droit).');
+    },
+    function () {
+      return build('Si l\'angle \\((\\vec u,\\vec v)\\) est obtus, alors \\(\\vec u\\cdot\\vec v\\) est…', ['strictement négatif', 'strictement positif', 'nul', 'égal à \\(\\|\\vec u\\|\\,\\|\\vec v\\|\\)'], 0,
+        'Angle obtus ⇒ cosinus négatif ⇒ produit scalaire négatif (les normes sont positives).');
+    },
+    function () {
+      var t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [-3, 4, 5], [6, -8, 10]]);
+      var opts = [String(t[2]), String(t[0] * t[0] + t[1] * t[1]), String(Math.abs(t[0]) + Math.abs(t[1])), String(Math.abs(t[0] * t[1]))];
+      return build('Dans un repère orthonormé, \\(\\vec u\\,' + coord(t[0], t[1]) + '\\). Que vaut \\(\\|\\vec u\\|\\) ?', opts, 0,
+        '‖u‖ = √(x² + y²) = √(' + t[0] * t[0] + ' + ' + t[1] * t[1] + ') = √' + (t[0] * t[0] + t[1] * t[1]) + ' = ' + t[2] + '.');
+    },
+    function () {
+      var p = rnd(2, 4), q = rnd(2, 5), s = rndNonZero(-6, 6);
+      var opts = [String(p * q * s), String((p + q) * s), String(s), String(p * q + s)];
+      return build('On sait que \\(\\vec u\\cdot\\vec v = ' + s + '\\). Que vaut \\((' + p + '\\vec u)\\cdot(' + q + '\\vec v)\\) ?', opts, 0,
+        'Par bilinéarité, (' + p + 'u) · (' + q + 'v) = ' + p + ' × ' + q + ' × (u · v) = ' + (p * q) + ' × ' + fmtSigned(s) + ' = ' + (p * q * s) + '.');
+    },
+    function () {
+      var n = rnd(2, 7);
+      var opts = [String(n * n), String(n), String(2 * n), '0'];
+      return build('Si \\(\\|\\vec u\\| = ' + n + '\\), que vaut \\(\\vec u\\cdot\\vec u\\) ?', opts, 0,
+        'u · u = ‖u‖² = ' + n + '² = ' + (n * n) + '.');
+    },
+    function () {
+      var oa = rnd(3, 8), oh = rnd(1, 5);
+      var opts = [String(-oa * oh), String(oa * oh), String(oa - oh), String(oa + oh)];
+      return build('\\(\\vec u = \\vec{OA}\\) avec \\(OA = ' + oa + '\\). Le projeté orthogonal \\(H\\) de \\(B\\) sur \\((OA)\\) vérifie \\(OH = ' + oh + '\\), avec \\(\\vec{OH}\\) et \\(\\vec{OA}\\) de sens contraires. Que vaut \\(\\vec{OA}\\cdot\\vec{OB}\\) ?', opts, 0,
+        'Sens contraires : OA · OB = − OA × OH = −' + oa + ' × ' + oh + ' = ' + (-oa * oh) + '.');
+    },
+    function () {
+      var data = pick([[6, 3, 4, '60'], [12, 4, 6, '60'], [0, 3, 5, '90'], [-5, 2, 5, '120'], [9, 3, 6, '60'], [-8, 4, 4, '120']]);
+      var dot = data[0], nu = data[1], nv = data[2], good = data[3];
+      var others = ['30', '45', '60', '90', '120', '135', '150'].filter(function (x) { return x !== good; });
+      var opts = [good + '°'].concat(shuffle(others).slice(0, 3).map(function (x) { return x + '°'; }));
+      return build('\\(\\vec u\\cdot\\vec v = ' + dot + '\\), \\(\\|\\vec u\\| = ' + nu + '\\), \\(\\|\\vec v\\| = ' + nv + '\\). Quelle est la mesure de l\'angle \\((\\vec u,\\vec v)\\) ?', opts, 0,
+        'cos(u, v) = (u · v)/(‖u‖ ‖v‖) = ' + dot + '/' + (nu * nv) + ' = ' + fmt(dot / (nu * nv), 2) + ', donc l\'angle vaut ' + good + '°.');
+    },
+    function () {
+      var a = rndNonZero(-4, 4), m = rndNonZero(-3, 3), b = rndNonZero(-3, 3), c = b * m, k = -a * m;
+      var opts = [String(k), String(-k), String(a * c), String(b)];
+      return build('Pour quelle valeur de \\(k\\) les vecteurs \\(\\vec u\\,(k\\,;\\,' + a + ')\\) et \\(\\vec v\\,' + coord(b, c) + '\\) sont-ils orthogonaux ?', opts, 0,
+        'u · v = ' + b + 'k + ' + fmtSigned(a * c) + ' = 0 ⇔ k = ' + (-a * c) + '/' + b + ' = ' + k + '.');
+    },
+    function () {
+      return build('Quand a-t-on \\(\\vec u\\cdot\\vec v = \\|\\vec u\\|\\times\\|\\vec v\\|\\) (vecteurs non nuls) ?', ['quand \\(\\vec u\\) et \\(\\vec v\\) sont colinéaires de même sens', 'toujours', 'quand \\(\\vec u\\perp\\vec v\\)', 'quand \\(\\vec u\\) et \\(\\vec v\\) sont de sens contraires'], 0,
+        'Cela revient à cos(u, v) = 1, donc angle nul : vecteurs colinéaires et de même sens.');
+    },
+    function () {
+      var s = rndNonZero(-6, 6), t = rndNonZero(-6, 6);
+      var opts = [String(s + t), String(s * t), String(s - t), String(s)];
+      return build('On sait que \\(\\vec u\\cdot\\vec v = ' + s + '\\) et \\(\\vec u\\cdot\\vec w = ' + t + '\\). Que vaut \\(\\vec u\\cdot(\\vec v + \\vec w)\\) ?', opts, 0,
+        'Bilinéarité : u · (v + w) = u · v + u · w = ' + s + ' + ' + fmtSigned(t) + ' = ' + (s + t) + '.');
+    }
+  ];
+
+  // Mélange les options et garde l'index de la bonne réponse
+  function build(q, options, correctIdx, expl) {
+    var idx = shuffle([0, 1, 2, 3]);
+    var opts = idx.map(function (i) { return options[i]; });
+    return { q: q, options: opts, correct: idx.indexOf(correctIdx), expl: expl };
+  }
+
+  var qcmMap = {};
+  var qcmAnswered = 0, qcmScore = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var container = $('qcm-container');
+    container.innerHTML = '';
+    $('qcm-score').textContent = '';
+    qcmMap = {}; qcmAnswered = 0; qcmScore = 0;
+    var chosen = shuffle(qcmBank).slice(0, 4);
+    chosen.forEach(function (gen, i) {
+      var item = gen(), guard = 0;
+      while (guard++ < 30 && new Set(item.options).size < 4) item = gen();
+      qcmMap[i] = { correct: item.correct, expl: item.expl };
+      var div = document.createElement('div');
+      div.className = 'qcm-q';
+      var qd = document.createElement('div');
+      qd.className = 'question';
+      qd.innerHTML = (i + 1) + '. ' + item.q;
+      div.appendChild(qd);
+      var ch = document.createElement('div');
+      ch.className = 'choices';
+      item.options.forEach(function (opt, j) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'choice';
+        btn.innerHTML = '<span class="letter">' + LETTERS[j] + '</span>' + opt;
+        btn.addEventListener('click', function () { answerQcm(i, j, ch); });
+        ch.appendChild(btn);
+      });
+      div.appendChild(ch);
+      var ex = document.createElement('div');
+      ex.className = 'expl';
+      ex.id = 'qcm-expl-' + i;
+      div.appendChild(ex);
+      container.appendChild(div);
+    });
+    typeset(container);
+  }
+
+  function answerQcm(i, j, choicesEl) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+    var buttons = choicesEl.querySelectorAll('button');
+    buttons.forEach(function (b, k) {
+      b.disabled = true;
+      if (k === info.correct) b.classList.add('correct');
+      else if (k === j) b.classList.add('wrong');
+    });
+    var ok = (j === info.correct);
+    if (ok) qcmScore++;
+    qcmAnswered++;
+    var ex = $('qcm-expl-' + i);
+    ex.innerHTML = '<span style="color:' + (ok ? '#22a06b' : '#f97362') + ';font-weight:700">' + (ok ? 'Bonne réponse !' : 'Faux. La bonne réponse est ' + LETTERS[info.correct] + '.') + '</span> ' + info.expl;
+    ex.classList.add('show');
+    if (qcmAnswered === 4) {
+      var sc = $('qcm-score');
+      sc.textContent = 'Score : ' + qcmScore + ' / 4' + (qcmScore === 4 ? ' — parfait !' : (qcmScore >= 2 ? ' — bien, relis les explications des erreurs.' : ' — relis le cours puis refais un QCM.'));
+      sc.style.color = qcmScore >= 3 ? '#22a06b' : (qcmScore === 2 ? '#d97706' : '#f97362');
+    }
+  }
+
+  $('qcm-new').addEventListener('click', renderQcm);
+  renderQcm();
+
+  // Rendu MathJax global une fois la bibliothèque chargée (contenu injecté avant le chargement)
+  var mjTries = 0;
+  (function waitMathJax() {
+    if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
+    if (mjTries++ < 100) setTimeout(waitMathJax, 200);
+  })();
+})();
+</script>
+</body>
+</html>

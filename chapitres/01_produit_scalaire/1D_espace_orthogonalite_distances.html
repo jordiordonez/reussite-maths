@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1D · Orthogonalité et distances dans l'espace</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]},
+  options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+:root{--bg:#faf8f5;--card:#ffffff;--ink:#1f2937;--muted:#6b7280;--blue:#2563eb;--blue-soft:#e8effd;--coral:#f97362;--coral-soft:#fdeae6;--green:#22a06b;--green-soft:#e3f5ec;--amber:#f59e0b;--amber-soft:#fef3d9;--radius:16px;--shadow:0 4px 18px rgba(31,41,55,.08)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;font-size:16px}
+h1,h2,h3,h4{font-family:Georgia,"Times New Roman",serif;font-weight:600;line-height:1.25;margin:0 0 .5em}
+header.hero{padding:44px 20px 28px;text-align:center;background:linear-gradient(160deg,#eef3ff 0%,#faf8f5 60%)}
+header.hero h1{font-size:clamp(1.6rem,5vw,2.6rem);color:var(--blue);opacity:0;transform:translateY(18px);animation:rise .9s ease-out forwards}
+header.hero .sub{color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;opacity:0;animation:fade 1.2s .5s ease-out forwards}
+header.hero .chap{color:var(--muted);font-size:.95rem;margin-top:8px;opacity:0;animation:fade 1.2s .9s ease-out forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+nav.sticky{position:sticky;top:0;z-index:50;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid #e7e2da;padding:8px 10px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav.sticky a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:999px;background:#fff;border:1px solid #e3ddd4;color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
+nav.sticky a:hover,nav.sticky a:focus{background:var(--blue-soft);border-color:var(--blue);color:var(--blue)}
+nav.sticky a.active{background:var(--blue);border-color:var(--blue);color:#fff}
+main{max-width:900px;margin:0 auto;padding:16px 14px 40px}
+section{margin:28px 0}
+section>h2{font-size:1.7rem;color:var(--blue);display:flex;align-items:center;gap:10px}
+section>h2 .num{display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;align-items:center;justify-content:center;font-family:system-ui,sans-serif;font-size:1rem}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 18px;margin:14px 0}
+.card h3{font-size:1.15rem;color:var(--ink);margin-bottom:.4em}
+.box{border-left:5px solid var(--blue);background:var(--blue-soft);border-radius:10px;padding:10px 14px;margin:10px 0}
+.box.green{border-color:var(--green);background:var(--green-soft)}
+.box.amber{border-color:var(--amber);background:var(--amber-soft)}
+.box.coral{border-color:var(--coral);background:var(--coral-soft)}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.tag.demo{background:var(--amber-soft);color:#92400e}
+.tag.term{background:var(--blue-soft);color:var(--blue)}
+.tag.prem{background:#ede9fe;color:#5b21b6}
+ol.steps{padding-left:22px}
+ol.steps li{margin:6px 0}
+ul.errs li{margin:6px 0}
+button,.btn{min-height:44px;padding:10px 18px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .08s,box-shadow .2s}
+button:hover{box-shadow:0 4px 12px rgba(37,99,235,.3)}
+button:active{transform:scale(.97)}
+button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+button.ghost{background:#f3f0ea;color:var(--ink)}
+button:disabled{opacity:.6;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 16px;margin:10px 0}
+.sliders label{display:flex;flex-direction:column;font-size:.9rem;color:var(--muted)}
+.sliders label b{color:var(--ink);font-family:Georgia,serif;font-size:1rem}
+input[type=range]{width:100%;accent-color:var(--blue);height:32px}
+.viz{width:100%;max-width:560px;margin:0 auto;display:block}
+svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:10px}
+.readout div{background:#f7f5f0;border-radius:10px;padding:8px 12px;font-size:.95rem}
+.readout b{color:var(--blue)}
+.enonce{font-size:1.02rem}
+.inputs{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+.inputs label{display:flex;align-items:center;gap:6px;font-weight:600}
+input[type=number],input[type=text]{min-height:44px;width:92px;padding:6px 10px;border:2px solid #d9d3c8;border-radius:10px;font-size:1rem;font-family:inherit}
+input[type=number]:focus,input[type=text]:focus{outline:none;border-color:var(--blue)}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:10px;font-weight:600;display:none}
+.feedback.ok{display:block;background:var(--green-soft);color:#14532d;border-left:5px solid var(--green)}
+.feedback.ko{display:block;background:var(--coral-soft);color:#7f1d1d;border-left:5px solid var(--coral)}
+.correction{display:none;margin-top:12px;background:#f7f5f0;border-radius:12px;padding:12px 16px}
+.correction.open{display:block}
+.correction p{margin:6px 0}
+.level{font-size:.8rem;font-weight:700;color:#fff;background:var(--green);padding:3px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+.level.l2{background:var(--amber)}
+.level.l3{background:var(--coral)}
+.qcm-q{margin:16px 0 8px;font-weight:600}
+.opts{display:grid;gap:8px}
+.opts button{background:#fff;color:var(--ink);border:2px solid #d9d3c8;text-align:left;font-weight:500;padding:10px 14px}
+.opts button .letter{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);text-align:center;line-height:28px;font-weight:700;margin-right:10px}
+.opts button.right{background:var(--green-soft);border-color:var(--green)}
+.opts button.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.opts button:disabled{opacity:1;cursor:default}
+.expl{display:none;margin-top:8px;padding:8px 12px;border-radius:10px;background:#f7f5f0;font-size:.95rem}
+.expl.show{display:block}
+.score{font-size:1.2rem;font-weight:700;margin-top:14px;display:none;padding:12px 16px;border-radius:12px;background:var(--blue-soft);color:var(--blue)}
+.score.show{display:block}
+footer{text-align:center;color:var(--muted);padding:26px 18px 50px;font-size:.95rem;border-top:1px solid #e7e2da;margin-top:20px}
+footer b{color:var(--ink)}
+table.simple{border-collapse:collapse;width:100%;font-size:.95rem}
+table.simple td,table.simple th{border-bottom:1px solid #eee;padding:6px 8px;text-align:left;vertical-align:top}
+.mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+mjx-container[display="true"]{margin:8px 0 !important}
+.small{font-size:.9rem;color:var(--muted)}
+@media (max-width:480px){.card{padding:14px 13px}main{padding:10px 8px 40px}section>h2{font-size:1.45rem}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>Orthogonalité et distances dans l'espace</h1>
+  <div class="sub">Terminale · Mathématiques</div>
+  <div class="chap">Chapitre 1 · Produit scalaire — fiche 1D : plans, droites, projetés et distances</div>
+</header>
+<nav class="sticky">
+  <a href="#cours">Cours</a>
+  <a href="#methode">Méthode</a>
+  <a href="#visu">Visualisation</a>
+  <a href="#exos">Exercices</a>
+  <a href="#qcm">QCM</a>
+</nav>
+<main>
+
+<!-- ==================== COURS ==================== -->
+<section id="cours">
+  <h2><span class="num">1</span>Cours</h2>
+  <p class="small">Tout ce qui suit est au programme de <b>Terminale</b> (BO 2019). Les propriétés du produit scalaire vues en <b>Première</b> dans le plan restent vraies dans l'espace : elles sont rappelées avec l'étiquette <span class="tag prem">Première</span>.</p>
+
+  <div class="card">
+    <h3>1. Produit scalaire, norme et distance en repère orthonormé <span class="tag term">Terminale</span></h3>
+    <p>Dans un repère orthonormé \((O;\vec i,\vec j,\vec k)\) de l'espace, si \(\vec u\,(x;y;z)\) et \(\vec v\,(x';y';z')\) :</p>
+    <div class="box">
+      \[\vec u\cdot\vec v = xx'+yy'+zz' \qquad \|\vec u\| = \sqrt{x^2+y^2+z^2} \qquad AB = \|\vec{AB}\| = \sqrt{(x_B-x_A)^2+(y_B-y_A)^2+(z_B-z_A)^2}\]
+    </div>
+    <p><b>Exemple.</b> \(\vec u\,(2;-1;3)\) et \(\vec v\,(1;4;2)\) : \(\vec u\cdot\vec v = 2\times1+(-1)\times4+3\times2 = 2-4+6 = 4\) et \(\|\vec u\| = \sqrt{4+1+9}=\sqrt{14}\).<br>
+    Avec \(A(1;0;2)\) et \(B(3;-2;3)\) : \(\vec{AB}\,(2;-2;1)\) donc \(AB=\sqrt{4+4+1}=3\).</p>
+    <p class="small">Même formule qu'en Première, avec une troisième coordonnée en plus. C'est aussi vrai que \(\vec u\cdot\vec v = \|\vec u\|\,\|\vec v\|\cos(\vec u,\vec v)\), ce qui permet de calculer un angle.</p>
+  </div>
+
+  <div class="card">
+    <h3>2. Propriétés (identiques au plan) <span class="tag prem">Première</span></h3>
+    <ul>
+      <li><b>Symétrie</b> : \(\vec u\cdot\vec v = \vec v\cdot\vec u\).</li>
+      <li><b>Bilinéarité</b> : \(\vec u\cdot(\vec v+\vec w)=\vec u\cdot\vec v+\vec u\cdot\vec w\) et \((k\vec u)\cdot\vec v = k\,(\vec u\cdot\vec v)\).</li>
+      <li><b>Carré scalaire</b> : \(\vec u\cdot\vec u = \|\vec u\|^2\).</li>
+      <li><b>Développement</b> : \(\|\vec u+\vec v\|^2 = \|\vec u\|^2 + 2\,\vec u\cdot\vec v + \|\vec v\|^2\).</li>
+      <li><b>Polarisation</b> : \(\vec u\cdot\vec v = \tfrac12\left(\|\vec u+\vec v\|^2-\|\vec u\|^2-\|\vec v\|^2\right) = \tfrac14\left(\|\vec u+\vec v\|^2-\|\vec u-\vec v\|^2\right)\).</li>
+    </ul>
+    <p><b>Exemple.</b> Si \(\|\vec u\|=2\), \(\|\vec v\|=3\) et \(\|\vec u+\vec v\|=4\), alors \(\vec u\cdot\vec v = \tfrac12(16-4-9)=\tfrac32\).</p>
+  </div>
+
+  <div class="card">
+    <h3>3. Orthogonalité : vecteurs, droites, droite et plan <span class="tag term">Terminale</span></h3>
+    <ul>
+      <li>\(\vec u\) et \(\vec v\) sont <b>orthogonaux</b> \(\iff \vec u\cdot\vec v = 0\) (le vecteur nul est orthogonal à tout vecteur).</li>
+      <li>Deux <b>droites</b> sont orthogonales \(\iff\) leurs vecteurs directeurs sont orthogonaux (elles ne se coupent pas forcément : « orthogonales » n'est pas « perpendiculaires »).</li>
+      <li>Une <b>droite est orthogonale à un plan</b> \(\iff\) son vecteur directeur est orthogonal à <b>deux vecteurs non colinéaires</b> du plan. Elle est alors orthogonale à toutes les droites du plan.</li>
+    </ul>
+    <div class="box amber">
+      <b>Pourquoi deux vecteurs suffisent ?</b> Tout vecteur \(\vec w\) du plan s'écrit \(\vec w = \alpha\vec u_1+\beta\vec u_2\). Si \(\vec n\cdot\vec u_1=0\) et \(\vec n\cdot\vec u_2=0\), la bilinéarité donne \(\vec n\cdot\vec w = \alpha\cdot0+\beta\cdot0=0\).
+    </div>
+    <p><b>Exemple.</b> \(\vec n\,(1;-2;1)\), \(\vec u_1\,(2;1;0)\), \(\vec u_2\,(1;1;1)\) : \(\vec n\cdot\vec u_1 = 2-2+0=0\) et \(\vec n\cdot\vec u_2 = 1-2+1=0\). Comme \(\vec u_1\) et \(\vec u_2\) ne sont pas colinéaires, \(\vec n\) est orthogonal au plan dirigé par \(\vec u_1,\vec u_2\).</p>
+  </div>
+
+  <div class="card">
+    <h3>4. Vecteur normal et équation cartésienne d'un plan <span class="tag term">Terminale</span> <span class="tag demo">Démonstration exigible</span></h3>
+    <p>Un <b>vecteur normal</b> à un plan \(\mathcal P\) est un vecteur non nul orthogonal à \(\mathcal P\). Un plan est entièrement déterminé par un point \(A\) et un vecteur normal \(\vec n\).</p>
+    <div class="box">
+      <b>Théorème.</b> Dans un repère orthonormé, le plan passant par \(A(x_A;y_A;z_A)\) et de vecteur normal \(\vec n\,(a;b;c)\) a pour équation cartésienne
+      \[ax+by+cz+d=0 \quad\text{avec } d = -(a x_A + b y_A + c z_A).\]
+      Réciproquement, si \((a;b;c)\neq(0;0;0)\), l'ensemble des points vérifiant \(ax+by+cz+d=0\) est un plan de vecteur normal \(\vec n\,(a;b;c)\).
+    </div>
+    <p><b>Démonstration.</b> \(M(x;y;z)\in\mathcal P \iff \vec{AM}\perp\vec n \iff \vec{AM}\cdot\vec n = 0 \iff a(x-x_A)+b(y-y_A)+c(z-z_A)=0 \iff ax+by+cz\underbrace{-(ax_A+by_A+cz_A)}_{d}=0.\)</p>
+    <p><b>Exemple.</b> Plan passant par \(A(1;2;-1)\) de vecteur normal \(\vec n\,(3;-1;2)\) : \(3(x-1)-(y-2)+2(z+1)=0\), soit \(3x-y+2z+1=0\). Vérification : \(3\times1-2+2\times(-1)+1 = 0\) ✓.</p>
+    <p class="small">Attention : une équation de plan n'est pas unique. \(6x-2y+4z+2=0\) décrit le même plan (on peut multiplier par un réel non nul).</p>
+  </div>
+
+  <div class="card">
+    <h3>5. Représentation paramétrique d'une droite <span class="tag term">Terminale</span></h3>
+    <p>La droite \(\mathcal D\) passant par \(A(x_A;y_A;z_A)\) et de vecteur directeur \(\vec u\,(\alpha;\beta;\gamma)\) est l'ensemble des points \(M\) tels que \(\vec{AM} = t\,\vec u\), \(t\in\mathbb R\) :</p>
+    <div class="box">
+      \[\mathcal D : \begin{cases} x = x_A + \alpha t\\ y = y_A + \beta t\\ z = z_A + \gamma t\end{cases}\qquad t\in\mathbb R.\]
+    </div>
+    <p>Chaque valeur du <b>paramètre</b> \(t\) donne un point de la droite ; \(t=0\) donne \(A\), \(t=1\) donne \(A+\vec u\).</p>
+    <p><b>Exemple.</b> \(A(2;0;-1)\), \(\vec u\,(1;3;-2)\) : \(\mathcal D : x=2+t,\ y=3t,\ z=-1-2t\). Le point \(B(4;6;-5)\) est-il sur \(\mathcal D\) ? \(x=4\Rightarrow t=2\) ; alors \(y=6\) ✓ et \(z=-1-4=-5\) ✓ : oui.</p>
+    <p class="small">Un plan n'a pas d'équation paramétrique au programme : on le décrit par une <b>équation cartésienne</b>. Une droite n'a pas d'équation cartésienne unique dans l'espace : on la décrit par une <b>représentation paramétrique</b>.</p>
+  </div>
+
+  <div class="card">
+    <h3>6. Projeté orthogonal et distance d'un point à un plan <span class="tag term">Terminale</span> <span class="tag demo">Démonstration exigible</span></h3>
+    <p>Le <b>projeté orthogonal</b> de \(M\) sur le plan \(\mathcal P\) est le point \(H\in\mathcal P\) tel que \(\vec{MH}\) soit normal à \(\mathcal P\), c'est-à-dire \(\vec{MH}\) colinéaire à \(\vec n\).</p>
+    <div class="box green">
+      <b>Pour trouver \(H\)</b> : \(H\) est sur la droite \(M + t\,\vec n\), donc \(H(x_M+ta;\ y_M+tb;\ z_M+tc)\). On remplace dans \(ax+by+cz+d=0\), on trouve \(t\), puis \(H\). Enfin \(MH = \|\vec{MH}\| = |t|\,\|\vec n\|\).
+    </div>
+    <p><b>Théorème.</b> \(H\) est le point de \(\mathcal P\) <b>le plus proche</b> de \(M\) : pour tout \(N\in\mathcal P\), \(MN\ge MH\). La <b>distance de \(M\) au plan</b> est \(d(M,\mathcal P)=MH\).</p>
+    <p><b>Démonstration.</b> Soit \(N\in\mathcal P\). \(\vec{HN}\) est dans le plan et \(\vec{MH}\) est normal, donc \(\vec{MH}\cdot\vec{HN}=0\). Alors \(MN^2 = \|\vec{MH}+\vec{HN}\|^2 = MH^2 + 2\,\vec{MH}\cdot\vec{HN} + HN^2 = MH^2+HN^2 \ge MH^2\) (théorème de Pythagore). Égalité si et seulement si \(N=H\).</p>
+    <p><b>Exemple.</b> \(\mathcal P : 2x+y+2z-3=0\) (donc \(\vec n\,(2;1;2)\), \(\|\vec n\|=\sqrt{4+1+4}=3\)) et \(M(1;2;4)\). On pose \(H(1+2t;\,2+t;\,4+2t)\). \(H\in\mathcal P\iff 2(1+2t)+(2+t)+2(4+2t)-3=0\iff 9t+9=0\iff t=-1\). Donc \(H(-1;1;2)\) (vérification : \(-2+1+4-3=0\) ✓) et \(MH=|t|\,\|\vec n\| = 1\times3 = 3\).</p>
+  </div>
+
+  <div class="card">
+    <h3>7. Projeté orthogonal sur une droite, distance point-droite <span class="tag term">Terminale</span></h3>
+    <p>Le projeté orthogonal de \(M\) sur la droite \(\mathcal D\) (point \(A\), vecteur directeur \(\vec u\)) est le point \(H\in\mathcal D\) tel que \(\vec{MH}\cdot\vec u = 0\).</p>
+    <div class="box green">
+      <b>Pour trouver \(H\)</b> : \(H = A + t\,\vec u\) (représentation paramétrique) ; on écrit \(\vec{MH}\cdot\vec u = 0\), on résout en \(t\), on en déduit \(H\) puis \(d(M,\mathcal D) = MH\).
+    </div>
+    <p><b>Exemple.</b> \(\mathcal D\) : \(A(1;0;0)\), \(\vec u\,(1;1;0)\) ; \(M(3;1;2)\). \(H(1+t;\,t;\,0)\), \(\vec{MH}\,(t-2;\,t-1;\,-2)\). \(\vec{MH}\cdot\vec u = (t-2)+(t-1) = 2t-3 = 0 \iff t=\tfrac32\). Donc \(H\left(\tfrac52;\tfrac32;0\right)\) et \(MH=\sqrt{\tfrac14+\tfrac14+4}=\sqrt{\tfrac92}=\tfrac{3\sqrt2}{2}\).</p>
+    <p class="small"><b>Approfondissement (hors programme, facultatif)</b> : on peut montrer que \(d(M,\mathcal P) = \dfrac{|ax_M+by_M+cz_M+d|}{\sqrt{a^2+b^2+c^2}}\). Au bac, on attend la méthode par projeté ; cette formule ne sert qu'à vérifier un résultat.</p>
+  </div>
+</section>
+
+<!-- ==================== MÉTHODE ==================== -->
+<section id="methode">
+  <h2><span class="num">2</span>Méthode</h2>
+
+  <div class="card">
+    <h3>Montrer qu'un vecteur \(\vec n\) est normal à un plan</h3>
+    <ol class="steps">
+      <li>Choisir <b>deux vecteurs non colinéaires</b> du plan (par exemple \(\vec{AB}\) et \(\vec{AC}\) si le plan est \((ABC)\)) ; vérifier qu'ils ne sont pas colinéaires (coordonnées non proportionnelles).</li>
+      <li>Calculer \(\vec n\cdot\vec{AB}\) et \(\vec n\cdot\vec{AC}\).</li>
+      <li>Si les deux produits scalaires sont nuls, conclure : \(\vec n\) est orthogonal à deux vecteurs non colinéaires du plan, donc \(\vec n\) est normal au plan.</li>
+    </ol>
+    <p class="small">Pour <b>trouver</b> un vecteur normal quand on connaît \(A,B,C\) : on cherche \((a;b;c)\) tel que \(\vec n\cdot\vec{AB}=0\) et \(\vec n\cdot\vec{AC}=0\) (deux équations, trois inconnues : on fixe une coordonnée, par exemple \(c=1\), et on résout).</p>
+  </div>
+
+  <div class="card">
+    <h3>Équation cartésienne d'un plan</h3>
+    <ol class="steps">
+      <li>Identifier un point \(A\) du plan et un vecteur normal \(\vec n\,(a;b;c)\).</li>
+      <li>Écrire \(ax+by+cz+d=0\) : les coefficients de \(x,y,z\) sont les coordonnées de \(\vec n\).</li>
+      <li>Trouver \(d\) en utilisant que \(A\) est dans le plan : \(a x_A+b y_A+c z_A + d = 0\).</li>
+      <li>Vérifier en remplaçant les coordonnées de \(A\) (ou d'un autre point connu) dans l'équation.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Représentation paramétrique d'une droite</h3>
+    <ol class="steps">
+      <li>Identifier un point \(A\) de la droite et un vecteur directeur \(\vec u\) (par exemple \(\vec{AB}\) pour la droite \((AB)\)).</li>
+      <li>Écrire \(x = x_A+\alpha t,\ y=y_A+\beta t,\ z=z_A+\gamma t\), \(t\in\mathbb R\).</li>
+      <li>Pour savoir si un point appartient à la droite : résoudre une des trois équations en \(t\), puis vérifier les deux autres avec la même valeur de \(t\).</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Intersection d'une droite et d'un plan</h3>
+    <ol class="steps">
+      <li>Vérifier que la droite n'est pas parallèle au plan : \(\vec u\cdot\vec n\neq0\) (sinon, la droite est contenue dans le plan ou strictement parallèle).</li>
+      <li><b>Substituer</b> les expressions paramétriques \(x(t),y(t),z(t)\) dans l'équation du plan.</li>
+      <li>Résoudre l'équation du premier degré obtenue en \(t\).</li>
+      <li>Reporter cette valeur de \(t\) dans la représentation paramétrique pour obtenir les coordonnées du point d'intersection ; vérifier qu'il satisfait l'équation du plan.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Projeté orthogonal et distance d'un point \(M\) à un plan</h3>
+    <ol class="steps">
+      <li>Lire le vecteur normal \(\vec n\,(a;b;c)\) dans l'équation du plan.</li>
+      <li>Écrire la droite \(\Delta\) passant par \(M\) et dirigée par \(\vec n\) : \(x=x_M+at,\ y=y_M+bt,\ z=z_M+ct\).</li>
+      <li>Le projeté \(H\) est l'intersection de \(\Delta\) et du plan : substituer, résoudre en \(t\), calculer \(H\).</li>
+      <li>Calculer \(MH = \|\vec{MH}\| = |t|\,\|\vec n\| = |t|\sqrt{a^2+b^2+c^2}\). C'est la distance de \(M\) au plan.</li>
+    </ol>
+    <p class="small">Pour une <b>droite</b> : \(H=A+t\vec u\) et on impose \(\vec{MH}\cdot\vec u=0\) au lieu de substituer dans une équation.</p>
+  </div>
+
+  <div class="card">
+    <h3>Erreurs fréquentes</h3>
+    <div class="box coral">
+      <ul class="errs">
+        <li><b>Un seul vecteur ne suffit pas</b> : montrer \(\vec n\cdot\vec{AB}=0\) prouve seulement que \(\vec n\) est orthogonal à la droite \((AB)\), pas au plan. Il faut deux vecteurs <b>non colinéaires</b>.</li>
+        <li><b>Confondre paramétrique et cartésienne</b> : une droite de l'espace se donne par une représentation paramétrique (avec \(t\)) ; un plan par une équation cartésienne \(ax+by+cz+d=0\). Une équation du type \(ax+by+cz+d=0\) n'est <b>jamais</b> une droite dans l'espace.</li>
+        <li><b>Oublier \(d\)</b> : \(3x-y+2z=0\) est le plan passant par l'origine ; pour le plan passant par \(A\), il faut calculer \(d=-(ax_A+by_A+cz_A)\).</li>
+        <li>Lire un vecteur normal dans une équation qui n'est pas de la forme \(ax+by+cz+d=0\) (penser à tout passer du même côté).</li>
+        <li>Confondre \(t\) et la distance : \(MH=|t|\cdot\|\vec n\|\), pas \(|t|\).</li>
+        <li>Oublier de vérifier \(\vec u\cdot\vec n\neq 0\) avant de chercher un point d'intersection.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VISUALISATION ==================== -->
+<section id="visu">
+  <h2><span class="num">3</span>Visualisation</h2>
+
+  <div class="card">
+    <h3>Vue 1 · Plan \(ax+by+cz+d=0\), point \(M\) et son projeté \(H\)</h3>
+    <p class="small">Le cube a pour arêtes \([0;4]\). Le plan est dessiné en bleu (sa trace dans le cube), le vecteur normal \(\vec n\) en violet depuis \(H\), le point \(M\) en corail et le projeté \(H\) en vert. Fais tourner la vue avec les deux premiers curseurs.</p>
+    <div class="sliders">
+      <label><b>Azimut : <span id="v1azv">35</span>°</b><input type="range" id="v1az" min="0" max="360" value="35"></label>
+      <label><b>Élévation : <span id="v1elv">25</span>°</b><input type="range" id="v1el" min="-80" max="80" value="25"></label>
+      <label><b>a = <span id="v1av">1</span></b><input type="range" id="v1a" min="-3" max="3" value="1"></label>
+      <label><b>b = <span id="v1bv">1</span></b><input type="range" id="v1b" min="-3" max="3" value="1"></label>
+      <label><b>c = <span id="v1cv">2</span></b><input type="range" id="v1c" min="-3" max="3" value="2"></label>
+      <label><b>d = <span id="v1dv">-8</span></b><input type="range" id="v1d" min="-24" max="24" value="-8"></label>
+      <label><b>x<sub>M</sub> = <span id="v1xv">3</span></b><input type="range" id="v1x" min="0" max="4" step="0.5" value="3"></label>
+      <label><b>y<sub>M</sub> = <span id="v1yv">3</span></b><input type="range" id="v1y" min="0" max="4" step="0.5" value="3"></label>
+      <label><b>z<sub>M</sub> = <span id="v1zv">3.5</span></b><input type="range" id="v1z" min="0" max="4" step="0.5" value="3.5"></label>
+    </div>
+    <div class="viz"><svg id="svg1" viewBox="0 0 560 460" aria-label="Plan, point et projeté dans l'espace"></svg></div>
+    <div class="readout">
+      <div>Plan : <b id="v1eq">x + y + 2z − 8 = 0</b></div>
+      <div>Vecteur normal : <b id="v1n">n(1 ; 1 ; 2)</b>, ‖n‖ = <b id="v1nn">2,449</b></div>
+      <div>H = M + t·n avec t = <b id="v1t">0</b></div>
+      <div>Projeté : <b id="v1h">H(… ; … ; …)</b></div>
+      <div>Distance MH = |t|·‖n‖ = <b id="v1dist">0</b></div>
+      <div>a·x<sub>M</sub> + b·y<sub>M</sub> + c·z<sub>M</sub> + d = <b id="v1val">0</b> <span class="small">(0 ⟺ M ∈ plan)</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Vue 2 · Droite paramétrée \(M(t) = A + t\,\vec u\)</h3>
+    <p class="small">Le point \(A\) est en bleu, le vecteur directeur \(\vec u\) en violet, le point courant \(M(t)\) en corail. Fais varier \(t\) pour parcourir la droite ; \(t=0\) donne \(A\), \(t=1\) donne \(A+\vec u\).</p>
+    <div class="sliders">
+      <label><b>Azimut : <span id="v2azv">35</span>°</b><input type="range" id="v2az" min="0" max="360" value="35"></label>
+      <label><b>Élévation : <span id="v2elv">25</span>°</b><input type="range" id="v2el" min="-80" max="80" value="25"></label>
+      <label><b>t = <span id="v2tv">1</span></b><input type="range" id="v2t" min="-3" max="3" step="0.1" value="1"></label>
+      <label><b>x<sub>A</sub> = <span id="v2xav">1</span></b><input type="range" id="v2xa" min="0" max="4" value="1"></label>
+      <label><b>y<sub>A</sub> = <span id="v2yav">1</span></b><input type="range" id="v2ya" min="0" max="4" value="1"></label>
+      <label><b>z<sub>A</sub> = <span id="v2zav">1</span></b><input type="range" id="v2za" min="0" max="4" value="1"></label>
+      <label><b>α = <span id="v2uav">1</span></b><input type="range" id="v2ua" min="-2" max="2" value="1"></label>
+      <label><b>β = <span id="v2ubv">1</span></b><input type="range" id="v2ub" min="-2" max="2" value="1"></label>
+      <label><b>γ = <span id="v2ucv">1</span></b><input type="range" id="v2uc" min="-2" max="2" value="1"></label>
+    </div>
+    <div class="viz"><svg id="svg2" viewBox="0 0 560 460" aria-label="Droite paramétrée dans l'espace"></svg></div>
+    <div class="readout">
+      <div>Représentation paramétrique : <b id="v2rep">x = 1 + t, y = 1 + t, z = 1 + t</b></div>
+      <div>Point courant : <b id="v2m">M(2 ; 2 ; 2)</b></div>
+      <div>AM = |t|·‖u‖ = <b id="v2am">1,732</b></div>
+      <div>Droite orthogonale au plan de la vue 1 ? <b id="v2orth">—</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EXERCICES ==================== -->
+<section id="exos">
+  <h2><span class="num">4</span>Exercices</h2>
+  <p class="small">Trois exercices génératifs de difficulté croissante. Réponds dans les champs, vérifie, puis déplie la correction si besoin. Les fractions peuvent être saisies en décimal (par exemple 1,5 ou 1.5).</p>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 <span class="level">Niveau 1</span> · Équation cartésienne d'un plan</h3>
+    <div class="enonce" id="ex1enonce"></div>
+    <div class="inputs">
+      <label>a <input type="number" id="ex1a" step="any"></label>
+      <label>b <input type="number" id="ex1b" step="any"></label>
+      <label>c <input type="number" id="ex1c" step="any"></label>
+      <label>d <input type="number" id="ex1d" step="any"></label>
+    </div>
+    <div class="row">
+      <button id="ex1check">Vérifier</button>
+      <button class="secondary" id="ex1corr">Voir la correction</button>
+      <button class="ghost" id="ex1new">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex1fb"></div>
+    <div class="correction" id="ex1sol"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 <span class="level l2">Niveau 2</span> · Intersection d'une droite et d'un plan</h3>
+    <div class="enonce" id="ex2enonce"></div>
+    <div class="inputs">
+      <label>x<sub>I</sub> <input type="number" id="ex2x" step="any"></label>
+      <label>y<sub>I</sub> <input type="number" id="ex2y" step="any"></label>
+      <label>z<sub>I</sub> <input type="number" id="ex2z" step="any"></label>
+    </div>
+    <div class="row">
+      <button id="ex2check">Vérifier</button>
+      <button class="secondary" id="ex2corr">Voir la correction</button>
+      <button class="ghost" id="ex2new">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex2fb"></div>
+    <div class="correction" id="ex2sol"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 <span class="level l3">Niveau 3</span> · Projeté orthogonal et distance d'un point à un plan</h3>
+    <div class="enonce" id="ex3enonce"></div>
+    <div class="inputs">
+      <label>x<sub>H</sub> <input type="number" id="ex3x" step="any"></label>
+      <label>y<sub>H</sub> <input type="number" id="ex3y" step="any"></label>
+      <label>z<sub>H</sub> <input type="number" id="ex3z" step="any"></label>
+      <label>MH <input type="number" id="ex3d" step="any"></label>
+    </div>
+    <div class="row">
+      <button id="ex3check">Vérifier</button>
+      <button class="secondary" id="ex3corr">Voir la correction</button>
+      <button class="ghost" id="ex3new">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex3fb"></div>
+    <div class="correction" id="ex3sol"></div>
+  </div>
+</section>
+
+<!-- ==================== QCM ==================== -->
+<section id="qcm">
+  <h2><span class="num">5</span>QCM</h2>
+  <div class="card">
+    <p class="small">Quatre questions tirées au hasard dans une banque. Une seule réponse par question ; feedback immédiat.</p>
+    <div id="qcmzone"></div>
+    <div class="score" id="qcmscore"></div>
+    <div class="row"><button id="qcmnew">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+  <p class="small">Fiche 1D · Terminale spécialité mathématiques · Programme 2019 · Chapitre « Produit scalaire », partie Terminale.</p>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   0. Utilitaires généraux
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function rndNZ(a,b){ var v=0; while(v===0){ v=rnd(a,b); } return v; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){
+  var a=arr.slice(), i, j, t;
+  for(i=a.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); t=a[i]; a[i]=a[j]; a[j]=t; }
+  return a;
+}
+/* nombre -> texte français, décimales inutiles supprimées */
+function fr(x,n){
+  n = (n===undefined) ? 3 : n;
+  if(!isFinite(x)) return '—';
+  if(Math.abs(x)<1e-10) x=0;
+  var s = x.toFixed(n);
+  if(s.indexOf('.')>=0){ s = s.replace(/0+$/,''); s = s.replace(/\.$/,''); }
+  return s.replace('.',',');
+}
+/* lecture d'un champ numérique en acceptant la virgule */
+function val(id){
+  var raw = ($(id).value || '').trim().replace(',', '.');
+  if(raw==='') return NaN;
+  var v = parseFloat(raw);
+  return isNaN(v) ? NaN : v;
+}
+function typeset(el){
+  if(window.MathJax && window.MathJax.typesetPromise){
+    try{ window.MathJax.typesetPromise(el ? [el] : undefined).catch(function(){}); }
+    catch(e){ /* MathJax absent ou hors ligne : le texte reste lisible */ }
+  }
+}
+function setFb(id, ok, msg){
+  var el = $(id);
+  el.className = 'feedback ' + (ok ? 'ok' : 'ko');
+  el.innerHTML = msg;
+  typeset(el);
+}
+
+/* ============================================================
+   1. Navigation sticky : onglet actif
+   ============================================================ */
+var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.sticky a'));
+var navSections = navLinks.map(function(a){
+  return document.querySelector(a.getAttribute('href'));
+});
+function updateNav(){
+  var idx = 0;
+  navSections.forEach(function(s,i){
+    if(s && s.getBoundingClientRect().top <= 140) idx = i;
+  });
+  navLinks.forEach(function(a,i){
+    if(i===idx) a.classList.add('active'); else a.classList.remove('active');
+  });
+}
+navLinks.forEach(function(a){
+  a.addEventListener('click', function(){
+    setTimeout(updateNav, 350);
+  });
+});
+window.addEventListener('scroll', updateNav, {passive:true});
+window.addEventListener('resize', updateNav);
+
+/* ============================================================
+   2. Moteur 3D maison (projection orthographique, sans bibliothèque)
+   ============================================================ */
+var LO = 0, HI = 4;                 /* le pavé dessiné est [0;4]^3 */
+var CX = 280, CY = 232;             /* centre du viewBox 560 x 460 */
+var BASE_SCALE = 44, MAX_R = 200;   /* pixels par unité, rayon max à l'écran */
+var CENTER = [2,2,2];
+
+/* p = [x,y,z] -> {x,y,d} : x,y en pixels, d = profondeur (grand = proche) */
+function proj(p, az, el, scale){
+  var A = az*Math.PI/180, E = el*Math.PI/180;
+  var ca = Math.cos(A), sa = Math.sin(A), ce = Math.cos(E), se = Math.sin(E);
+  var dx = p[0]-CENTER[0], dy = p[1]-CENTER[1], dz = p[2]-CENTER[2];
+  var rx = -sa*dx + ca*dy;                       /* axe « droite » de l'écran */
+  var ry = -ca*se*dx - sa*se*dy + ce*dz;         /* axe « haut » de l'écran   */
+  var dp =  ca*ce*dx + sa*ce*dy + se*dz;         /* vers l'observateur        */
+  return {x: CX + scale*rx, y: CY - scale*ry, d: dp};
+}
+/* échelle adaptée : reste à BASE_SCALE tant que tout tient dans le cadre */
+function fitScale(pts){
+  var R = 0.001, i, dx, dy, dz, r;
+  for(i=0;i<pts.length;i++){
+    dx = pts[i][0]-CENTER[0]; dy = pts[i][1]-CENTER[1]; dz = pts[i][2]-CENTER[2];
+    r = Math.sqrt(dx*dx+dy*dy+dz*dz);
+    if(r>R) R = r;
+  }
+  return Math.min(BASE_SCALE, MAX_R/R);
+}
+/* sommets et arêtes du pavé */
+var CUBE_V = [];
+(function(){
+  var i;
+  for(i=0;i<8;i++){
+    CUBE_V.push([ (i&1)?HI:LO, (i&2)?HI:LO, (i&4)?HI:LO ]);
+  }
+})();
+var CUBE_E = [];
+(function(){
+  var i,j,k,diff;
+  for(i=0;i<8;i++) for(j=i+1;j<8;j++){
+    diff = 0;
+    for(k=0;k<3;k++) if(CUBE_V[i][k] !== CUBE_V[j][k]) diff++;
+    if(diff===1) CUBE_E.push([i,j]);
+  }
+})();
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function svgLine(p,q,color,w,dash){
+  return '<line x1="'+p.x.toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+q.x.toFixed(1)+'" y2="'+q.y.toFixed(1)+
+         '" stroke="'+color+'" stroke-width="'+w+'" stroke-linecap="round"'+
+         (dash ? ' stroke-dasharray="'+dash+'"' : '')+'/>';
+}
+function svgDot(p,color,r,label,dx,dy){
+  var s = '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+r+'" fill="'+color+'" stroke="#fff" stroke-width="2"/>';
+  if(label){
+    s += '<text x="'+(p.x+(dx||10)).toFixed(1)+'" y="'+(p.y+(dy||-10)).toFixed(1)+
+         '" fill="'+color+'" font-size="15" font-weight="700" font-family="Georgia,serif">'+esc(label)+'</text>';
+  }
+  return s;
+}
+/* flèche 2D dessinée à la main (pointe calculée dans le plan de l'écran) */
+function svgArrow(p,q,color,w){
+  var dx=q.x-p.x, dy=q.y-p.y, L=Math.sqrt(dx*dx+dy*dy);
+  if(L<1) return '';
+  var ux=dx/L, uy=dy/L;
+  var h = Math.min(13, L*0.4), hw = h*0.45;
+  var bx = q.x-ux*h, by = q.y-uy*h;
+  var nx = -uy, ny = ux;
+  return '<line x1="'+p.x.toFixed(1)+'" y1="'+p.y.toFixed(1)+'" x2="'+bx.toFixed(1)+'" y2="'+by.toFixed(1)+
+         '" stroke="'+color+'" stroke-width="'+(w||2.6)+'" stroke-linecap="round"/>'+
+         '<polygon points="'+q.x.toFixed(1)+','+q.y.toFixed(1)+' '+
+         (bx+nx*hw).toFixed(1)+','+(by+ny*hw).toFixed(1)+' '+
+         (bx-nx*hw).toFixed(1)+','+(by-ny*hw).toFixed(1)+'" fill="'+color+'"/>';
+}
+/* pavé en fil de fer, arêtes triées par profondeur (arrière plus clair) */
+function cubeSVG(az,el,scale){
+  var edges = CUBE_E.map(function(e){
+    var p = proj(CUBE_V[e[0]],az,el,scale), q = proj(CUBE_V[e[1]],az,el,scale);
+    return {p:p, q:q, d:(p.d+q.d)/2};
+  });
+  edges.sort(function(a,b){ return a.d-b.d; });
+  var out = '', i;
+  for(i=0;i<edges.length;i++){
+    var back = i < edges.length/2;
+    out += svgLine(edges[i].p, edges[i].q, back ? '#d9d3c8' : '#9aa3af', back ? 1.4 : 2, back ? '5 4' : null);
+  }
+  return out;
+}
+/* repère : trois axes depuis l'origine du pavé */
+function axesSVG(az,el,scale){
+  var O = proj([LO,LO,LO],az,el,scale);
+  var ax = [[HI+0.9,LO,LO],[LO,HI+0.9,LO],[LO,LO,HI+0.9]];
+  var names = ['x','y','z'];
+  var out = '', i, P;
+  for(i=0;i<3;i++){
+    P = proj(ax[i],az,el,scale);
+    out += svgArrow(O,P,'#b8b0a4',1.6);
+    out += '<text x="'+(P.x+6).toFixed(1)+'" y="'+(P.y+5).toFixed(1)+
+           '" fill="#8a8377" font-size="14" font-style="italic" font-family="Georgia,serif">'+names[i]+'</text>';
+  }
+  return out;
+}
+/* section du pavé par le plan ax+by+cz+d=0 : polygone convexe (peut être vide) */
+function planePolygon(a,b,c,d){
+  var f = function(p){ return a*p[0]+b*p[1]+c*p[2]+d; };
+  var pts = [];
+  function add(p){
+    var i;
+    for(i=0;i<pts.length;i++){
+      if(Math.abs(pts[i][0]-p[0])<1e-7 && Math.abs(pts[i][1]-p[1])<1e-7 && Math.abs(pts[i][2]-p[2])<1e-7) return;
+    }
+    pts.push(p);
+  }
+  CUBE_E.forEach(function(e){
+    var P = CUBE_V[e[0]], Q = CUBE_V[e[1]], fp = f(P), fq = f(Q), s;
+    if(Math.abs(fp)<1e-9) add([P[0],P[1],P[2]]);
+    if(Math.abs(fq)<1e-9) add([Q[0],Q[1],Q[2]]);
+    if(fp*fq < 0){
+      s = fp/(fp-fq);
+      add([P[0]+s*(Q[0]-P[0]), P[1]+s*(Q[1]-P[1]), P[2]+s*(Q[2]-P[2])]);
+    }
+  });
+  if(pts.length < 3) return [];
+  var G = [0,0,0];
+  pts.forEach(function(p){ G[0]+=p[0]; G[1]+=p[1]; G[2]+=p[2]; });
+  G[0]/=pts.length; G[1]/=pts.length; G[2]/=pts.length;
+  function sub(p){ return [p[0]-G[0], p[1]-G[1], p[2]-G[2]]; }
+  function dot(u,v){ return u[0]*v[0]+u[1]*v[1]+u[2]*v[2]; }
+  function unit(u){ var L=Math.sqrt(dot(u,u))||1; return [u[0]/L,u[1]/L,u[2]/L]; }
+  /* base orthonormée du plan par orthonormalisation (sans produit vectoriel) */
+  var e1 = null, e2 = null, i, v, w;
+  for(i=0;i<pts.length && !e1;i++){ v = sub(pts[i]); if(dot(v,v)>1e-12) e1 = unit(v); }
+  if(!e1) return [];
+  for(i=0;i<pts.length && !e2;i++){
+    v = sub(pts[i]);
+    w = [v[0]-dot(v,e1)*e1[0], v[1]-dot(v,e1)*e1[1], v[2]-dot(v,e1)*e1[2]];
+    if(dot(w,w)>1e-12) e2 = unit(w);
+  }
+  if(!e2) return [];
+  pts.sort(function(p,q){
+    return Math.atan2(dot(sub(p),e2), dot(sub(p),e1)) - Math.atan2(dot(sub(q),e2), dot(sub(q),e1));
+  });
+  return pts;
+}
+/* intervalle de t pour lequel A + t·u reste dans le pavé (ou null) */
+function clipLine(A,u){
+  var t0 = -1e9, t1 = 1e9, k, ta, tb, tmp;
+  for(k=0;k<3;k++){
+    if(Math.abs(u[k])<1e-9){
+      if(A[k] < LO-1e-9 || A[k] > HI+1e-9) return null;
+    } else {
+      ta = (LO-A[k])/u[k]; tb = (HI-A[k])/u[k];
+      if(ta>tb){ tmp=ta; ta=tb; tb=tmp; }
+      if(ta>t0) t0=ta;
+      if(tb<t1) t1=tb;
+    }
+  }
+  return (t0>t1) ? null : [t0,t1];
+}
+/* équation d'un plan en texte simple (lisible sans MathJax) */
+function planeText(a,b,c,d){
+  var s = '';
+  function term(v,name){
+    if(Math.abs(v)<1e-12) return;
+    var abs = Math.abs(v);
+    var coef = (Math.abs(abs-1)<1e-12) ? '' : fr(abs);
+    if(s===''){ s += (v<0 ? '−' : '') + coef + name; }
+    else { s += (v<0 ? ' − ' : ' + ') + coef + name; }
+  }
+  term(a,'x'); term(b,'y'); term(c,'z');
+  if(Math.abs(d)>1e-12){
+    if(s===''){ s += (d<0 ? '−' : '') + fr(Math.abs(d)); }
+    else { s += (d<0 ? ' − ' : ' + ') + fr(Math.abs(d)); }
+  }
+  if(s==='') s = '0';
+  return s + ' = 0';
+}
+/* équation d'un plan en LaTeX (coefficients entiers) */
+function planeTex(a,b,c,d){
+  var s = '';
+  function term(v,name){
+    if(v===0) return;
+    var abs = Math.abs(v);
+    var coef = (abs===1) ? '' : String(abs);
+    if(s===''){ s += (v<0 ? '-' : '') + coef + name; }
+    else { s += (v<0 ? ' - ' : ' + ') + coef + name; }
+  }
+  term(a,'x'); term(b,'y'); term(c,'z');
+  if(d!==0){
+    if(s===''){ s += String(d); }
+    else { s += (d<0 ? ' - ' : ' + ') + String(Math.abs(d)); }
+  }
+  if(s==='') s = '0';
+  return s + ' = 0';
+}
+function vecTex(name,v){
+  return '\\vec{'+name+'}\\,('+v[0]+'\\,;\\,'+v[1]+'\\,;\\,'+v[2]+')';
+}
+/* expression affine « 3 - 2t » (le terme nul n'est pas écrit) */
+function affTex(c0, coef, varname){
+  var s = String(c0);
+  if(coef === 0) return s;
+  var body = (Math.abs(coef)===1 ? '' : String(Math.abs(coef))) + varname;
+  if(c0 === 0) return (coef<0 ? '-' : '') + body;
+  return s + (coef<0 ? ' - ' : ' + ') + body;
+}
+function ptTex(name,v){
+  return name+'('+fr(v[0])+'\\,;\\,'+fr(v[1])+'\\,;\\,'+fr(v[2])+')';
+}
+function ptText(name,v){
+  return name+'(' + fr(v[0]) + ' ; ' + fr(v[1]) + ' ; ' + fr(v[2]) + ')';
+}
+
+/* ============================================================
+   3. Visualisation — vue 1 : plan, point M, projeté H
+   ============================================================ */
+var V1 = {};
+function readV1(){
+  V1.az = +$('v1az').value; V1.el = +$('v1el').value;
+  V1.a = +$('v1a').value;   V1.b = +$('v1b').value;  V1.c = +$('v1c').value;  V1.d = +$('v1d').value;
+  V1.M = [+$('v1x').value, +$('v1y').value, +$('v1z').value];
+  $('v1azv').textContent = V1.az;
+  $('v1elv').textContent = V1.el;
+  $('v1av').textContent  = V1.a;
+  $('v1bv').textContent  = V1.b;
+  $('v1cv').textContent  = V1.c;
+  $('v1dv').textContent  = V1.d;
+  $('v1xv').textContent  = fr(V1.M[0]);
+  $('v1yv').textContent  = fr(V1.M[1]);
+  $('v1zv').textContent  = fr(V1.M[2]);
+}
+function drawV1(){
+  readV1();
+  var a=V1.a, b=V1.b, c=V1.c, d=V1.d, M=V1.M;
+  var n2 = a*a+b*b+c*c;
+  var nn = Math.sqrt(n2);
+  var valM = a*M[0]+b*M[1]+c*M[2]+d;
+  var degenerate = (n2 < 1e-12);
+  var t = degenerate ? 0 : -valM/n2;
+  var H = [M[0]+t*a, M[1]+t*b, M[2]+t*c];
+  var dist = degenerate ? NaN : Math.abs(t)*nn;
+
+  /* lectures */
+  $('v1eq').textContent  = degenerate ? 'aucun plan : (a ; b ; c) = (0 ; 0 ; 0)' : planeText(a,b,c,d);
+  $('v1n').textContent   = 'n(' + a + ' ; ' + b + ' ; ' + c + ')';
+  $('v1nn').textContent  = degenerate ? '0' : fr(nn);
+  $('v1t').textContent   = degenerate ? '—' : fr(t);
+  $('v1h').textContent   = degenerate ? 'H(… ; … ; …)' : ptText('H',H);
+  $('v1dist').textContent= degenerate ? '—' : fr(dist);
+  $('v1val').textContent = fr(valM);
+
+  /* dessin */
+  var pts = CUBE_V.concat([M, [LO,LO,LO], [HI+0.9,LO,LO], [LO,HI+0.9,LO], [LO,LO,HI+0.9]]);
+  if(!degenerate){
+    pts = pts.concat([H, [H[0]+1.6*a/nn, H[1]+1.6*b/nn, H[2]+1.6*c/nn]]);
+  }
+  var scale = fitScale(pts);
+  var az = V1.az, el = V1.el;
+  var svg = '';
+  svg += axesSVG(az,el,scale);
+  svg += cubeSVG(az,el,scale);
+
+  if(!degenerate){
+    var poly = planePolygon(a,b,c,d);
+    if(poly.length >= 3){
+      var pstr = poly.map(function(p){ var q = proj(p,az,el,scale); return q.x.toFixed(1)+','+q.y.toFixed(1); }).join(' ');
+      svg += '<polygon points="'+pstr+'" fill="rgba(37,99,235,.22)" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>';
+    } else {
+      svg += '<text x="'+CX+'" y="30" text-anchor="middle" fill="#f97362" font-size="14">le plan ne coupe pas le pavé [0 ; 4]³</text>';
+    }
+    var pM = proj(M,az,el,scale), pH = proj(H,az,el,scale);
+    var tip = proj([H[0]+1.6*a/nn, H[1]+1.6*b/nn, H[2]+1.6*c/nn], az, el, scale);
+    svg += svgLine(pM,pH,'#f97362',2.4,'7 5');
+    svg += svgArrow(pH,tip,'#7c3aed',2.8);
+    svg += '<text x="'+(tip.x+6).toFixed(1)+'" y="'+(tip.y-4).toFixed(1)+
+           '" fill="#7c3aed" font-size="15" font-weight="700" font-family="Georgia,serif">n</text>';
+    /* étiquette de la distance au milieu de [MH] */
+    var mx = (pM.x+pH.x)/2, my = (pM.y+pH.y)/2;
+    if(dist > 0.05){
+      svg += '<text x="'+(mx+8).toFixed(1)+'" y="'+(my).toFixed(1)+
+             '" fill="#f97362" font-size="14" font-weight="700">MH = '+fr(dist,2)+'</text>';
+    }
+    svg += svgDot(pH,'#22a06b',6,'H',10,16);
+    svg += svgDot(pM,'#f97362',6,'M',10,-10);
+  } else {
+    var pM2 = proj(M,az,el,scale);
+    svg += svgDot(pM2,'#f97362',6,'M',10,-10);
+    svg += '<text x="'+CX+'" y="30" text-anchor="middle" fill="#f97362" font-size="14">choisis (a ; b ; c) non nul pour définir un plan</text>';
+  }
+  $('svg1').innerHTML = svg;
+}
+
+/* ============================================================
+   4. Visualisation — vue 2 : droite paramétrée M(t) = A + t·u
+   ============================================================ */
+var V2 = {};
+function readV2(){
+  V2.az = +$('v2az').value; V2.el = +$('v2el').value; V2.t = +$('v2t').value;
+  V2.A = [+$('v2xa').value, +$('v2ya').value, +$('v2za').value];
+  V2.u = [+$('v2ua').value, +$('v2ub').value, +$('v2uc').value];
+  $('v2azv').textContent = V2.az;
+  $('v2elv').textContent = V2.el;
+  $('v2tv').textContent  = fr(V2.t);
+  $('v2xav').textContent = V2.A[0];
+  $('v2yav').textContent = V2.A[1];
+  $('v2zav').textContent = V2.A[2];
+  $('v2uav').textContent = V2.u[0];
+  $('v2ubv').textContent = V2.u[1];
+  $('v2ucv').textContent = V2.u[2];
+}
+/* « x = 1 + t » etc., en texte simple */
+function paramText(A,u){
+  var names = ['x','y','z'], out = [], i, s, c;
+  for(i=0;i<3;i++){
+    s = names[i] + ' = ' + fr(A[i]);
+    c = u[i];
+    if(Math.abs(c) > 1e-12){
+      s += (c<0 ? ' − ' : ' + ') + (Math.abs(Math.abs(c)-1)<1e-12 ? '' : fr(Math.abs(c))) + 't';
+    }
+    out.push(s);
+  }
+  return out.join(', ');
+}
+function drawV2(){
+  readV2();
+  var A=V2.A, u=V2.u, t=V2.t, az=V2.az, el=V2.el;
+  var nu = Math.sqrt(u[0]*u[0]+u[1]*u[1]+u[2]*u[2]);
+  var Mt = [A[0]+t*u[0], A[1]+t*u[1], A[2]+t*u[2]];
+  var Au = [A[0]+u[0], A[1]+u[1], A[2]+u[2]];
+
+  $('v2rep').textContent = paramText(A,u);
+  $('v2m').textContent   = ptText('M',Mt);
+  $('v2am').textContent  = (nu<1e-12) ? '0' : fr(Math.abs(t)*nu);
+
+  /* orthogonalité à la vue 1 : u doit être colinéaire au vecteur normal n */
+  var a=V1.a, b=V1.b, c=V1.c;
+  var n2 = a*a+b*b+c*c;
+  var msg;
+  if(n2 < 1e-12 || nu < 1e-12){
+    msg = '—';
+  } else {
+    var m1 = a*u[1]-b*u[0], m2 = a*u[2]-c*u[0], m3 = b*u[2]-c*u[1];
+    var colin = (Math.abs(m1)<1e-9 && Math.abs(m2)<1e-9 && Math.abs(m3)<1e-9);
+    var ps = a*u[0]+b*u[1]+c*u[2];
+    if(colin) msg = 'Oui : u est colinéaire à n(' + a + ' ; ' + b + ' ; ' + c + ')';
+    else if(Math.abs(ps) < 1e-9) msg = 'Non : u·n = 0, la droite est parallèle au plan';
+    else msg = 'Non : u·n = ' + fr(ps) + ' (droite sécante au plan)';
+  }
+  $('v2orth').textContent = msg;
+
+  var pts = CUBE_V.concat([A, Mt, Au, [LO,LO,LO], [HI+0.9,LO,LO], [LO,HI+0.9,LO], [LO,LO,HI+0.9]]);
+  var scale = fitScale(pts);
+  var svg = '';
+  svg += axesSVG(az,el,scale);
+  svg += cubeSVG(az,el,scale);
+
+  if(nu > 1e-12){
+    var seg = clipLine(A,u);
+    var lo, hi;
+    if(seg){ lo = seg[0]-0.6; hi = seg[1]+0.6; }
+    else { lo = -3.2; hi = 3.2; }
+    if(lo > Math.min(t,0)-0.4) lo = Math.min(t,0)-0.4;
+    if(hi < Math.max(t,1)+0.4) hi = Math.max(t,1)+0.4;
+    var P1 = proj([A[0]+lo*u[0], A[1]+lo*u[1], A[2]+lo*u[2]], az, el, scale);
+    var P2 = proj([A[0]+hi*u[0], A[1]+hi*u[1], A[2]+hi*u[2]], az, el, scale);
+    svg += svgLine(P1,P2,'#2563eb',2.6);
+    var pA = proj(A,az,el,scale), pU = proj(Au,az,el,scale), pM = proj(Mt,az,el,scale);
+    svg += svgArrow(pA,pU,'#7c3aed',3);
+    svg += '<text x="'+((pA.x+pU.x)/2+8).toFixed(1)+'" y="'+((pA.y+pU.y)/2-6).toFixed(1)+
+           '" fill="#7c3aed" font-size="15" font-weight="700" font-family="Georgia,serif">u</text>';
+    svg += svgDot(pA,'#2563eb',6,'A',10,18);
+    svg += svgDot(pM,'#f97362',7,'M(t)',10,-10);
+  } else {
+    svg += '<text x="'+CX+'" y="30" text-anchor="middle" fill="#f97362" font-size="14">le vecteur directeur u ne doit pas être nul</text>';
+  }
+  $('svg2').innerHTML = svg;
+}
+
+/* branchement des curseurs */
+['v1az','v1el','v1a','v1b','v1c','v1d','v1x','v1y','v1z'].forEach(function(id){
+  $(id).addEventListener('input', function(){ drawV1(); drawV2(); });
+});
+['v2az','v2el','v2t','v2xa','v2ya','v2za','v2ua','v2ub','v2uc'].forEach(function(id){
+  $(id).addEventListener('input', drawV2);
+});
+
+/* ============================================================
+   5. Exercice 1 — équation cartésienne d'un plan
+   ============================================================ */
+var E1 = {};
+function genEx1(){
+  var a,b,c;
+  do { a = rnd(-3,3); b = rnd(-3,3); c = rnd(-3,3); }
+  while( (a===0&&b===0&&c===0) || ((a===0?0:1)+(b===0?0:1)+(c===0?0:1) < 2) );
+  var A = [rnd(-3,3), rnd(-3,3), rnd(-3,3)];
+  var d = -(a*A[0]+b*A[1]+c*A[2]);
+  E1 = {a:a, b:b, c:c, d:d, A:A};
+  $('ex1enonce').innerHTML =
+    '<p>Dans un repère orthonormé de l\u2019espace, on considère le point \\(' + ptTex('A',A) + '\\) ' +
+    'et le vecteur \\(' + vecTex('n',[a,b,c]) + '\\).</p>' +
+    '<p>Déterminer une équation cartésienne \\(ax+by+cz+d=0\\) du plan \\(\\mathcal P\\) passant par \\(A\\) ' +
+    'et de vecteur normal \\(\\vec{n}\\).</p>' +
+    '<p class="small">Toute équation proportionnelle est acceptée (par exemple en multipliant tout par \\(-1\\) ou par \\(2\\)).</p>';
+  ['ex1a','ex1b','ex1c','ex1d'].forEach(function(id){ $(id).value=''; });
+  $('ex1fb').className = 'feedback';
+  $('ex1sol').className = 'correction';
+  $('ex1sol').innerHTML = '';
+  typeset($('ex1enonce'));
+}
+function checkEx1(){
+  var u = [val('ex1a'), val('ex1b'), val('ex1c'), val('ex1d')];
+  if(u.some(isNaN)){ setFb('ex1fb', false, 'Remplis les quatre champs \\(a,b,c,d\\).'); return; }
+  if(Math.abs(u[0])<1e-9 && Math.abs(u[1])<1e-9 && Math.abs(u[2])<1e-9){
+    setFb('ex1fb', false, 'Le triplet \\((a;b;c)\\) ne peut pas être nul : ce sont les coordonnées du vecteur normal.');
+    return;
+  }
+  var ref = [E1.a, E1.b, E1.c, E1.d];
+  /* on cherche le coefficient de proportionnalité sur la plus grande coordonnée de n */
+  var i0 = 0, i;
+  for(i=1;i<3;i++) if(Math.abs(ref[i]) > Math.abs(ref[i0])) i0 = i;
+  var k = u[i0]/ref[i0];
+  var ok = Math.abs(k) > 1e-9;
+  if(ok){
+    for(i=0;i<4;i++){
+      if(Math.abs(u[i] - k*ref[i]) > 1e-3*(1+Math.abs(k*ref[i]))) { ok = false; break; }
+    }
+  }
+  if(ok){
+    setFb('ex1fb', true, 'Correct ! \\(' + planeTex(E1.a,E1.b,E1.c,E1.d) + '\\) (ton équation en est un multiple, c\u2019est le même plan).');
+  } else {
+    setFb('ex1fb', false, 'Pas encore. Rappel : les coefficients de \\(x,y,z\\) sont les coordonnées de \\(\\vec{n}\\), puis on calcule \\(d\\) avec \\(A\\).');
+  }
+}
+function solEx1(){
+  var a=E1.a, b=E1.b, c=E1.c, d=E1.d, A=E1.A;
+  return '<p><b>1. Coefficients.</b> Le vecteur normal donne directement les coefficients de \\(x,y,z\\) : ' +
+    'l\u2019équation est de la forme \\((' + a + ')x + (' + b + ')y + (' + c + ')z + d = 0\\), c\u2019est-à-dire \\(' +
+    planeTex(a,b,c,0).replace(' = 0','') + ' + d = 0\\).</p>' +
+    '<p><b>2. Calcul de \\(d\\).</b> \\(A\\in\\mathcal P\\) donc \\(a x_A + b y_A + c z_A + d = 0\\) :<br>' +
+    '\\((' + a + ')\\times(' + A[0] + ') + (' + b + ')\\times(' + A[1] + ') + (' + c + ')\\times(' + A[2] + ') + d = ' +
+    (a*A[0]+b*A[1]+c*A[2]) + ' + d = 0\\), donc \\(d = ' + d + '\\).</p>' +
+    '<p><b>3. Conclusion.</b> \\(\\mathcal P : ' + planeTex(a,b,c,d) + '\\).</p>' +
+    '<p><b>4. Vérification.</b> On remplace \\(A\\) : \\(' + (a*A[0]+b*A[1]+c*A[2]) + ' + (' + d + ') = 0\\) ✓.</p>' +
+    '<p class="small">Toute équation obtenue en multipliant celle-ci par un réel non nul convient aussi.</p>';
+}
+
+/* ============================================================
+   6. Exercice 2 — intersection d'une droite et d'un plan
+   ============================================================ */
+var E2 = {};
+function genEx2(){
+  var a,b,c,ua,ub,uc,ps,tries=0;
+  do{
+    a = rnd(-3,3); b = rnd(-3,3); c = rnd(-3,3);
+    ua = rnd(-3,3); ub = rnd(-3,3); uc = rnd(-3,3);
+    ps = a*ua+b*ub+c*uc;
+    tries++;
+  } while( ((a===0&&b===0&&c===0) || (ua===0&&ub===0&&uc===0) || ps===0) && tries<400 );
+  if(ps===0){ a=1; b=1; c=1; ua=1; ub=0; uc=0; ps=1; }
+  var A = [rnd(-2,3), rnd(-2,3), rnd(-2,3)];
+  var t0 = rndNZ(-3,3);
+  var I = [A[0]+t0*ua, A[1]+t0*ub, A[2]+t0*uc];
+  var d = -(a*I[0]+b*I[1]+c*I[2]);
+  E2 = {a:a,b:b,c:c,d:d,A:A,u:[ua,ub,uc],t0:t0,I:I,ps:ps};
+  $('ex2enonce').innerHTML =
+    '<p>On considère le plan \\(\\mathcal P : ' + planeTex(a,b,c,d) + '\\) et la droite \\(\\mathcal D\\) ' +
+    'passant par \\(' + ptTex('A',A) + '\\) de vecteur directeur \\(' + vecTex('u',[ua,ub,uc]) + '\\).</p>' +
+    '<p>\\(\\mathcal D : \\begin{cases} x = ' + affTex(A[0],ua,'t') + '\\\\' +
+    ' y = ' + affTex(A[1],ub,'t') + '\\\\' +
+    ' z = ' + affTex(A[2],uc,'t') + '\\end{cases}\\qquad t\\in\\mathbb R\\)</p>' +
+    '<p>Déterminer les coordonnées du point d\u2019intersection \\(I\\) de \\(\\mathcal D\\) et de \\(\\mathcal P\\). ' +
+    '<span class="small">(la valeur du paramètre \\(t\\) est un entier)</span></p>';
+  ['ex2x','ex2y','ex2z'].forEach(function(id){ $(id).value=''; });
+  $('ex2fb').className = 'feedback';
+  $('ex2sol').className = 'correction';
+  $('ex2sol').innerHTML = '';
+  typeset($('ex2enonce'));
+}
+function checkEx2(){
+  var r = [val('ex2x'), val('ex2y'), val('ex2z')];
+  if(r.some(isNaN)){ setFb('ex2fb', false, 'Remplis les trois coordonnées de \\(I\\).'); return; }
+  var ok = true, i;
+  for(i=0;i<3;i++) if(Math.abs(r[i]-E2.I[i]) > 1e-3) ok = false;
+  if(ok){
+    setFb('ex2fb', true, 'Correct ! \\(' + ptTex('I',E2.I) + '\\) (obtenu pour \\(t = ' + E2.t0 + '\\)).');
+  } else {
+    setFb('ex2fb', false, 'Pas encore. Substitue \\(x(t),y(t),z(t)\\) dans l\u2019équation du plan, résous en \\(t\\), puis reporte.');
+  }
+}
+function solEx2(){
+  var a=E2.a,b=E2.b,c=E2.c,d=E2.d,A=E2.A,u=E2.u,t0=E2.t0,I=E2.I;
+  var cst = a*A[0]+b*A[1]+c*A[2]+d;
+  return '<p><b>1. La droite n\u2019est pas parallèle au plan.</b> \\(\\vec{u}\\cdot\\vec{n} = ' +
+    '(' + u[0] + ')\\times(' + a + ') + (' + u[1] + ')\\times(' + b + ') + (' + u[2] + ')\\times(' + c + ') = ' + E2.ps + '\\neq 0\\) : ' +
+    'la droite coupe le plan en un unique point.</p>' +
+    '<p><b>2. Substitution.</b> On remplace \\(x,y,z\\) par leurs expressions en \\(t\\) dans \\(' + planeTex(a,b,c,d) + '\\) :<br>' +
+    '\\((' + a + ')\\times(' + affTex(A[0],u[0],'t') + ') + (' + b + ')\\times(' + affTex(A[1],u[1],'t') + ') + (' + c + ')\\times(' +
+    affTex(A[2],u[2],'t') + ') + (' + d + ') = 0\\).</p>' +
+    '<p><b>3. On regroupe.</b> \\(' + (Math.abs(E2.ps)===1 ? (E2.ps<0?'-':'') : String(E2.ps)) +
+    't + (' + cst + ') = 0\\), donc \\(t = ' + t0 + '\\).</p>' +
+    '<p><b>4. Coordonnées de \\(I\\).</b> On reporte \\(t = ' + t0 + '\\) :<br>' +
+    '\\(x = ' + A[0] + ' + (' + t0 + ')\\times(' + u[0] + ') = ' + I[0] + '\\), ' +
+    '\\(y = ' + A[1] + ' + (' + t0 + ')\\times(' + u[1] + ') = ' + I[1] + '\\), ' +
+    '\\(z = ' + A[2] + ' + (' + t0 + ')\\times(' + u[2] + ') = ' + I[2] + '\\).<br>' +
+    'Donc \\(' + ptTex('I',I) + '\\).</p>' +
+    '<p><b>5. Vérification.</b> \\((' + a + ')\\times(' + I[0] + ') + (' + b + ')\\times(' + I[1] + ') + (' + c + ')\\times(' + I[2] +
+    ') + (' + d + ') = 0\\) ✓</p>';
+}
+
+/* ============================================================
+   7. Exercice 3 — projeté orthogonal et distance point-plan
+   ============================================================ */
+/* vecteurs normaux de norme entière : le calcul de MH tombe juste */
+var NORMALS = [
+  {n:[2,1,2], N:3}, {n:[2,-1,2], N:3}, {n:[1,2,2], N:3}, {n:[-1,2,2], N:3},
+  {n:[3,4,0], N:5}, {n:[-3,4,0], N:5}, {n:[0,3,4], N:5}, {n:[4,0,3], N:5},
+  {n:[0,-4,3], N:5}, {n:[6,3,2], N:7}, {n:[2,6,3], N:7}, {n:[-3,2,6], N:7},
+  {n:[1,0,0], N:1}, {n:[0,1,0], N:1}
+];
+var E3 = {};
+function genEx3(){
+  var choice = pick(NORMALS.slice(0,12));
+  var n = choice.n, N = choice.N;
+  var M = [rnd(-4,4), rnd(-4,4), rnd(-4,4)];
+  var t0 = rndNZ(-3,3);
+  var H = [M[0]+t0*n[0], M[1]+t0*n[1], M[2]+t0*n[2]];
+  var d = -(n[0]*H[0]+n[1]*H[1]+n[2]*H[2]);
+  E3 = {n:n, N:N, M:M, t0:t0, H:H, d:d, MH:Math.abs(t0)*N};
+  $('ex3enonce').innerHTML =
+    '<p>On considère le plan \\(\\mathcal P : ' + planeTex(n[0],n[1],n[2],d) + '\\) et le point \\(' + ptTex('M',M) + '\\).</p>' +
+    '<ol class="steps"><li>Déterminer les coordonnées du projeté orthogonal \\(H\\) de \\(M\\) sur \\(\\mathcal P\\).</li>' +
+    '<li>En déduire la distance \\(MH = d(M,\\mathcal P)\\).</li></ol>' +
+    '<p class="small">Ici \\(\\|\\vec{n}\\|\\) est un entier : la distance tombe juste.</p>';
+  ['ex3x','ex3y','ex3z','ex3d'].forEach(function(id){ $(id).value=''; });
+  $('ex3fb').className = 'feedback';
+  $('ex3sol').className = 'correction';
+  $('ex3sol').innerHTML = '';
+  typeset($('ex3enonce'));
+}
+function checkEx3(){
+  var r = [val('ex3x'), val('ex3y'), val('ex3z')], dd = val('ex3d');
+  if(r.some(isNaN) || isNaN(dd)){ setFb('ex3fb', false, 'Remplis les coordonnées de \\(H\\) et la distance \\(MH\\).'); return; }
+  var okH = true, i;
+  for(i=0;i<3;i++) if(Math.abs(r[i]-E3.H[i]) > 1e-3) okH = false;
+  var okD = Math.abs(dd - E3.MH) <= 1e-2;
+  if(okH && okD){
+    setFb('ex3fb', true, 'Correct ! \\(' + ptTex('H',E3.H) + '\\) et \\(MH = |t|\\times\\|\\vec{n}\\| = ' +
+      Math.abs(E3.t0) + '\\times' + E3.N + ' = ' + E3.MH + '\\).');
+  } else if(okH && !okD){
+    setFb('ex3fb', false, 'Le projeté \\(H\\) est juste, mais pas la distance : \\(MH = |t|\\times\\|\\vec{n}\\|\\), avec \\(\\|\\vec{n}\\| = ' + E3.N + '\\).');
+  } else if(!okH && okD){
+    setFb('ex3fb', false, 'La distance est juste, mais les coordonnées de \\(H\\) non : \\(H = M + t\\,\\vec{n}\\) coordonnée par coordonnée.');
+  } else {
+    setFb('ex3fb', false, 'Pas encore. Pose \\(H(x_M+ta;\\,y_M+tb;\\,z_M+tc)\\), écris \\(H\\in\\mathcal P\\), résous en \\(t\\).');
+  }
+}
+function solEx3(){
+  var n=E3.n, M=E3.M, H=E3.H, d=E3.d, t0=E3.t0, N=E3.N;
+  var n2 = n[0]*n[0]+n[1]*n[1]+n[2]*n[2];
+  var scal = n[0]*M[0]+n[1]*M[1]+n[2]*M[2];
+  return '<p><b>1. Vecteur normal.</b> L\u2019équation \\(' + planeTex(n[0],n[1],n[2],d) + '\\) donne \\(' + vecTex('n',n) +
+    '\\), avec \\(\\|\\vec{n}\\| = \\sqrt{' + (n[0]*n[0]) + '+' + (n[1]*n[1]) + '+' + (n[2]*n[2]) + '} = \\sqrt{' + n2 + '} = ' + N + '\\).</p>' +
+    '<p><b>2. Droite passant par \\(M\\) et dirigée par \\(\\vec{n}\\).</b> ' +
+    '\\(H(' + affTex(M[0],n[0],'t') + '\\,;\\,' + affTex(M[1],n[1],'t') + '\\,;\\,' + affTex(M[2],n[2],'t') + ')\\).</p>' +
+    '<p><b>3. On écrit \\(H\\in\\mathcal P\\).</b> En remplaçant dans l\u2019équation du plan :<br>' +
+    '\\(\\vec{n}\\cdot\\vec{OM} + t\\,\\|\\vec{n}\\|^2 + d = ' + scal + ' + ' + n2 + 't + (' + d + ') = 0\\), ' +
+    'donc \\(t = ' + t0 + '\\).</p>' +
+    '<p><b>4. Coordonnées de \\(H\\).</b> \\(' + ptTex('H',H) + '\\). ' +
+    'Vérification : \\(' + (n[0]*H[0]+n[1]*H[1]+n[2]*H[2]) + ' + (' + d + ') = 0\\) ✓</p>' +
+    '<p><b>5. Distance.</b> \\(\\vec{MH} = t\\,\\vec{n}\\) donc \\(MH = |t|\\,\\|\\vec{n}\\| = ' +
+    Math.abs(t0) + '\\times' + N + ' = ' + E3.MH + '\\). Ainsi \\(d(M,\\mathcal P) = ' + E3.MH + '\\).</p>' +
+    '<p class="small">Vérification facultative avec la formule d\u2019approfondissement : \\(\\dfrac{|' + (scal+d) + '|}{' + N + '} = ' + E3.MH + '\\).</p>';
+}
+
+/* branchement des exercices */
+function wireExo(prefix, gen, check, sol){
+  $(prefix+'new').addEventListener('click', gen);
+  $(prefix+'check').addEventListener('click', check);
+  $(prefix+'corr').addEventListener('click', function(){
+    var box = $(prefix+'sol');
+    if(box.classList.contains('open')){
+      box.classList.remove('open');
+      $(prefix+'corr').textContent = 'Voir la correction';
+    } else {
+      box.innerHTML = sol();
+      box.classList.add('open');
+      $(prefix+'corr').textContent = 'Masquer la correction';
+      typeset(box);
+    }
+  });
+}
+wireExo('ex1', genEx1, checkEx1, solEx1);
+wireExo('ex2', genEx2, checkEx2, solEx2);
+wireExo('ex3', genEx3, checkEx3, solEx3);
+
+/* ============================================================
+   8. QCM — banque de questions, 4 tirées au hasard
+   ============================================================ */
+var QBANK = [
+  {
+    q: 'Quel vecteur est normal au plan \\(\\mathcal P : 2x-3y+z-5=0\\) ?',
+    opts: ['\\(\\vec{n}\\,(2;-3;1)\\)', '\\(\\vec{n}\\,(2;-3;-5)\\)', '\\(\\vec{n}\\,(-5;2;-3)\\)', '\\(\\vec{n}\\,(2;3;1)\\)'],
+    correct: 0,
+    expl: 'Les coefficients de \\(x,y,z\\) dans \\(ax+by+cz+d=0\\) sont exactement les coordonnées d\u2019un vecteur normal ; \\(d\\) n\u2019en fait pas partie.'
+  },
+  {
+    q: 'Le plan passant par \\(A(1;0;2)\\) et de vecteur normal \\(\\vec{n}\\,(1;1;1)\\) a pour équation :',
+    opts: ['\\(x+y+z-3=0\\)', '\\(x+y+z+3=0\\)', '\\(x+2z-3=0\\)', '\\(x+y+z=0\\)'],
+    correct: 0,
+    expl: '\\(d=-(x_A+y_A+z_A)=-(1+0+2)=-3\\), d\u2019où \\(x+y+z-3=0\\).'
+  },
+  {
+    q: 'Une droite est orthogonale à un plan si son vecteur directeur est orthogonal :',
+    opts: ['à deux vecteurs non colinéaires du plan', 'à un vecteur du plan', 'à trois vecteurs quelconques du plan', 'au vecteur normal du plan'],
+    correct: 0,
+    expl: 'Un seul vecteur ne suffit pas ; deux vecteurs non colinéaires engendrent tout le plan, donc l\u2019orthogonalité se propage par bilinéarité.'
+  },
+  {
+    q: 'On a \\(\\vec{MH}=t\\,\\vec{n}\\) avec \\(t=-2\\) et \\(\\|\\vec{n}\\|=3\\). Que vaut \\(MH\\) ?',
+    opts: ['\\(6\\)', '\\(-6\\)', '\\(2\\)', '\\(3\\)'],
+    correct: 0,
+    expl: 'Une distance est positive : \\(MH=|t|\\times\\|\\vec{n}\\|=2\\times3=6\\).'
+  },
+  {
+    q: 'La droite \\(\\mathcal D : x=2+t,\\ y=3t,\\ z=-1-2t\\) contient-elle \\(B(4;6;-5)\\) ?',
+    opts: ['Oui, pour \\(t=2\\)', 'Non, aucune valeur de \\(t\\) ne convient', 'Oui, pour \\(t=4\\)', 'On ne peut pas le savoir'],
+    correct: 0,
+    expl: '\\(x=4\\) donne \\(t=2\\) ; on vérifie alors \\(y=6\\) et \\(z=-1-4=-5\\) : les trois équations sont satisfaites.'
+  },
+  {
+    q: 'Une droite de vecteur directeur \\(\\vec{u}\\,(1;2;-1)\\) et un plan de vecteur normal \\(\\vec{n}\\,(2;-1;0)\\) : que peut-on dire ?',
+    opts: ['\\(\\vec{u}\\cdot\\vec{n}=0\\) : la droite est parallèle au plan (ou incluse)', 'La droite est orthogonale au plan', 'La droite coupe le plan en un point unique', '\\(\\vec{u}\\) et \\(\\vec{n}\\) sont colinéaires'],
+    correct: 0,
+    expl: '\\(\\vec{u}\\cdot\\vec{n}=2-2+0=0\\) : le vecteur directeur est orthogonal au normal, donc la droite est parallèle au plan ou contenue dedans.'
+  },
+  {
+    q: 'Les équations \\(3x-y+2z+1=0\\) et \\(6x-2y+4z+2=0\\) décrivent :',
+    opts: ['le même plan', 'deux plans parallèles distincts', 'deux plans sécants', 'un plan et une droite'],
+    correct: 0,
+    expl: 'La seconde équation est le double de la première : multiplier par un réel non nul ne change pas l\u2019ensemble des solutions.'
+  },
+  {
+    q: 'Dans l\u2019espace muni d\u2019un repère orthonormé, l\u2019ensemble des points vérifiant \\(x+y+z=1\\) est :',
+    opts: ['un plan', 'une droite', 'une sphère', 'un point'],
+    correct: 0,
+    expl: 'Toute équation \\(ax+by+cz+d=0\\) avec \\((a;b;c)\\neq(0;0;0)\\) définit un plan ; dans l\u2019espace, une droite se décrit par une représentation paramétrique.'
+  },
+  {
+    q: 'Le projeté orthogonal \\(H\\) de \\(M\\) sur un plan \\(\\mathcal P\\) est :',
+    opts: ['le point de \\(\\mathcal P\\) le plus proche de \\(M\\)', 'le milieu de \\(M\\) et d\u2019un point de \\(\\mathcal P\\)', 'toujours l\u2019origine du repère', 'le point de \\(\\mathcal P\\) le plus éloigné de \\(M\\)'],
+    correct: 0,
+    expl: 'Pour tout \\(N\\in\\mathcal P\\), Pythagore donne \\(MN^2=MH^2+HN^2\\ge MH^2\\), avec égalité seulement si \\(N=H\\).'
+  },
+  {
+    q: 'Que vaut \\(\\|\\vec{u}\\|\\) pour \\(\\vec{u}\\,(2;-1;2)\\) ?',
+    opts: ['\\(3\\)', '\\(\\sqrt{5}\\)', '\\(9\\)', '\\(5\\)'],
+    correct: 0,
+    expl: '\\(\\|\\vec{u}\\|=\\sqrt{4+1+4}=\\sqrt{9}=3\\) : la norme est la racine de la somme des carrés.'
+  },
+  {
+    q: 'Pour montrer que \\(\\vec{n}\\) est normal au plan \\((ABC)\\), il suffit de vérifier :',
+    opts: ['\\(\\vec{n}\\cdot\\vec{AB}=0\\) et \\(\\vec{n}\\cdot\\vec{AC}=0\\) avec \\(\\vec{AB},\\vec{AC}\\) non colinéaires', '\\(\\vec{n}\\cdot\\vec{AB}=0\\) seulement', '\\(\\vec{n}=\\vec{AB}+\\vec{AC}\\)', '\\(\\|\\vec{n}\\|=1\\)'],
+    correct: 0,
+    expl: 'Deux vecteurs non colinéaires du plan suffisent : tout vecteur du plan est combinaison linéaire de ces deux-là.'
+  },
+  {
+    q: 'Pour trouver l\u2019intersection d\u2019une droite paramétrée et d\u2019un plan, on :',
+    opts: ['substitue \\(x(t),y(t),z(t)\\) dans l\u2019équation du plan et on résout en \\(t\\)', 'calcule la norme du vecteur directeur', 'additionne les deux équations', 'cherche le milieu des deux points de base'],
+    correct: 0,
+    expl: 'La substitution donne une équation du premier degré en \\(t\\) ; on reporte ensuite la valeur trouvée dans la représentation paramétrique.'
+  },
+  {
+    q: 'Avec \\(\\vec{u}\\,(1;-2;1)\\) et \\(\\vec{v}\\,(2;1;0)\\), que vaut \\(\\vec{u}\\cdot\\vec{v}\\) ?',
+    opts: ['\\(0\\) : ils sont orthogonaux', '\\(4\\)', '\\(-2\\)', '\\(3\\)'],
+    correct: 0,
+    expl: '\\(1\\times2+(-2)\\times1+1\\times0=2-2+0=0\\) : le produit scalaire est nul, les vecteurs sont orthogonaux.'
+  },
+  {
+    q: 'Dans l\u2019espace, une droite est décrite par :',
+    opts: ['une représentation paramétrique', 'une équation cartésienne \\(ax+by+cz+d=0\\)', 'une seule équation \\(y=mx+p\\)', 'son vecteur normal'],
+    correct: 0,
+    expl: 'Dans l\u2019espace, \\(ax+by+cz+d=0\\) est toujours un plan ; une droite se décrit par \\(x=x_A+\\alpha t,\\ y=y_A+\\beta t,\\ z=z_A+\\gamma t\\).'
+  }
+];
+
+var qcmMap = {};          /* qcmMap[i] = {correct, expl} — jamais dans le HTML */
+var qcmAnswered = [];
+var qcmScore = 0;
+
+function buildQCM(){
+  qcmMap = {};
+  qcmAnswered = [];
+  qcmScore = 0;
+  var zone = $('qcmzone');
+  zone.innerHTML = '';
+  $('qcmscore').className = 'score';
+  $('qcmscore').textContent = '';
+
+  var chosen = shuffle(QBANK).slice(0,4);
+  chosen.forEach(function(item, i){
+    var order = shuffle([0,1,2,3]);
+    var opts = order.map(function(k){ return item.opts[k]; });
+    qcmMap[i] = { correct: order.indexOf(item.correct), expl: item.expl };
+    qcmAnswered[i] = false;
+
+    var qd = document.createElement('div');
+    qd.className = 'qcm-q';
+    qd.innerHTML = (i+1) + '. ' + item.q;
+    zone.appendChild(qd);
+
+    var od = document.createElement('div');
+    od.className = 'opts';
+    od.id = 'qopts' + i;
+    opts.forEach(function(txt, j){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.innerHTML = '<span class="letter">' + 'ABCD'.charAt(j) + '</span>' + txt;
+      btn.addEventListener('click', function(){ answerQCM(i, j); });
+      od.appendChild(btn);
+    });
+    zone.appendChild(od);
+
+    var ex = document.createElement('div');
+    ex.className = 'expl';
+    ex.id = 'qexpl' + i;
+    zone.appendChild(ex);
+  });
+  typeset(zone);
+}
+
+function answerQCM(i, j){
+  if(qcmAnswered[i]) return;
+  qcmAnswered[i] = true;
+  var info = qcmMap[i];
+  var buttons = $('qopts'+i).querySelectorAll('button');
+  var k;
+  for(k=0;k<buttons.length;k++){
+    buttons[k].disabled = true;
+    if(k === info.correct) buttons[k].classList.add('right');
+    else if(k === j) buttons[k].classList.add('wrong');
+  }
+  if(j === info.correct) qcmScore++;
+  var ex = $('qexpl'+i);
+  ex.innerHTML = (j === info.correct ? '<b style="color:#22a06b">Bonne réponse.</b> ' : '<b style="color:#f97362">Réponse incorrecte.</b> ') + info.expl;
+  ex.classList.add('show');
+  typeset(ex);
+
+  var done = qcmAnswered.filter(function(x){ return x; }).length;
+  if(done === 4){
+    var sc = $('qcmscore');
+    var msg;
+    if(qcmScore === 4) msg = 'Score : 4 / 4 — parfait, ce chapitre est acquis.';
+    else if(qcmScore === 3) msg = 'Score : 3 / 4 — très bien, relis l\u2019explication de la question ratée.';
+    else if(qcmScore === 2) msg = 'Score : 2 / 4 — relis la section Méthode, puis refais un QCM.';
+    else msg = 'Score : ' + qcmScore + ' / 4 — reprends le Cours point par point, puis les exercices de niveau 1.';
+    sc.textContent = msg;
+    sc.className = 'score show';
+  }
+}
+$('qcmnew').addEventListener('click', buildQCM);
+
+/* ============================================================
+   9. Initialisation
+   ============================================================ */
+drawV1();
+drawV2();
+genEx1();
+genEx2();
+genEx3();
+buildQCM();
+updateNav();
+
+})();
+</script>
+</body>
+</html>

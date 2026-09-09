@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réussir l'année — spé maths</title>
+<style>
+  :root{
+    --bg:#faf8f5; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+    --blue:#2563eb; --blue-soft:#dbeafe; --coral:#f97362; --coral-soft:#ffe4de;
+    --green:#22a06b; --green-soft:#d9f3e6; --amber:#d97706; --amber-soft:#fef3c7;
+    --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;font-size:16px}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+  h2{font-size:1.6rem;margin-top:.2em}
+  h3{font-size:1.15rem;color:var(--blue)}
+  p{margin:.4em 0 .8em}
+  header{padding:2.2rem 1.2rem 1.4rem;text-align:center;background:linear-gradient(180deg,#eef4ff 0%,var(--bg) 100%)}
+  header h1{font-size:2rem;opacity:0;transform:translateY(14px);animation:rise .8s ease forwards}
+  header .sub{color:var(--muted);font-size:1rem;opacity:0;animation:rise .8s .3s ease forwards}
+  header .who{display:inline-block;margin-top:.7rem;background:var(--blue-soft);color:var(--blue);padding:.3rem .8rem;border-radius:999px;font-size:.9rem;opacity:0;animation:rise .8s .5s ease forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid #e5e7eb;padding:.5rem .6rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  nav a{display:inline-block;min-height:44px;line-height:44px;padding:0 .9rem;margin:0 .15rem;border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.92rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  nav a.active{background:var(--blue);color:#fff}
+  main{max-width:760px;margin:0 auto;padding:1rem .9rem 4rem}
+  section{margin:1.4rem 0 2.2rem}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem 1.1rem;margin:.9rem 0}
+  .card.blue{border-left:6px solid var(--blue)}
+  .card.green{border-left:6px solid var(--green)}
+  .card.coral{border-left:6px solid var(--coral)}
+  .card.amber{border-left:6px solid var(--amber)}
+  .tag{display:inline-block;font-size:.78rem;padding:.15rem .55rem;border-radius:999px;background:var(--blue-soft);color:var(--blue);margin-right:.3rem;vertical-align:middle}
+  .tag.g{background:var(--green-soft);color:var(--green)} .tag.c{background:var(--coral-soft);color:#c2410c} .tag.a{background:var(--amber-soft);color:#92400e}
+  ul,ol{padding-left:1.3rem;margin:.3rem 0 .8rem} li{margin:.3rem 0}
+  .do{background:var(--green-soft);border-radius:10px;padding:.6rem .8rem;margin:.5rem 0}
+  .do b{color:var(--green)}
+  .avoid{background:var(--coral-soft);border-radius:10px;padding:.6rem .8rem;margin:.5rem 0}
+  .avoid b{color:#c2410c}
+  table{width:100%;border-collapse:collapse;font-size:.93rem}
+  th,td{padding:.5rem .5rem;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
+  th{background:#f3f4f6}
+  .tablewrap{overflow-x:auto}
+  button,.btn{min-height:44px;padding:.55rem 1rem;border:none;border-radius:12px;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+  button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+  button.ghost{background:#f3f4f6;color:var(--ink);box-shadow:none}
+  button.small{min-height:36px;padding:.3rem .7rem;font-size:.85rem;border-radius:9px}
+  button:active{transform:translateY(1px)}
+  .row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+  input,select,textarea{min-height:44px;font-size:1rem;padding:.5rem .6rem;border:1px solid #d1d5db;border-radius:10px;background:#fff;font-family:inherit;width:100%}
+  textarea{min-height:90px}
+  label{font-size:.9rem;color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+  @media (max-width:520px){.grid2{grid-template-columns:1fr}}
+  .stairs{display:flex;flex-direction:column;gap:.5rem}
+  .step{display:flex;gap:.8rem;align-items:flex-start;background:#fff;border-radius:12px;padding:.8rem;box-shadow:var(--shadow);cursor:pointer;border:2px solid transparent}
+  .step.open{border-color:var(--blue)}
+  .step .num{flex:0 0 40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Georgia,serif}
+  .step .body{flex:1}
+  .step .detail{display:none;margin-top:.5rem;color:var(--ink);font-size:.95rem}
+  .step.open .detail{display:block}
+  .prompt{position:relative;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:.8rem .9rem 3rem;margin:.6rem 0;font-size:.92rem;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.45}
+  .prompt .copy{position:absolute;right:.6rem;bottom:.6rem}
+  .timer{font-family:Georgia,serif;font-size:3rem;text-align:center;margin:.3rem 0}
+  .bar{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+  .bar>div{height:100%;background:var(--green);width:0;transition:width .5s}
+  .badge-ok{color:var(--green);font-weight:700} .badge-ko{color:#c2410c;font-weight:700} .badge-nf{color:var(--muted)}
+  .small{font-size:.86rem;color:var(--muted)}
+  .refs{font-size:.84rem;color:var(--muted)}
+  .refs li{margin:.2rem 0}
+  details{margin:.5rem 0} summary{cursor:pointer;font-weight:600;min-height:44px;line-height:44px}
+  .scale{display:flex;gap:.4rem;flex-wrap:wrap}
+  .scale button{flex:1;min-width:70px}
+  .scale button.sel{outline:3px solid var(--blue)}
+  .hidden{display:none}
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:2rem 1rem}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Réussir l'année de spé maths</h1>
+  <div class="sub">Terminale · Mathématiques · Guide de méthode</div>
+  <div class="who">Programme officiel 2019 · année 2026-2027</div>
+</header>
+
+<nav id="nav">
+  <a href="#depart">Départ</a>
+  <a href="#science">Ce que dit la science</a>
+  <a href="#methode">La méthode</a>
+  <a href="#semaine">Semaine type</a>
+  <a href="#bloque">Quand ça bloque</a>
+  <a href="#chatgpt">ChatGPT</a>
+  <a href="#carnet">Carnet de suivi</a>
+  <a href="#abonnement">Abonnement ?</a>
+</nav>
+
+<main>
+
+<!-- ===================== DÉPART ===================== -->
+<section id="depart">
+  <h2>Départ</h2>
+  <div class="card blue">
+    <p><b>Le point de départ n'est pas un problème.</b> Avoir eu des difficultés en Première et garder la spécialité, c'est un choix courageux et fréquent. Le programme de Terminale reprend explicitement les notions de Première (« consolider les acquis de l'enseignement de spécialité de première ») : chaque chapitre est une deuxième chance sur la base, avant la nouveauté.</p>
+    <p>Ce guide ne promet pas de miracle. Il promet une chose : <b>si tu suis la méthode, tes progrès seront visibles et mesurables</b>, séance après séance, dans le carnet de suivi en bas de cette page.</p>
+  </div>
+  <div class="card">
+    <h3>Les trois idées à garder en tête</h3>
+    <ol>
+      <li><b>« Je n'y arrive pas… <u>encore</u>. »</b> Une notion non comprise aujourd'hui est une notion en cours d'installation. Le cerveau apprend surtout au moment où il se trompe et corrige.</li>
+      <li><b>Comprendre, ce n'est pas relire. C'est retrouver.</b> On sait quelque chose quand on peut le produire cahier fermé. Toute la méthode repose là-dessus.</li>
+      <li><b>Des petites sessions, souvent.</b> 30 minutes cinq fois par semaine battent 3 heures le dimanche. Toujours.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>Comment utiliser ce dossier</h3>
+    <ul>
+      <li><b>Les fiches HTML</b> (une par partie de chapitre) : cours en 5-7 points, méthode, visualisation à manipuler, exercices qui se régénèrent, QCM. Elles s'ouvrent hors connexion sur le téléphone ou l'iPad.</li>
+      <li><b>Chaque chapitre a deux étages</b> : la partie <span class="tag">Première</span> à revoir <i>avant</i> que le chapitre commence en classe, et la partie <span class="tag a">Terminale</span> à travailler <i>pendant</i>.</li>
+      <li><b>Ce guide</b> : la méthode, les prompts ChatGPT, le carnet de suivi. À garder ouvert dans un onglet.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== SCIENCE ===================== -->
+<section id="science">
+  <h2>Ce que dit la science de l'apprentissage</h2>
+  <p class="small">Sept résultats solides de la recherche sur l'apprentissage des mathématiques, et ce qu'ils changent concrètement pour toi. Les sources sont en bas de section.</p>
+
+  <div class="card">
+    <h3>1. Se tester vaut mieux que relire (l'effet de test)</h3>
+    <p>Relire un cours donne une impression de maîtrise, mais retient peu. Essayer de <i>retrouver</i> une définition, une formule ou une méthode sans regarder, puis vérifier, renforce bien plus la mémoire. C'est l'une des deux techniques classées « utilité élevée » par la grande synthèse de Dunlosky et ses collègues.</p>
+    <div class="do"><b>Pour toi :</b> chaque séance commence par 5 minutes « cahier fermé » : écris ce dont tu te souviens du chapitre (formules, méthodes), puis compare avec la fiche. Le QCM des fiches sert exactement à ça.</div>
+    <div class="avoid"><b>À éviter :</b> surligner, recopier le cours, relire les corrigés en se disant « oui, c'est logique ».</div>
+  </div>
+
+  <div class="card">
+    <h3>2. Espacer les révisions</h3>
+    <p>Revoir une notion à J+2, J+7, puis J+21 retient beaucoup plus que la revoir trois fois le même soir. L'oubli partiel entre deux révisions est utile : retrouver ce qui a commencé à s'effacer consolide.</p>
+    <div class="do"><b>Pour toi :</b> le carnet de suivi note la date de chaque exercice. Les exercices « à revoir » ressortent après 2 jours. Chaque week-end, 20 minutes de « rappel mélangé » sur les chapitres précédents.</div>
+  </div>
+
+  <div class="card">
+    <h3>3. Mélanger les types d'exercices (interleaving)</h3>
+    <p>Faire 10 exercices identiques d'affilée entraîne à exécuter, pas à <i>choisir</i> la méthode. Or au bac, la difficulté est de reconnaître quelle méthode s'applique. Rohrer et ses collègues ont montré en classe de mathématiques que des devoirs mélangés donnent de meilleurs résultats au test différé, même si l'entraînement paraît plus dur.</p>
+    <div class="do"><b>Pour toi :</b> après 2 ou 3 exercices d'un type, passe à un autre type ou un autre chapitre, puis reviens. Le troisième exercice de chaque fiche est volontairement « éloigné » du cours.</div>
+  </div>
+
+  <div class="card">
+    <h3>4. D'abord des exemples résolus, puis de moins en moins d'aide</h3>
+    <p>Pour un débutant sur une notion, étudier un exemple entièrement résolu (en s'expliquant chaque ligne) est plus efficace que de chercher seul. Mais l'aide doit <i>disparaître progressivement</i> : à mesure que la notion s'installe, les exemples résolus deviennent inutiles, voire nuisibles (effet d'inversion de l'expertise). C'est le principe des « exemples à trous » (faded examples).</p>
+    <div class="do"><b>Pour toi :</b> l'escalier d'autonomie de la section « Méthode » : exemple résolu → exercice guidé → exercice seul → variante éloignée. Ne saute pas de marche, mais ne t'arrête pas non plus sur une marche confortable.</div>
+  </div>
+
+  <div class="card">
+    <h3>5. S'expliquer à soi-même</h3>
+    <p>Les élèves qui progressent le plus en lisant un exemple résolu sont ceux qui se demandent à chaque ligne « pourquoi cette étape ? quelle règle est utilisée ? qu'est-ce qui se passerait si… ? » (auto-explication, Chi et ses collègues).</p>
+    <div class="do"><b>Pour toi :</b> devant une correction, cache la ligne suivante et prédis-la. Écris en marge le nom de la règle utilisée. Explique la méthode à voix haute, à quelqu'un ou à ChatGPT (« voici comment je ferais, est-ce correct ? »).</div>
+  </div>
+
+  <div class="card">
+    <h3>6. Les erreurs sont de l'information, pas un verdict</h3>
+    <p>Une erreur analysée (« quelle règle ai-je mal appliquée ? ») est l'un des moments d'apprentissage les plus puissants. Une erreur seulement constatée (« faux, 4/10 ») n'apprend rien et abîme la confiance. Les difficultés qui demandent un effort de récupération sont des « difficultés désirables » (Bjork) : elles ralentissent le court terme et renforcent le long terme.</p>
+    <div class="do"><b>Pour toi :</b> un carnet d'erreurs avec 4 catégories : calcul, méthode, lecture d'énoncé, connaissance du cours. Chaque erreur = une ligne + la règle à retenir + un mini-exercice de vérification (prompt P5).</div>
+  </div>
+
+  <div class="card">
+    <h3>7. Le stress en maths se gère, et ça compte</h3>
+    <p>L'anxiété mathématique consomme la mémoire de travail dont on a besoin pour calculer. Elle s'entretient par l'évitement. Deux leviers sont documentés : écrire 5 à 10 minutes sur ses inquiétudes juste avant une évaluation (Ramirez et Beilock) réduit l'effet du stress sur la performance ; et se confronter régulièrement à des exercices <i>réussissables</i> reconstruit le sentiment de compétence. L'état d'esprit « je peux progresser » aide, mais sans travail structuré derrière, son effet reste modeste : c'est la méthode qui fait le résultat.</p>
+    <div class="do"><b>Pour toi :</b> la « règle des 10 minutes » et l'échelle de frustration (section « Quand ça bloque »). Avant un contrôle : 5 minutes d'écriture libre sur ce qui t'inquiète, puis on range la feuille.</div>
+  </div>
+
+  <details class="card">
+    <summary>Sources (pour vérifier ou approfondir)</summary>
+    <ul class="refs">
+      <li>Dunlosky, Rawson, Marsh, Nathan & Willingham (2013), <i>Improving students' learning with effective learning techniques</i>, Psychological Science in the Public Interest : test et espacement en « utilité élevée », relecture et surlignage en « utilité faible ».</li>
+      <li>Roediger & Karpicke (2006), <i>Test-enhanced learning</i>, Psychological Science : l'effet de test.</li>
+      <li>Cepeda, Pashler, Vul, Wixted & Rohrer (2006), <i>Distributed practice in verbal recall tasks</i>, Psychological Bulletin : l'espacement.</li>
+      <li>Rohrer, Dedrick & Stershic (2015), <i>Interleaved practice improves mathematics learning</i>, Journal of Educational Psychology.</li>
+      <li>Sweller, van Merriënboer & Paas (1998, 2019), théorie de la charge cognitive ; Renkl & Atkinson (2003), exemples résolus et estompage ; Kalyuga et al. (2003), effet d'inversion de l'expertise.</li>
+      <li>Chi, Bassok, Lewis, Reimann & Glaser (1989), <i>Self-explanations</i>, Cognitive Science.</li>
+      <li>Bjork & Bjork (2011), <i>Making things hard on yourself, but in a good way</i> : difficultés désirables.</li>
+      <li>Ramirez & Beilock (2011), <i>Writing about testing worries boosts exam performance</i>, Science ; Ashcraft & Krause (2007) sur l'anxiété mathématique et la mémoire de travail.</li>
+      <li>Dweck (2006) sur l'état d'esprit ; Sisk et al. (2018), méta-analyse : effets réels mais faibles, d'où l'accent mis ici sur la méthode.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- ===================== MÉTHODE ===================== -->
+<section id="methode">
+  <h2>La méthode : l'escalier d'autonomie</h2>
+  <p>Pour chaque partie de chapitre, tu montes ces marches dans l'ordre. Touche une marche pour voir le détail. L'objectif n'est pas d'aller vite, c'est de <b>ne jamais rester sur une marche où tu réussis trop facilement</b>, et de <b>redescendre d'une marche</b> quand tu bloques.</p>
+
+  <div class="stairs" id="stairs">
+    <div class="step"><div class="num">0</div><div class="body"><b>Réactiver les prérequis</b> <span class="tag">Première</span>
+      <div class="detail">Ouvre la fiche « Première » du chapitre. Lis le Cours (5-7 points), fais le QCM. Si le score est sous 3/4, fais les exercices de niveau 1 de cette fiche avant d'aller plus loin. Durée : 1 à 2 séances. C'est cette marche qui évite l'effet « je suis perdue dès le premier cours ».</div></div></div>
+    <div class="step"><div class="num">1</div><div class="body"><b>Lire un exemple résolu en s'auto-expliquant</b>
+      <div class="detail">Prends la correction d'un exercice (fiche, manuel, cours). Cache chaque ligne, prédis-la, découvre-la, nomme la règle utilisée. Écris en une phrase « la méthode, c'est… ». Si tu ne peux pas la nommer, tu n'as pas encore compris : demande à ChatGPT le prompt P10 ou P6.</div></div></div>
+    <div class="step"><div class="num">2</div><div class="body"><b>Exercice guidé, fiche de méthode ouverte</b>
+      <div class="detail">Exercice de niveau 1 de la fiche, avec la section « Méthode » sous les yeux. Le but est d'exécuter les étapes sans erreur. Vérifie chaque réponse. Deux réussites d'affilée = marche suivante.</div></div></div>
+    <div class="step"><div class="num">3</div><div class="body"><b>Exercice seul, fiche fermée</b>
+      <div class="detail">Niveau 2 de la fiche, ou exercices du manuel. Chronomètre-toi légèrement. Compare ensuite avec la correction ligne à ligne. Toute erreur va dans le carnet d'erreurs avec sa catégorie. Réussite à 2 exercices sur 3 = marche suivante ; sinon, reviens à la marche 2 sur ce point précis.</div></div></div>
+    <div class="step"><div class="num">4</div><div class="body"><b>Variante éloignée</b>
+      <div class="detail">Niveau 3 de la fiche, exercice « problème » du manuel, ou question d'annale du bac sur ce chapitre. L'énoncé ne dit plus quelle méthode utiliser : c'est à toi de la reconnaître. Utilise le prompt P4 pour obtenir des variantes de plus en plus éloignées.</div></div></div>
+    <div class="step"><div class="num">5</div><div class="body"><b>Re-test espacé : J+2, J+7, J+21</b>
+      <div class="detail">Refais un exercice de niveau 2 ou 3 sans aide, deux jours plus tard, puis une semaine, puis trois semaines après. Coche « OK » dans le carnet. C'est la seule marche qui transforme « compris ce soir » en « su au bac ».</div></div></div>
+    <div class="step"><div class="num">6</div><div class="body"><b>Expliquer ou créer</b>
+      <div class="detail">Explique la méthode à quelqu'un (ou à ChatGPT en lui demandant de jouer l'élève). Ou invente un exercice du même type avec sa correction. Si tu peux créer l'exercice, tu maîtrises la notion.</div></div></div>
+  </div>
+
+  <div class="card amber" style="margin-top:1rem">
+    <h3>Le rythme dans un chapitre</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Quand</th><th>Quoi</th><th>Marches</th></tr>
+      <tr><td>Avant que le chapitre commence en classe</td><td>Fiche « Première » du chapitre</td><td>0 → 3</td></tr>
+      <tr><td>Le soir de chaque cours</td><td>5 min cahier fermé : réécrire ce qui a été vu. Puis 1 exercice guidé.</td><td>1 → 2</td></tr>
+      <tr><td>2-3 jours après</td><td>Fiche « Terminale », exercices seule</td><td>3 → 4</td></tr>
+      <tr><td>Week-end</td><td>Rappel mélangé des chapitres précédents, 20 min</td><td>5</td></tr>
+      <tr><td>Avant un contrôle</td><td>Annales / sujets types, en temps limité, puis analyse des erreurs</td><td>4 → 6</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- ===================== SEMAINE TYPE ===================== -->
+<section id="semaine">
+  <h2>Semaine type</h2>
+  <div class="card">
+    <p>Cinq séances courtes. Chaque séance suit le même squelette : <b>5 min rappel cahier fermé → 20-30 min d'exercices (marche du moment) → 5 min carnet</b> (noter OK / à revoir, une ligne d'erreur).</p>
+    <div class="tablewrap"><table>
+      <tr><th>Jour</th><th>Durée</th><th>Contenu</th></tr>
+      <tr><td>Lundi</td><td>30 min</td><td>Chapitre en cours : rappel + exercices guidés</td></tr>
+      <tr><td>Mardi</td><td>30 min</td><td>Chapitre en cours : exercices seule (marche 3)</td></tr>
+      <tr><td>Jeudi</td><td>30-40 min</td><td>Variante éloignée (marche 4) ou prérequis du prochain chapitre (marche 0)</td></tr>
+      <tr><td>Vendredi</td><td>20 min</td><td>Carnet d'erreurs : refaire 3 exercices « à revoir »</td></tr>
+      <tr><td>Week-end</td><td>30 min</td><td>Rappel mélangé : QCM de 2 ou 3 fiches anciennes + 2 exercices</td></tr>
+    </table></div>
+    <p class="small">Ajuste les jours à ton emploi du temps. Ce qui compte : 5 contacts courts avec les maths par semaine, jamais 0 puis 3 heures.</p>
+  </div>
+
+  <div class="card green">
+    <h3>Minuteur de séance</h3>
+    <p class="small">25 minutes de travail, puis 5 minutes de pause réelle (sans écran de préférence). Le minuteur fonctionne hors connexion.</p>
+    <div class="timer" id="timerDisplay">25:00</div>
+    <div class="bar"><div id="timerBar"></div></div>
+    <div class="row" style="margin-top:.7rem;justify-content:center">
+      <button id="t25">25 min</button>
+      <button id="t40" class="secondary">40 min</button>
+      <button id="t5" class="ghost">Pause 5 min</button>
+      <button id="tStop" class="ghost">Stop</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Hygiène de base (qui pèse plus qu'on ne croit)</h3>
+    <ul>
+      <li><b>Sommeil</b> : la mémoire se consolide en dormant. Réviser jusqu'à 1 h du matin la veille d'un contrôle coûte plus que ça ne rapporte.</li>
+      <li><b>Téléphone en mode avion</b> pendant la séance (les fiches marchent hors connexion, ChatGPT attend la fin).</li>
+      <li><b>Calculatrice et brouillon</b> toujours sortis : les maths se font en écrivant, pas en regardant.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== QUAND ÇA BLOQUE ===================== -->
+<section id="bloque">
+  <h2>Quand ça bloque</h2>
+
+  <div class="card coral">
+    <h3>La règle des 10 minutes</h3>
+    <ol>
+      <li><b>0-10 min</b> : je cherche seule. J'écris tout ce que je sais de l'énoncé (données, ce qu'on cherche, la figure). Je relis la section « Méthode » de la fiche.</li>
+      <li><b>10 min</b> : je demande <b>un seul indice</b> (prompt P2 à ChatGPT, ou la correction cachée sauf la première ligne). Je repars 5 minutes.</li>
+      <li><b>15 min</b> : toujours bloquée ? Je lis la correction en auto-explication (marche 1), je note l'erreur ou le manque dans le carnet, et je <b>refais le même exercice demain</b> sans regarder.</li>
+      <li>Trois blocages de suite sur le même type → c'est un prérequis qui manque : prompt P8, ou fiche « Première » du chapitre.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Échelle de frustration : où en es-tu ?</h3>
+    <p class="small">Touche le niveau qui correspond. La réponse adaptée s'affiche.</p>
+    <div class="scale" id="frScale">
+      <button class="ghost" data-l="1">1 · Ça va</button>
+      <button class="ghost" data-l="2">2 · Agacée</button>
+      <button class="ghost" data-l="3">3 · Découragée</button>
+      <button class="ghost" data-l="4">4 · « Je suis nulle »</button>
+    </div>
+    <div id="frAnswer" class="do hidden" style="margin-top:.7rem"></div>
+  </div>
+
+  <div class="card">
+    <h3>Phrases à remplacer</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Au lieu de…</th><th>Dire…</th></tr>
+      <tr><td>« Je suis nulle en maths »</td><td>« Je n'ai pas encore cette méthode. Laquelle exactement ? »</td></tr>
+      <tr><td>« J'ai tout faux »</td><td>« Où est la première ligne fausse ? Tout ce qui est avant est juste. »</td></tr>
+      <tr><td>« Je ne comprends rien à ce chapitre »</td><td>« Quel prérequis me manque ? » (prompt P8)</td></tr>
+      <tr><td>« J'ai passé 2 h et je n'ai rien fait »</td><td>« Demain, 25 minutes sur un seul exercice de niveau 1. »</td></tr>
+      <tr><td>« Il a compris tout de suite, pas moi »</td><td>« Le temps que je mets ne dit rien de ce que je saurai dans 3 semaines. »</td></tr>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <h3>Après une mauvaise note</h3>
+    <ol>
+      <li>Attendre 24 h avant d'analyser (pas le soir même).</li>
+      <li>Classer chaque point perdu : calcul / méthode / lecture d'énoncé / cours non su / temps.</li>
+      <li>Une seule catégorie prioritaire pour la semaine suivante. Pas toutes.</li>
+      <li>Refaire le contrôle seule, sans limite de temps, une semaine après. La note « seconde chance » est ta vraie mesure de progrès.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== CHATGPT ===================== -->
+<section id="chatgpt">
+  <h2>ChatGPT sans abonnement : mode d'emploi</h2>
+  <div class="card blue">
+    <h3>Les 5 règles</h3>
+    <ol>
+      <li><b>Jamais la solution d'abord.</b> Un indice, une question, une méthode. La solution seulement après ton essai écrit.</li>
+      <li><b>Toujours vérifier.</b> Il se trompe dans les calculs et cite parfois des outils hors programme. Le cours du professeur a raison en cas de conflit.</li>
+      <li><b>Une conversation par chapitre</b>, commencée par le prompt tuteur (P1) : la version gratuite n'a pas de mémoire fiable.</li>
+      <li><b>Envoie ta copie, pas seulement l'énoncé.</b> « Où est mon erreur ? » est le meilleur usage possible.</li>
+      <li><b>Pas pour les devoirs notés</b>, sauf pour comprendre après coup.</li>
+    </ol>
+    <p class="small">Version gratuite : limite de messages par tranche de quelques heures, photos limitées, « Mode étude » (questions plutôt que réponses) à activer quand il est proposé. Une question bien préparée vaut dix messages flous.</p>
+  </div>
+
+  <div class="card">
+    <h3>Prompts à copier</h3>
+    <p class="small">Touche « Copier », colle dans ChatGPT, remplace les crochets.</p>
+
+    <b>P1 · Prompt tuteur (à chaque nouvelle conversation)</b>
+    <div class="prompt" data-p="p1">Tu es mon tuteur de mathématiques. Je suis en Terminale, enseignement de spécialité mathématiques, en France (programme officiel 2019, BO spécial n°8 du 25 juillet 2019 ; les nouveaux programmes 2026-2027 ne me concernent pas). J'ai eu des difficultés en Première, je veux progresser en comprenant.
+Règles pour toute la conversation :
+1. Ne me donne jamais la solution complète d'un exercice tant que je n'ai pas proposé au moins une tentative écrite.
+2. Quand je bloque, donne UN seul indice à la fois (une question, un rappel de définition ou la première étape), puis attends ma réponse.
+3. Utilise uniquement les notations et théorèmes du programme français de Première et Terminale spé maths. Si un outil est hors programme, dis-le.
+4. Quand je propose une réponse, dis d'abord si elle est juste, puis localise précisément l'erreur éventuelle sans la corriger à ma place.
+5. Réponses courtes. Formules en LaTeX.
+Le chapitre du jour : [CHAPITRE]. Confirme en une phrase et demande-moi mon premier exercice.<button class="copy small secondary">Copier</button></div>
+
+    <b>P2 · Indice progressif</b>
+    <div class="prompt">Voici l'énoncé : [ÉNONCÉ]. Voici où j'en suis : [CE QUE J'AI ÉCRIT / « je ne sais pas par où commencer »].
+Donne-moi uniquement l'indice numéro 1 (le plus léger possible). Si je redemande, tu passeras à l'indice 2, puis 3. La solution complète seulement si je l'écris explicitement.<button class="copy small secondary">Copier</button></div>
+
+    <b>P3 · Vérifie ma solution (photo ou texte)</b>
+    <div class="prompt">Voici l'énoncé et ma résolution [photo / texte]. Ne refais pas l'exercice.
+1. Ma réponse finale est-elle juste ?
+2. Si non, à quelle ligne exactement se trouve la première erreur ? Explique en une phrase pourquoi c'est une erreur, sans donner la correction.
+3. Ma rédaction est-elle acceptable pour le bac (justifications, théorèmes cités) ? Un conseil maximum.<button class="copy small secondary">Copier</button></div>
+
+    <b>P4 · Exercices semblables, de plus en plus éloignés</b>
+    <div class="prompt">Voici un exercice que je viens de réussir : [ÉNONCÉ]. Génère 3 exercices du même type :
+- le premier avec seulement les nombres changés,
+- le deuxième avec une étape supplémentaire ou une donnée présentée autrement,
+- le troisième dans un contexte différent (problème concret ou question de démonstration) mais qui utilise la même méthode.
+Donne seulement les énoncés. Garde les réponses pour quand je te les demanderai, une par une.<button class="copy small secondary">Copier</button></div>
+
+    <b>P5 · Explique mon erreur (carnet d'erreurs)</b>
+    <div class="prompt">Je me suis trompée sur cet exercice : [ÉNONCÉ]. J'ai écrit [MA RÉPONSE], la bonne réponse est [CORRIGÉ].
+1. Quel type d'erreur est-ce (calcul, méthode, lecture d'énoncé, connaissance du cours) ?
+2. Quelle règle ou définition du cours j'ai mal appliquée ? Cite-la.
+3. Propose une phrase courte que je peux noter dans mon carnet d'erreurs pour ne pas la refaire.
+4. Donne-moi UN exercice court pour vérifier que j'ai compris.<button class="copy small secondary">Copier</button></div>
+
+    <b>P6 · Fiche de méthode</b>
+    <div class="prompt">Pour le type d'exercice « [TYPE] » en Terminale spé maths (programme 2019), écris une fiche de méthode : les étapes numérotées, le théorème ou la formule utilisée à chaque étape, les 3 erreurs les plus fréquentes, et un exemple résolu très court. Maximum 20 lignes.<button class="copy small secondary">Copier</button></div>
+
+    <b>P7 · Interrogation flash</b>
+    <div class="prompt">Fais-moi une interrogation orale de 5 questions sur [CHAPITRE] : définitions, formules, et un petit calcul mental. Pose une question à la fois, attends ma réponse, corrige en une phrase, puis passe à la suivante. À la fin, donne mon score et la notion à revoir.<button class="copy small secondary">Copier</button></div>
+
+    <b>P8 · Trouver le prérequis qui manque</b>
+    <div class="prompt">Je n'arrive pas à faire [TYPE D'EXERCICE]. Quels sont les prérequis de Seconde ou de Première qu'il faut maîtriser pour ça ? Pose-moi une question de vérification sur chacun pour trouver celui qui me manque.<button class="copy small secondary">Copier</button></div>
+
+    <b>P9 · Préparer un contrôle</b>
+    <div class="prompt">J'ai un contrôle sur [CHAPITRES] dans [N] jours. Propose un plan de révision en sessions de 30 minutes : chaque session commence par 5 minutes de rappel de cours sans le regarder, puis des exercices de difficulté croissante, et se termine par une auto-évaluation. Mélange les chapitres à partir de la deuxième session.<button class="copy small secondary">Copier</button></div>
+
+    <b>P10 · Reformuler un point de cours</b>
+    <div class="prompt">Je ne comprends pas cette phrase de mon cours : « [PHRASE] ». Explique-la avec des mots simples, puis avec un exemple numérique, puis avec un dessin décrit en mots. Ensuite pose-moi une question pour vérifier que j'ai compris.<button class="copy small secondary">Copier</button></div>
+  </div>
+
+  <div class="card">
+    <h3>Scanner un exercice : la routine</h3>
+    <ol>
+      <li>Photo à plat, bonne lumière, une page par photo. Ajouter : « exercice [n°] page [p], chapitre [nom] ».</li>
+      <li>Prompt P3 avec ta copie. Lire le verdict, <b>corriger toi-même</b>.</li>
+      <li>Noter dans le carnet ci-dessous : OK ou à revoir.</li>
+      <li>Quand plusieurs exercices sont « à revoir » : « Copier le bilan » puis prompt P4 pour obtenir des exercices ciblés.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== CARNET ===================== -->
+<section id="carnet">
+  <h2>Carnet de suivi</h2>
+  <p class="small">Enregistré dans ce navigateur, sur cet appareil (hors connexion). Pense à « Exporter » de temps en temps pour garder une copie.</p>
+
+  <div class="card">
+    <div class="grid2">
+      <div><label>Chapitre / fiche</label>
+        <select id="cChap">
+          <option>1A Produit scalaire · définitions (1re)</option>
+          <option>1B Produit scalaire · applications (1re)</option>
+          <option>1C Géométrie repérée (1re)</option>
+          <option>1D Espace · orthogonalité, distances (Term)</option>
+          <option>2A Suites · génération, variations (1re)</option>
+          <option>2B Suites arithmétiques et géométriques (1re)</option>
+          <option>2C Récurrence et limites (Term)</option>
+          <option>Autre chapitre</option>
+        </select></div>
+      <div><label>Exercice (ex. : « niveau 2 », « manuel p. 84 n°12 »)</label><input id="cEx" placeholder="Quel exercice ?"></div>
+      <div><label>Résultat</label>
+        <select id="cRes"><option value="ok">OK sans aide</option><option value="aide">OK avec aide</option><option value="ko">À revoir</option></select></div>
+      <div><label>Type d'erreur (si à revoir)</label>
+        <select id="cErr"><option value="">—</option><option>calcul</option><option>méthode</option><option>lecture d'énoncé</option><option>cours non su</option></select></div>
+    </div>
+    <label>Note pour moi (une phrase : la règle à retenir)</label>
+    <input id="cNote" placeholder="Ex. : le nombre de termes de u3 à u10 est 8, pas 7">
+    <div class="row" style="margin-top:.7rem">
+      <button id="cAdd">Ajouter</button>
+      <button id="cCopy" class="secondary">Copier le bilan pour ChatGPT</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <h3 style="margin:0">Progression</h3>
+      <span id="cStats" class="small"></span>
+    </div>
+    <div class="bar" style="margin:.5rem 0"><div id="cBar"></div></div>
+    <div id="cDue" class="avoid hidden"></div>
+    <div class="tablewrap"><table id="cTable">
+      <thead><tr><th>Date</th><th>Fiche</th><th>Exercice</th><th>Résultat</th><th>Note</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="row" style="margin-top:.7rem">
+      <button id="cExport" class="ghost small">Exporter (copier les données)</button>
+      <button id="cImportBtn" class="ghost small">Importer</button>
+      <button id="cClear" class="ghost small">Tout effacer</button>
+    </div>
+    <div id="cImportBox" class="hidden" style="margin-top:.6rem">
+      <textarea id="cImportText" placeholder="Colle ici les données exportées"></textarea>
+      <button id="cImportDo" class="small" style="margin-top:.4rem">Importer ces données</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABONNEMENT ===================== -->
+<section id="abonnement">
+  <h2>Faut-il un abonnement ?</h2>
+  <div class="card">
+    <p><b>Pas tout de suite.</b> Trois semaines avec la version gratuite, les fiches et ce carnet suffisent pour savoir si la méthode est en place. Ensuite, décide avec ces indicateurs :</p>
+    <ul>
+      <li>La limite gratuite est atteinte <b>plus de deux fois par semaine</b> en pleine séance.</li>
+      <li>Tu envoies souvent des photos de copie et tu es bloquée par la limite de photos.</li>
+      <li>Tu voudrais que l'assistant <b>se souvienne</b> du programme, du carnet et des exercices déjà faits sans tout recoller.</li>
+    </ul>
+  </div>
+  <div class="card amber">
+    <h3>À quoi ressemblerait un « Projet Maths Terminale » avec un abonnement</h3>
+    <ol>
+      <li><b>Fichiers du projet</b> : le résumé des programmes (dossier <i>programmes</i>), la liste des fiches, le carnet de suivi exporté.</li>
+      <li><b>Instructions du projet</b> : le prompt tuteur P1, avec la règle « mets à jour le tableau de suivi à chaque exercice vérifié ».</li>
+      <li><b>Routine</b> : scanner l'exercice fait → vérification (P3) → l'assistant marque OK / à revoir → il génère 3 exercices ciblés sur les « à revoir » (P4) → tu scannes tes nouveaux essais → et ainsi de suite.</li>
+      <li><b>Bilan hebdomadaire</b> : « d'après le tableau, quelles notions revoir cette semaine ? propose la séance de rappel mélangé ».</li>
+    </ol>
+    <p class="small">La même organisation fonctionne avec Claude (Projets) ou ChatGPT (Projets). Le choix se fait sur la qualité des explications en maths et le confort de l'envoi de photos, à tester sur une semaine avant de payer.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>Guide de méthode · Terminale spé maths · Fonctionne hors connexion · Si tu bloques : relis la méthode, redescends d'une marche, puis demande un indice (pas la solution).</footer>
+
+<script>
+(function(){
+  // ---------- Navigation active ----------
+  var links = document.querySelectorAll('#nav a');
+  var sections = [];
+  links.forEach(function(a){ var s = document.querySelector(a.getAttribute('href')); if (s) sections.push({a:a, s:s}); });
+  function updateNav(){
+    var y = window.scrollY + 120, cur = sections[0];
+    sections.forEach(function(o){ if (o.s.offsetTop <= y) cur = o; });
+    sections.forEach(function(o){ o.a.classList.toggle('active', o === cur); });
+  }
+  window.addEventListener('scroll', updateNav); updateNav();
+
+  // ---------- Escalier ----------
+  document.querySelectorAll('#stairs .step').forEach(function(st){
+    st.addEventListener('click', function(){ st.classList.toggle('open'); });
+  });
+
+  // ---------- Minuteur ----------
+  var display = document.getElementById('timerDisplay'), bar = document.getElementById('timerBar');
+  var total = 25*60, left = total, tick = null;
+  function fmt(s){ var m = Math.floor(s/60), r = s%60; return (m<10?'0':'')+m+':'+(r<10?'0':'')+r; }
+  function render(){ display.textContent = fmt(left); bar.style.width = (100*(1-left/total))+'%'; }
+  function start(sec){
+    clearInterval(tick); total = sec; left = sec; render();
+    tick = setInterval(function(){
+      left--; render();
+      if (left <= 0){ clearInterval(tick); display.textContent = 'Fini !'; try { if (navigator.vibrate) navigator.vibrate([200,100,200]); } catch(e){} }
+    }, 1000);
+  }
+  document.getElementById('t25').addEventListener('click', function(){ start(25*60); });
+  document.getElementById('t40').addEventListener('click', function(){ start(40*60); });
+  document.getElementById('t5').addEventListener('click', function(){ start(5*60); });
+  document.getElementById('tStop').addEventListener('click', function(){ clearInterval(tick); left = total; render(); });
+  render();
+
+  // ---------- Échelle de frustration ----------
+  var frMap = {
+    1: "Parfait. Reste sur cette marche encore un exercice, puis monte d'une marche : si c'est facile, c'est le moment d'augmenter la difficulté, pas de s'arrêter.",
+    2: "Normal : c'est le signe que tu es dans la zone où on apprend. Applique la règle des 10 minutes : un seul indice, puis repars. Note ce qui t'agace précisément (souvent c'est un calcul, pas la méthode).",
+    3: "Redescends d'une marche tout de suite : exercice de niveau inférieur, ou relecture d'un exemple résolu en auto-explication. Termine la séance par une réussite, même petite, puis arrête. Demain : le même exercice, sans regarder.",
+    4: "Stop pour aujourd'hui, sans culpabilité. Écris en 3 lignes ce qui s'est passé (quel exercice, à quel moment ça a basculé). Demain, 20 minutes maximum sur la fiche « Première » du chapitre, QCM seulement. Le jugement « je suis nulle » est une émotion, pas une mesure : la mesure, c'est le carnet, et il monte."
+  };
+  var frBtns = document.querySelectorAll('#frScale button'), frAns = document.getElementById('frAnswer');
+  frBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      frBtns.forEach(function(x){ x.classList.remove('sel'); });
+      b.classList.add('sel');
+      frAns.textContent = frMap[b.getAttribute('data-l')];
+      frAns.classList.remove('hidden');
+    });
+  });
+
+  // ---------- Copier les prompts ----------
+  function copyText(txt, btn){
+    var done = function(){ var old = btn.textContent; btn.textContent = 'Copié ✓'; setTimeout(function(){ btn.textContent = old; }, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fallback(txt, done); }); }
+    else fallback(txt, done);
+  }
+  function fallback(txt, done){
+    var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta); done();
+  }
+  document.querySelectorAll('.prompt .copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var box = btn.parentNode.cloneNode(true); var b = box.querySelector('.copy'); if (b) box.removeChild(b);
+      copyText(box.textContent.trim(), btn);
+    });
+  });
+
+  // ---------- Carnet de suivi ----------
+  var KEY = 'carnet_maths_v1';
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } }
+  function save(d){ try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){} }
+  var data = load();
+  var tbody = document.querySelector('#cTable tbody');
+  var resLabel = {ok:'OK', aide:'OK avec aide', ko:'À revoir'};
+  function dstr(ts){ var d = new Date(ts); return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'}); }
+  function renderCarnet(){
+    tbody.innerHTML = '';
+    var okc = 0, koc = 0, due = [];
+    var now = Date.now();
+    data.slice().reverse().forEach(function(r, idx){
+      var i = data.length - 1 - idx;
+      var tr = document.createElement('tr');
+      var cls = r.res === 'ko' ? 'badge-ko' : (r.res === 'aide' ? 'badge-nf' : 'badge-ok');
+      var td;
+      td = document.createElement('td'); td.textContent = dstr(r.ts); tr.appendChild(td);
+      td = document.createElement('td'); td.textContent = r.chap.split(' ')[0]; td.title = r.chap; tr.appendChild(td);
+      td = document.createElement('td'); td.textContent = r.ex; tr.appendChild(td);
+      td = document.createElement('td'); td.className = cls; td.textContent = resLabel[r.res] + (r.err ? ' · ' + r.err : ''); tr.appendChild(td);
+      td = document.createElement('td'); td.textContent = r.note || ''; tr.appendChild(td);
+      td = document.createElement('td');
+      var del = document.createElement('button'); del.className = 'ghost small'; del.textContent = '×'; del.title = 'Supprimer';
+      del.addEventListener('click', function(){ data.splice(i, 1); save(data); renderCarnet(); });
+      var re = document.createElement('button'); re.className = 'small secondary'; re.textContent = 'Refait OK'; re.style.marginLeft = '.3rem';
+      re.addEventListener('click', function(){ data.push({ts:Date.now(), chap:r.chap, ex:r.ex + ' (refait)', res:'ok', err:'', note:''}); r.res = 'ok'; save(data); renderCarnet(); });
+      td.appendChild(del); if (r.res === 'ko') td.appendChild(re);
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      if (r.res === 'ok') okc++; if (r.res === 'ko'){ koc++; if (now - r.ts > 2*86400000) due.push(r); }
+    });
+    var n = data.length;
+    document.getElementById('cStats').textContent = n ? (okc + ' OK seule · ' + koc + ' à revoir · ' + n + ' au total') : 'Aucune entrée pour l’instant';
+    document.getElementById('cBar').style.width = n ? (100*okc/n) + '%' : '0%';
+    var dueBox = document.getElementById('cDue');
+    if (due.length){
+      dueBox.classList.remove('hidden');
+      dueBox.innerHTML = '<b>À refaire aujourd’hui (plus de 2 jours) :</b> ' + due.map(function(r){ return r.chap.split(' ')[0] + ' · ' + r.ex; }).join(' ; ');
+    } else dueBox.classList.add('hidden');
+  }
+  document.getElementById('cAdd').addEventListener('click', function(){
+    var ex = document.getElementById('cEx').value.trim();
+    if (!ex){ document.getElementById('cEx').focus(); return; }
+    data.push({ ts: Date.now(), chap: document.getElementById('cChap').value, ex: ex,
+      res: document.getElementById('cRes').value, err: document.getElementById('cErr').value, note: document.getElementById('cNote').value.trim() });
+    save(data); document.getElementById('cEx').value = ''; document.getElementById('cNote').value = ''; document.getElementById('cErr').value = '';
+    renderCarnet();
+  });
+  document.getElementById('cCopy').addEventListener('click', function(){
+    var lines = ['Voici mon bilan de travail en maths (Terminale spé, programme 2019). Pour chaque ligne : fiche, exercice, résultat, type d’erreur, note.'];
+    data.forEach(function(r){ lines.push('- ' + dstr(r.ts) + ' | ' + r.chap + ' | ' + r.ex + ' | ' + resLabel[r.res] + (r.err ? ' (' + r.err + ')' : '') + (r.note ? ' | ' + r.note : '')); });
+    lines.push('');
+    lines.push('En te basant sur les exercices « À revoir », propose-moi 3 exercices ciblés de difficulté croissante (énoncés seulement, réponses quand je les demanderai), en respectant le programme officiel français de spécialité mathématiques. Commence par me dire en une phrase quelle notion revient le plus dans mes erreurs.');
+    copyText(lines.join('\n'), this);
+  });
+  document.getElementById('cExport').addEventListener('click', function(){ copyText(JSON.stringify(data), this); });
+  document.getElementById('cImportBtn').addEventListener('click', function(){ document.getElementById('cImportBox').classList.toggle('hidden'); });
+  document.getElementById('cImportDo').addEventListener('click', function(){
+    try {
+      var arr = JSON.parse(document.getElementById('cImportText').value);
+      if (Array.isArray(arr)){ data = data.concat(arr); save(data); renderCarnet(); document.getElementById('cImportBox').classList.add('hidden'); }
+    } catch(e){ document.getElementById('cImportText').value = 'Données non reconnues. Colle exactement le texte exporté.'; }
+  });
+  document.getElementById('cClear').addEventListener('click', function(){
+    var b = this;
+    if (b.getAttribute('data-arm') === '1'){ data = []; save(data); renderCarnet(); b.textContent = 'Tout effacer'; b.removeAttribute('data-arm'); return; }
+    b.setAttribute('data-arm', '1'); b.textContent = 'Confirmer l’effacement ?';
+    setTimeout(function(){ b.textContent = 'Tout effacer'; b.removeAttribute('data-arm'); }, 4000);
+  });
+  renderCarnet();
+})();
+</script>
+</body>
+</html>

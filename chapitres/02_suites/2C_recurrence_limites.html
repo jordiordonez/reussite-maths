@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2C — Récurrence et limites de suites</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]},
+  options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+:root{--bg:#faf8f5;--card:#fff;--ink:#1f2937;--muted:#6b7280;--blue:#2563eb;--blue-soft:#e8efff;--coral:#f97362;--coral-soft:#fde8e4;--green:#22a06b;--green-soft:#e3f5ec;--amber:#f59e0b;--amber-soft:#fff4dc;--line:#e5e7eb;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;font-size:16px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2}
+header{padding:48px 20px 28px;text-align:center;background:linear-gradient(180deg,#eef3ff 0%,var(--bg) 100%)}
+header h1{margin:0;font-size:2rem;color:var(--blue);opacity:0;transform:translateY(16px);animation:rise .9s ease-out forwards}
+header .sub{margin-top:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;opacity:0;animation:fade 1s .5s ease-out forwards}
+header .lead{max-width:640px;margin:14px auto 0;color:var(--ink);opacity:0;animation:fade 1s .9s ease-out forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:8px 12px;-webkit-overflow-scrolling:touch}
+nav a{flex:0 0 auto;min-height:44px;display:flex;align-items:center;padding:0 16px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--blue);text-decoration:none;font-weight:600;font-size:.95rem}
+nav a:active{background:var(--blue-soft)}
+main{max-width:860px;margin:0 auto;padding:12px 14px 40px}
+section{padding-top:24px}
+section>h2{font-size:1.6rem;margin:8px 0 14px;color:var(--ink)}
+section>h2 span{color:var(--blue)}
+.card{background:var(--card);border-radius:16px;box-shadow:0 4px 18px rgba(30,41,59,.07);padding:18px;margin-bottom:16px}
+.card h3{margin:0 0 8px;font-size:1.15rem;color:var(--blue)}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-family:system-ui;font-weight:700;margin-right:8px;font-size:.95rem;vertical-align:middle}
+.box{border-left:4px solid var(--blue);background:var(--blue-soft);padding:10px 14px;border-radius:8px;margin:10px 0}
+.box.warn{border-color:var(--coral);background:var(--coral-soft)}
+.box.ok{border-color:var(--green);background:var(--green-soft)}
+.box.tip{border-color:var(--amber);background:var(--amber-soft)}
+.tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:999px;background:var(--amber-soft);color:#92400e;font-weight:600;margin-left:6px;vertical-align:middle}
+.tag.dem{background:#ede9fe;color:#5b21b6}
+.tag.adm{background:#e5e7eb;color:#374151}
+pre{background:#1f2937;color:#e5e7eb;border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem;line-height:1.45;margin:10px 0}
+pre .c{color:#9ca3af}pre .k{color:#93c5fd}pre .n{color:#fcd34d}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+th{background:var(--blue-soft)}
+td.fi{background:var(--coral-soft);color:#9f1239;font-weight:700}
+.tablewrap{overflow-x:auto;margin:10px 0}
+button,.btn{min-height:44px;padding:0 18px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
+button.ghost{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+button.small{min-height:44px;padding:0 14px;font-size:.95rem}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{flex:1 1 30%;background:#fff;color:var(--blue);border:2px solid var(--blue);font-size:.92rem;padding:0 10px}
+.tabs button.active{background:var(--blue);color:#fff}
+.slider{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:8px 0}
+.slider label{font-weight:600;min-width:60px}
+.slider output{min-width:60px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--blue)}
+input[type=range]{width:100%;accent-color:var(--blue);height:44px}
+select,input[type=text]{min-height:44px;font-size:1rem;padding:6px 10px;border-radius:10px;border:1.5px solid #cbd5e1;background:#fff;font-family:inherit;width:100%}
+input[type=text]{max-width:160px}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:12px;border:1px solid var(--line)}
+.pt{animation:pop .4s ease-out both}
+@keyframes pop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{padding:3px 9px;border-radius:999px;font-size:.85rem;font-weight:600;background:#f3f4f6}
+.chip.up{background:var(--green-soft);color:#166534}.chip.down{background:var(--coral-soft);color:#9f1239}.chip.flat{background:#f3f4f6;color:#374151}
+.stat{font-size:1.05rem;padding:10px 14px;border-radius:10px;background:var(--blue-soft);margin:8px 0}
+.stat.good{background:var(--green-soft)}.stat.bad{background:var(--coral-soft)}
+.ex-fields{display:grid;gap:10px;margin:10px 0}
+.field{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.field .lab{min-width:120px;font-weight:600}
+.feedback{margin-top:8px;padding:10px 14px;border-radius:10px;display:none}
+.feedback.ok{display:block;background:var(--green-soft);color:#166534;border-left:4px solid var(--green)}
+.feedback.ko{display:block;background:var(--coral-soft);color:#9f1239;border-left:4px solid var(--coral)}
+.corr{display:none;margin-top:12px;padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1}
+.corr.open{display:block}
+.corr p{margin:6px 0}
+.q{margin-bottom:14px}
+.q .stem{font-weight:600;margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px 14px;min-height:44px;font-weight:500}
+.opt .letter{display:inline-block;width:26px;font-weight:700;color:var(--blue)}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--coral);background:var(--coral-soft)}
+.opt.dim{opacity:.55}
+.qexpl{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:#f8fafc;font-size:.95rem}
+.qexpl.show{display:block}
+.score{font-size:1.2rem;font-weight:700;text-align:center;padding:14px;border-radius:12px;background:var(--blue-soft);margin-top:10px;display:none}
+footer{text-align:center;color:var(--muted);font-size:.9rem;padding:24px 16px 40px;border-top:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.9rem;margin:6px 0}
+.legend span::before{content:"";display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle;background:var(--c)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modele{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.modele .etape{font-weight:700;color:var(--blue);display:block;margin-top:10px}
+.blank{display:inline-block;min-width:120px;border-bottom:2px dotted var(--coral);height:1.1em;vertical-align:bottom;margin:0 3px}
+.filled{color:#166534;font-weight:600}
+.tree{margin:10px 0}
+.tree .lvl{border-left:3px solid var(--blue);margin:6px 0 6px 4px;padding:4px 0 4px 12px}
+.tree .lvl .lvl{border-left-color:var(--amber)}
+.tree .lvl .lvl .lvl{border-left-color:var(--green)}
+.tree b{color:var(--blue)}
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:38px;margin:10px 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}header h1{font-size:1.55rem}.field .lab{min-width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Récurrence et limites de suites</h1>
+  <div class="sub">Terminale · Mathématiques</div>
+  <p class="lead">Démontrer par récurrence, définir et calculer une limite, lever une forme indéterminée, comparer, encadrer, et étudier une suite définie par \(u_{n+1}=f(u_n)\).</p>
+</header>
+<nav>
+  <a href="#cours">Cours</a><a href="#methode">Méthode</a><a href="#visu">Visualisation</a><a href="#exos">Exercices</a><a href="#qcm">QCM</a>
+</nav>
+<main>
+
+<!-- ============================ COURS ============================ -->
+<section id="cours">
+  <h2><span>1.</span> Cours</h2>
+
+  <div class="card">
+    <h3><span class="num">1</span>Le raisonnement par récurrence</h3>
+    <p>C'est un outil <strong>nouveau en Terminale</strong>. Il sert à démontrer qu'une propriété \(P(n)\) est vraie pour <em>tous</em> les entiers \(n\) à partir d'un certain rang, alors qu'on ne peut évidemment pas vérifier une infinité de cas.</p>
+    <div class="box">
+      <strong>Principe (image des dominos).</strong> Si le premier domino tombe (<em>initialisation</em>) et si « chaque domino qui tombe fait tomber le suivant » (<em>hérédité</em>), alors tous les dominos tombent (<em>conclusion</em>).
+    </div>
+    <div class="box ok">
+      <strong>Modèle de rédaction (type bac) — à recopier à chaque fois</strong><br>
+      Pour tout \(n\in\mathbb N\), on note \(P(n)\) la propriété : « <em>…énoncé…</em> ».<br>
+      <strong>Initialisation.</strong> Pour \(n=0\) : … On calcule les deux membres séparément et on constate l'égalité (ou l'inégalité). Donc \(P(0)\) est vraie.<br>
+      <strong>Hérédité.</strong> Soit \(n\in\mathbb N\). Supposons \(P(n)\) vraie, c'est-à-dire « … » (<em>hypothèse de récurrence</em>). Montrons que \(P(n+1)\) est vraie, c'est-à-dire « … ». <em>(calcul, en partant de \(u_{n+1}\) et en utilisant l'hypothèse)</em> Donc \(P(n+1)\) est vraie.<br>
+      <strong>Conclusion.</strong> \(P(0)\) est vraie et \(P\) est héréditaire ; d'après le principe de récurrence, \(P(n)\) est vraie pour tout \(n\in\mathbb N\).
+    </div>
+    <p><strong>Exemple 1 — une égalité.</strong> \(u_0=1\) et \(u_{n+1}=3u_n+2\). Montrons que pour tout \(n\), \(u_n=2\times 3^n-1\).</p>
+    <div class="box">
+      <em>Initialisation :</em> \(u_0=1\) et \(2\times 3^0-1=2-1=1\). Les deux membres sont égaux, donc \(P(0)\) est vraie.<br>
+      <em>Hérédité :</em> soit \(n\in\mathbb N\), supposons \(u_n=2\times 3^n-1\). Alors
+      \[u_{n+1}=3u_n+2=3\bigl(2\times 3^n-1\bigr)+2=2\times 3^{n+1}-3+2=2\times 3^{n+1}-1.\]
+      C'est exactement \(P(n+1)\).<br>
+      <em>Conclusion :</em> pour tout \(n\in\mathbb N\), \(u_n=2\times 3^n-1\).
+    </div>
+    <p><strong>Exemple 2 — une majoration.</strong> \(u_0=0\) et \(u_{n+1}=\tfrac12 u_n+3\). Montrons que pour tout \(n\), \(u_n\leq 6\).</p>
+    <div class="box">
+      <em>Initialisation :</em> \(u_0=0\leq 6\) : \(P(0)\) est vraie.<br>
+      <em>Hérédité :</em> soit \(n\in\mathbb N\), supposons \(u_n\leq 6\). En multipliant par \(\tfrac12>0\) (le sens de l'inégalité est conservé) : \(\tfrac12u_n\leq 3\). En ajoutant \(3\) : \(\tfrac12u_n+3\leq 6\), c'est-à-dire \(u_{n+1}\leq 6\).<br>
+      <em>Conclusion :</em> pour tout \(n\in\mathbb N\), \(u_n\leq 6\). La suite est <strong>majorée par 6</strong>.
+    </div>
+    <div class="box warn">
+      <strong>Trois pièges.</strong> (1) L'initialisation n'est pas facultative : sans elle, on peut « démontrer » n'importe quoi. (2) On suppose \(P(n)\) vraie <em>pour un</em> \(n\) fixé, jamais « pour tout \(n\) » (sinon il n'y aurait plus rien à démontrer). (3) On part de \(u_{n+1}\) (ou du membre de gauche de \(P(n+1)\)) et on <em>utilise</em> l'hypothèse ; on ne part pas de ce qu'on veut prouver.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Limite infinie : \(+\infty\) et \(-\infty\)</h3>
+    <div class="box">
+      <strong>Définition.</strong> \((u_n)\) <strong>tend vers \(+\infty\)</strong> si <em>tout intervalle \([A\,;+\infty[\) contient tous les termes de la suite à partir d'un certain rang</em>.<br>
+      Autrement dit : pour tout réel \(A\), il existe un entier \(N\) tel que pour tout \(n\geq N\), \(u_n\geq A\). On note \(\displaystyle\lim_{n\to+\infty}u_n=+\infty\).
+    </div>
+    <p><strong>Exemple.</strong> \(u_n=n^2\). Prenons \(A=1000\) : dès que \(n\geq 32\) on a \(n^2\geq 1024\geq 1000\). Le rang \(N=32\) convient. Si on prend \(A=10^6\), il faut \(N=1000\) : \(N\) grandit avec \(A\), mais il <em>existe toujours</em>. C'est cela, tendre vers \(+\infty\).</p>
+    <div class="box">
+      <strong>Limite \(-\infty\).</strong> \((u_n)\) tend vers \(-\infty\) si tout intervalle \(]-\infty\,;A]\) contient tous les termes à partir d'un certain rang. Équivalent pratique : \(\lim u_n=-\infty\) si et seulement si \(\lim(-u_n)=+\infty\).
+    </div>
+    <div class="box warn">
+      « Tendre vers \(+\infty\) » ne veut <strong>pas</strong> dire « être croissante ». La suite \(u_n=n+(-1)^n\) : \(1,\ 0,\ 3,\ 2,\ 5,\ 4,\dots\) n'est pas croissante et pourtant elle tend vers \(+\infty\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Suite convergente : limite finie \(\ell\)</h3>
+    <div class="box">
+      <strong>Définition.</strong> \((u_n)\) <strong>converge vers le réel \(\ell\)</strong> si <em>tout intervalle ouvert contenant \(\ell\) contient tous les termes de la suite à partir d'un certain rang</em>.<br>
+      Version « avec \(\varepsilon\) » : pour tout \(\varepsilon>0\), il existe \(N\) tel que pour tout \(n\geq N\), \(|u_n-\ell|\leq\varepsilon\) (les termes sont dans la bande \([\ell-\varepsilon\,;\ell+\varepsilon]\)).
+    </div>
+    <p><strong>Exemple.</strong> \(u_n=\dfrac1n\) converge vers \(0\) : pour \(\varepsilon=0{,}01\), tous les termes de rang \(n\geq 100\) vérifient \(|u_n-0|\leq 0{,}01\).</p>
+    <div class="box tip">
+      <strong>Vocabulaire.</strong> Une suite est <em>convergente</em> si elle a une limite <strong>finie</strong>. Sinon elle est <em>divergente</em> — et il y a deux façons de diverger : tendre vers \(\pm\infty\) (comme \(n^2\)) ou n'avoir aucune limite (comme \((-1)^n\), qui oscille entre \(-1\) et \(1\)).
+    </div>
+    <div class="box">
+      <strong>Limites de référence.</strong> \(\displaystyle\lim\frac1n=\lim\frac{1}{n^2}=\lim\frac{1}{\sqrt n}=0\) ; \(\displaystyle\lim n=\lim n^2=\lim\sqrt n=+\infty\). <em>(Unicité de la limite : une suite ne peut pas avoir deux limites différentes.)</em>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Opérations sur les limites et formes indéterminées</h3>
+    <p>Les limites se combinent « comme on l'espère »… sauf dans quatre cas.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>\(\lim u_n\)</th><th>\(\lim v_n\)</th><th>\(\lim(u_n+v_n)\)</th><th>\(\lim(u_n\times v_n)\)</th></tr>
+        <tr><td>\(\ell\)</td><td>\(\ell'\)</td><td>\(\ell+\ell'\)</td><td>\(\ell\ell'\)</td></tr>
+        <tr><td>\(\ell\)</td><td>\(+\infty\)</td><td>\(+\infty\)</td><td>\(\pm\infty\) selon le signe de \(\ell\) (\(\ell\neq0\))</td></tr>
+        <tr><td>\(+\infty\)</td><td>\(+\infty\)</td><td>\(+\infty\)</td><td>\(+\infty\)</td></tr>
+        <tr><td>\(+\infty\)</td><td>\(-\infty\)</td><td class="fi">F.I. \(\infty-\infty\)</td><td>\(-\infty\)</td></tr>
+        <tr><td>\(0\)</td><td>\(\pm\infty\)</td><td>\(\pm\infty\)</td><td class="fi">F.I. \(0\times\infty\)</td></tr>
+      </table>
+    </div>
+    <div class="box warn">
+      <strong>Les quatre formes indéterminées :</strong> \(\infty-\infty\), \(0\times\infty\), \(\dfrac{\infty}{\infty}\), \(\dfrac{0}{0}\). « Indéterminée » ne veut pas dire « pas de limite » : cela veut dire <em>on ne peut pas conclure sans transformer l'écriture</em>. Écrire « \(\lim u_n=\infty-\infty=0\) » est une faute grave.
+    </div>
+    <p><strong>Levée d'une F.I. : on factorise par le terme dominant</strong> (celui de plus haut degré, ou la plus grande puissance).</p>
+    <div class="box ok">
+      \(u_n=n^2-5n\) : F.I. \(\infty-\infty\). On factorise par \(n^2\) : \(u_n=n^2\Bigl(1-\dfrac5n\Bigr)\). Or \(\dfrac5n\to0\) donc \(1-\dfrac5n\to1\), et \(n^2\to+\infty\) : par produit, \(u_n\to+\infty\).
+    </div>
+    <div class="box ok">
+      \(u_n=\dfrac{3n^2-n+1}{2n^2+5}\) : F.I. \(\dfrac{\infty}{\infty}\). On factorise haut et bas par \(n^2\) :
+      \[u_n=\frac{n^2\Bigl(3-\frac1n+\frac{1}{n^2}\Bigr)}{n^2\Bigl(2+\frac{5}{n^2}\Bigr)}=\frac{3-\frac1n+\frac{1}{n^2}}{2+\frac{5}{n^2}}\xrightarrow[n\to+\infty]{}\frac{3}{2}.\]
+    </div>
+    <div class="box tip">
+      <strong>Astuce des racines.</strong> \(\sqrt{n+1}-\sqrt n\) est une F.I. \(\infty-\infty\). On multiplie par la quantité conjuguée :
+      \(\sqrt{n+1}-\sqrt n=\dfrac{1}{\sqrt{n+1}+\sqrt n}\to 0\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Comparaison et théorème des gendarmes</h3>
+    <div class="box">
+      <strong>Théorème de comparaison.</strong> Si \(u_n\geq v_n\) à partir d'un certain rang et si \(\lim v_n=+\infty\), alors \(\lim u_n=+\infty\).<span class="tag dem">démonstration exigible</span><br>
+      De même, si \(u_n\leq v_n\) à partir d'un certain rang et \(\lim v_n=-\infty\), alors \(\lim u_n=-\infty\).
+    </div>
+    <div class="box ok">
+      <strong>Démonstration (minoration par une suite qui tend vers \(+\infty\)).</strong> Soit \(A\) un réel quelconque. Comme \(v_n\to+\infty\), il existe \(N_1\) tel que pour tout \(n\geq N_1\), \(v_n\geq A\). Par hypothèse il existe \(N_2\) tel que pour tout \(n\geq N_2\), \(u_n\geq v_n\). Posons \(N=\max(N_1,N_2)\) : pour tout \(n\geq N\), \(u_n\geq v_n\geq A\). Donc tout intervalle \([A\,;+\infty[\) contient tous les \(u_n\) à partir du rang \(N\) : \(u_n\to+\infty\). ∎
+    </div>
+    <div class="box">
+      <strong>Théorème des gendarmes.</strong> Si \(v_n\leq u_n\leq w_n\) à partir d'un certain rang et si \(\lim v_n=\lim w_n=\ell\) (<em>même</em> limite finie), alors \((u_n)\) converge et \(\lim u_n=\ell\).
+    </div>
+    <div class="box ok">
+      <strong>Exemple.</strong> \(u_n=2+\dfrac{(-1)^n}{n}\) pour \(n\geq1\). Comme \(-1\leq(-1)^n\leq 1\), on a \(2-\dfrac1n\leq u_n\leq 2+\dfrac1n\). Les deux « gendarmes » tendent vers \(2\), donc \(u_n\to 2\) — alors que la suite n'est ni croissante ni décroissante.
+    </div>
+    <div class="box warn">
+      Les deux gendarmes doivent avoir la <strong>même</strong> limite. Avec \(-1\leq(-1)^n\leq1\) on ne conclut rien : \(((-1)^n)\) n'a pas de limite.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Comportement de \((q^n)\) et inégalité de Bernoulli</h3>
+    <div class="box">
+      <strong>Théorème.</strong> Soit \(q\) un réel.
+      <ul style="margin:6px 0">
+        <li>si \(q&gt;1\) : \(\lim q^n=+\infty\) ;</li>
+        <li>si \(q=1\) : \(q^n=1\) pour tout \(n\), la suite est constante, \(\lim q^n=1\) ;</li>
+        <li>si \(-1&lt;q&lt;1\) : \(\lim q^n=0\) ;</li>
+        <li>si \(q\leq-1\) : la suite \((q^n)\) <strong>n'a pas de limite</strong> (elle oscille en changeant de signe).</li>
+      </ul>
+    </div>
+    <div class="box ok">
+      <strong>Inégalité de Bernoulli</strong><span class="tag dem">démonstration exigible</span><br>
+      Pour tout réel \(a\geq 0\) et tout entier \(n\geq0\) : \((1+a)^n\geq 1+na\).<br>
+      <em>Récurrence sur \(n\), à \(a\) fixé.</em> \(P(n)\) : « \((1+a)^n\geq1+na\) ».<br>
+      <em>Initialisation :</em> \((1+a)^0=1\) et \(1+0\times a=1\) : \(1\geq1\), \(P(0)\) est vraie.<br>
+      <em>Hérédité :</em> supposons \((1+a)^n\geq1+na\). Comme \(1+a&gt;0\), on peut multiplier les deux membres par \(1+a\) sans changer le sens :
+      \[(1+a)^{n+1}\geq(1+na)(1+a)=1+(n+1)a+na^2\geq 1+(n+1)a,\]
+      car \(na^2\geq0\). Donc \(P(n+1)\) est vraie.<br>
+      <em>Conclusion :</em> l'inégalité est vraie pour tout \(n\in\mathbb N\). ∎
+    </div>
+    <div class="box ok">
+      <strong>Conséquence : \(q&gt;1\Rightarrow q^n\to+\infty\).</strong><span class="tag dem">démonstration exigible</span> On écrit \(q=1+a\) avec \(a=q-1&gt;0\). Bernoulli donne \(q^n\geq 1+na\). Or \(1+na\to+\infty\) (suite arithmétique de raison \(a&gt;0\)), donc par comparaison \(q^n\to+\infty\). ∎<br>
+      <em>Et si \(-1&lt;q&lt;1\) avec \(q\neq0\) :</em> \(\left|\frac1q\right|&gt;1\) donc \(\left|\frac1q\right|^n\to+\infty\), donc \(|q|^n=\dfrac{1}{|1/q|^n}\to0\), donc \(q^n\to0\).
+    </div>
+    <p><strong>Application.</strong> Une suite géométrique \(u_n=u_0q^n\) : avec \(q=1{,}05\) (hausse de 5 % par an) elle explose vers \(+\infty\) ; avec \(q=0{,}95\) elle tend vers \(0\) ; avec \(q=-1{,}2\) elle n'a pas de limite.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span>Suites monotones et étude de \(u_{n+1}=f(u_n)\)</h3>
+    <div class="box">
+      <strong>Théorème de convergence monotone</strong><span class="tag adm">admis</span><br>
+      Toute suite <strong>croissante et majorée</strong> converge (vers un réel \(\ell\)). Toute suite <strong>décroissante et minorée</strong> converge.
+    </div>
+    <div class="box warn">
+      Ce théorème donne l'<em>existence</em> de la limite, pas sa valeur : si \(u_n\leq 6\) pour tout \(n\), on sait que \(\ell\leq6\), mais rien ne dit que \(\ell=6\). Exemple : \(u_n=1-\frac1n\) est croissante et majorée par \(10\), et sa limite est \(1\).
+    </div>
+    <div class="box ok">
+      <strong>Théorème.</strong> Toute suite croissante <strong>non majorée</strong> tend vers \(+\infty\).<span class="tag dem">démonstration exigible</span><br>
+      <em>Démonstration.</em> Soit \(A\) un réel. Comme \((u_n)\) n'est pas majorée, \(A\) n'est pas un majorant : il existe un rang \(N\) tel que \(u_N&gt;A\). Comme \((u_n)\) est croissante, pour tout \(n\geq N\) : \(u_n\geq u_N&gt;A\). Donc l'intervalle \([A\,;+\infty[\) contient tous les termes à partir du rang \(N\). Ceci vaut pour tout \(A\), donc \(u_n\to+\infty\). ∎<br>
+      <em>Conséquence :</em> une suite croissante a toujours une limite : soit elle est majorée et elle converge, soit elle ne l'est pas et elle tend vers \(+\infty\).
+    </div>
+    <p><strong>Schéma d'étude d'une suite définie par \(u_{n+1}=f(u_n)\)</strong> — c'est LE grand exercice de fin de chapitre :</p>
+    <ol class="steps">
+      <li><strong>Conjecturer.</strong> Calculer \(u_0,u_1,u_2,u_3\) (calculatrice ou programme), tracer la « toile d'araignée » : la suite semble croissante ? majorée ? convergente vers quoi ?</li>
+      <li><strong>Démontrer un encadrement par récurrence</strong>, par exemple « pour tout \(n\), \(0\leq u_n\leq 6\) ». Dans l'hérédité, on applique \(f\) à l'encadrement en utilisant les <em>variations de \(f\)</em>.</li>
+      <li><strong>Démontrer la monotonie.</strong> Étudier le signe de \(u_{n+1}-u_n=f(u_n)-u_n\) grâce à l'encadrement de l'étape 2 (ou par une deuxième récurrence).</li>
+      <li><strong>Conclure.</strong> Croissante + majorée ⟹ la suite <strong>converge</strong> vers un réel \(\ell\) (théorème de convergence monotone). On détermine ensuite \(\ell\) en résolvant \(\ell=f(\ell)\).</li>
+    </ol>
+    <div class="box tip">
+      <strong>Point de vigilance sur l'étape 4.</strong> Le passage de \(u_{n+1}=f(u_n)\) à \(\ell=f(\ell)\) n'est légitime que parce que \(f\) est <strong>continue</strong> : c'est une notion vue plus tard dans l'année (chapitre « continuité »). En début d'année, cette étape est admise ou l'énoncé la guide. Et il faut vérifier que la valeur trouvée est cohérente avec l'encadrement : si \(\ell=f(\ell)\) a deux solutions, on garde celle qui est dans l'intervalle où vivent les termes.
+    </div>
+    <div class="box ok">
+      <strong>Exemple complet.</strong> \(u_0=0\), \(u_{n+1}=\tfrac12u_n+3\).<br>
+      (2) Récurrence : \(u_n\leq6\) pour tout \(n\) (faite au point 1).<br>
+      (3) \(u_{n+1}-u_n=\tfrac12u_n+3-u_n=3-\tfrac12u_n=\tfrac12(6-u_n)\geq0\) car \(u_n\leq6\) : la suite est croissante.<br>
+      (4) Croissante et majorée par \(6\) : elle converge vers \(\ell\). Comme \(\ell=\tfrac12\ell+3\), on obtient \(\tfrac12\ell=3\), donc \(\ell=6\).
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MÉTHODE ============================ -->
+<section id="methode">
+  <h2><span>2.</span> Méthode</h2>
+
+  <div class="card">
+    <h3>Pour rédiger une récurrence — modèle à trous</h3>
+    <p>Exercice type : \(u_0=2\) et \(u_{n+1}=2u_n-1\) ; démontrer que pour tout \(n\in\mathbb N\), \(u_n=2^n+1\).</p>
+    <div class="modele" id="modele">
+      <div>Pour tout \(n\in\mathbb N\), on note \(P(n)\) la propriété : « <span class="blank"></span> ».</div>
+      <span class="etape">Initialisation</span>
+      <div>Pour \(n=0\) : d'une part \(u_0=2\), d'autre part <span class="blank"></span>. Les deux valeurs sont égales, donc <span class="blank"></span> est vraie.</div>
+      <span class="etape">Hérédité</span>
+      <div>Soit \(n\in\mathbb N\). Supposons que <span class="blank"></span>. Montrons alors que <span class="blank"></span>.</div>
+      <div>\(u_{n+1}=2u_n-1=2\bigl(\)<span class="blank"></span>\(\bigr)-1=\)<span class="blank"></span>. Donc \(P(n+1)\) est vraie.</div>
+      <span class="etape">Conclusion</span>
+      <div><span class="blank"></span>.</div>
+    </div>
+    <div class="row"><button type="button" id="modeleBtn" class="ghost">Afficher le modèle rempli</button></div>
+    <div class="box tip">Les trois mots à écrire <em>obligatoirement</em> : <strong>Initialisation</strong>, <strong>Hérédité</strong>, <strong>Conclusion</strong>. Ils rapportent des points même si le calcul coince.</div>
+  </div>
+
+  <div class="card">
+    <h3>Pour calculer une limite — arbre de décision</h3>
+    <div class="tree">
+      <div class="lvl"><b>1. Je remplace mentalement \(n\) par « très grand ».</b> Est-ce que j'obtiens une valeur ou une forme indéterminée ?
+        <div class="lvl"><b>Pas de F.I.</b> → j'applique directement les opérations sur les limites et je conclus (en citant le théorème : « par somme », « par produit », « par quotient »).</div>
+        <div class="lvl"><b>F.I. \(\frac{\infty}{\infty}\) (quotient de polynômes)</b> → je factorise le numérateur ET le dénominateur par le terme de plus haut degré, je simplifie, puis je conclus.
+          <div class="lvl">\(\dfrac{4n^2+n}{2n^2-3}=\dfrac{4+\frac1n}{2-\frac{3}{n^2}}\to 2\)</div>
+        </div>
+        <div class="lvl"><b>F.I. \(\infty-\infty\) (somme)</b> → je factorise par le terme dominant.
+          <div class="lvl">\(n^3-7n=n^3\bigl(1-\frac{7}{n^2}\bigr)\to+\infty\). S'il y a des racines carrées : quantité conjuguée.</div>
+        </div>
+        <div class="lvl"><b>Il y a un \((-1)^n\) ou un « \(\cos\) », bref un terme qui oscille</b> → je l'encadre (\(-1\leq(-1)^n\leq1\)) puis j'applique <b>les gendarmes</b> ou la <b>comparaison</b>.</div>
+        <div class="lvl"><b>Il y a un \(q^n\)</b> → je regarde la position de \(q\) par rapport à \(-1\) et \(1\), et j'applique le théorème sur \((q^n)\). Si plusieurs puissances, je factorise par la plus grande : \(3^n+2^n=3^n\bigl(1+(\frac23)^n\bigr)\to+\infty\).</div>
+        <div class="lvl"><b>La suite est définie par récurrence \(u_{n+1}=f(u_n)\)</b> → aucun calcul direct n'est possible : je passe au schéma en 4 étapes (récurrence + monotonie + convergence monotone).</div>
+      </div>
+    </div>
+    <div class="box">Toujours <strong>écrire le théorème utilisé</strong> : « par quotient de limites », « d'après le théorème des gendarmes », « d'après le théorème de comparaison ». C'est ce qui est corrigé au bac.</div>
+  </div>
+
+  <div class="card">
+    <h3>Pour étudier une suite \(u_{n+1}=f(u_n)\)</h3>
+    <ol class="steps">
+      <li><strong>Calculer les premiers termes</strong> et conjecturer (croissante ? majorée ? limite ?).</li>
+      <li><strong>Récurrence pour l'encadrement.</strong> Hérédité : partir de l'encadrement supposé, lui appliquer \(f\) en respectant les variations de \(f\), et retrouver l'encadrement au rang \(n+1\). Exemple avec \(f(x)=\sqrt{x+2}\) croissante : \(0\leq u_n\leq2\Rightarrow \sqrt2\leq\sqrt{u_n+2}\leq2\Rightarrow 0\leq u_{n+1}\leq2\).</li>
+      <li><strong>Monotonie.</strong> Calculer \(u_{n+1}-u_n=f(u_n)-u_n\), factoriser, et utiliser l'encadrement pour donner le signe. (Autre méthode : récurrence directe sur « \(u_{n+1}\geq u_n\) ».)</li>
+      <li><strong>Conclure</strong> par le théorème de convergence monotone, puis résoudre \(\ell=f(\ell)\) et choisir la solution compatible avec l'encadrement.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Pour écrire un algorithme de seuil (Python, boucle <code>while</code>)</h3>
+    <p>Question type : « à partir de quel rang \(u_n\) dépasse-t-il \(A\) ? ». On <em>ne connaît pas</em> le nombre de tours à l'avance : c'est un <code>while</code>, pas un <code>for</code>.</p>
+<pre><span class="k">def</span> seuil(A):
+    u = <span class="n">1</span>              <span class="c"># u_0</span>
+    n = <span class="n">0</span>              <span class="c"># rang courant</span>
+    <span class="k">while</span> u &lt; A:        <span class="c"># tant que le seuil n'est pas atteint</span>
+        u = <span class="n">3</span>*u + <span class="n">2</span>     <span class="c"># on passe de u_n a u_(n+1)</span>
+        n = n + <span class="n">1</span>      <span class="c"># ...et le rang augmente de 1</span>
+    <span class="k">return</span> n          <span class="c"># premier rang tel que u_n >= A</span>
+
+print(seuil(<span class="n">1000</span>))     <span class="c"># affiche 6</span></pre>
+    <div class="box">
+      <strong>Trois réflexes.</strong> (1) Initialiser <em>avant</em> la boucle (\(u\) et \(n\)). (2) Mettre à jour \(u\) <em>et</em> \(n\) dans la boucle, sinon boucle infinie. (3) À la sortie, \(n\) est le <em>premier</em> rang qui dépasse le seuil. Pour une suite décroissante vers \(0\), la condition devient <code>while u &gt; A:</code>.
+    </div>
+    <div class="box tip">Cet algorithme n'existe que parce que la suite tend vers \(+\infty\) : le seuil est forcément atteint. Plus tard dans l'année, le <strong>logarithme</strong> permettra de résoudre l'inéquation \(q^n\geq A\) par le calcul ; pour l'instant, on utilise le programme ou la calculatrice.</div>
+  </div>
+
+  <div class="card">
+    <h3>Erreurs fréquentes</h3>
+    <div class="box warn"><strong>Oublier l'initialisation.</strong> Sans elle, la récurrence ne prouve rien. Exemple : « \(u_n=u_{n-1}+2\) donc \(u_n\) est impair » est héréditaire… mais faux si \(u_0=0\). Toujours vérifier le premier rang (et le bon : parfois \(n=1\), parfois \(n=2\)).</div>
+    <div class="box warn"><strong>Écrire « supposons que la propriété est vraie pour tout \(n\) ».</strong> C'est exactement ce qu'on cherche à démontrer : le raisonnement devient circulaire et vaut 0 point. La formule correcte est : « Soit \(n\in\mathbb N\). Supposons \(P(n)\) vraie. »</div>
+    <div class="box warn"><strong>Conclure la convergence sans majorant.</strong> « La suite est croissante donc elle converge » est faux : \(u_n=n\) est croissante et tend vers \(+\infty\). Il faut croissante <strong>et majorée</strong>. Et inversement, « majorée donc convergente » est faux aussi : \((-1)^n\) est majorée par 1 et n'a pas de limite.</div>
+    <div class="box warn"><strong>Traiter \(q^n\) sans regarder le signe de \(q\).</strong> \(q=-0{,}5\) : \(|q|&lt;1\) donc \(q^n\to0\) (les termes alternent mais s'écrasent). \(q=-2\) : \(q^n\) vaut \(1,-2,4,-8,\dots\) : <strong>pas de limite</strong>, surtout pas \(+\infty\).</div>
+    <div class="box warn"><strong>Écrire une limite comme \(\infty-\infty\), \(\frac{\infty}{\infty}\) ou \(0\times\infty\).</strong> Ces symboles ne sont pas des nombres et ne peuvent pas apparaître dans une égalité. On écrit : « on reconnaît une forme indéterminée, on factorise par… ».</div>
+    <div class="box warn"><strong>Confondre \(\ell\) et le majorant.</strong> Une suite majorée par 10 peut converger vers 3. Le théorème donne l'existence de \(\ell\), la valeur vient de \(\ell=f(\ell)\).</div>
+  </div>
+</section>
+
+<!-- ============================ VISUALISATION ============================ -->
+<section id="visu">
+  <h2><span>3.</span> Visualisation</h2>
+  <div class="card">
+    <div class="tabs">
+      <button type="button" id="tabLim" class="active">Définition de la limite</button>
+      <button type="button" id="tabQ">Suite \(q^n\)</button>
+      <button type="button" id="tabCob">u<sub>n+1</sub> = f(u<sub>n</sub>)</button>
+    </div>
+
+    <!-- Onglet 1 : définition de la limite -->
+    <div id="panelLim">
+      <p>Choisis une suite. Si elle converge vers \(\ell\), règle la largeur \(\varepsilon\) de la bande \([\ell-\varepsilon\,;\ell+\varepsilon]\) ; si elle tend vers \(+\infty\), règle le seuil \(A\) de la demi-droite \([A\,;+\infty[\). Le rang \(N\) affiché est le <strong>premier rang à partir duquel tous les termes suivants restent dans la zone</strong>.</p>
+      <div class="row">
+        <select id="limSel" aria-label="Choix de la suite"></select>
+      </div>
+      <div class="slider" id="epsWrap"><label for="limEps">ε</label><input type="range" id="limEps" min="0.02" max="1" step="0.01" value="0.4"><output id="oEps">0,4</output></div>
+      <div class="slider" id="aWrap" hidden><label for="limA">A</label><input type="range" id="limA" min="1" max="400" step="1" value="50"><output id="oA">50</output></div>
+      <div class="stat" id="limFormula"></div>
+      <svg id="svgLim" viewBox="0 0 440 300" role="img" aria-label="Termes de la suite et bande de la limite"></svg>
+      <div class="legend"><span style="--c:#22a06b">terme dans la zone</span><span style="--c:#f97362">terme hors de la zone</span><span style="--c:#2563eb">limite / seuil</span></div>
+      <div class="stat" id="limN"></div>
+      <div class="stat" id="limMsg"></div>
+    </div>
+
+    <!-- Onglet 2 : q^n -->
+    <div id="panelQ" hidden>
+      <p>Les 21 premiers termes de la suite \((q^n)\). Fais glisser \(q\) et observe les quatre régimes : explosion, constante, écrasement vers \(0\), oscillation.</p>
+      <div class="slider"><label for="qSlider">q</label><input type="range" id="qSlider" min="-1.5" max="1.5" step="0.05" value="0.8"><output id="oQ">0,8</output></div>
+      <svg id="svgQ" viewBox="0 0 440 300" role="img" aria-label="Nuage de points de la suite q puissance n"></svg>
+      <div class="stat" id="qMsg"></div>
+      <div class="tablewrap"><table id="qTable"></table></div>
+    </div>
+
+    <!-- Onglet 3 : toile d'araignée -->
+    <div id="panelCob" hidden>
+      <p>Suite définie par \(u_0\) et \(u_{n+1}=f(u_n)\). On monte verticalement jusqu'à la courbe de \(f\) (on obtient \(u_{n+1}\) en ordonnée) puis horizontalement jusqu'à la droite \(y=x\) (\(u_{n+1}\) passe en abscisse), et on recommence.</p>
+      <div class="row"><select id="cobSel" aria-label="Choix de la fonction f"></select></div>
+      <div class="slider"><label for="cobU0">u₀</label><input type="range" id="cobU0" min="-6" max="10" step="0.25" value="0"><output id="oU0">0</output></div>
+      <div class="stat" id="cobFormula"></div>
+      <div class="legend"><span style="--c:#2563eb">y = f(x)</span><span style="--c:#9ca3af">y = x</span><span style="--c:#f97362">toile d'araignée</span></div>
+      <svg id="svgCob" viewBox="0 0 440 440" role="img" aria-label="Toile d'araignée de la suite récurrente"></svg>
+      <div class="row">
+        <button type="button" id="cobStep">Étape suivante</button>
+        <button type="button" id="cobPlay" class="ghost">Animer</button>
+        <button type="button" id="cobReset" class="ghost">Réinitialiser</button>
+      </div>
+      <div class="stat" id="cobCur"></div>
+      <div class="tablewrap"><table id="cobTable"></table></div>
+      <div class="stat" id="cobFix"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EXERCICES ============================ -->
+<section id="exos">
+  <h2><span>4.</span> Exercices</h2>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 — Limite d'une suite explicite <span class="tag">niveau 1</span></h3>
+    <div id="ex1Stmt"></div>
+    <div class="ex-fields">
+      <div class="field"><span class="lab">La suite :</span>
+        <select id="ex1Sel" style="max-width:300px">
+          <option value="">— choisir —</option>
+          <option value="pinf">tend vers +∞</option>
+          <option value="minf">tend vers −∞</option>
+          <option value="reel">converge vers un réel ℓ</option>
+          <option value="none">n'a pas de limite</option>
+        </select>
+      </div>
+      <div class="field" id="ex1LWrap" hidden><span class="lab">ℓ =</span><input type="text" id="ex1In" inputmode="text" placeholder="ex. 1,5 ou 3/2"></div>
+    </div>
+    <div class="row">
+      <button type="button" id="ex1Check">Vérifier</button>
+      <button type="button" id="ex1Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex1New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex1Fb"></div>
+    <div class="corr" id="ex1CorrBox"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 — Une récurrence, pas à pas <span class="tag">niveau 2</span></h3>
+    <div id="ex2Stmt"></div>
+    <div class="box"><strong>a.</strong> On suppose \(P(n)\) vraie. En remplaçant \(u_n\) par son expression dans la relation de récurrence, on obtient \(u_{n+1}\) sous la forme <span id="ex2Form"></span>. Donne \(\alpha\) et \(\beta\).</div>
+    <div class="ex-fields">
+      <div class="field"><span class="lab">α =</span><input type="text" id="ex2A" inputmode="decimal" style="max-width:110px"></div>
+      <div class="field"><span class="lab">β =</span><input type="text" id="ex2B" inputmode="decimal" style="max-width:110px"></div>
+    </div>
+    <div class="box"><strong>b.</strong> <span id="ex2QStem"></span></div>
+    <div class="field"><select id="ex2Sel"></select></div>
+    <div class="row">
+      <button type="button" id="ex2Check">Vérifier</button>
+      <button type="button" id="ex2Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex2New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex2Fb"></div>
+    <div class="corr" id="ex2CorrBox"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 — Gendarmes et comparaison <span class="tag">niveau 3</span></h3>
+    <div id="ex3Stmt"></div>
+    <div class="ex-fields" id="ex3Fields"></div>
+    <div class="ex-fields">
+      <div class="field"><span class="lab">On en déduit :</span>
+        <select id="ex3Sel" style="max-width:300px">
+          <option value="">— choisir —</option>
+          <option value="pinf">uₙ tend vers +∞</option>
+          <option value="minf">uₙ tend vers −∞</option>
+          <option value="reel">uₙ converge vers un réel ℓ</option>
+          <option value="none">uₙ n'a pas de limite</option>
+        </select>
+      </div>
+      <div class="field" id="ex3LWrap" hidden><span class="lab">ℓ =</span><input type="text" id="ex3Lim" inputmode="decimal" style="max-width:110px"></div>
+    </div>
+    <div class="row">
+      <button type="button" id="ex3Check">Vérifier</button>
+      <button type="button" id="ex3Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex3New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex3Fb"></div>
+    <div class="corr" id="ex3CorrBox"></div>
+  </div>
+</section>
+
+<!-- ============================ QCM ============================ -->
+<section id="qcm">
+  <h2><span>5.</span> QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard dans une banque de 16. Une seule bonne réponse par question.</p>
+    <div id="qcmBox"></div>
+    <div class="score" id="qcmScore"></div>
+    <div class="row"><button type="button" id="qcmNew">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+<footer>
+  Si tu bloques : relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <strong>indication</strong> (pas la solution).
+</footer>
+
+<script>
+/* ---------- utilitaires ---------- */
+function typeset(el){ if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise(el?[el]:undefined).catch(function(){}); } }
+function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function fmt(x){ if(!isFinite(x)) return '—'; var r = Math.round(x*10000)/10000; return String(r).replace('.',','); }
+function fmt2(x){ return fmt(Math.round(x*100)/100); }
+function fmtSigned(x){ return (x<0?'− ':'+ ') + fmt(Math.abs(x)); }
+function parseNum(s){
+  if(s==null) return NaN;
+  s = String(s).trim().replace(/\s+/g,'').replace(',','.').replace('−','-');
+  if(s==='') return NaN;
+  var m = s.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+  if(m){ var d = parseFloat(m[2]); return d===0?NaN:parseFloat(m[1])/d; }
+  if(!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function close(a,b){ return Math.abs(a-b) <= 0.011 + 1e-9*Math.abs(b); }
+function shuffle(arr){ var a = arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function setFb(el, ok, msg){ el.className = 'feedback ' + (ok?'ok':'ko'); el.innerHTML = msg; typeset(el); }
+function coef(a, first){ var s = a<0 ? '-' : (first?'':'+'); var v = Math.abs(a); return s + (v===1?'':fmt(v)); }
+function polyTex(a,b,c){
+  var parts = [];
+  if(a!==0) parts.push(coef(a,true)+'n^2');
+  if(b!==0) parts.push(coef(b,parts.length===0)+'n');
+  if(c!==0) parts.push((c<0?'-':(parts.length===0?'':'+'))+fmt(Math.abs(c)));
+  if(parts.length===0) return '0';
+  return parts.join('');
+}
+function linTex(a,b){ return polyTex(0,a,b); }
+function niceStep(x){ if(!(x>0)) return 1; var p=Math.pow(10,Math.floor(Math.log10(x))); var m=x/p; return (m<1.5?1:(m<3.5?2:(m<7.5?5:10)))*p; }
+var NS = 'http://www.w3.org/2000/svg';
+function mk(tag, attrs, parent){ var e = document.createElementNS(NS, tag); for(var k in attrs){ e.setAttribute(k, attrs[k]); } if(parent) parent.appendChild(e); return e; }
+function clear(svg){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+
+/* ---------- modèle de rédaction à trous ---------- */
+var MODELE_FILLS = [
+  '\\(u_n = 2^n + 1\\)',
+  '\\(2^0 + 1 = 1 + 1 = 2\\)',
+  '\\(P(0)\\)',
+  '\\(P(n)\\) est vraie, c\'est-à-dire \\(u_n = 2^n + 1\\)',
+  '\\(u_{n+1} = 2^{n+1} + 1\\)',
+  '\\(2^n + 1\\)',
+  '\\(2^{n+1} + 2 - 1 = 2^{n+1} + 1\\)',
+  '\\(P(0)\\) est vraie et \\(P\\) est héréditaire, donc par récurrence \\(u_n = 2^n + 1\\) pour tout \\(n \\in \\mathbb N\\)'
+];
+var modeleOpen = false;
+var modeleBtn = document.getElementById('modeleBtn');
+modeleBtn.addEventListener('click', function(){
+  var blanks = document.querySelectorAll('#modele .blank');
+  modeleOpen = !modeleOpen;
+  blanks.forEach(function(b,i){
+    if(modeleOpen){ b.innerHTML = MODELE_FILLS[i] || ''; b.classList.add('filled'); }
+    else { b.innerHTML = ''; b.classList.remove('filled'); }
+  });
+  modeleBtn.textContent = modeleOpen ? 'Masquer le modèle rempli' : 'Afficher le modèle rempli';
+  if(modeleOpen) typeset(document.getElementById('modele'));
+});
+
+/* ---------- onglets de la visualisation ---------- */
+var TABS = [
+  {b:'tabLim', p:'panelLim'},
+  {b:'tabQ',   p:'panelQ'},
+  {b:'tabCob', p:'panelCob'}
+];
+TABS.forEach(function(t){
+  document.getElementById(t.b).addEventListener('click', function(){
+    TABS.forEach(function(o){
+      var btn=document.getElementById(o.b), pan=document.getElementById(o.p);
+      var on = (o.b===t.b);
+      btn.classList.toggle('active', on);
+      pan.hidden = !on;
+    });
+    if(t.b==='tabLim') drawLim();
+    if(t.b==='tabQ') drawQ();
+    if(t.b==='tabCob') cobReset();
+  });
+});
+</script>
+
+<script>
+/* ---------- VISU 1 : définition de la limite ---------- */
+var LIM_SUITES = [
+  {id:'inv',    label:'u(n) = 1/n   (n ≥ 1)',        tex:'u_n = \\dfrac{1}{n}',                  n0:1, f:function(n){return 1/n;},                    kind:'conv', l:0},
+  {id:'altinv', label:'u(n) = (−1)^n / n   (n ≥ 1)', tex:'u_n = \\dfrac{(-1)^n}{n}',             n0:1, f:function(n){return Math.pow(-1,n)/n;},      kind:'conv', l:0},
+  {id:'geo',    label:'u(n) = 2 − 1/2^n',            tex:'u_n = 2 - \\dfrac{1}{2^n}',            n0:0, f:function(n){return 2-Math.pow(0.5,n);},     kind:'conv', l:2},
+  {id:'q08',    label:'u(n) = (−0,8)^n',             tex:'u_n = (-0{,}8)^n',                     n0:0, f:function(n){return Math.pow(-0.8,n);},      kind:'conv', l:0},
+  {id:'sq',     label:'u(n) = n²',                   tex:'u_n = n^2',                            n0:0, f:function(n){return n*n;},                    kind:'pinf'},
+  {id:'q12',    label:'u(n) = 1,2^n',                tex:'u_n = 1{,}2^{\\,n}',                   n0:0, f:function(n){return Math.pow(1.2,n);},       kind:'pinf'}
+];
+var limSel = document.getElementById('limSel');
+LIM_SUITES.forEach(function(s){ var o=document.createElement('option'); o.value=s.id; o.textContent=s.label; limSel.appendChild(o); });
+var limEps = document.getElementById('limEps'), limA = document.getElementById('limA');
+var svgLim = document.getElementById('svgLim');
+
+function currentSuite(){ for(var i=0;i<LIM_SUITES.length;i++) if(LIM_SUITES[i].id===limSel.value) return LIM_SUITES[i]; return LIM_SUITES[0]; }
+
+function findRank(s, eps, A){
+  var last = s.n0 - 1, LIMIT = 4000;
+  for(var n=s.n0;n<=LIMIT;n++){
+    var v = s.f(n);
+    var inside = (s.kind==='conv') ? (Math.abs(v - s.l) <= eps + 1e-12) : (v >= A);
+    if(!inside) last = n;
+  }
+  return last + 1;
+}
+
+function drawLim(){
+  var s = currentSuite();
+  var isConv = (s.kind==='conv');
+  document.getElementById('epsWrap').hidden = !isConv;
+  document.getElementById('aWrap').hidden = isConv;
+  var eps = parseFloat(limEps.value), A = parseFloat(limA.value);
+  document.getElementById('oEps').textContent = fmt(eps);
+  document.getElementById('oA').textContent = fmt(A);
+
+  var N = findRank(s, eps, A);
+  var NMAX = Math.max(20, Math.min(60, N + 5));
+  var ns = [], vals = [];
+  for(var n=s.n0;n<=NMAX;n++){ ns.push(n); vals.push(s.f(n)); }
+
+  /* fenêtre verticale */
+  var ymin, ymax;
+  if(isConv){
+    ymin = Math.min.apply(null, vals.concat([s.l-eps]));
+    ymax = Math.max.apply(null, vals.concat([s.l+eps]));
+  } else {
+    ymin = Math.min(0, Math.min.apply(null, vals));
+    ymax = Math.max(A, Math.max.apply(null, vals));
+  }
+  if(ymax-ymin < 1e-6){ ymax += 1; ymin -= 1; }
+  var pad = (ymax-ymin)*0.12; ymin -= pad; ymax += pad;
+
+  var W=440,H=300,L=52,R=14,T=14,B=34;
+  var X = function(n){ return L + (n-s.n0)/(NMAX-s.n0)*(W-L-R); };
+  var Y = function(v){ return T + (ymax-v)/(ymax-ymin)*(H-T-B); };
+  clear(svgLim);
+
+  /* bande / demi-droite */
+  if(isConv){
+    mk('rect',{x:L,y:Y(s.l+eps),width:W-L-R,height:Math.max(1,Y(s.l-eps)-Y(s.l+eps)),fill:'#e3f5ec',stroke:'none'},svgLim);
+    mk('line',{x1:L,y1:Y(s.l),x2:W-R,y2:Y(s.l),stroke:'#2563eb','stroke-width':1.6,'stroke-dasharray':'6 4'},svgLim);
+    var lt = mk('text',{x:W-R-2,y:Y(s.l)-5,'text-anchor':'end','font-size':12,fill:'#1d4ed8','font-weight':'700'},svgLim);
+    lt.textContent = 'ℓ = '+fmt(s.l);
+  } else {
+    mk('rect',{x:L,y:T,width:W-L-R,height:Math.max(1,Y(A)-T),fill:'#e3f5ec',stroke:'none'},svgLim);
+    mk('line',{x1:L,y1:Y(A),x2:W-R,y2:Y(A),stroke:'#2563eb','stroke-width':1.6,'stroke-dasharray':'6 4'},svgLim);
+    var at = mk('text',{x:W-R-2,y:Y(A)+14,'text-anchor':'end','font-size':12,fill:'#1d4ed8','font-weight':'700'},svgLim);
+    at.textContent = 'A = '+fmt(A);
+  }
+
+  /* graduations verticales */
+  var step = niceStep((ymax-ymin)/5);
+  for(var g=Math.ceil(ymin/step)*step; g<=ymax; g+=step){
+    var gg = Math.round(g*10000)/10000, y=Y(gg);
+    mk('line',{x1:L,y1:y,x2:W-R,y2:y,stroke:'#f1f5f9','stroke-width':1},svgLim);
+    var tt=mk('text',{x:L-6,y:y+4,'text-anchor':'end','font-size':10,fill:'#6b7280'},svgLim); tt.textContent=fmt(gg);
+  }
+  /* axes */
+  var y0 = (0>=ymin && 0<=ymax) ? Y(0) : H-B;
+  mk('line',{x1:L,y1:y0,x2:W-R,y2:y0,stroke:'#374151','stroke-width':1.2},svgLim);
+  mk('line',{x1:L,y1:T,x2:L,y2:H-B,stroke:'#374151','stroke-width':1.2},svgLim);
+  var tick = Math.max(1, Math.round((NMAX-s.n0)/10));
+  for(var k=s.n0;k<=NMAX;k+=tick){
+    mk('line',{x1:X(k),y1:H-B,x2:X(k),y2:H-B+4,stroke:'#374151'},svgLim);
+    var tx=mk('text',{x:X(k),y:H-B+17,'text-anchor':'middle','font-size':10,fill:'#6b7280'},svgLim); tx.textContent=k;
+  }
+  var lab=mk('text',{x:W-R,y:H-4,'text-anchor':'end','font-size':12,fill:'#374151'},svgLim); lab.textContent='n';
+
+  /* rang N */
+  if(N<=NMAX){
+    mk('line',{x1:X(N),y1:T,x2:X(N),y2:H-B,stroke:'#f59e0b','stroke-width':1.6,'stroke-dasharray':'4 3'},svgLim);
+    var nt=mk('text',{x:X(N)+4,y:T+12,'font-size':12,fill:'#92400e','font-weight':'700'},svgLim); nt.textContent='N = '+N;
+  }
+
+  /* points */
+  var r = (NMAX-s.n0>40)?2.8:4;
+  vals.forEach(function(v,i){
+    var n=ns[i];
+    var inside = isConv ? (Math.abs(v-s.l)<=eps+1e-12) : (v>=A);
+    var cy = Y(v);
+    if(cy<T-2 || cy>H-B+2) return;
+    var c=mk('circle',{cx:X(n),cy:cy,r:r,fill:inside?'#22a06b':'#f97362',class:'pt'},svgLim);
+    c.style.transformOrigin = X(n)+'px '+cy+'px';
+    c.style.animationDelay = Math.min(i*0.02,0.8)+'s';
+  });
+
+  /* textes */
+  var fEl=document.getElementById('limFormula');
+  fEl.innerHTML = '\\('+s.tex+'\\) pour \\(n \\geq '+s.n0+'\\)';
+  typeset(fEl);
+  var nEl=document.getElementById('limN');
+  nEl.className='stat good';
+  if(isConv){
+    nEl.innerHTML = 'Pour \\(\\varepsilon = '+fmt(eps)+'\\) : tous les termes de rang \\(n \\geq '+N+'\\) vérifient \\(|u_n - '+fmt(s.l)+'| \\leq \\varepsilon\\). Donc \\(N = '+N+'\\).';
+  } else {
+    nEl.innerHTML = 'Pour \\(A = '+fmt(A)+'\\) : tous les termes de rang \\(n \\geq '+N+'\\) vérifient \\(u_n \\geq A\\). Donc \\(N = '+N+'\\).';
+  }
+  typeset(nEl);
+  var mEl=document.getElementById('limMsg');
+  if(isConv){
+    mEl.innerHTML = 'Diminue \\(\\varepsilon\\) : le rang \\(N\\) augmente, mais il <strong>existe toujours</strong>. C\'est exactement la définition : <em>tout</em> intervalle ouvert contenant \\(\\ell\\) contient tous les termes à partir d\'un certain rang. Ici \\(\\lim u_n = '+fmt(s.l)+'\\).';
+  } else {
+    mEl.innerHTML = 'Augmente \\(A\\) : le rang \\(N\\) augmente, mais il <strong>existe toujours</strong>. C\'est la définition : <em>tout</em> intervalle \\([A\\,;+\\infty[\\) contient tous les termes à partir d\'un certain rang. Ici \\(\\lim u_n = +\\infty\\).';
+  }
+  typeset(mEl);
+}
+limSel.addEventListener('change', drawLim);
+limEps.addEventListener('input', drawLim);
+limA.addEventListener('input', drawLim);
+</script>
+
+<script>
+/* ---------- VISU 2 : la suite (q^n) ---------- */
+var qSlider = document.getElementById('qSlider'), svgQ = document.getElementById('svgQ');
+function drawQ(){
+  var q = Math.round(parseFloat(qSlider.value)*100)/100;
+  document.getElementById('oQ').textContent = fmt(q);
+  var NQ = 20, vals=[];
+  for(var n=0;n<=NQ;n++) vals.push(Math.pow(q,n));
+  var maxAbs = 1;
+  vals.forEach(function(v){ if(isFinite(v)) maxAbs = Math.max(maxAbs, Math.abs(v)); });
+  var m = Math.min(maxAbs*1.1, 12);
+  var W=440,H=300,L=52,R=14,T=14,B=34;
+  var X=function(n){ return L + n/NQ*(W-L-R); };
+  var Y=function(v){ return T + (m-v)/(2*m)*(H-T-B); };
+  clear(svgQ);
+  var step = niceStep(2*m/6);
+  for(var g=Math.ceil(-m/step)*step; g<=m; g+=step){
+    var gg=Math.round(g*10000)/10000, y=Y(gg);
+    mk('line',{x1:L,y1:y,x2:W-R,y2:y,stroke:'#f1f5f9'},svgQ);
+    var tt=mk('text',{x:L-6,y:y+4,'text-anchor':'end','font-size':10,fill:'#6b7280'},svgQ); tt.textContent=fmt(gg);
+  }
+  mk('line',{x1:L,y1:Y(0),x2:W-R,y2:Y(0),stroke:'#374151','stroke-width':1.2},svgQ);
+  mk('line',{x1:L,y1:T,x2:L,y2:H-B,stroke:'#374151','stroke-width':1.2},svgQ);
+  mk('line',{x1:L,y1:Y(1),x2:W-R,y2:Y(1),stroke:'#cbd5e1','stroke-dasharray':'4 4'},svgQ);
+  mk('line',{x1:L,y1:Y(-1),x2:W-R,y2:Y(-1),stroke:'#cbd5e1','stroke-dasharray':'4 4'},svgQ);
+  for(var n=0;n<=NQ;n+=2){
+    var tx=mk('text',{x:X(n),y:H-B+17,'text-anchor':'middle','font-size':10,fill:'#6b7280'},svgQ); tx.textContent=n;
+  }
+  var lb=mk('text',{x:W-R,y:H-4,'text-anchor':'end','font-size':12,fill:'#374151'},svgQ); lb.textContent='n';
+  vals.forEach(function(v,n){
+    if(!isFinite(v)) return;
+    if(Math.abs(v)>m){
+      var yEdge = (v>0)?T+3:H-B-3;
+      mk('path',{d:'M'+(X(n)-5)+' '+(v>0?yEdge+8:yEdge-8)+' L'+X(n)+' '+yEdge+' L'+(X(n)+5)+' '+(v>0?yEdge+8:yEdge-8),fill:'none',stroke:'#f97362','stroke-width':2},svgQ);
+      return;
+    }
+    mk('line',{x1:X(n),y1:Y(0),x2:X(n),y2:Y(v),stroke:'#dbeafe'},svgQ);
+    var c=mk('circle',{cx:X(n),cy:Y(v),r:4,fill:'#2563eb',class:'pt'},svgQ);
+    c.style.transformOrigin=X(n)+'px '+Y(v)+'px'; c.style.animationDelay=(n*0.02)+'s';
+  });
+  var msg, cls='stat';
+  if(q>1){ msg='\\(q = '+fmt(q)+' > 1\\) : les termes grandissent sans limite, \\(\\lim q^n = +\\infty\\). <em>(Démonstration par l\'inégalité de Bernoulli : \\(q^n \\geq 1 + n(q-1)\\).)</em>'; cls+=' good'; }
+  else if(q===1){ msg='\\(q = 1\\) : la suite est <strong>constante</strong> égale à \\(1\\), donc \\(\\lim q^n = 1\\).'; }
+  else if(q>-1 && q<1){
+    msg = '\\(-1 < q = '+fmt(q)+' < 1\\) : \\(|q|^n\\) s\'écrase, \\(\\lim q^n = 0\\).' + (q<0? ' Comme \\(q < 0\\), les termes changent de signe à chaque rang, mais l\'amplitude tend vers 0 : la suite converge quand même vers \\(0\\).' : (q===0?' (Tous les termes sont nuls à partir du rang 1.)':''));
+    cls+=' good';
+  }
+  else if(q===-1){ msg='\\(q = -1\\) : les termes valent \\(1, -1, 1, -1,\\dots\\) : la suite <strong>n\'a pas de limite</strong>.'; cls+=' bad'; }
+  else { msg='\\(q = '+fmt(q)+' \\leq -1\\) : les termes changent de signe et leur valeur absolue explose : la suite <strong>n\'a pas de limite</strong> (surtout pas \\(+\\infty\\) !).'; cls+=' bad'; }
+  var mEl=document.getElementById('qMsg'); mEl.className=cls; mEl.innerHTML=msg; typeset(mEl);
+  var tb=document.getElementById('qTable'), h='<tr><th>n</th>', r='<tr><th>qⁿ</th>';
+  for(var n=0;n<=8;n++){ h+='<th>'+n+'</th>'; r+='<td>'+fmt2(vals[n])+'</td>'; }
+  tb.innerHTML=h+'</tr>'+r+'</tr>';
+}
+qSlider.addEventListener('input', drawQ);
+</script>
+
+<script>
+/* ---------- VISU 3 : toile d'araignée u_(n+1) = f(u_n) ---------- */
+var COB_F = [
+  {id:'aff1', label:'f(x) = 0,5x + 3', tex:'f(x) = 0{,}5x + 3', f:function(x){return 0.5*x+3;},
+   view:[-3,12], u0:[-3,12,0.25,0], fix:2, fixv:6,
+   fixTex:'\\ell = 0{,}5\\ell + 3 \\iff 0{,}5\\ell = 3 \\iff \\ell = 6'},
+  {id:'aff2', label:'f(x) = −0,7x + 3,4', tex:'f(x) = -0{,}7x + 3{,}4', f:function(x){return -0.7*x+3.4;},
+   view:[-5,9], u0:[-5,9,0.25,8], fixv:2,
+   fixTex:'\\ell = -0{,}7\\ell + 3{,}4 \\iff 1{,}7\\ell = 3{,}4 \\iff \\ell = 2'},
+  {id:'rac', label:'f(x) = √(x + 2)', tex:'f(x) = \\sqrt{x+2}', f:function(x){return (x+2>=0)?Math.sqrt(x+2):NaN;},
+   view:[-2,8], u0:[-2,8,0.25,0], fixv:2,
+   fixTex:'\\ell = \\sqrt{\\ell+2} \\iff \\ell^2 = \\ell + 2 \\ (\\ell \\geq 0) \\iff \\ell^2 - \\ell - 2 = 0 \\iff \\ell = 2 \\text{ (ou } -1 \\text{, exclu)}'},
+  {id:'quad', label:'f(x) = 0,25x² + 1', tex:'f(x) = 0{,}25x^2 + 1', f:function(x){return 0.25*x*x+1;},
+   view:[-1,5], u0:[-1,4,0.25,0], fixv:2,
+   fixTex:'\\ell = 0{,}25\\ell^2 + 1 \\iff \\ell^2 - 4\\ell + 4 = 0 \\iff (\\ell-2)^2 = 0 \\iff \\ell = 2'},
+  {id:'heron', label:'f(x) = 0,5(x + 2/x)   (méthode de Héron)', tex:'f(x) = \\dfrac12\\left(x + \\dfrac{2}{x}\\right)', f:function(x){return (x>0)?0.5*(x+2/x):NaN;},
+   view:[0,5], u0:[0.25,5,0.25,3], fixv:Math.SQRT2,
+   fixTex:'\\ell = \\dfrac12\\left(\\ell + \\dfrac{2}{\\ell}\\right) \\iff 2\\ell = \\ell + \\dfrac{2}{\\ell} \\iff \\ell^2 = 2 \\iff \\ell = \\sqrt 2'}
+];
+var cobSel = document.getElementById('cobSel');
+COB_F.forEach(function(o){ var e=document.createElement('option'); e.value=o.id; e.textContent=o.label; cobSel.appendChild(e); });
+var cobU0 = document.getElementById('cobU0'), svgCob = document.getElementById('svgCob');
+var cobState = {k:0, terms:[], timer:null};
+var COB_MAX = 12;
+
+function cobFct(){ for(var i=0;i<COB_F.length;i++) if(COB_F[i].id===cobSel.value) return COB_F[i]; return COB_F[0]; }
+
+function cobSyncSlider(resetValue){
+  var o = cobFct();
+  cobU0.min = o.u0[0]; cobU0.max = o.u0[1]; cobU0.step = o.u0[2];
+  if(resetValue) cobU0.value = o.u0[3];
+  if(parseFloat(cobU0.value) < o.u0[0]) cobU0.value = o.u0[0];
+  if(parseFloat(cobU0.value) > o.u0[1]) cobU0.value = o.u0[1];
+}
+function cobCompute(){
+  var o = cobFct(), u0 = parseFloat(cobU0.value);
+  document.getElementById('oU0').textContent = fmt(u0);
+  var t=[u0];
+  for(var i=0;i<COB_MAX;i++){
+    var prev=t[i], nx = isFinite(prev)? o.f(prev) : NaN;
+    if(!isFinite(nx) || Math.abs(nx)>1e8) nx = NaN;
+    t.push(nx);
+  }
+  cobState.terms=t;
+  var fEl=document.getElementById('cobFormula');
+  fEl.innerHTML='\\(u_0 = '+fmt(u0)+'\\) et \\(u_{n+1} = '+o.tex.replace('f(x) = ','').replace(/x/g,'u_n')+'\\)';
+  typeset(fEl);
+}
+function cobDraw(){
+  var o=cobFct(), t=cobState.terms, k=cobState.k;
+  var lo=o.view[0], hi=o.view[1];
+  var W=440,H=440,L=44,R=14,T=14,B=34;
+  var X=function(x){ return L+(x-lo)/(hi-lo)*(W-L-R); };
+  var Y=function(y){ return T+(hi-y)/(hi-lo)*(H-T-B); };
+  clear(svgCob);
+  var step=niceStep((hi-lo)/6);
+  for(var g=Math.ceil(lo/step)*step; g<=hi; g+=step){
+    var gg=Math.round(g*10000)/10000;
+    mk('line',{x1:X(gg),y1:T,x2:X(gg),y2:H-B,stroke:'#f1f5f9'},svgCob);
+    mk('line',{x1:L,y1:Y(gg),x2:W-R,y2:Y(gg),stroke:'#f1f5f9'},svgCob);
+    if(Math.abs(gg)>1e-9){
+      var tx=mk('text',{x:X(gg),y:Math.min(H-B-2,Y(Math.max(lo,Math.min(hi,0)))+14),'text-anchor':'middle','font-size':10,fill:'#6b7280'},svgCob); tx.textContent=fmt(gg);
+      var ty=mk('text',{x:Math.max(L+2,X(Math.max(lo,Math.min(hi,0))))-4,y:Y(gg)+4,'text-anchor':'end','font-size':10,fill:'#6b7280'},svgCob); ty.textContent=fmt(gg);
+    }
+  }
+  var ax = Math.max(lo,Math.min(hi,0)), ay = Math.max(lo,Math.min(hi,0));
+  mk('line',{x1:L,y1:Y(ay),x2:W-R,y2:Y(ay),stroke:'#374151','stroke-width':1.2},svgCob);
+  mk('line',{x1:X(ax),y1:T,x2:X(ax),y2:H-B,stroke:'#374151','stroke-width':1.2},svgCob);
+  /* droite y = x */
+  mk('line',{x1:X(lo),y1:Y(lo),x2:X(hi),y2:Y(hi),stroke:'#9ca3af','stroke-width':1.5,'stroke-dasharray':'6 4'},svgCob);
+  /* courbe de f */
+  var d='', started=false;
+  for(var i=0;i<=300;i++){
+    var x=lo+(hi-lo)*i/300, y=o.f(x);
+    if(!isFinite(y) || y<lo || y>hi){ started=false; continue; }
+    d += (started?' L':' M')+X(x)+' '+Y(y); started=true;
+  }
+  if(d) mk('path',{d:d.trim(),fill:'none',stroke:'#2563eb','stroke-width':2.2},svgCob);
+  /* toile d'araignée */
+  var path='', u=t[0];
+  if(isFinite(u) && u>=lo && u<=hi) path='M'+X(u)+' '+Y(ay);
+  for(var i=0;i<k;i++){
+    var un=t[i], un1=t[i+1];
+    if(!isFinite(un)||!isFinite(un1)) break;
+    if(un<lo||un>hi||un1<lo||un1>hi) break;
+    path+=' L'+X(un)+' '+Y(un1)+' L'+X(un1)+' '+Y(un1);
+  }
+  if(path.length>3) mk('path',{d:path,fill:'none',stroke:'#f97362','stroke-width':2,'stroke-linejoin':'round'},svgCob);
+  /* points sur l'axe des abscisses */
+  for(var i=0;i<=k && i<t.length;i++){
+    if(!isFinite(t[i])||t[i]<lo||t[i]>hi) continue;
+    mk('circle',{cx:X(t[i]),cy:Y(ay),r:4.5,fill:(i===k)?'#f97362':'#2563eb',class:'pt'},svgCob);
+    if(i<=6 || i===k){
+      var lb=mk('text',{x:X(t[i]),y:Y(ay)-9,'text-anchor':'middle','font-size':11,fill:(i===k)?'#c2410c':'#1d4ed8','font-weight':'700'},svgCob);
+      lb.textContent='u'+i;
+    }
+  }
+  /* point fixe */
+  if(o.fixv>=lo && o.fixv<=hi){
+    mk('circle',{cx:X(o.fixv),cy:Y(o.fixv),r:5,fill:'#fff',stroke:'#22a06b','stroke-width':2.5},svgCob);
+    var ft=mk('text',{x:X(o.fixv)+8,y:Y(o.fixv)-6,'font-size':11,fill:'#166534','font-weight':'700'},svgCob);
+    ft.textContent='ℓ = '+fmt2(o.fixv);
+  }
+  /* textes */
+  var cur=document.getElementById('cobCur');
+  if(k===0) cur.innerHTML='Terme courant : \\(u_0 = '+fmt(t[0])+'\\). Appuie sur « Étape suivante » ou « Animer ».';
+  else if(!isFinite(t[k])) cur.innerHTML='Étape '+k+' : le calcul sort du domaine de \\(f\\) (ou explose). Change \\(u_0\\).';
+  else cur.innerHTML='Étape '+k+' : \\(u_{'+k+'} = f(u_{'+(k-1)+'}) = f('+fmt2(t[k-1])+') = '+fmt(t[k])+'\\)';
+  typeset(cur);
+  document.getElementById('cobStep').disabled = (k>=COB_MAX);
+  var tb=document.getElementById('cobTable'), h='<tr><th>n</th>', r='<tr><th>uₙ</th>';
+  for(var i=0;i<=Math.min(k,COB_MAX);i++){ h+='<th>'+i+'</th>'; r+='<td>'+fmt2(t[i])+'</td>'; }
+  tb.innerHTML=h+'</tr>'+r+'</tr>';
+  var fx=document.getElementById('cobFix');
+  var last=t[COB_MAX], conv = isFinite(last) && Math.abs(last-o.fixv)<0.05;
+  var diag;
+  if(conv) diag='<strong>La suite semble converger vers \\(\\ell = '+fmt2(o.fixv)+'\\).</strong> ';
+  else if(!isFinite(last)) diag='<strong>La suite diverge</strong> (les termes explosent ou sortent du domaine de \\(f\\)). ';
+  else diag='<strong>Les termes ne se stabilisent pas encore</strong> vers le point fixe. ';
+  fx.className='stat'+(conv?' good':'');
+  fx.innerHTML = diag + 'Point fixe : \\('+o.fixTex+'\\).<br><em>Attention : écrire \\(\\ell = f(\\ell)\\) suppose que \\(f\\) est continue — notion vue plus tard dans l\'année. Et cela ne donne la limite que si l\'on a déjà démontré que la suite converge.</em>';
+  typeset(fx);
+}
+function cobReset(){ cobStop(); cobSyncSlider(false); cobCompute(); cobState.k=0; cobDraw(); }
+function cobStop(){ if(cobState.timer){ clearInterval(cobState.timer); cobState.timer=null; document.getElementById('cobPlay').textContent='Animer'; } }
+document.getElementById('cobStep').addEventListener('click', function(){ cobStop(); if(cobState.k<COB_MAX){ cobState.k++; cobDraw(); } });
+document.getElementById('cobPlay').addEventListener('click', function(){
+  if(cobState.timer){ cobStop(); return; }
+  if(cobState.k>=COB_MAX) cobState.k=0;
+  document.getElementById('cobPlay').textContent='Pause';
+  cobState.timer=setInterval(function(){
+    if(cobState.k>=COB_MAX){ cobStop(); return; }
+    cobState.k++; cobDraw();
+  }, 750);
+});
+document.getElementById('cobReset').addEventListener('click', function(){ cobStop(); cobState.k=0; cobCompute(); cobDraw(); });
+cobSel.addEventListener('change', function(){ cobStop(); cobSyncSlider(true); cobCompute(); cobState.k=0; cobDraw(); });
+cobU0.addEventListener('input', function(){ cobStop(); cobCompute(); cobState.k=0; cobDraw(); });
+</script>
+
+<script>
+/* ---------- EXERCICE 1 : limite d'une suite explicite ---------- */
+function texNum(x){ return fmt(x).replace(',','{,}'); }
+function texPow(q){ return (q<0? '('+texNum(q)+')^n' : texNum(q)+'^{\\,n}'); }
+function plusFrac(x,den){ if(x===0) return ''; return (x<0? ' - \\dfrac{'+texNum(-x)+'}{'+den+'}' : ' + \\dfrac{'+texNum(x)+'}{'+den+'}'); }
+var ex1 = {};
+function ex1New(){
+  var type = pick(['ratEq','ratEq','ratInf','ratZero','poly','geoConv','geoConv','alt','geoInf']);
+  var stmt, corr, kind, l=null, tex, n0=0;
+  if(type==='ratEq'){
+    var c = pick([1,2,3]), k = pick([-3,-2,-1,1,2,3]), a = c*k;
+    var b = pick([-5,-4,-3,-2,-1,1,2,3,4,5]), d = pick([1,2,3,4,5]);
+    tex = '\\dfrac{'+linTex(a,b)+'}{'+linTex(c,d)+'}';
+    kind='reel'; l=k;
+    corr = '<p>Le numérateur et le dénominateur tendent tous les deux vers \\(\\pm\\infty\\) : c\'est une forme indéterminée \\(\\frac{\\infty}{\\infty}\\). On <strong>factorise par \\(n\\)</strong> en haut et en bas :</p>'
+      + '<p>\\(u_n = \\dfrac{n\\left('+texNum(a)+plusFrac(b,'n')+'\\right)}{n\\left('+texNum(c)+plusFrac(d,'n')+'\\right)} = \\dfrac{'+texNum(a)+plusFrac(b,'n')+'}{'+texNum(c)+plusFrac(d,'n')+'}\\)</p>'
+      + '<p>Or \\(\\frac{'+texNum(b)+'}{n} \\to 0\\) et \\(\\frac{'+texNum(d)+'}{n} \\to 0\\). Par quotient de limites : \\(\\lim u_n = \\dfrac{'+texNum(a)+'}{'+texNum(c)+'} = '+texNum(k)+'\\).</p>';
+  } else if(type==='ratInf'){
+    var a = pick([-3,-2,-1,1,2,3]), b = rnd(-4,4), cc = rnd(-4,4), d = pick([1,2,3]), e = pick([1,2,3,4]);
+    tex = '\\dfrac{'+polyTex(a,b,cc)+'}{'+linTex(d,e)+'}';
+    kind = (a>0)?'pinf':'minf';
+    corr = '<p>Forme indéterminée \\(\\frac{\\infty}{\\infty}\\) : on factorise par le terme de plus haut degré de chaque partie, \\(n^2\\) en haut et \\(n\\) en bas.</p>'
+      + '<p>\\(u_n = \\dfrac{n^2\\left('+texNum(a)+plusFrac(b,'n')+''+plusFrac(cc,'n^2')+'\\right)}{n\\left('+texNum(d)+plusFrac(e,'n')+'\\right)} = n \\times \\dfrac{'+texNum(a)+plusFrac(b,'n')+''+plusFrac(cc,'n^2')+'}{'+texNum(d)+plusFrac(e,'n')+'}\\)</p>'
+      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(d)+'} = '+texNum(a/d)+'\\) et \\(n \\to +\\infty\\). Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty\\).</p>';
+  } else if(type==='ratZero'){
+    var a = pick([-4,-3,-2,-1,1,2,3,4]), b = rnd(-4,4), c2 = pick([1,2,3]), d2 = pick([1,2,3,4]);
+    tex = '\\dfrac{'+linTex(a,b)+'}{'+polyTex(c2,0,d2)+'}';
+    kind='reel'; l=0;
+    corr = '<p>Forme indéterminée \\(\\frac{\\infty}{\\infty}\\). Le dénominateur est de degré 2, le numérateur de degré 1 : le bas « gagne ».</p>'
+      + '<p>\\(u_n = \\dfrac{n\\left('+texNum(a)+plusFrac(b,'n')+'\\right)}{n^2\\left('+texNum(c2)+plusFrac(d2,'n^2')+'\\right)} = \\dfrac1n \\times \\dfrac{'+texNum(a)+plusFrac(b,'n')+'}{'+texNum(c2)+plusFrac(d2,'n^2')+'}\\)</p>'
+      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(c2)+'}\\) (un réel) et \\(\\frac1n \\to 0\\). Par produit : \\(\\lim u_n = 0\\). La suite <strong>converge vers 0</strong>.</p>';
+  } else if(type==='poly'){
+    var a = pick([-3,-2,-1,1,2,3]), b = pick([-6,-5,-4,-3,3,4,5,6]), c3 = rnd(-5,5);
+    tex = polyTex(a,b,c3);
+    kind = (a>0)?'pinf':'minf';
+    corr = '<p>Ici \\(n^2 \\to +\\infty\\) et \\('+texNum(b)+'n \\to '+(b>0?'+':'-')+'\\infty\\) : sans précaution on tomberait sur une forme \\(\\infty - \\infty\\). On <strong>factorise par le terme dominant \\(n^2\\)</strong> :</p>'
+      + '<p>\\(u_n = n^2\\left('+texNum(a)+plusFrac(b,'n')+''+plusFrac(c3,'n^2')+'\\right)\\)</p>'
+      + '<p>La parenthèse tend vers \\('+texNum(a)+'\\) et \\(n^2 \\to +\\infty\\). Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty\\).</p>';
+  } else if(type==='geoConv'){
+    var q = pick([0.5,0.25,0.8,-0.5,-0.75]), a = rnd(-4,6), bq = pick([-4,-3,-2,-1,1,2,3,4]);
+    tex = texNum(a)+' '+(bq<0?'-':'+')+' '+(Math.abs(bq)===1?'':texNum(Math.abs(bq)))+texPow(q);
+    kind='reel'; l=a;
+    corr = '<p>On reconnaît une suite géométrique de raison \\(q = '+texNum(q)+'\\).</p>'
+      + '<p>Comme \\(-1 < '+texNum(q)+' < 1\\), on a \\(\\lim '+texPow(q)+' = 0\\)'+(q<0?' (les termes changent de signe mais leur valeur absolue s\'écrase)':'')+'.</p>'
+      + '<p>Par produit puis par somme : \\(\\lim u_n = '+texNum(a)+' + '+texNum(bq)+' \\times 0 = '+texNum(a)+'\\). La suite <strong>converge vers '+fmt(a)+'</strong>.</p>';
+  } else if(type==='alt'){
+    var a = rnd(-3,5), b = pick([1,2,3,4]);
+    tex = texNum(a)+' + '+(b===1?'':texNum(b))+'(-1)^n';
+    kind='none';
+    corr = '<p>Calculons les premiers termes : \\(u_0 = '+fmt(a+b)+'\\), \\(u_1 = '+fmt(a-b)+'\\), \\(u_2 = '+fmt(a+b)+'\\), \\(u_3 = '+fmt(a-b)+'\\)…</p>'
+      + '<p>Les termes prennent alternativement les deux valeurs \\('+fmt(a+b)+'\\) et \\('+fmt(a-b)+'\\), qui sont distinctes : ils ne se rapprochent d\'aucun réel et ne dépassent aucun seuil.</p>'
+      + '<p>Donc la suite <strong>n\'a pas de limite</strong> (elle est divergente, mais pas vers \\(\\pm\\infty\\)). Attention : \\((-1)^n\\) n\'a pas de limite, on ne peut pas « passer à la limite » dessus.</p>';
+  } else {
+    var q2 = pick([1.5,2,3]), a2 = pick([-3,-2,-1,1,2,3]), b2 = rnd(-5,5);
+    tex = (Math.abs(a2)===1?(a2<0?'-':''):texNum(a2))+texPow(q2)+' '+(b2<0?'-':'+')+' '+texNum(Math.abs(b2));
+    kind = (a2>0)?'pinf':'minf';
+    corr = '<p>Comme \\('+texNum(q2)+' > 1\\), on a \\(\\lim '+texPow(q2)+' = +\\infty\\) (théorème sur \\((q^n)\\), démontré grâce à l\'inégalité de Bernoulli).</p>'
+      + '<p>En multipliant par \\('+texNum(a2)+'\\)'+(a2<0?' (négatif, la limite change de signe)':'')+' puis en ajoutant \\('+texNum(b2)+'\\) : \\(\\lim u_n = '+(a2>0?'+':'-')+'\\infty\\).</p>';
+  }
+  ex1.kind=kind; ex1.l=l;
+  var s=document.getElementById('ex1Stmt');
+  s.innerHTML = '<p>La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq '+n0+'\\) par</p><p style="text-align:center">\\(u_n = '+tex+'\\)</p><p>Déterminer sa limite (justifier mentalement avant de répondre).</p>';
+  typeset(s);
+  document.getElementById('ex1Sel').value='';
+  document.getElementById('ex1LWrap').hidden=true;
+  document.getElementById('ex1In').value='';
+  document.getElementById('ex1Fb').className='feedback';
+  var cb=document.getElementById('ex1CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
+}
+document.getElementById('ex1Sel').addEventListener('change', function(){
+  document.getElementById('ex1LWrap').hidden = (this.value!=='reel');
+});
+document.getElementById('ex1New').addEventListener('click', ex1New);
+document.getElementById('ex1Corr').addEventListener('click', function(){ document.getElementById('ex1CorrBox').classList.toggle('open'); });
+document.getElementById('ex1Check').addEventListener('click', function(){
+  var fb=document.getElementById('ex1Fb'), v=document.getElementById('ex1Sel').value;
+  if(v===''){ setFb(fb,false,'Choisis d\'abord une réponse dans la liste.'); return; }
+  var names={pinf:'\\(+\\infty\\)',minf:'\\(-\\infty\\)',reel:'un réel',none:'pas de limite'};
+  if(v!==ex1.kind){
+    setFb(fb,false,'Non. Regarde le <strong>terme dominant</strong> : c\'est lui qui impose le comportement. Ouvre la correction si besoin.');
+    return;
+  }
+  if(v==='reel'){
+    var x=parseNum(document.getElementById('ex1In').value);
+    if(isNaN(x)){ setFb(fb,false,'La nature est bonne (limite finie), mais écris la valeur de \\(\\ell\\).'); return; }
+    if(close(x,ex1.l)) setFb(fb,true,'Bravo : \\(\\lim u_n = '+fmt(ex1.l)+'\\).');
+    else setFb(fb,false,'La suite converge bien, mais la valeur n\'est pas la bonne : après factorisation, le rapport des coefficients dominants donne \\(\\ell\\).');
+    return;
+  }
+  setFb(fb,true,'Correct : la réponse est '+names[v]+'.');
+});
+</script>
+
+<script>
+/* ---------- EXERCICE 2 : rédiger une récurrence ---------- */
+var EX2_QS = [
+  { stem:'Comment doit commencer la rédaction de cette démonstration ?',
+    opts:[
+      'Initialisation : on vérifie que P(0) est vraie, en calculant séparément les deux membres.',
+      'On suppose que la propriété est vraie pour tout entier n.',
+      'On calcule u(0), u(1), u(2) et u(3) : comme la formule marche, la propriété est démontrée.',
+      'Hérédité : on suppose P(n+1) vraie et on en déduit P(n).'
+    ],
+    expl:'Une récurrence commence toujours par l\'initialisation au premier rang.' },
+  { stem:'Quelle est la bonne formulation de l\'hypothèse de récurrence ?',
+    opts:[
+      'Soit n un entier naturel. Supposons P(n) vraie, c\'est-à-dire u(n) = ... .',
+      'Supposons que P(n) est vraie pour tout entier naturel n.',
+      'Supposons que P(n+1) est vraie.',
+      'Supposons que la suite converge.'
+    ],
+    expl:'On fixe UN entier n et on suppose P(n) vraie ; supposer « pour tout n » reviendrait à supposer ce qu\'on veut démontrer.' },
+  { stem:'Dans l\'hérédité, par quoi commence le calcul ?',
+    opts:[
+      'On part de u(n+1) = a·u(n) + b et on remplace u(n) par l\'expression donnée par l\'hypothèse.',
+      'On part de la formule à démontrer au rang n+1 et on la simplifie jusqu\'à obtenir 0 = 0.',
+      'On remplace n par n+1 dans la conclusion.',
+      'On calcule u(1) puis u(2) pour vérifier.'
+    ],
+    expl:'On part du membre que l\'on sait calculer, u(n+1), et on utilise l\'hypothèse de récurrence.' },
+  { stem:'Que doit contenir la conclusion ?',
+    opts:[
+      'P(0) est vraie et P est héréditaire, donc d\'après le principe de récurrence P(n) est vraie pour tout entier naturel n.',
+      'Donc la propriété est vraie au rang n+1.',
+      'Donc la suite est croissante.',
+      'Donc P(n) est vraie pour n assez grand.'
+    ],
+    expl:'La conclusion rappelle les deux ingrédients (initialisation + hérédité) et énonce le résultat pour tout n.' }
+];
+var ex2 = {};
+function ex2Tex(d,a,c,pow){
+  var s = (d===1?'':(d===-1?'-':texNum(d))) + texNum(a) + '^{' + pow + '}';
+  if(c!==0) s += (c<0? ' - '+texNum(-c) : ' + '+texNum(c));
+  return s;
+}
+function ex2New(){
+  var a = pick([2,3,4,5]), c = pick([-3,-2,-1,1,2,3]), d = pick([-3,-2,-1,1,2,3]);
+  var b = c*(1-a), u0 = d + c;
+  ex2.a=a; ex2.b=b; ex2.c=c; ex2.d=d; ex2.u0=u0;
+  var rel = 'u_{n+1} = '+texNum(a)+'u_n'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)));
+  var pn = 'u_n = '+ex2Tex(d,a,c,'n');
+  var pn1 = 'u_{n+1} = '+ex2Tex(d,a,c,'n+1');
+  var s=document.getElementById('ex2Stmt');
+  s.innerHTML = '<p>Soit \\((u_n)\\) définie par \\(u_0 = '+fmt(u0)+'\\) et, pour tout \\(n \\in \\mathbb N\\), \\('+rel+'\\).</p>'
+    + '<p>On veut démontrer par récurrence que, pour tout \\(n \\in \\mathbb N\\), \\(P(n)\\) : \\('+pn+'\\).</p>';
+  typeset(s);
+  var f=document.getElementById('ex2Form');
+  f.innerHTML = '\\(u_{n+1} = \\alpha \\times '+texNum(a)+'^{\\,n+1} + \\beta\\)';
+  typeset(f);
+  /* mini-QCM sur la rédaction */
+  var qi = Math.floor(Math.random()*EX2_QS.length), q = EX2_QS[qi];
+  var order = shuffle([0,1,2,3]);
+  ex2.correctIdx = order.indexOf(0); ex2.expl = q.expl;
+  document.getElementById('ex2QStem').textContent = q.stem;
+  var sel=document.getElementById('ex2Sel');
+  sel.innerHTML='<option value="">— choisir —</option>';
+  order.forEach(function(oi,pos){
+    var o=document.createElement('option'); o.value=String(pos); o.textContent='ABCD'[pos]+'. '+q.opts[oi]; sel.appendChild(o);
+  });
+  document.getElementById('ex2A').value=''; document.getElementById('ex2B').value='';
+  document.getElementById('ex2Fb').className='feedback';
+  var corr = '<p><strong>Rédaction complète (type bac).</strong></p>'
+    + '<p>Pour tout \\(n \\in \\mathbb N\\), on note \\(P(n)\\) la propriété : « \\('+pn+'\\) ».</p>'
+    + '<p><strong>Initialisation.</strong> Pour \\(n = 0\\) : d\'une part \\(u_0 = '+fmt(u0)+'\\) (donné par l\'énoncé) ; d\'autre part \\('+ex2Tex(d,a,c,'0')+' = '+texNum(d)+' \\times 1 '+(c<0?'- '+texNum(-c):'+ '+texNum(c))+' = '+fmt(u0)+'\\). Les deux valeurs sont égales, donc \\(P(0)\\) est vraie.</p>'
+    + '<p><strong>Hérédité.</strong> Soit \\(n \\in \\mathbb N\\). Supposons \\(P(n)\\) vraie, c\'est-à-dire \\('+pn+'\\). Montrons que \\(P(n+1)\\) est vraie, c\'est-à-dire \\('+pn1+'\\).</p>'
+    + '<p>\\(u_{n+1} = '+texNum(a)+'u_n'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)))+' = '+texNum(a)+'\\left('+ex2Tex(d,a,c,'n')+'\\right)'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)))+'\\)</p>'
+    + '<p>\\(u_{n+1} = '+texNum(d)+' \\times '+texNum(a)+'^{\\,n+1} + '+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+ex2Tex(d,a,c,'n+1')+'\\)</p>'
+    + '<p>car \\('+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+texNum(c)+'\\). Donc \\(P(n+1)\\) est vraie : \\(\\alpha = '+fmt(d)+'\\) et \\(\\beta = '+fmt(c)+'\\).</p>'
+    + '<p><strong>Conclusion.</strong> \\(P(0)\\) est vraie et \\(P\\) est héréditaire ; d\'après le principe de récurrence, pour tout \\(n \\in \\mathbb N\\), \\('+pn+'\\).</p>'
+    + '<p><em>Bonus :</em> comme \\('+texNum(a)+' > 1\\), \\('+texNum(a)+'^{\\,n} \\to +\\infty\\), donc \\(\\lim u_n = '+(d>0?'+':'-')+'\\infty\\).</p>';
+  var cb=document.getElementById('ex2CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
+}
+document.getElementById('ex2New').addEventListener('click', ex2New);
+document.getElementById('ex2Corr').addEventListener('click', function(){ document.getElementById('ex2CorrBox').classList.toggle('open'); });
+document.getElementById('ex2Check').addEventListener('click', function(){
+  var fb=document.getElementById('ex2Fb');
+  var A=parseNum(document.getElementById('ex2A').value), B=parseNum(document.getElementById('ex2B').value);
+  var okA=!isNaN(A)&&close(A,ex2.d), okB=!isNaN(B)&&close(B,ex2.c);
+  var sel=document.getElementById('ex2Sel').value;
+  var msgs=[];
+  msgs.push('a. \\(\\alpha\\) : '+(okA?'✔':'✘')+' · \\(\\beta\\) : '+(okB?'✔':'✘'));
+  if(!okA||!okB) msgs.push('Développe \\('+texNum(ex2.a)+'\\left('+ex2Tex(ex2.d,ex2.a,ex2.c,'n')+'\\right)'+(ex2.b<0?' - '+texNum(-ex2.b):' + '+texNum(ex2.b))+'\\) : le facteur devant \\('+texNum(ex2.a)+'^{\\,n}\\) est multiplié par \\('+texNum(ex2.a)+'\\), et les constantes se regroupent.');
+  var okQ=false;
+  if(sel===''){ msgs.push('b. Choisis une réponse pour la question de rédaction.'); }
+  else { okQ = (parseInt(sel,10)===ex2.correctIdx); msgs.push('b. '+(okQ?'✔':'✘')+' '+ex2.expl); }
+  setFb(fb, okA&&okB&&okQ, msgs.join('<br>'));
+});
+</script>
+
+<script>
+/* ---------- EXERCICE 3 : gendarmes et comparaison ---------- */
+var ex3 = {};
+function ex3New(){
+  var type = pick(['gend','gend','compP','compM']);
+  var fields=document.getElementById('ex3Fields'), stmt, corr;
+  if(type==='gend'){
+    var a = rnd(-3,5), b = rnd(1,5);
+    ex3.type='gend'; ex3.A=a; ex3.B=b; ex3.kind='reel'; ex3.l=a;
+    stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 1\\) par</p><p style="text-align:center">\\(u_n = '+texNum(a)+' + \\dfrac{'+(b===1?'':texNum(b))+'(-1)^n}{n}\\)</p>'
+      + '<p><strong>1.</strong> Encadre \\(u_n\\) en utilisant \\(-1 \\leq (-1)^n \\leq 1\\) : complète \\(A\\) et \\(B\\) ci-dessous.<br><strong>2.</strong> Conclus sur la limite.</p>';
+    fields.innerHTML = '<div class="field"><span class="lab">Encadrement :</span><span>\\(A - \\dfrac{B}{n} \\leq u_n \\leq A + \\dfrac{B}{n}\\)</span></div>'
+      + '<div class="field"><span class="lab">A =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F2" inputmode="decimal" style="max-width:110px"></div>';
+    corr = '<p><strong>1. Encadrement.</strong> Pour tout \\(n \\geq 1\\), \\(-1 \\leq (-1)^n \\leq 1\\). En multipliant par \\(\\dfrac{'+texNum(b)+'}{n} > 0\\) (le sens est conservé) :</p>'
+      + '<p>\\(-\\dfrac{'+texNum(b)+'}{n} \\leq \\dfrac{'+texNum(b)+'(-1)^n}{n} \\leq \\dfrac{'+texNum(b)+'}{n}\\)</p>'
+      + '<p>puis en ajoutant \\('+texNum(a)+'\\) : \\('+texNum(a)+' - \\dfrac{'+texNum(b)+'}{n} \\leq u_n \\leq '+texNum(a)+' + \\dfrac{'+texNum(b)+'}{n}\\). Donc \\(A = '+fmt(a)+'\\) et \\(B = '+fmt(b)+'\\).</p>'
+      + '<p><strong>2. Limite.</strong> \\(\\lim\\dfrac{'+texNum(b)+'}{n} = 0\\), donc les deux suites qui encadrent tendent vers la <em>même</em> limite \\('+texNum(a)+'\\).</p>'
+      + '<p>D\'après le <strong>théorème des gendarmes</strong>, \\((u_n)\\) converge et \\(\\lim u_n = '+fmt(a)+'\\).</p>'
+      + '<p><em>Remarque :</em> la suite n\'est ni croissante ni décroissante (les termes sautent au-dessus et en dessous de \\('+fmt(a)+'\\)) ; les gendarmes fonctionnent quand même.</p>';
+  } else if(type==='compP'){
+    var b2 = rnd(2,6);
+    ex3.type='compP'; ex3.B=b2; ex3.kind='pinf'; ex3.l=null;
+    stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 0\\) par</p><p style="text-align:center">\\(u_n = n + '+texNum(b2)+'(-1)^n\\)</p>'
+      + '<p><strong>1.</strong> Minore \\(u_n\\) par une suite simple : \\(u_n \\geq n - B\\). Donne \\(B\\).<br><strong>2.</strong> Conclus sur la limite.</p>';
+    fields.innerHTML = '<div class="field"><span class="lab">Minorant :</span><span>\\(u_n \\geq n - B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"></div>';
+    corr = '<p><strong>1. Minoration.</strong> Pour tout \\(n\\), \\((-1)^n \\geq -1\\), donc \\('+texNum(b2)+'(-1)^n \\geq -'+texNum(b2)+'\\), donc</p>'
+      + '<p>\\(u_n = n + '+texNum(b2)+'(-1)^n \\geq n - '+texNum(b2)+'\\), c\'est-à-dire \\(B = '+fmt(b2)+'\\).</p>'
+      + '<p><strong>2. Limite.</strong> La suite \\(v_n = n - '+texNum(b2)+'\\) est arithmétique de raison \\(1 > 0\\) : \\(\\lim v_n = +\\infty\\).</p>'
+      + '<p>Comme \\(u_n \\geq v_n\\) pour tout \\(n\\) et \\(\\lim v_n = +\\infty\\), le <strong>théorème de comparaison</strong> donne \\(\\lim u_n = +\\infty\\).</p>'
+      + '<p><em>Remarque :</em> \\((u_n)\\) n\'est pas croissante (\\(u_0 = '+fmt(b2)+'\\), \\(u_1 = '+fmt(1-b2)+'\\)) et pourtant elle tend vers \\(+\\infty\\).</p>';
+  } else {
+    var b3 = rnd(2,6);
+    ex3.type='compM'; ex3.B=b3; ex3.kind='minf'; ex3.l=null;
+    stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 0\\) par</p><p style="text-align:center">\\(u_n = -n + '+texNum(b3)+'(-1)^n\\)</p>'
+      + '<p><strong>1.</strong> Majore \\(u_n\\) par une suite simple : \\(u_n \\leq -n + B\\). Donne \\(B\\).<br><strong>2.</strong> Conclus sur la limite.</p>';
+    fields.innerHTML = '<div class="field"><span class="lab">Majorant :</span><span>\\(u_n \\leq -n + B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"></div>';
+    corr = '<p><strong>1. Majoration.</strong> Pour tout \\(n\\), \\((-1)^n \\leq 1\\), donc \\('+texNum(b3)+'(-1)^n \\leq '+texNum(b3)+'\\), donc</p>'
+      + '<p>\\(u_n \\leq -n + '+texNum(b3)+'\\), c\'est-à-dire \\(B = '+fmt(b3)+'\\).</p>'
+      + '<p><strong>2. Limite.</strong> \\(\\lim(-n + '+texNum(b3)+') = -\\infty\\).</p>'
+      + '<p>Comme \\(u_n \\leq -n + '+texNum(b3)+'\\) pour tout \\(n\\) et que ce majorant tend vers \\(-\\infty\\), le <strong>théorème de comparaison</strong> donne \\(\\lim u_n = -\\infty\\).</p>';
+  }
+  var st=document.getElementById('ex3Stmt'); st.innerHTML=stmt; typeset(st); typeset(fields);
+  document.getElementById('ex3Sel').value='';
+  document.getElementById('ex3LWrap').hidden=true;
+  document.getElementById('ex3Lim').value='';
+  document.getElementById('ex3Fb').className='feedback';
+  var cb=document.getElementById('ex3CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
+}
+document.getElementById('ex3Sel').addEventListener('change', function(){
+  document.getElementById('ex3LWrap').hidden = (this.value!=='reel');
+});
+document.getElementById('ex3New').addEventListener('click', ex3New);
+document.getElementById('ex3Corr').addEventListener('click', function(){ document.getElementById('ex3CorrBox').classList.toggle('open'); });
+document.getElementById('ex3Check').addEventListener('click', function(){
+  var fb=document.getElementById('ex3Fb'), msgs=[], okEnc=false;
+  if(ex3.type==='gend'){
+    var A=parseNum(document.getElementById('ex3F1').value), B=parseNum(document.getElementById('ex3F2').value);
+    okEnc = !isNaN(A)&&!isNaN(B)&&close(A,ex3.A)&&close(B,ex3.B);
+    msgs.push('1. Encadrement : '+(okEnc?'✔':'✘ — encadre \\((-1)^n\\) puis multiplie par \\(\\frac{B}{n}\\) et ajoute la constante.'));
+  } else {
+    var B1=parseNum(document.getElementById('ex3F1').value);
+    okEnc = !isNaN(B1)&&close(B1,ex3.B);
+    msgs.push('1. '+(ex3.type==='compP'?'Minorant':'Majorant')+' : '+(okEnc?'✔':'✘ — remplace \\((-1)^n\\) par sa valeur la plus '+(ex3.type==='compP'?'petite, \\(-1\\)':'grande, \\(1\\)')+'.'));
+  }
+  var sel=document.getElementById('ex3Sel').value;
+  if(sel===''){ msgs.push('2. Choisis la conclusion sur la limite.'); setFb(fb,false,msgs.join('<br>')); return; }
+  var okLim = (sel===ex3.kind);
+  if(okLim && sel==='reel'){
+    var x=parseNum(document.getElementById('ex3Lim').value);
+    okLim = !isNaN(x)&&close(x,ex3.l);
+    msgs.push('2. '+(okLim?'✔ Théorème des gendarmes : \\(\\lim u_n = '+fmt(ex3.l)+'\\).':'✘ La nature est bonne, mais la valeur de \\(\\ell\\) ne l\'est pas : les deux gendarmes tendent vers la même valeur.'));
+  } else {
+    var noms={pinf:'\\(+\\infty\\)',minf:'\\(-\\infty\\)',reel:'une limite finie',none:'pas de limite'};
+    msgs.push('2. '+(okLim?'✔ Correct : '+noms[sel]+'.':'✘ Compare avec la suite encadrante : c\'est elle qui impose la limite.'));
+  }
+  setFb(fb, okEnc&&okLim, msgs.join('<br>'));
+});
+</script>
+
+<script>
+/* ---------- QCM ---------- */
+var QCM_BANK = [
+  { q:'Dans une démonstration par récurrence, l\'initialisation consiste à :',
+    opts:['vérifier que la propriété est vraie au premier rang','supposer la propriété vraie au rang \\(n\\)','montrer que la propriété est héréditaire','vérifier la propriété pour trois valeurs de \\(n\\)'],
+    correct:0, expl:'Sans initialisation, une propriété héréditaire peut être fausse pour tout \\(n\\) : c\'est le premier domino.' },
+  { q:'Quelle phrase est <strong>interdite</strong> dans une récurrence ?',
+    opts:['« Supposons que \\(P(n)\\) est vraie pour tout \\(n\\). »','« Soit \\(n\\in\\mathbb N\\). Supposons \\(P(n)\\) vraie. »','« Montrons que \\(P(n+1)\\) est vraie. »','« \\(P(0)\\) est vraie et \\(P\\) est héréditaire. »'],
+    correct:0, expl:'Supposer la propriété vraie pour tout \\(n\\), c\'est supposer ce qu\'on veut démontrer : le raisonnement est circulaire.' },
+  { q:'On a montré : \\(P(0)\\) vraie, et « si \\(P(n)\\) alors \\(P(n+1)\\) ». On peut conclure que :',
+    opts:['\\(P(n)\\) est vraie pour tout \\(n\\in\\mathbb N\\)','\\(P(n)\\) est vraie pour \\(n\\) assez grand','\\(P(n)\\) est vraie seulement pour \\(n\\leq 10\\)','on ne peut rien conclure'],
+    correct:0, expl:'C\'est exactement le principe de récurrence : initialisation + hérédité donnent le résultat pour tout \\(n\\).' },
+  { q:'\\(u_0=1\\), \\(u_{n+1}=2u_n+3\\). Dans l\'hérédité de « \\(u_n=2^{n+2}-3\\) », on part de :',
+    opts:['\\(u_{n+1}=2u_n+3\\) et on remplace \\(u_n\\) par \\(2^{n+2}-3\\)','\\(u_{n+1}=2^{n+3}-3\\) qu\'on simplifie','\\(u_0=1\\)','\\(u_n=2^{n+2}-3\\) qu\'on dérive'],
+    correct:0, expl:'On part de ce qu\'on sait calculer (\\(u_{n+1}\\) par la relation) et on injecte l\'hypothèse de récurrence.' },
+  { q:'« \\((u_n)\\) tend vers \\(+\\infty\\) » signifie :',
+    opts:['tout intervalle \\([A;+\\infty[\\) contient tous les termes à partir d\'un certain rang','la suite est croissante','tous les termes sont positifs','la suite dépasse \\(+\\infty\\)'],
+    correct:0, expl:'C\'est la définition du programme : pour tout \\(A\\), il existe \\(N\\) tel que \\(u_n\\geq A\\) dès que \\(n\\geq N\\).' },
+  { q:'Une suite qui tend vers \\(+\\infty\\) est nécessairement :',
+    opts:['divergente','croissante','majorée','convergente'],
+    correct:0, expl:'« Convergente » signifie « limite finie ». Tendre vers \\(+\\infty\\), c\'est diverger. Et \\(n+(-1)^n\\) montre qu\'elle n\'est pas forcément croissante.' },
+  { q:'\\(\\lim\\dfrac{4n^2+3n}{2n^2-1}\\) vaut :',
+    opts:['\\(2\\)','\\(+\\infty\\)','\\(0\\)','forme indéterminée, pas de limite'],
+    correct:0, expl:'On factorise par \\(n^2\\) : \\(\\frac{4+3/n}{2-1/n^2}\\to\\frac42=2\\).' },
+  { q:'Laquelle de ces écritures est une <strong>forme indéterminée</strong> ?',
+    opts:['\\(\\infty-\\infty\\)','\\(\\infty+\\infty\\)','\\(\\frac{1}{+\\infty}\\)','\\(2\\times(+\\infty)\\)'],
+    correct:0, expl:'Les quatre F.I. sont \\(\\infty-\\infty\\), \\(0\\times\\infty\\), \\(\\frac{\\infty}{\\infty}\\) et \\(\\frac00\\) ; les autres cas se concluent directement.' },
+  { q:'Pour lever la F.I. de \\(u_n=n^3-5n^2\\), on écrit :',
+    opts:['\\(u_n=n^3\\left(1-\\frac5n\\right)\\to+\\infty\\)','\\(u_n=\\infty-\\infty=0\\)','\\(u_n=n^2(n-5)\\to-\\infty\\)','on ne peut pas conclure'],
+    correct:0, expl:'On factorise par le terme dominant \\(n^3\\) : la parenthèse tend vers 1 et \\(n^3\\to+\\infty\\).' },
+  { q:'Si \\(u_n\\geq v_n\\) pour tout \\(n\\) et \\(\\lim v_n=+\\infty\\), alors :',
+    opts:['\\(\\lim u_n=+\\infty\\)','\\(\\lim u_n=\\lim v_n\\) seulement si \\(u_n\\) est croissante','\\((u_n)\\) converge','on ne peut rien dire'],
+    correct:0, expl:'Théorème de comparaison : la suite du dessus est poussée vers \\(+\\infty\\). (Démonstration exigible au bac.)' },
+  { q:'On sait \\(2-\\frac1n\\leq u_n\\leq 2+\\frac3n\\). Alors :',
+    opts:['\\((u_n)\\) converge vers \\(2\\)','\\((u_n)\\) tend vers \\(+\\infty\\)','on ne peut rien dire car les deux bornes diffèrent','\\((u_n)\\) est croissante'],
+    correct:0, expl:'Les deux gendarmes tendent vers la même limite \\(2\\) : le théorème des gendarmes s\'applique.' },
+  { q:'\\(\\lim (-0{,}9)^n\\) vaut :',
+    opts:['\\(0\\)','\\(-\\infty\\)','n\'existe pas','\\(-0{,}9\\)'],
+    correct:0, expl:'\\(|-0{,}9|<1\\) : les termes changent de signe mais leur valeur absolue s\'écrase, donc la limite est \\(0\\).' },
+  { q:'\\(\\lim (-2)^n\\) vaut :',
+    opts:['la suite n\'a pas de limite','\\(+\\infty\\)','\\(-\\infty\\)','\\(0\\)'],
+    correct:0, expl:'Les termes valent \\(1,-2,4,-8,\\dots\\) : ils changent de signe en grandissant, il n\'y a aucune limite.' },
+  { q:'L\'inégalité de Bernoulli affirme que, pour \\(a\\geq0\\) et \\(n\\in\\mathbb N\\) :',
+    opts:['\\((1+a)^n\\geq 1+na\\)','\\((1+a)^n\\leq 1+na\\)','\\((1+a)^n=1+na\\)','\\((1+a)^n\\geq n^a\\)'],
+    correct:0, expl:'Elle se démontre par récurrence et sert à prouver que \\(q^n\\to+\\infty\\) quand \\(q>1\\).' },
+  { q:'Une suite croissante et majorée par \\(10\\) :',
+    opts:['converge vers un réel \\(\\ell\\leq 10\\)','converge vers \\(10\\)','tend vers \\(+\\infty\\)','peut ne pas avoir de limite'],
+    correct:0, expl:'Théorème de convergence monotone (admis) : elle converge, mais la limite n\'est pas forcément le majorant.' },
+  { q:'Une suite croissante et <strong>non majorée</strong> :',
+    opts:['tend vers \\(+\\infty\\)','converge','n\'a pas de limite','tend vers \\(-\\infty\\)'],
+    correct:0, expl:'Démonstration exigible : pour tout \\(A\\) il existe \\(N\\) avec \\(u_N>A\\), et la croissance donne \\(u_n\\geq u_N>A\\) pour \\(n\\geq N\\).' },
+  { q:'Pour \\(u_{n+1}=f(u_n)\\) convergente vers \\(\\ell\\), l\'égalité \\(\\ell=f(\\ell)\\) s\'obtient :',
+    opts:['en utilisant la continuité de \\(f\\) (notion vue plus tard dans l\'année)','en dérivant \\(f\\)','en remplaçant \\(n\\) par \\(\\ell\\)','sans aucune hypothèse sur \\(f\\)'],
+    correct:0, expl:'C\'est le passage à la limite dans \\(u_{n+1}=f(u_n)\\), qui suppose \\(f\\) continue en \\(\\ell\\).' },
+  { q:'Que renvoie ce programme ?<pre>u = 1\nn = 0\nwhile u &lt; 50:\n    u = 3*u\n    n = n + 1\nprint(n)</pre>',
+    opts:['\\(4\\)','\\(3\\)','\\(5\\)','une boucle infinie'],
+    correct:0, expl:'\\(1\\to3\\to9\\to27\\to81\\) : il faut 4 tours pour dépasser 50.' }
+];
+var qcmMap = {};
+var qcmState = { answered:0, score:0, total:4 };
+function buildQcm(){
+  var box=document.getElementById('qcmBox'); box.innerHTML='';
+  document.getElementById('qcmScore').style.display='none';
+  qcmMap={}; qcmState={answered:0,score:0,total:4};
+  var chosen=shuffle(QCM_BANK).slice(0,4);
+  chosen.forEach(function(item,i){
+    var order=shuffle([0,1,2,3]);
+    var correctIdx=order.indexOf(item.correct);
+    qcmMap[i]={correct:correctIdx, expl:item.expl, done:false};
+    var div=document.createElement('div'); div.className='q'; div.id='q'+i;
+    var stem=document.createElement('div'); stem.className='stem'; stem.innerHTML=(i+1)+'. '+item.q; div.appendChild(stem);
+    var opts=document.createElement('div'); opts.className='opts';
+    order.forEach(function(oi,pos){
+      var btn=document.createElement('button'); btn.type='button'; btn.className='opt';
+      btn.innerHTML='<span class="letter">'+'ABCD'[pos]+'</span>'+item.opts[oi];
+      btn.addEventListener('click', function(){ answerQcm(i,pos,btn); });
+      opts.appendChild(btn);
+    });
+    div.appendChild(opts);
+    var ex=document.createElement('div'); ex.className='qexpl'; ex.id='qexpl'+i; div.appendChild(ex);
+    box.appendChild(div);
+  });
+  typeset(box);
+}
+function answerQcm(i,pos,btn){
+  var m=qcmMap[i]; if(m.done) return; m.done=true;
+  var q=document.getElementById('q'+i), buttons=q.querySelectorAll('.opt');
+  var ok=(pos===m.correct);
+  buttons.forEach(function(b,idx){ b.disabled=true; if(idx===m.correct) b.classList.add('right'); else if(idx===pos) b.classList.add('wrong'); else b.classList.add('dim'); });
+  var ex=document.getElementById('qexpl'+i);
+  ex.innerHTML=(ok?'<strong style="color:#166534">Correct.</strong> ':'<strong style="color:#9f1239">Incorrect.</strong> ')+m.expl; ex.classList.add('show'); typeset(ex);
+  qcmState.answered++; if(ok) qcmState.score++;
+  if(qcmState.answered===qcmState.total){
+    var sc=document.getElementById('qcmScore'); sc.style.display='block';
+    var s=qcmState.score;
+    sc.textContent='Score : '+s+' / '+qcmState.total+(s===4?' — excellent !':(s>=2?' — continue, relis les explications.':' — relis le cours puis recommence.'));
+  }
+}
+document.getElementById('qcmNew').addEventListener('click', buildQcm);
+
+/* ---------- initialisation ---------- */
+drawLim();
+drawQ();
+cobSyncSlider(true); cobCompute(); cobState.k=0; cobDraw();
+ex1New(); ex2New(); ex3New();
+buildQcm();
+</script>
+</body>
+</html>

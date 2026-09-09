@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2A — Suites : génération et variations</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]},
+  options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+:root{--bg:#faf8f5;--card:#fff;--ink:#1f2937;--muted:#6b7280;--blue:#2563eb;--blue-soft:#e8efff;--coral:#f97362;--coral-soft:#fde8e4;--green:#22a06b;--green-soft:#e3f5ec;--amber:#f59e0b;--amber-soft:#fff4dc;--line:#e5e7eb;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;font-size:16px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2}
+header{padding:48px 20px 28px;text-align:center;background:linear-gradient(180deg,#eef3ff 0%,var(--bg) 100%)}
+header h1{margin:0;font-size:2rem;color:var(--blue);opacity:0;transform:translateY(16px);animation:rise .9s ease-out forwards}
+header .sub{margin-top:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;opacity:0;animation:fade 1s .5s ease-out forwards}
+header .lead{max-width:640px;margin:14px auto 0;color:var(--ink);opacity:0;animation:fade 1s .9s ease-out forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:8px 12px;-webkit-overflow-scrolling:touch}
+nav a{flex:0 0 auto;min-height:44px;display:flex;align-items:center;padding:0 16px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--blue);text-decoration:none;font-weight:600;font-size:.95rem}
+nav a:active{background:var(--blue-soft)}
+main{max-width:860px;margin:0 auto;padding:12px 14px 40px}
+section{padding-top:24px}
+section>h2{font-size:1.6rem;margin:8px 0 14px;color:var(--ink)}
+section>h2 span{color:var(--blue)}
+.card{background:var(--card);border-radius:16px;box-shadow:0 4px 18px rgba(30,41,59,.07);padding:18px;margin-bottom:16px}
+.card h3{margin:0 0 8px;font-size:1.15rem;color:var(--blue)}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-family:system-ui;font-weight:700;margin-right:8px;font-size:.95rem;vertical-align:middle}
+.box{border-left:4px solid var(--blue);background:var(--blue-soft);padding:10px 14px;border-radius:8px;margin:10px 0}
+.box.warn{border-color:var(--coral);background:var(--coral-soft)}
+.box.ok{border-color:var(--green);background:var(--green-soft)}
+.box.tip{border-color:var(--amber);background:var(--amber-soft)}
+.tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:999px;background:var(--amber-soft);color:#92400e;font-weight:600;margin-left:6px;vertical-align:middle}
+pre{background:#1f2937;color:#e5e7eb;border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem;line-height:1.45;margin:10px 0}
+pre .c{color:#9ca3af}pre .k{color:#93c5fd}pre .n{color:#fcd34d}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+th{background:var(--blue-soft)}
+.tablewrap{overflow-x:auto;margin:10px 0}
+button,.btn{min-height:44px;padding:0 18px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit}
+button.ghost{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+button.small{min-height:44px;padding:0 14px;font-size:.95rem}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{flex:1;background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.tabs button.active{background:var(--blue);color:#fff}
+.slider{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:8px 0}
+.slider label{font-weight:600;min-width:60px}
+.slider output{min-width:52px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--blue)}
+input[type=range]{width:100%;accent-color:var(--blue);height:44px}
+select,input[type=text]{min-height:44px;font-size:1rem;padding:6px 10px;border-radius:10px;border:1.5px solid #cbd5e1;background:#fff;font-family:inherit;width:100%}
+input[type=text]{max-width:160px}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:12px;border:1px solid var(--line)}
+.pt{animation:pop .4s ease-out both}
+@keyframes pop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{padding:3px 9px;border-radius:999px;font-size:.85rem;font-weight:600;background:#f3f4f6}
+.chip.up{background:var(--green-soft);color:#166534}.chip.down{background:var(--coral-soft);color:#9f1239}.chip.flat{background:#f3f4f6;color:#374151}
+.stat{font-size:1.05rem;padding:10px 14px;border-radius:10px;background:var(--blue-soft);margin:8px 0}
+.stat.good{background:var(--green-soft)}.stat.bad{background:var(--coral-soft)}
+.ex-fields{display:grid;gap:10px;margin:10px 0}
+.field{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.field .lab{min-width:120px;font-weight:600}
+.feedback{margin-top:8px;padding:10px 14px;border-radius:10px;display:none}
+.feedback.ok{display:block;background:var(--green-soft);color:#166534;border-left:4px solid var(--green)}
+.feedback.ko{display:block;background:var(--coral-soft);color:#9f1239;border-left:4px solid var(--coral)}
+.corr{display:none;margin-top:12px;padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1}
+.corr.open{display:block}
+.corr p{margin:6px 0}
+.q{margin-bottom:14px}
+.q .stem{font-weight:600;margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px 14px;min-height:44px;font-weight:500}
+.opt .letter{display:inline-block;width:26px;font-weight:700;color:var(--blue)}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--coral);background:var(--coral-soft)}
+.opt.dim{opacity:.55}
+.qexpl{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:#f8fafc;font-size:.95rem}
+.qexpl.show{display:block}
+.score{font-size:1.2rem;font-weight:700;text-align:center;padding:14px;border-radius:12px;background:var(--blue-soft);margin-top:10px;display:none}
+footer{text-align:center;color:var(--muted);font-size:.9rem;padding:24px 16px 40px;border-top:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.9rem;margin:6px 0}
+.legend span::before{content:"";display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle;background:var(--c)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}header h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Suites numériques : génération et variations</h1>
+  <div class="sub">Première · Mathématiques</div>
+  <p class="lead">Définir une suite (formule, récurrence, algorithme, motif), calculer ses termes, la représenter et étudier son sens de variation.</p>
+</header>
+<nav>
+  <a href="#cours">Cours</a><a href="#methode">Méthode</a><a href="#visu">Visualisation</a><a href="#exos">Exercices</a><a href="#qcm">QCM</a>
+</nav>
+<main>
+
+<!-- ============================ COURS ============================ -->
+<section id="cours">
+  <h2><span>1.</span> Cours</h2>
+
+  <div class="card">
+    <h3><span class="num">1</span>Qu'est-ce qu'une suite ?</h3>
+    <p>Une <strong>suite numérique</strong> est une fonction définie sur \(\mathbb N\) (ou à partir d'un certain rang) et à valeurs dans \(\mathbb R\) : à chaque entier \(n\) on associe un nombre réel \(u_n\).</p>
+    <div class="box">
+      <strong>Notations.</strong> \(u_n\) (lire « u indice n ») est le <em>terme de rang \(n\)</em> ; \((u_n)\) ou \((u_n)_{n\in\mathbb N}\) désigne la <em>suite entière</em>. On écrit parfois \(u(n)\) au lieu de \(u_n\).
+    </div>
+    <p><strong>Indice ≠ valeur.</strong> Pour la suite \(u_n = 2n + 5\) : le terme de rang \(3\) vaut \(u_3 = 11\). L'indice est \(3\), la valeur est \(11\). Le <em>premier</em> terme est \(u_0 = 5\) (et non \(u_1\)) si la suite est définie sur \(\mathbb N\).</p>
+    <p>Exemple : \(u_0 = 5,\ u_1 = 7,\ u_2 = 9,\ u_3 = 11,\ \dots\)</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Génération explicite : \(u_n = f(n)\)</h3>
+    <p>Le terme \(u_n\) est donné par une <strong>formule en fonction de \(n\)</strong>. On peut alors calculer <em>directement</em> n'importe quel terme, sans connaître les précédents.</p>
+    <div class="box ok">
+      \(u_n = n^2 - 3n\) : \(u_0 = 0\), \(u_1 = -2\), \(u_2 = -2\), \(u_3 = 0\), \(u_{10} = 100 - 30 = 70\), \(u_{100} = 9700\).
+    </div>
+    <p>Autre exemple : \(v_n = \dfrac{1}{n}\) pour \(n \geq 1\) : \(v_1 = 1,\ v_2 = 0{,}5,\ v_3 \approx 0{,}33,\ v_{1000} = 0{,}001\).</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Génération par récurrence : \(u_{n+1} = f(u_n)\)</h3>
+    <p>On donne le <strong>premier terme</strong> et une <strong>relation</strong> qui permet de passer d'un terme au suivant. On calcule alors <em>de proche en proche</em> : pour connaître \(u_{10}\), il faut d'abord \(u_1, u_2, \dots, u_9\).</p>
+    <div class="box ok">
+      \(u_0 = 2\) et \(u_{n+1} = 3u_n - 4\).<br>
+      \(u_1 = 3\times 2 - 4 = 2\) ; \(u_2 = 3\times 2 - 4 = 2\) … la suite est constante !<br>
+      Avec \(u_0 = 3\) : \(u_1 = 5\), \(u_2 = 11\), \(u_3 = 29\), \(u_4 = 83\).
+    </div>
+    <div class="box warn">
+      <strong>Attention.</strong> \(u_{n+1}\) est « le terme qui suit \(u_n\) » ; ce n'est pas \(u_n + 1\). Dans \(u_{n+1} = 3u_n - 4\), la lettre \(n\) sert seulement à numéroter : \(u_{n+1} = f(u_n)\) signifie \(u_1 = f(u_0)\), \(u_2 = f(u_1)\), etc.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Génération par algorithme et par motif</h3>
+    <p><strong>Algorithme.</strong> Une relation de récurrence se traduit naturellement par une boucle :</p>
+<pre><span class="k">def</span> u(n):
+    x = <span class="n">3</span>              <span class="c"># u_0</span>
+    <span class="k">for</span> k <span class="k">in</span> range(n):  <span class="c"># n passages dans la boucle</span>
+        x = <span class="n">3</span>*x - <span class="n">4</span>       <span class="c"># u_(k+1) = 3 u_k - 4</span>
+    <span class="k">return</span> x
+
+print(u(<span class="n">4</span>))            <span class="c"># affiche 83</span></pre>
+    <p><strong>Motif géométrique.</strong> Les <em>nombres triangulaires</em> comptent les points d'un triangle de côté \(n\) : \(T_1 = 1,\ T_2 = 3,\ T_3 = 6,\ T_4 = 10\). On observe \(T_{n+1} = T_n + (n+1)\) (récurrence) et on peut montrer \(T_n = \dfrac{n(n+1)}{2}\) (explicite).</p>
+    <p>Autre exemple : pour construire \(n\) carrés alignés avec des allumettes, il en faut \(a_n = 3n + 1\) (\(a_1 = 4\), \(a_2 = 7\), \(a_3 = 10\)) : chaque carré supplémentaire ajoute 3 allumettes.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Représentation graphique</h3>
+    <p>On représente une suite par le <strong>nuage de points</strong> de coordonnées \((n\,;\,u_n)\). Ce sont des points <em>isolés</em> : on ne les relie pas, car \(n\) ne prend que des valeurs entières.</p>
+    <p>Pour \(u_n = n^2 - 3n\) : points \((0;0),\ (1;-2),\ (2;-2),\ (3;0),\ (4;4),\ (5;10)\).</p>
+    <div class="box tip">
+      <strong>Approfondissement</strong><span class="tag">hors socle</span> : pour une suite \(u_{n+1} = f(u_n)\), on peut lire les termes <em>sur l'axe des abscisses</em> grâce à la courbe de \(f\) et à la droite \(y = x\) : on monte de \(u_0\) jusqu'à la courbe (on obtient \(u_1\) en ordonnée), on rejoint horizontalement la droite \(y = x\) (\(u_1\) passe en abscisse), et on recommence. C'est la construction « en escalier » ou « en toile d'araignée » (voir la visualisation).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Sens de variation</h3>
+    <p>\((u_n)\) est <strong>croissante</strong> si pour tout \(n\), \(u_{n+1} \geq u_n\) ; <strong>décroissante</strong> si pour tout \(n\), \(u_{n+1} \leq u_n\) ; <strong>monotone</strong> si elle est l'une ou l'autre. (Inégalités strictes : <em>strictement</em> croissante / décroissante.)</p>
+    <p>Trois techniques :</p>
+    <ol>
+      <li><strong>Signe de la différence</strong> \(u_{n+1} - u_n\) (marche toujours).<br>
+        \(u_n = n^2 - 3n\) : \(u_{n+1} - u_n = (n+1)^2 - 3(n+1) - n^2 + 3n = 2n - 2\). Négatif pour \(n = 0\), nul pour \(n = 1\), positif ensuite : la suite n'est ni croissante ni décroissante sur \(\mathbb N\) (elle est croissante à partir du rang 1).</li>
+      <li><strong>Quotient</strong> \(\dfrac{u_{n+1}}{u_n}\) comparé à \(1\), <em>uniquement si tous les termes sont strictement positifs</em>.<br>
+        \(u_n = 2^n\) : \(\dfrac{u_{n+1}}{u_n} = 2 > 1\), donc croissante.</li>
+      <li><strong>Variations de \(f\)</strong> si \(u_n = f(n)\) : si \(f\) est croissante sur \([0;+\infty[\), alors \((u_n)\) est croissante.<br>
+        \(u_n = \sqrt{n}\) : la fonction racine carrée est croissante, donc \((u_n)\) est croissante.</li>
+    </ol>
+    <div class="box warn">
+      Regarder les trois premiers termes ne suffit <strong>jamais</strong> : \(u_n = n^2 - 3n\) commence par \(0, -2, -2\) (on croirait « décroissante ») puis remonte.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span>Intuition de limite (sur exemples)</h3>
+    <p>En Première, on observe seulement le comportement des termes quand \(n\) devient très grand ; la définition précise est vue en Terminale.</p>
+    <ul>
+      <li>\(u_n = \dfrac1n\) : \(1 ;\ 0{,}5 ;\ 0{,}1 ;\ 0{,}001 ;\dots\) les termes se rapprochent de \(0\) autant qu'on veut. On dit que la suite <em>tend vers \(0\)</em>.</li>
+      <li>\(u_n = n^2\) : \(0, 1, 4, 9, \dots, 10^6, \dots\) les termes dépassent n'importe quel nombre : la suite <em>tend vers \(+\infty\)</em>.</li>
+      <li>\(u_n = (-1)^n\) : \(1, -1, 1, -1, \dots\) la suite oscille sans se stabiliser : elle <em>n'a pas de limite</em>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ MÉTHODE ============================ -->
+<section id="methode">
+  <h2><span>2.</span> Méthode</h2>
+
+  <div class="card">
+    <h3>Pour calculer les premiers termes</h3>
+    <ol>
+      <li>Repérer l'<strong>indice de départ</strong> (\(n = 0\) ou \(n = 1\) ?) : « les trois premiers termes » de \(u_n = n^2 + 1\) pour \(n\geq 0\) sont \(u_0, u_1, u_2\).</li>
+      <li><strong>Suite explicite</strong> : remplacer \(n\) par la valeur voulue, en mettant des parenthèses. \(u_n = (2n-1)^2\) ⇒ \(u_4 = (2\times 4 - 1)^2 = 49\).</li>
+      <li><strong>Suite récurrente</strong> : partir du premier terme donné et appliquer la relation autant de fois que nécessaire, en écrivant chaque étape. Pour atteindre \(u_4\) depuis \(u_0\) : quatre calculs.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Pour passer d'un mode de génération à l'autre</h3>
+    <ul>
+      <li><strong>Langue naturelle → récurrence</strong> : « chaque année, la population augmente de 200 » ⇒ \(p_{n+1} = p_n + 200\). « Diminue de 10 % » ⇒ \(p_{n+1} = 0{,}9\,p_n\).</li>
+      <li><strong>Récurrence → explicite (cas simples)</strong> : calculer plusieurs termes, repérer une régularité, proposer une formule, puis la vérifier. \(u_0 = 1,\ u_{n+1} = u_n + 2\) donne \(1, 3, 5, 7\) ⇒ \(u_n = 2n + 1\).</li>
+      <li><strong>Explicite → récurrence</strong> : exprimer \(u_{n+1}\) puis chercher \(u_{n+1} - u_n\). \(u_n = 5n - 2\) ⇒ \(u_{n+1} - u_n = 5\) ⇒ \(u_{n+1} = u_n + 5\) avec \(u_0 = -2\).</li>
+      <li><strong>Formule → algorithme</strong> : une suite explicite se programme en une ligne (<code>return 5*n - 2</code>) ; une suite récurrente demande une boucle.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Pour étudier le sens de variation</h3>
+    <ol>
+      <li><strong>\(u_n = f(n)\) avec \(f\) simple</strong> (affine, carré, racine, inverse…) : utiliser les variations de \(f\) sur \([0;+\infty[\). Exemple : \(u_n = 3 - 2n\), \(f\) affine de coefficient \(-2 < 0\) ⇒ décroissante.</li>
+      <li><strong>Sinon, calculer \(u_{n+1} - u_n\)</strong>, simplifier et étudier son signe <em>pour tout \(n\)</em>. Exemple : \(u_n = n^2 + n\) ⇒ \(u_{n+1} - u_n = 2n + 2 > 0\) ⇒ croissante.</li>
+      <li><strong>Si les termes sont des produits/puissances positifs</strong> : calculer \(\dfrac{u_{n+1}}{u_n}\) et comparer à \(1\). Exemple : \(u_n = \dfrac{3^n}{n+1}\) (termes \(>0\)) ⇒ \(\dfrac{u_{n+1}}{u_n} = \dfrac{3(n+1)}{n+2} \geq 1\) ⇒ croissante.</li>
+      <li>Conclure avec une phrase : « pour tout \(n\), \(u_{n+1} - u_n \geq 0\) donc \((u_n)\) est croissante ».</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Pour écrire l'algorithme Python d'une suite récurrente</h3>
+<pre><span class="k">def</span> terme(n):
+    u = u0            <span class="c"># 1. initialiser avec le premier terme</span>
+    <span class="k">for</span> k <span class="k">in</span> range(n): <span class="c"># 2. répéter n fois…</span>
+        u = f(u)      <span class="c"># 3. …la relation de récurrence</span>
+    <span class="k">return</span> u          <span class="c"># 4. u contient u_n</span></pre>
+    <p>Si le premier terme est \(u_1\), la boucle doit tourner \(n - 1\) fois : <code>range(n - 1)</code>. Pour afficher tous les termes, placer le <code>print</code> dans la boucle.</p>
+  </div>
+
+  <div class="card">
+    <h3>Erreurs fréquentes</h3>
+    <div class="box warn"><strong>Confondre \(u_{n+1}\) et \(u_n + 1\).</strong> \(u_{n+1}\) est le terme suivant ; \(u_n + 1\) est le terme actuel augmenté de 1. Avec \(u_n = n^2\) : \(u_{n+1} = (n+1)^2\) mais \(u_n + 1 = n^2 + 1\).</div>
+    <div class="box warn"><strong>Se tromper de rang.</strong> Pour \(u_0 = 1,\ u_{n+1} = 2u_n\), on obtient \(1, 2, 4, 8, 16\) : le cinquième terme est \(u_4 = 16\), pas \(u_5\). Compter les <em>indices</em>, pas les termes.</div>
+    <div class="box warn"><strong>Généraliser à partir de trois termes.</strong> Une suite dont les premiers termes croissent n'est pas forcément croissante : \(u_n = 10n - n^2\) donne \(0, 9, 16, 21, 24, 25\) puis redescend. Il faut un argument valable pour <em>tout</em> \(n\).</div>
+    <div class="box warn"><strong>Oublier les parenthèses</strong> en remplaçant \(n\) par \(n+1\) : \((n+1)^2 \neq n^2 + 1\).</div>
+  </div>
+</section>
+
+<!-- ============================ VISUALISATION ============================ -->
+<section id="visu">
+  <h2><span>3.</span> Visualisation</h2>
+  <div class="card">
+    <div class="tabs">
+      <button type="button" id="tabExp" class="active">Suite explicite</button>
+      <button type="button" id="tabRec">Suite récurrente</button>
+    </div>
+
+    <!-- Onglet explicite -->
+    <div id="panelExp">
+      <p>Choisis une famille de formules, ajuste \(a\) et \(b\) : le nuage de points, le tableau des termes et le sens de variation se mettent à jour.</p>
+      <div class="row">
+        <select id="famSel" aria-label="Famille de suite">
+          <option value="aff">u_n = a·n + b</option>
+          <option value="quad">u_n = a·n² + b</option>
+          <option value="inv">u_n = a/n + b (n ≥ 1)</option>
+          <option value="alt">u_n = a·(−1)^n / n + b (n ≥ 1)</option>
+          <option value="osc">u_n = a·(−1)^n + b·n</option>
+        </select>
+      </div>
+      <div class="slider"><label for="sa">a</label><input type="range" id="sa" min="-5" max="5" step="0.5" value="1"><output id="oa">1</output></div>
+      <div class="slider"><label for="sb">b</label><input type="range" id="sb" min="-5" max="5" step="0.5" value="0"><output id="ob">0</output></div>
+      <div class="stat" id="expFormula"></div>
+      <svg id="svgExp" viewBox="0 0 420 280" role="img" aria-label="Nuage de points de la suite"></svg>
+      <div class="tablewrap"><table id="expTable"></table></div>
+      <div class="chips" id="expChips"></div>
+      <div class="stat" id="expVar"></div>
+      <div class="stat" id="expLim"></div>
+    </div>
+
+    <!-- Onglet récurrence -->
+    <div id="panelRec" hidden>
+      <p>Suite définie par \(u_0\) et \(u_{n+1} = a\,u_n + b\). La construction « en toile d'araignée » utilise la droite \(y = ax + b\) et la droite \(y = x\) pour lire les termes sur l'axe des abscisses. <span class="tag">approfondissement</span></p>
+      <div class="slider"><label for="ra">a</label><input type="range" id="ra" min="-1.5" max="1.5" step="0.1" value="0.5"><output id="ora">0,5</output></div>
+      <div class="slider"><label for="rb">b</label><input type="range" id="rb" min="-5" max="5" step="0.5" value="2"><output id="orb">2</output></div>
+      <div class="slider"><label for="ru0">u₀</label><input type="range" id="ru0" min="-6" max="6" step="0.5" value="-3"><output id="oru0">−3</output></div>
+      <div class="stat" id="recFormula"></div>
+      <div class="legend"><span style="--c:#2563eb">y = a·x + b</span><span style="--c:#9ca3af">y = x</span><span style="--c:#f97362">escalier</span></div>
+      <svg id="svgRec" viewBox="0 0 420 420" role="img" aria-label="Toile d'araignée de la suite récurrente"></svg>
+      <div class="row">
+        <button type="button" id="recStep">Étape suivante</button>
+        <button type="button" id="recAll" class="ghost">Tout tracer</button>
+        <button type="button" id="recReset" class="ghost">Réinitialiser</button>
+      </div>
+      <div class="stat" id="recCurrent"></div>
+      <div class="tablewrap"><table id="recTable"></table></div>
+      <div class="stat" id="recVar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EXERCICES ============================ -->
+<section id="exos">
+  <h2><span>4.</span> Exercices</h2>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 — Suite explicite <span class="tag">niveau 1</span></h3>
+    <div id="ex1Stmt"></div>
+    <div class="ex-fields">
+      <div class="field"><span class="lab" id="ex1Lab"></span><input type="text" id="ex1In" inputmode="text" placeholder="ex. 7 ou 3/4"></div>
+    </div>
+    <div class="row">
+      <button type="button" id="ex1Check">Vérifier</button>
+      <button type="button" id="ex1Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex1New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex1Fb"></div>
+    <div class="corr" id="ex1CorrBox"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 — Suite récurrente <span class="tag">niveau 2</span></h3>
+    <div id="ex2Stmt"></div>
+    <div class="ex-fields">
+      <div class="field"><span class="lab">u<sub>1</sub> =</span><input type="text" id="ex2In1" inputmode="decimal"></div>
+      <div class="field"><span class="lab">u<sub>2</sub> =</span><input type="text" id="ex2In2" inputmode="decimal"></div>
+      <div class="field"><span class="lab">u<sub>3</sub> =</span><input type="text" id="ex2In3" inputmode="decimal"></div>
+    </div>
+    <div class="row">
+      <button type="button" id="ex2Check">Vérifier</button>
+      <button type="button" id="ex2Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex2New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex2Fb"></div>
+    <div class="corr" id="ex2CorrBox"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 — Sens de variation <span class="tag">niveau 3</span></h3>
+    <div id="ex3Stmt"></div>
+    <div class="ex-fields" id="ex3Fields"></div>
+    <div class="field" style="margin:10px 0"><span class="lab">Conclusion :</span>
+      <select id="ex3Sel" style="max-width:280px">
+        <option value="">— choisir —</option>
+        <option value="up">croissante</option>
+        <option value="down">décroissante</option>
+        <option value="none">ni l'un ni l'autre</option>
+      </select>
+    </div>
+    <div class="row">
+      <button type="button" id="ex3Check">Vérifier</button>
+      <button type="button" id="ex3Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex3New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="feedback" id="ex3Fb"></div>
+    <div class="corr" id="ex3CorrBox"></div>
+  </div>
+</section>
+
+<!-- ============================ QCM ============================ -->
+<section id="qcm">
+  <h2><span>5.</span> QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard. Une seule bonne réponse par question.</p>
+    <div id="qcmBox"></div>
+    <div class="score" id="qcmScore"></div>
+    <div class="row"><button type="button" id="qcmNew">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+<footer>
+  Si tu bloques : relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <strong>indication</strong> (pas la solution).
+</footer>
+
+<script>
+/* ---------- utilitaires ---------- */
+function typeset(el){ if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise(el?[el]:undefined).catch(function(){}); } }
+function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function fmt(x){ if(!isFinite(x)) return '—'; var r = Math.round(x*1000)/1000; return String(r).replace('.',','); }
+function fmtSigned(x){ return (x<0?'− ':'+ ') + fmt(Math.abs(x)); }
+function parseNum(s){
+  if(s==null) return NaN;
+  s = String(s).trim().replace(/\s+/g,'').replace(',','.').replace('−','-');
+  if(s==='') return NaN;
+  var m = s.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+  if(m){ var d = parseFloat(m[2]); return d===0?NaN:parseFloat(m[1])/d; }
+  if(!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function close(a,b){ return Math.abs(a-b) <= 0.011 + 1e-9*Math.abs(b); }
+function shuffle(arr){ var a = arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function setFb(el, ok, msg){ el.className = 'feedback ' + (ok?'ok':'ko'); el.innerHTML = msg; typeset(el); }
+/* coefficient LaTeX : 1 -> '', -1 -> '-', 2 -> '2' */
+function coef(a, first){
+  var s = a<0 ? '-' : (first?'':'+');
+  var v = Math.abs(a);
+  return s + (v===1?'':fmt(v));
+}
+function polyTex(a,b,c){ // a n^2 + b n + c
+  var parts = [];
+  if(a!==0) parts.push(coef(a,true)+'n^2');
+  if(b!==0) parts.push(coef(b,parts.length===0)+'n');
+  if(c!==0) parts.push((c<0?'-':(parts.length===0?'':'+'))+fmt(Math.abs(c)));
+  if(parts.length===0) return '0';
+  return parts.join('');
+}
+function linTex(a,b){ return polyTex(0,a,b); }
+
+/* ---------- onglets visualisation ---------- */
+var tabExp = document.getElementById('tabExp'), tabRec = document.getElementById('tabRec');
+var panelExp = document.getElementById('panelExp'), panelRec = document.getElementById('panelRec');
+tabExp.addEventListener('click', function(){ tabExp.classList.add('active'); tabRec.classList.remove('active'); panelExp.hidden=false; panelRec.hidden=true; drawExp(); });
+tabRec.addEventListener('click', function(){ tabRec.classList.add('active'); tabExp.classList.remove('active'); panelRec.hidden=false; panelExp.hidden=true; recReset(); });
+</script>
+
+<script>
+/* ---------- VISU 1 : suite explicite ---------- */
+var famSel = document.getElementById('famSel');
+var sa = document.getElementById('sa'), sb = document.getElementById('sb');
+var oa = document.getElementById('oa'), ob = document.getElementById('ob');
+var svgExp = document.getElementById('svgExp');
+var NS = 'http://www.w3.org/2000/svg';
+function mk(tag, attrs, parent){ var e = document.createElementNS(NS, tag); for(var k in attrs){ e.setAttribute(k, attrs[k]); } if(parent) parent.appendChild(e); return e; }
+
+var FAM = {
+  aff:  { start:0, f:function(a,b,n){ return a*n+b; }, tex:function(a,b){ return 'u_n = ' + linTex(a,b); } },
+  quad: { start:0, f:function(a,b,n){ return a*n*n+b; }, tex:function(a,b){ return 'u_n = ' + polyTex(a,0,b); } },
+  inv:  { start:1, f:function(a,b,n){ return a/n+b; }, tex:function(a,b){ return 'u_n = ' + (a===0?'':('\\frac{'+fmt(a)+'}{n}')) + (a===0? fmt(b) : (b===0?'':fmtSigned(b))); } },
+  alt:  { start:1, f:function(a,b,n){ return a*Math.pow(-1,n)/n+b; }, tex:function(a,b){ return 'u_n = ' + (a===0?'':('\\frac{'+coef(a,true)+'(-1)^n}{n}')) + (a===0? fmt(b) : (b===0?'':fmtSigned(b))); } },
+  osc:  { start:0, f:function(a,b,n){ return a*Math.pow(-1,n)+b*n; }, tex:function(a,b){ var s=''; if(a!==0) s += coef(a,true)+'(-1)^n'; if(b!==0) s += coef(b,s==='')+'n'; return 'u_n = ' + (s===''?'0':s); } }
+};
+
+function drawExp(){
+  var a = parseFloat(sa.value), b = parseFloat(sb.value);
+  oa.textContent = fmt(a); ob.textContent = fmt(b);
+  var fam = FAM[famSel.value];
+  var n0 = fam.start, N = 10;
+  var vals = [];
+  for(var n=n0;n<=N;n++) vals.push(fam.f(a,b,n));
+  // formule
+  var fEl = document.getElementById('expFormula');
+  fEl.innerHTML = '\\(' + fam.tex(a,b) + '\\)' + (n0===1?' pour \\(n \\geq 1\\)':' pour \\(n \\geq 0\\)');
+  typeset(fEl);
+  // SVG
+  while(svgExp.firstChild) svgExp.removeChild(svgExp.firstChild);
+  var W=420,H=280,L=44,R=14,T=14,B=34;
+  var ymin = Math.min.apply(null, vals.concat([0])), ymax = Math.max.apply(null, vals.concat([0]));
+  if(ymax-ymin<1){ ymax+=1; ymin-=1; }
+  var pad=(ymax-ymin)*0.1; ymin-=pad; ymax+=pad;
+  var X=function(n){ return L + (n/N)*(W-L-R); };
+  var Y=function(v){ return T + (ymax-v)/(ymax-ymin)*(H-T-B); };
+  // grille horizontale
+  var step = niceStep((ymax-ymin)/5);
+  for(var g=Math.ceil(ymin/step)*step; g<=ymax; g+=step){
+    var y=Y(g);
+    mk('line',{x1:L,y1:y,x2:W-R,y2:y,stroke:'#f1f5f9','stroke-width':1},svgExp);
+    var t=mk('text',{x:L-6,y:y+4,'text-anchor':'end','font-size':11,fill:'#6b7280'},svgExp); t.textContent=fmt(Math.round(g*1000)/1000);
+  }
+  // axes
+  mk('line',{x1:L,y1:Y(0),x2:W-R,y2:Y(0),stroke:'#374151','stroke-width':1.2},svgExp);
+  mk('line',{x1:L,y1:T,x2:L,y2:H-B,stroke:'#374151','stroke-width':1.2},svgExp);
+  for(var n=0;n<=N;n++){
+    mk('line',{x1:X(n),y1:Y(0)-3,x2:X(n),y2:Y(0)+3,stroke:'#374151'},svgExp);
+    var tx=mk('text',{x:X(n),y:H-B+16,'text-anchor':'middle','font-size':11,fill:'#6b7280'},svgExp); tx.textContent=n;
+  }
+  var lab=mk('text',{x:W-R,y:H-4,'text-anchor':'end','font-size':12,fill:'#374151'},svgExp); lab.textContent='n';
+  var lab2=mk('text',{x:L+6,y:T+10,'font-size':12,fill:'#374151'},svgExp); lab2.textContent='uₙ';
+  // points animés
+  vals.forEach(function(v,i){
+    var n=n0+i;
+    mk('line',{x1:X(n),y1:Y(0),x2:X(n),y2:Y(v),stroke:'#bfdbfe','stroke-dasharray':'3 3'},svgExp);
+    var c=mk('circle',{cx:X(n),cy:Y(v),r:5,fill:'#2563eb',class:'pt'},svgExp);
+    c.style.transformOrigin = X(n)+'px '+Y(v)+'px';
+    c.style.animationDelay = (i*0.06)+'s';
+  });
+  // tableau
+  var tb=document.getElementById('expTable');
+  var h='<tr><th>n</th>'; var r='<tr><th>uₙ</th>';
+  vals.forEach(function(v,i){ h+='<th>'+(n0+i)+'</th>'; r+='<td>'+fmt(v)+'</td>'; });
+  tb.innerHTML = h+'</tr>'+r+'</tr>';
+  // différences et variation
+  var chips=document.getElementById('expChips'); chips.innerHTML='';
+  var up=true, down=true, allZero=true;
+  for(var i=0;i<vals.length-1;i++){
+    var d=vals[i+1]-vals[i];
+    if(d>1e-9){ down=false; allZero=false; } else if(d<-1e-9){ up=false; allZero=false; }
+    var sp=document.createElement('span'); sp.className='chip '+(d>1e-9?'up':(d<-1e-9?'down':'flat'));
+    sp.textContent='u'+(n0+i+1)+'−u'+(n0+i)+' = '+fmtSigned(d).replace('+ ','+').replace('− ','−');
+    chips.appendChild(sp);
+  }
+  var vEl=document.getElementById('expVar');
+  var msg, cls='stat';
+  if(allZero){ msg='Sur les termes affichés : suite <strong>constante</strong>.'; }
+  else if(up){ msg='Sur les termes affichés : toutes les différences \\(u_{n+1}-u_n\\) sont \\(\\geq 0\\) ⇒ suite <strong>croissante</strong>.'; cls+=' good'; }
+  else if(down){ msg='Sur les termes affichés : toutes les différences \\(u_{n+1}-u_n\\) sont \\(\\leq 0\\) ⇒ suite <strong>décroissante</strong>.'; cls+=' good'; }
+  else { msg='Les différences changent de signe ⇒ suite <strong>ni croissante ni décroissante</strong> (non monotone).'; cls+=' bad'; }
+  vEl.className=cls; vEl.innerHTML=msg+' <em>(Pour conclure sur \\(\\mathbb N\\) entier, il faut un calcul, pas seulement 11 termes.)</em>'; typeset(vEl);
+  // intuition de limite
+  var lEl=document.getElementById('expLim'), lim;
+  switch(famSel.value){
+    case 'aff': lim = a===0 ? 'Suite constante : les termes valent toujours '+fmt(b)+'.' : (a>0?'Les termes deviennent aussi grands qu\'on veut : la suite tend vers \\(+\\infty\\).':'Les termes deviennent aussi négatifs qu\'on veut : la suite tend vers \\(-\\infty\\).'); break;
+    case 'quad': lim = a===0 ? 'Suite constante.' : (a>0?'Les termes grandissent de plus en plus vite : la suite tend vers \\(+\\infty\\).':'La suite tend vers \\(-\\infty\\).'); break;
+    case 'inv': lim = a===0 ? 'Suite constante.' : 'Comme \\(\\frac{'+fmt(a)+'}{n}\\) se rapproche de 0, les termes se rapprochent de '+fmt(b)+' : la suite tend vers '+fmt(b)+'.'; break;
+    case 'alt': lim = a===0 ? 'Suite constante.' : 'Les termes oscillent autour de '+fmt(b)+' avec une amplitude qui diminue : la suite tend vers '+fmt(b)+' (sans être monotone).'; break;
+    case 'osc': lim = (a===0&&b===0) ? 'Suite nulle.' : (b===0 ? 'Les termes alternent entre '+fmt(a)+' et '+fmt(-a)+' : pas de limite.' : (b>0?'Malgré les oscillations, les termes finissent par dépasser tout nombre : la suite tend vers \\(+\\infty\\).':'La suite tend vers \\(-\\infty\\).')); break;
+  }
+  lEl.innerHTML='<strong>Intuition de limite :</strong> '+lim; typeset(lEl);
+}
+function niceStep(x){ var p=Math.pow(10,Math.floor(Math.log10(x))); var m=x/p; return (m<1.5?1:(m<3.5?2:(m<7.5?5:10)))*p; }
+famSel.addEventListener('change', drawExp);
+sa.addEventListener('input', drawExp);
+sb.addEventListener('input', drawExp);
+</script>
+
+<script>
+/* ---------- VISU 2 : récurrence u_{n+1} = a u_n + b (toile d'araignée) ---------- */
+var ra=document.getElementById('ra'), rb=document.getElementById('rb'), ru0=document.getElementById('ru0');
+var svgRec=document.getElementById('svgRec');
+var recState = { terms:[], k:0 };
+var REC_MAX = 12;
+
+function recCompute(){
+  var a=parseFloat(ra.value), b=parseFloat(rb.value), u0=parseFloat(ru0.value);
+  document.getElementById('ora').textContent=fmt(a);
+  document.getElementById('orb').textContent=fmt(b);
+  document.getElementById('oru0').textContent=fmt(u0);
+  var t=[u0];
+  for(var i=0;i<REC_MAX;i++) t.push(a*t[i]+b);
+  recState.terms=t; recState.a=a; recState.b=b;
+  var fEl=document.getElementById('recFormula');
+  var rel = 'u_{n+1} = ' + (a===0?'':(coef(a,true)+'u_n')) + (a===0? fmt(b) : (b===0?'':fmtSigned(b)));
+  fEl.innerHTML='\\(u_0 = '+fmt(u0)+'\\) et \\('+rel+'\\)'; typeset(fEl);
+}
+function recReset(){ recCompute(); recState.k=0; recDraw(); }
+function recDraw(){
+  var t=recState.terms, a=recState.a, b=recState.b, k=recState.k;
+  while(svgRec.firstChild) svgRec.removeChild(svgRec.firstChild);
+  var W=420,H=420,L=40,R=14,T=14,B=34;
+  // fenêtre : basée sur les termes visibles (bornée pour éviter l'explosion)
+  var shown=t.slice(0, Math.min(t.length, k+2));
+  var m=Math.max(2, Math.abs(t[0]), Math.abs(b));
+  shown.forEach(function(v){ if(isFinite(v)) m=Math.max(m, Math.abs(v)); });
+  m=Math.min(m*1.25, 60);
+  var lo=-m, hi=m;
+  var X=function(x){ return L+(x-lo)/(hi-lo)*(W-L-R); };
+  var Y=function(y){ return T+(hi-y)/(hi-lo)*(H-T-B); };
+  // grille
+  var step=niceStep((hi-lo)/6);
+  for(var g=Math.ceil(lo/step)*step; g<=hi; g+=step){
+    var gg=Math.round(g*1000)/1000;
+    mk('line',{x1:X(gg),y1:T,x2:X(gg),y2:H-B,stroke:'#f1f5f9'},svgRec);
+    mk('line',{x1:L,y1:Y(gg),x2:W-R,y2:Y(gg),stroke:'#f1f5f9'},svgRec);
+    if(Math.abs(gg)>1e-9){
+      var tx=mk('text',{x:X(gg),y:Y(0)+14,'text-anchor':'middle','font-size':10,fill:'#6b7280'},svgRec); tx.textContent=fmt(gg);
+      var ty=mk('text',{x:X(0)-4,y:Y(gg)+4,'text-anchor':'end','font-size':10,fill:'#6b7280'},svgRec); ty.textContent=fmt(gg);
+    }
+  }
+  mk('line',{x1:L,y1:Y(0),x2:W-R,y2:Y(0),stroke:'#374151','stroke-width':1.2},svgRec);
+  mk('line',{x1:X(0),y1:T,x2:X(0),y2:H-B,stroke:'#374151','stroke-width':1.2},svgRec);
+  // y = x
+  mk('line',{x1:X(lo),y1:Y(lo),x2:X(hi),y2:Y(hi),stroke:'#9ca3af','stroke-width':1.5,'stroke-dasharray':'6 4'},svgRec);
+  // y = a x + b (clippée)
+  var pts=[];
+  [lo,hi].forEach(function(x){ var y=a*x+b; if(y>=lo&&y<=hi) pts.push([x,y]); });
+  if(a!==0){ [lo,hi].forEach(function(y){ var x=(y-b)/a; if(x>lo&&x<hi) pts.push([x,y]); }); }
+  if(pts.length>=2){
+    pts.sort(function(p,q){ return p[0]-q[0]; });
+    var p1=pts[0], p2=pts[pts.length-1];
+    mk('line',{x1:X(p1[0]),y1:Y(p1[1]),x2:X(p2[0]),y2:Y(p2[1]),stroke:'#2563eb','stroke-width':2.2},svgRec);
+  }
+  // escalier : k étapes
+  var path='';
+  var u=t[0];
+  if(isFinite(u) && Math.abs(u)<=m) path+='M'+X(u)+' '+Y(0);
+  for(var i=0;i<k;i++){
+    var un=t[i], un1=t[i+1];
+    if(!isFinite(un1)||Math.abs(un1)>m||Math.abs(un)>m) break;
+    path+=' L'+X(un)+' '+Y(un1)+' L'+X(un1)+' '+Y(un1);
+  }
+  if(path) mk('path',{d:path,fill:'none',stroke:'#f97362','stroke-width':2,'stroke-linejoin':'round'},svgRec);
+  // points sur l'axe des abscisses
+  for(var i=0;i<=k && i<t.length;i++){
+    if(!isFinite(t[i])||Math.abs(t[i])>m) continue;
+    var cx=X(t[i]);
+    mk('circle',{cx:cx,cy:Y(0),r:4.5,fill:i===k?'#f97362':'#2563eb',class:'pt'},svgRec);
+    var lb=mk('text',{x:cx,y:Y(0)-8,'text-anchor':'middle','font-size':11,fill:i===k?'#c2410c':'#1d4ed8','font-weight':'700'},svgRec);
+    lb.textContent='u'+i;
+  }
+  // point courant sur la droite
+  if(k>0 && isFinite(t[k]) && Math.abs(t[k])<=m && Math.abs(t[k-1])<=m){
+    mk('circle',{cx:X(t[k-1]),cy:Y(t[k]),r:4,fill:'#fff',stroke:'#f97362','stroke-width':2},svgRec);
+  }
+  // terme courant
+  var cur=document.getElementById('recCurrent');
+  if(k===0) cur.innerHTML='Terme courant : \\(u_0 = '+fmt(t[0])+'\\). Appuie sur « Étape suivante » pour calculer \\(u_1 = a\\,u_0 + b\\).';
+  else cur.innerHTML='Étape '+k+' : \\(u_{'+k+'} = '+fmt(a)+' \\times '+(t[k-1]<0?'('+fmt(t[k-1])+')':fmt(t[k-1]))+' '+fmtSigned(b)+' = '+fmt(t[k])+'\\)';
+  typeset(cur);
+  document.getElementById('recStep').disabled = (k>=REC_MAX);
+  // tableau
+  var tb=document.getElementById('recTable'); var h='<tr><th>n</th>', r='<tr><th>uₙ</th>';
+  for(var i=0;i<=Math.min(k,REC_MAX);i++){ h+='<th>'+i+'</th>'; r+='<td>'+fmt(t[i])+'</td>'; }
+  tb.innerHTML=h+'</tr>'+r+'</tr>';
+  // variation observée
+  var vEl=document.getElementById('recVar');
+  if(k<2){ vEl.className='stat'; vEl.textContent='Sens de variation : calcule au moins deux étapes.'; }
+  else{
+    var up=true,down=true;
+    for(var i=0;i<k;i++){ var d=t[i+1]-t[i]; if(d>1e-9) down=false; if(d<-1e-9) up=false; }
+    var cls='stat', msg;
+    if(up&&down) msg='Suite constante (\\(u_0\\) est un point fixe : \\(a u_0 + b = u_0\\)).';
+    else if(up){ msg='Sur les termes calculés : croissante.'; cls+=' good'; }
+    else if(down){ msg='Sur les termes calculés : décroissante.'; cls+=' good'; }
+    else { msg='Les termes oscillent : ni croissante ni décroissante (cela arrive quand \\(a<0\\)).'; cls+=' bad'; }
+    var beh = Math.abs(a)<1 ? ' Comme \\(|a|<1\\), l\'escalier se resserre vers le point d\'intersection des deux droites.' : (Math.abs(a)>1 ? ' Comme \\(|a|>1\\), les termes s\'éloignent de plus en plus.' : '');
+    vEl.className=cls; vEl.innerHTML=msg+beh; typeset(vEl);
+  }
+}
+document.getElementById('recStep').addEventListener('click', function(){ if(recState.k<REC_MAX){ recState.k++; recDraw(); } });
+document.getElementById('recAll').addEventListener('click', function(){ recState.k=REC_MAX; recDraw(); });
+document.getElementById('recReset').addEventListener('click', recReset);
+ra.addEventListener('input', function(){ recCompute(); recDraw(); });
+rb.addEventListener('input', function(){ recCompute(); recDraw(); });
+ru0.addEventListener('input', function(){ recCompute(); recDraw(); });
+</script>
+
+<script>
+/* ---------- EXERCICE 1 : suite explicite ---------- */
+var ex1 = {};
+function ex1New(){
+  var N = rnd(2,5);
+  var type = pick(['poly','poly','quot']);
+  var stmt, ans, corr;
+  if(type==='poly'){
+    var a=pick([-3,-2,-1,1,2,3]), b=rnd(-5,5), c=rnd(-5,5);
+    var tex=polyTex(a,b,c);
+    ans = a*N*N + b*N + c;
+    stmt = 'La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq 0\\) par \\(u_n = '+tex+'\\). Calculer \\(u_{'+N+'}\\).';
+    corr = '<p>On remplace \\(n\\) par \\('+N+'\\) dans la formule :</p>'
+      + '<p>\\(u_{'+N+'} = '+polyTex(a,b,c).replace(/n\^2/g,'\\times '+N+'^2').replace(/n(?!\^)/g,'\\times '+N)+'\\)</p>'
+      + '<p>\\(u_{'+N+'} = '+fmt(a*N*N)+' '+fmtSigned(b*N)+' '+fmtSigned(c)+' = '+fmt(ans)+'\\)</p>'
+      + '<p>Remarque : \\(u_{'+N+'}\\) est le terme de rang '+N+' ; comme la suite commence à \\(u_0\\), c\'est le '+(N+1)+'<sup>e</sup> terme.</p>';
+  } else {
+    var a=rnd(1,5), b=rnd(-4,6), c=pick([1,2]);
+    var num=a*N+b, den=N+c;
+    ans = num/den;
+    stmt = 'La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+'+c+'}\\). Calculer \\(u_{'+N+'}\\) (fraction ou valeur décimale à \\(10^{-2}\\) près).';
+    var g=gcd(Math.abs(num),den), sn=num/g, sd=den/g;
+    corr = '<p>On remplace \\(n\\) par \\('+N+'\\) au numérateur et au dénominateur :</p>'
+      + '<p>\\(u_{'+N+'} = \\dfrac{'+a+'\\times '+N+' '+fmtSigned(b)+'}{'+N+' + '+c+'} = \\dfrac{'+num+'}{'+den+'}\\)'
+      + (sd===1 ? ' \\(= '+sn+'\\)' : (g>1 ? ' \\(= \\dfrac{'+sn+'}{'+sd+'}\\)' : '')) + ' \\(\\approx '+fmt(Math.round(ans*100)/100)+'\\)</p>';
+  }
+  ex1.ans=ans; ex1.N=N;
+  var s=document.getElementById('ex1Stmt'); s.innerHTML='<p>'+stmt+'</p>'; typeset(s);
+  document.getElementById('ex1Lab').innerHTML='u<sub>'+N+'</sub> =';
+  document.getElementById('ex1In').value='';
+  document.getElementById('ex1Fb').className='feedback';
+  var cb=document.getElementById('ex1CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
+}
+function gcd(a,b){ while(b){ var t=b; b=a%b; a=t; } return a||1; }
+document.getElementById('ex1New').addEventListener('click', ex1New);
+document.getElementById('ex1Corr').addEventListener('click', function(){ document.getElementById('ex1CorrBox').classList.toggle('open'); });
+document.getElementById('ex1Check').addEventListener('click', function(){
+  var v=parseNum(document.getElementById('ex1In').value), fb=document.getElementById('ex1Fb');
+  if(isNaN(v)){ setFb(fb,false,'Écris un nombre (ex. −7, 2,5 ou 3/4).'); return; }
+  if(close(v,ex1.ans)) setFb(fb,true,'Bravo ! \\(u_{'+ex1.N+'} = '+fmt(ex1.ans)+'\\).');
+  else setFb(fb,false,'Ce n\'est pas ça. Remplace \\(n\\) par '+ex1.N+' (avec des parenthèses) et recalcule pas à pas.');
+});
+
+/* ---------- EXERCICE 2 : suite récurrente ---------- */
+var ex2 = {};
+function ex2New(){
+  var a=pick([-2,-1,2,3,0.5]), b=rnd(-5,5), u0=pick([-3,-2,-1,1,2,3,4,5,6]);
+  if(a===0.5 && u0%2!==0) u0=u0*2;
+  var t=[u0]; for(var i=0;i<3;i++) t.push(a*t[i]+b);
+  ex2.t=t;
+  var rel='u_{n+1} = '+coef(a,true)+'u_n'+(b===0?'':' '+fmtSigned(b));
+  var s=document.getElementById('ex2Stmt');
+  s.innerHTML='<p>La suite \\((u_n)\\) est définie par \\(u_0 = '+fmt(u0)+'\\) et, pour tout entier \\(n \\geq 0\\), \\('+rel+'\\). Calculer \\(u_1\\), \\(u_2\\) et \\(u_3\\).</p>';
+  typeset(s);
+  var corr='<p>On calcule de proche en proche, en partant de \\(u_0 = '+fmt(u0)+'\\) :</p>';
+  for(var i=0;i<3;i++){
+    var prev = t[i]<0 ? '('+fmt(t[i])+')' : fmt(t[i]);
+    corr+='<p>\\(u_{'+(i+1)+'} = '+fmt(a)+' \\times u_{'+i+'} '+(b===0?'':fmtSigned(b))+' = '+fmt(a)+' \\times '+prev+' '+(b===0?'':fmtSigned(b))+' = '+fmt(t[i+1])+'\\)</p>';
+  }
+  corr+='<p>Vérifie le sens : dans \\(u_{n+1} = a u_n + b\\), on multiplie <em>d\'abord</em> par \\(a\\), <em>puis</em> on ajoute \\(b\\).</p>';
+  var cb=document.getElementById('ex2CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
+  ['ex2In1','ex2In2','ex2In3'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('ex2Fb').className='feedback';
+}
+document.getElementById('ex2New').addEventListener('click', ex2New);
+document.getElementById('ex2Corr').addEventListener('click', function(){ document.getElementById('ex2CorrBox').classList.toggle('open'); });
+document.getElementById('ex2Check').addEventListener('click', function(){
+  var fb=document.getElementById('ex2Fb'), res=[], allOk=true;
+  for(var i=1;i<=3;i++){
+    var v=parseNum(document.getElementById('ex2In'+i).value);
+    var ok=!isNaN(v)&&close(v,ex2.t[i]);
+    if(!ok) allOk=false;
+    res.push('\\(u_'+i+'\\) : '+(ok?'✔':'✘'));
+  }
+  if(allOk) setFb(fb,true,'Parfait ! \\(u_1 = '+fmt(ex2.t[1])+'\\), \\(u_2 = '+fmt(ex2.t[2])+'\\), \\(u_3 = '+fmt(ex2.t[3])+'\\).');
+  else setFb(fb,false,res.join(' · ')+'<br>Une erreur sur \\(u_1\\) se propage à \\(u_2\\) et \\(u_3\\) : reprends depuis le premier terme faux.');
+});
+
+/* ---------- EXERCICE 3 : sens de variation ---------- */
+var ex3 = {};
+function ex3New(){
+  var type=pick(['poly','poly','quot']);
+  var fields=document.getElementById('ex3Fields'), stmt, corr;
+  if(type==='poly'){
+    var s=pick([1,-1]), k=pick([-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8]);
+    // u_n = s n^2 + k n ; u_{n+1}-u_n = s(2n+1) + k = 2s n + (s+k)
+    var A=2*s, B=s+k;
+    var kind;
+    if(s===1) kind = (k>=-1)?'up':'none'; else kind = (k<=1)?'down':'none';
+    ex3.type='poly'; ex3.A=A; ex3.B=B; ex3.kind=kind;
+    stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = '+polyTex(s,k,0)+'\\).<br>1. Exprimer \\(u_{n+1} - u_n\\) sous la forme \\(\\alpha n + \\beta\\).<br>2. En déduire le sens de variation de \\((u_n)\\) sur \\(\\mathbb N\\).';
+    fields.innerHTML='<div class="field"><span class="lab">u<sub>n+1</sub> − u<sub>n</sub> =</span><input type="text" id="ex3A" inputmode="decimal" placeholder="α" style="max-width:90px"> <span>· n +</span> <input type="text" id="ex3B" inputmode="decimal" placeholder="β" style="max-width:90px"></div>';
+    var u0=0, u1=s+k, u2=4*s+2*k;
+    corr='<p>\\(u_{n+1} = '+coef(s,true)+'(n+1)^2 '+coef(k,false)+'(n+1) = '+coef(s,true)+'(n^2+2n+1) '+coef(k,false)+'n '+fmtSigned(k)+'\\)</p>'
+      +'<p>\\(u_{n+1} - u_n = '+polyTex(s,2*s+k,s+k)+' - ('+polyTex(s,k,0)+') = '+linTex(A,B)+'\\)</p>';
+    if(kind==='up') corr+='<p>Pour tout \\(n \\geq 0\\) : \\('+linTex(A,B)+' \\geq '+fmt(B)+' \\geq 0\\), donc \\(u_{n+1} \\geq u_n\\) : la suite est <strong>croissante</strong>.</p>';
+    else if(kind==='down') corr+='<p>Pour tout \\(n \\geq 0\\) : \\('+linTex(A,B)+' \\leq '+fmt(B)+' \\leq 0\\), donc \\(u_{n+1} \\leq u_n\\) : la suite est <strong>décroissante</strong>.</p>';
+    else corr+='<p>Le signe de \\('+linTex(A,B)+'\\) change : pour \\(n = 0\\) il vaut \\('+fmt(B)+'\\) ('+(B<0?'négatif':'positif')+'), puis pour \\(n\\) grand il est '+(A>0?'positif':'négatif')+'. Exemple : \\(u_0 = 0,\\ u_1 = '+fmt(u1)+',\\ u_2 = '+fmt(u2)+'\\). La suite n\'est <strong>ni croissante ni décroissante</strong> sur \\(\\mathbb N\\) (elle est '+(A>0?'croissante':'décroissante')+' à partir du rang \\('+Math.ceil(-B/A)+'\\)).</p>';
+  } else {
+    var a=rnd(1,6), b=rnd(-6,6); if(b===a) b=a-1;
+    // u_n = (a n + b)/(n+1) ; u_{n+1}-u_n = (a-b)/((n+1)(n+2))
+    ex3.type='quot'; ex3.A=a-b; ex3.kind=(a>b)?'up':'down';
+    stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+1}\\).<br>1. Montrer que \\(u_{n+1} - u_n = \\dfrac{K}{(n+1)(n+2)}\\) et donner \\(K\\).<br>2. En déduire le sens de variation de \\((u_n)\\).';
+    fields.innerHTML='<div class="field"><span class="lab">K =</span><input type="text" id="ex3A" inputmode="decimal" style="max-width:90px"></div>';
+    corr='<p>\\(u_{n+1} = \\dfrac{'+a+'(n+1) '+fmtSigned(b)+'}{n+2} = \\dfrac{'+linTex(a,a+b)+'}{n+2}\\)</p>'
+      +'<p>\\(u_{n+1} - u_n = \\dfrac{('+linTex(a,a+b)+')(n+1) - ('+linTex(a,b)+')(n+2)}{(n+1)(n+2)}\\)</p>'
+      +'<p>Numérateur : \\('+polyTex(a,2*a+b,a+b)+' - ('+polyTex(a,2*a+b,2*b)+') = '+fmt(a-b)+'\\), donc \\(K = '+fmt(a-b)+'\\).</p>'
+      +'<p>Le dénominateur \\((n+1)(n+2)\\) est toujours strictement positif ; le signe de la différence est celui de \\(K = '+fmt(a-b)+'\\) : la suite est <strong>'+(a>b?'croissante':'décroissante')+'</strong>.</p>'
+      +'<p>Vérification : \\(u_0 = '+fmt(b)+'\\), \\(u_1 = '+fmt((a+b)/2)+'\\), \\(u_2 = '+fmt((2*a+b)/3)+'\\).</p>';
+  }
+  var st=document.getElementById('ex3Stmt'); st.innerHTML='<p>'+stmt+'</p>'; typeset(st);
+  document.getElementById('ex3Sel').value='';
+  document.getElementById('ex3Fb').className='feedback';
+  var cb=document.getElementById('ex3CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
+}
+document.getElementById('ex3New').addEventListener('click', ex3New);
+document.getElementById('ex3Corr').addEventListener('click', function(){ document.getElementById('ex3CorrBox').classList.toggle('open'); });
+document.getElementById('ex3Check').addEventListener('click', function(){
+  var fb=document.getElementById('ex3Fb'), sel=document.getElementById('ex3Sel').value;
+  var okExpr, msgExpr;
+  if(ex3.type==='poly'){
+    var A=parseNum(document.getElementById('ex3A').value), B=parseNum(document.getElementById('ex3B').value);
+    okExpr = !isNaN(A)&&!isNaN(B)&&close(A,ex3.A)&&close(B,ex3.B);
+    msgExpr = okExpr ? 'Expression correcte.' : 'Expression fausse : développe \\((n+1)^2\\) avec soin, puis soustrais \\(u_n\\).';
+  } else {
+    var K=parseNum(document.getElementById('ex3A').value);
+    okExpr = !isNaN(K)&&close(K,ex3.A);
+    msgExpr = okExpr ? '\\(K\\) correct.' : '\\(K\\) faux : mets au même dénominateur et développe le numérateur terme à terme.';
+  }
+  if(sel==='') { setFb(fb,false,msgExpr+' Choisis aussi une conclusion.'); return; }
+  var okKind = (sel===ex3.kind);
+  var labels={up:'croissante',down:'décroissante',none:'ni croissante ni décroissante'};
+  var msgKind = okKind ? 'Conclusion correcte : la suite est '+labels[ex3.kind]+'.' : 'Conclusion fausse : étudie le signe de la différence pour <em>tout</em> \\(n \\geq 0\\), y compris \\(n = 0\\).';
+  setFb(fb, okExpr&&okKind, msgExpr+' '+msgKind);
+});
+</script>
+
+<script>
+/* ---------- QCM ---------- */
+var QCM_BANK = [
+  { q:'Soit \\(u_n = 3n - 2\\). Que vaut \\(u_4\\) ?', opts:['\\(10\\)','\\(13\\)','\\(7\\)','\\(4\\)'], correct:0, expl:'\\(u_4 = 3\\times 4 - 2 = 10\\). On remplace \\(n\\) par 4.' },
+  { q:'\\(u_0 = 3\\) et \\(u_{n+1} = 2u_n - 1\\). Que vaut \\(u_2\\) ?', opts:['\\(9\\)','\\(5\\)','\\(7\\)','\\(11\\)'], correct:0, expl:'\\(u_1 = 2\\times 3 - 1 = 5\\) puis \\(u_2 = 2\\times 5 - 1 = 9\\).' },
+  { q:'Laquelle de ces définitions est <em>explicite</em> ?', opts:['\\(u_n = n^2 + 1\\)','\\(u_{n+1} = u_n + 3\\)','\\(u_0 = 2,\\ u_{n+1} = 2u_n\\)','\\(u_{n+1} - u_n = 5\\)'], correct:0, expl:'Une définition explicite donne \\(u_n\\) directement en fonction de \\(n\\) ; les autres lient un terme au précédent.' },
+  { q:'Si \\(u_n = n^2\\), alors \\(u_{n+1} - u_n\\) vaut :', opts:['\\(2n + 1\\)','\\(1\\)','\\(n^2 + 1\\)','\\(2n\\)'], correct:0, expl:'\\((n+1)^2 - n^2 = n^2 + 2n + 1 - n^2 = 2n + 1\\).' },
+  { q:'Vers quoi tend la suite \\(u_n = \\dfrac{1}{n}\\) quand \\(n\\) devient très grand ?', opts:['\\(0\\)','\\(1\\)','\\(+\\infty\\)','Elle n\'a pas de limite'], correct:0, expl:'\\(1 ;\\ 0{,}1 ;\\ 0{,}001\\dots\\) les termes se rapprochent de 0 autant qu\'on veut.' },
+  { q:'La suite \\(u_n = (-1)^n\\) :', opts:['n\'a pas de limite','tend vers \\(1\\)','tend vers \\(-1\\)','tend vers \\(0\\)'], correct:0, expl:'Ses termes valent alternativement \\(1\\) et \\(-1\\) : elle oscille sans se stabiliser.' },
+  { q:'Tous les termes de \\((u_n)\\) sont strictement positifs et \\(\\dfrac{u_{n+1}}{u_n} = 0{,}8\\). La suite est :', opts:['décroissante','croissante','constante','on ne peut pas savoir'], correct:0, expl:'Quotient \\(< 1\\) avec des termes positifs : \\(u_{n+1} < u_n\\), donc décroissante.' },
+  { q:'Que désigne la notation \\((u_n)\\) ?', opts:['La suite entière','Le terme de rang \\(n\\)','Le produit \\(u \\times n\\)','Le \\(n\\)-ième terme mis entre parenthèses'], correct:0, expl:'\\((u_n)\\) est la suite (la fonction) ; \\(u_n\\) est un terme, c\'est-à-dire un nombre.' },
+  { q:'Les nombres triangulaires vérifient \\(T_n = \\dfrac{n(n+1)}{2}\\). Que vaut \\(T_4\\) ?', opts:['\\(10\\)','\\(6\\)','\\(8\\)','\\(12\\)'], correct:0, expl:'\\(T_4 = \\dfrac{4\\times 5}{2} = 10\\) : \\(1 + 2 + 3 + 4 = 10\\) points.' },
+  { q:'Quelle affirmation est <strong>fausse</strong> en général ?', opts:['\\(u_{n+1} = u_n + 1\\)','\\(u_{n+1}\\) est le terme qui suit \\(u_n\\)','\\(u_5\\) est le sixième terme d\'une suite définie sur \\(\\mathbb N\\)','\\(u_{n+1} = f(u_n)\\) permet de calculer de proche en proche'], correct:0, expl:'\\(u_{n+1}\\) est le terme suivant ; il n\'a aucune raison de valoir \\(u_n + 1\\).' },
+  { q:'Que renvoie cette fonction pour <code>u(3)</code> ?<pre>def u(n):\n    x = 1\n    for k in range(n):\n        x = 2*x\n    return x</pre>', opts:['\\(8\\)','\\(6\\)','\\(4\\)','\\(16\\)'], correct:0, expl:'La boucle tourne 3 fois : \\(1 \\to 2 \\to 4 \\to 8\\). Elle calcule \\(u_3 = 2^3\\).' },
+  { q:'La représentation graphique d\'une suite est :', opts:['un nuage de points isolés','une courbe continue','une droite','un histogramme'], correct:0, expl:'\\(n\\) ne prend que des valeurs entières : on place les points \\((n\\,;\\,u_n)\\) sans les relier.' },
+  { q:'Soit \\(u_n = 5 - n\\). La suite est :', opts:['décroissante','croissante','ni l\'une ni l\'autre','constante'], correct:0, expl:'\\(u_{n+1} - u_n = -1 < 0\\) pour tout \\(n\\).' },
+  { q:'\\(u_n = f(n)\\) avec \\(f\\) croissante sur \\([0;+\\infty[\\). Alors \\((u_n)\\) est :', opts:['croissante','décroissante','non monotone','on ne peut pas conclure'], correct:0, expl:'Si \\(n < n+1\\) et \\(f\\) croissante, alors \\(f(n) \\leq f(n+1)\\), c\'est-à-dire \\(u_n \\leq u_{n+1}\\).' },
+  { q:'\\(u_n = 2n + 1\\) est définie pour \\(n \\geq 1\\). Son premier terme est :', opts:['\\(u_1 = 3\\)','\\(u_0 = 1\\)','\\(u_1 = 1\\)','\\(u_0 = 3\\)'], correct:0, expl:'La suite commence à l\'indice 1 : le premier terme est \\(u_1 = 2\\times 1 + 1 = 3\\).' },
+  { q:'Les trois premiers termes d\'une suite sont \\(1, 4, 9\\). Peut-on affirmer qu\'elle est croissante ?', opts:['Non, trois termes ne suffisent pas','Oui, car \\(1 < 4 < 9\\)','Oui, car c\'est \\(n^2\\)','Non, car elle est décroissante'], correct:0, expl:'Une suite peut commencer par croître puis redescendre : il faut un argument pour tout \\(n\\) (signe de \\(u_{n+1} - u_n\\), par exemple).' }
+];
+var qcmMap = {};
+var qcmState = { answered:0, score:0, total:4 };
+function buildQcm(){
+  var box=document.getElementById('qcmBox'); box.innerHTML='';
+  document.getElementById('qcmScore').style.display='none';
+  qcmMap={}; qcmState={answered:0,score:0,total:4};
+  var chosen=shuffle(QCM_BANK).slice(0,4);
+  chosen.forEach(function(item,i){
+    var order=shuffle([0,1,2,3]);
+    var correctIdx=order.indexOf(item.correct);
+    qcmMap[i]={correct:correctIdx, expl:item.expl, done:false};
+    var div=document.createElement('div'); div.className='q'; div.id='q'+i;
+    var stem=document.createElement('div'); stem.className='stem'; stem.innerHTML=(i+1)+'. '+item.q; div.appendChild(stem);
+    var opts=document.createElement('div'); opts.className='opts';
+    order.forEach(function(oi,pos){
+      var btn=document.createElement('button'); btn.type='button'; btn.className='opt';
+      btn.innerHTML='<span class="letter">'+'ABCD'[pos]+'</span>'+item.opts[oi];
+      btn.addEventListener('click', function(){ answerQcm(i,pos,btn); });
+      opts.appendChild(btn);
+    });
+    div.appendChild(opts);
+    var ex=document.createElement('div'); ex.className='qexpl'; ex.id='qexpl'+i; div.appendChild(ex);
+    box.appendChild(div);
+  });
+  typeset(box);
+}
+function answerQcm(i,pos,btn){
+  var m=qcmMap[i]; if(m.done) return; m.done=true;
+  var q=document.getElementById('q'+i), buttons=q.querySelectorAll('.opt');
+  var ok=(pos===m.correct);
+  buttons.forEach(function(b,idx){ b.disabled=true; if(idx===m.correct) b.classList.add('right'); else if(idx===pos) b.classList.add('wrong'); else b.classList.add('dim'); });
+  var ex=document.getElementById('qexpl'+i);
+  ex.innerHTML=(ok?'<strong style="color:#166534">Correct.</strong> ':'<strong style="color:#9f1239">Incorrect.</strong> ')+m.expl; ex.classList.add('show'); typeset(ex);
+  qcmState.answered++; if(ok) qcmState.score++;
+  if(qcmState.answered===qcmState.total){
+    var sc=document.getElementById('qcmScore'); sc.style.display='block';
+    var s=qcmState.score;
+    sc.textContent='Score : '+s+' / '+qcmState.total+(s===4?' — excellent !':(s>=2?' — continue, relis les explications.':' — relis le cours puis recommence.'));
+  }
+}
+document.getElementById('qcmNew').addEventListener('click', buildQcm);
+
+/* ---------- initialisation ---------- */
+drawExp();
+recCompute(); recDraw();
+ex1New(); ex2New(); ex3New();
+buildQcm();
+</script>
+</body>
+</html>
