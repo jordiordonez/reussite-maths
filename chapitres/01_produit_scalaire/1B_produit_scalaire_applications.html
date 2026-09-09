@@ -127,10 +127,25 @@ table.meth th{background:#f6f4ef;font-family:system-ui,sans-serif}
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -153,6 +168,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -992,14 +1008,14 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     var nu = rnd(2, 9), nv = rnd(2, 9), ag = pick(ANG);
     ex1 = { nu: nu, nv: nv, ag: ag, ans: nu * nv * ag.c };
     $('ex1_enonce').innerHTML =
-      'On donne \\(\\|\\vec u\\|=' + nu + '\\), \\(\\|\\vec v\\|=' + nv + '\\) et ' +
-      '\\((\\vec u,\\vec v)=' + ag.d + '^\\circ\\).<br>Calculer \\(\\vec u\\cdot\\vec v\\) ' +
+      'On donne \\(\\|\\vec u\\|=' + nu + ',\\) \\(\\|\\vec v\\|=' + nv + '\\) et ' +
+      '\\((\\vec u,\\vec v)=' + ag.d + '^\\circ.\\)<br>Calculer \\(\\vec u\\cdot\\vec v\\) ' +
       '(valeur décimale arrondie au centième).';
     $('ex1_correction').innerHTML =
-      '<p><b>1.</b> Formule avec les normes et l\u2019angle : \\(\\vec u\\cdot\\vec v=\\|\\vec u\\|\\,\\|\\vec v\\|\\cos(\\vec u,\\vec v)\\).</p>' +
-      '<p><b>2.</b> On remplace : \\(\\vec u\\cdot\\vec v=' + nu + '\\times' + nv + '\\times\\cos ' + ag.d + '^\\circ\\).</p>' +
-      '<p><b>3.</b> Valeur exacte du cosinus : \\(\\cos ' + ag.d + '^\\circ=' + ag.tex + '\\), donc ' +
-      '\\(\\vec u\\cdot\\vec v=' + nu * nv + '\\times' + ag.tex + '\\approx ' + fmt(ex1.ans, 2).replace(',', '{,}') + '\\).</p>' +
+      '<p><b>1.</b> Formule avec les normes et l\u2019angle : \\(\\vec u\\cdot\\vec v=\\|\\vec u\\|\\,\\|\\vec v\\|\\cos(\\vec u,\\vec v).\\)</p>' +
+      '<p><b>2.</b> On remplace : \\(\\vec u\\cdot\\vec v=' + nu + '\\times' + nv + '\\times\\cos ' + ag.d + '^\\circ.\\)</p>' +
+      '<p><b>3.</b> Valeur exacte du cosinus : \\(\\cos ' + ag.d + '^\\circ=' + ag.tex + ',\\) donc ' +
+      '\\(\\vec u\\cdot\\vec v=' + nu * nv + '\\times' + ag.tex + '\\approx ' + fmt(ex1.ans, 2).replace(',', '{,}') + '.\\)</p>' +
       '<p><b>Signe :</b> ' + (ag.d < 90 ? 'angle aigu, le produit scalaire est positif.'
         : (ag.d === 90 ? 'angle droit : les vecteurs sont orthogonaux, le produit scalaire est nul.'
         : 'angle obtus, \\(\\cos\\) est négatif donc le produit scalaire est négatif.')) + '</p>';
@@ -1034,15 +1050,15 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     ex2 = { cfg: cfg, x: x, y: y, ag: ag, carre: carre, ans: Math.sqrt(carre) };
     $('ex2_lab').innerHTML = '\\(' + cfg.opp + '\\approx\\)';
     $('ex2_enonce').innerHTML =
-      'Dans le triangle \\(ABC\\) : \\(' + cfg.s1 + '=' + x + '\\), \\(' + cfg.s2 + '=' + y + '\\) et ' +
-      '\\(\\widehat{' + cfg.v + '}=' + ag.d + '^\\circ\\).<br>Calculer la longueur \\(' + cfg.opp + '\\), arrondie au <b>dixième</b>.';
+      'Dans le triangle \\(ABC\\) : \\(' + cfg.s1 + '=' + x + ',\\) \\(' + cfg.s2 + '=' + y + '\\) et ' +
+      '\\(\\widehat{' + cfg.v + '}=' + ag.d + '^\\circ.\\)<br>Calculer la longueur \\(' + cfg.opp + ',\\) arrondie au <b>dixième</b>.';
     $('ex2_correction').innerHTML =
       '<p><b>1.</b> Le côté cherché \\(' + cfg.opp + '\\) est <b>opposé</b> au sommet \\(' + cfg.v + '\\) : c\u2019est bien lui qui est seul à gauche.</p>' +
-      '<p><b>2.</b> Al-Kashi : \\(' + cfg.opp + '^2=' + cfg.s1 + '^2+' + cfg.s2 + '^2-2\\times ' + cfg.s1 + '\\times ' + cfg.s2 + '\\times\\cos\\widehat{' + cfg.v + '}\\).</p>' +
-      '<p><b>3.</b> On remplace : \\(' + cfg.opp + '^2=' + x * x + '+' + y * y + '-2\\times' + x + '\\times' + y + '\\times' + ag.tex + '\\).</p>' +
+      '<p><b>2.</b> Al-Kashi : \\(' + cfg.opp + '^2=' + cfg.s1 + '^2+' + cfg.s2 + '^2-2\\times ' + cfg.s1 + '\\times ' + cfg.s2 + '\\times\\cos\\widehat{' + cfg.v + '}.\\)</p>' +
+      '<p><b>3.</b> On remplace : \\(' + cfg.opp + '^2=' + x * x + '+' + y * y + '-2\\times' + x + '\\times' + y + '\\times' + ag.tex + '.\\)</p>' +
       '<p><b>4.</b> Le terme \\(2\\times' + x + '\\times' + y + '\\times\\cos ' + ag.d + '^\\circ\\approx ' + fmt(2 * x * y * ag.c, 2).replace(',', '{,}') + '\\)' +
       (ag.c < 0 ? ' est <b>négatif</b> : on le soustrait, donc on <b>ajoute</b> sa valeur absolue.' : '.') + '</p>' +
-      '<p><b>5.</b> \\(' + cfg.opp + '^2\\approx ' + fmt(carre, 2).replace(',', '{,}') + '\\), donc \\(' + cfg.opp + '\\approx\\sqrt{' + fmt(carre, 2).replace(',', '{,}') + '}\\approx ' + fmt(ex2.ans, 1).replace(',', '{,}') + '\\).</p>' +
+      '<p><b>5.</b> \\(' + cfg.opp + '^2\\approx ' + fmt(carre, 2).replace(',', '{,}') + ',\\) donc \\(' + cfg.opp + '\\approx\\sqrt{' + fmt(carre, 2).replace(',', '{,}') + '}\\approx ' + fmt(ex2.ans, 1).replace(',', '{,}') + '.\\)</p>' +
       '<p class="hint">Contrôle : la longueur trouvée doit être inférieure à ' + (x + y) + ' (inégalité triangulaire) et supérieure à ' + Math.abs(x - y) + '.</p>';
     resetEx(2);
     typeset($('ex2'));
@@ -1090,15 +1106,15 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     var nom = { a: 'BC', b: 'AC', c: 'AB' };
     $('ex3_lab').innerHTML = '\\(\\widehat{' + cfg.v + '}\\approx\\)';
     $('ex3_enonce').innerHTML =
-      'Dans le triangle \\(ABC\\) : \\(BC=' + a + '\\), \\(AC=' + b + '\\), \\(AB=' + c + '\\).<br>' +
-      'Calculer l\u2019angle \\(\\widehat{' + cfg.v + '}\\), arrondi au <b>degré</b> près.';
+      'Dans le triangle \\(ABC\\) : \\(BC=' + a + ',\\) \\(AC=' + b + ',\\) \\(AB=' + c + '.\\)<br>' +
+      'Calculer l\u2019angle \\(\\widehat{' + cfg.v + '},\\) arrondi au <b>degré</b> près.';
     $('ex3_correction').innerHTML =
       '<p><b>1.</b> Le côté opposé au sommet \\(' + cfg.v + '\\) est \\(' + nom[cfg.op] + '=' + V[cfg.op] + '\\) : c\u2019est lui qui est seul à gauche dans Al-Kashi.</p>' +
-      '<p><b>2.</b> \\(' + nom[cfg.op] + '^2=' + nom[cfg.o1] + '^2+' + nom[cfg.o2] + '^2-2\\times ' + nom[cfg.o1] + '\\times ' + nom[cfg.o2] + '\\times\\cos\\widehat{' + cfg.v + '}\\).</p>' +
+      '<p><b>2.</b> \\(' + nom[cfg.op] + '^2=' + nom[cfg.o1] + '^2+' + nom[cfg.o2] + '^2-2\\times ' + nom[cfg.o1] + '\\times ' + nom[cfg.o2] + '\\times\\cos\\widehat{' + cfg.v + '}.\\)</p>' +
       '<p><b>3.</b> On isole le cosinus : \\(\\cos\\widehat{' + cfg.v + '}=\\dfrac{' + nom[cfg.o1] + '^2+' + nom[cfg.o2] + '^2-' + nom[cfg.op] + '^2}{2\\times ' + nom[cfg.o1] + '\\times ' + nom[cfg.o2] + '}' +
       '=\\dfrac{' + V[cfg.o1] * V[cfg.o1] + '+' + V[cfg.o2] * V[cfg.o2] + '-' + V[cfg.op] * V[cfg.op] + '}{' + den + '}' +
-      '=\\dfrac{' + num + '}{' + den + '}\\approx ' + fmt(cosv, 4).replace(',', '{,}') + '\\).</p>' +
-      '<p><b>4.</b> Avec la touche \\(\\cos^{-1}\\) (calculatrice en degrés) : \\(\\widehat{' + cfg.v + '}\\approx ' + fmt(angle, 1).replace(',', '{,}') + '^\\circ\\), soit \\(' + Math.round(angle) + '^\\circ\\) au degré près.</p>' +
+      '=\\dfrac{' + num + '}{' + den + '}\\approx ' + fmt(cosv, 4).replace(',', '{,}') + '.\\)</p>' +
+      '<p><b>4.</b> Avec la touche \\(\\cos^{-1}\\) (calculatrice en degrés) : \\(\\widehat{' + cfg.v + '}\\approx ' + fmt(angle, 1).replace(',', '{,}') + '^\\circ,\\) soit \\(' + Math.round(angle) + '^\\circ\\) au degré près.</p>' +
       '<p class="hint">' + (cosv < 0 ? 'Le cosinus est négatif : l\u2019angle est obtus (plus grand que 90°).'
         : 'Le cosinus est positif : l\u2019angle est aigu (plus petit que 90°).') + '</p>';
     resetEx(3);
@@ -1127,7 +1143,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
      ============================================================ */
   var qcmBank = [
     {
-      q: 'Dans un triangle \\(ABC\\) avec \\(a=BC\\), \\(b=AC\\), \\(c=AB\\), la formule d\u2019Al-Kashi s\u2019écrit :',
+      q: 'Dans un triangle \\(ABC\\) avec \\(a=BC,\\) \\(b=AC,\\) \\(c=AB,\\) la formule d\u2019Al-Kashi s\u2019écrit :',
       choices: [
         '\\(a^2=b^2+c^2-2bc\\cos\\widehat A\\)',
         '\\(a^2=b^2+c^2+2bc\\cos\\widehat A\\)',
@@ -1138,13 +1154,13 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
       expl: 'Le côté seul à gauche est celui opposé à l\u2019angle utilisé, et le signe est un « moins ».'
     },
     {
-      q: 'Dans un triangle, \\(AB=4\\), \\(AC=5\\) et \\(\\widehat A=60^\\circ\\). Alors \\(BC^2\\) vaut :',
+      q: 'Dans un triangle, \\(AB=4,\\) \\(AC=5\\) et \\(\\widehat A=60^\\circ.\\) Alors \\(BC^2\\) vaut :',
       choices: ['\\(41\\)', '\\(21\\)', '\\(61\\)', '\\(9\\)'],
       correct: 1,
-      expl: '\\(BC^2=16+25-2\\times4\\times5\\times0{,}5=41-20=21\\).'
+      expl: '\\(BC^2=16+25-2\\times4\\times5\\times0{,}5=41-20=21.\\)'
     },
     {
-      q: 'Si \\(\\|\\vec u\\|=3\\), \\(\\|\\vec v\\|=4\\) et l\u2019angle entre eux vaut \\(120^\\circ\\), alors \\(\\vec u\\cdot\\vec v\\) vaut :',
+      q: 'Si \\(\\|\\vec u\\|=3,\\) \\(\\|\\vec v\\|=4\\) et l\u2019angle entre eux vaut \\(120^\\circ,\\) alors \\(\\vec u\\cdot\\vec v\\) vaut :',
       choices: ['\\(6\\)', '\\(12\\)', '\\(-6\\)', '\\(-12\\)'],
       correct: 2,
       expl: '\\(3\\times4\\times\\cos120^\\circ=12\\times(-0{,}5)=-6\\) : angle obtus, produit négatif.'
@@ -1161,7 +1177,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
       expl: 'On développe comme une identité remarquable ; la symétrie donne le facteur 2.'
     },
     {
-      q: 'Si \\(I\\) est le milieu de \\([AB]\\), pour tout point \\(M\\) :',
+      q: 'Si \\(I\\) est le milieu de \\([AB],\\) pour tout point \\(M\\) :',
       choices: [
         '\\(\\vec{MA}\\cdot\\vec{MB}=MI^2-\\dfrac{AB^2}{4}\\)',
         '\\(\\vec{MA}\\cdot\\vec{MB}=MI^2+\\dfrac{AB^2}{4}\\)',
@@ -1169,7 +1185,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
         '\\(\\vec{MA}\\cdot\\vec{MB}=2MI^2-AB^2\\)'
       ],
       correct: 0,
-      expl: 'On écrit \\(\\vec{MA}=\\vec{MI}+\\vec{IA}\\), \\(\\vec{MB}=\\vec{MI}-\\vec{IA}\\), puis \\(MI^2-IA^2\\) avec \\(IA=AB/2\\).'
+      expl: 'On écrit \\(\\vec{MA}=\\vec{MI}+\\vec{IA},\\) \\(\\vec{MB}=\\vec{MI}-\\vec{IA},\\) puis \\(MI^2-IA^2\\) avec \\(IA=AB/2.\\)'
     },
     {
       q: 'L\u2019ensemble des points \\(M\\) tels que \\(\\vec{MA}\\cdot\\vec{MB}=0\\) est :',
@@ -1180,13 +1196,13 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
         'le cercle de centre \\(A\\) et de rayon \\(AB\\)'
       ],
       correct: 2,
-      expl: 'Avec \\(I\\) milieu : \\(MI^2=\\left(\\dfrac{AB}{2}\\right)^2\\), donc \\(MI=\\dfrac{AB}{2}\\).'
+      expl: 'Avec \\(I\\) milieu : \\(MI^2=\\left(\\dfrac{AB}{2}\\right)^2,\\) donc \\(MI=\\dfrac{AB}{2}.\\)'
     },
     {
-      q: 'Dans un triangle où \\(AB=5\\), \\(AC=7\\) et \\(BC=6\\), \\(\\vec{AB}\\cdot\\vec{AC}\\) vaut :',
+      q: 'Dans un triangle où \\(AB=5,\\) \\(AC=7\\) et \\(BC=6,\\) \\(\\vec{AB}\\cdot\\vec{AC}\\) vaut :',
       choices: ['\\(19\\)', '\\(38\\)', '\\(-19\\)', '\\(55\\)'],
       correct: 0,
-      expl: '\\(\\vec{AB}\\cdot\\vec{AC}=\\dfrac{AB^2+AC^2-BC^2}{2}=\\dfrac{25+49-36}{2}=19\\).'
+      expl: '\\(\\vec{AB}\\cdot\\vec{AC}=\\dfrac{AB^2+AC^2-BC^2}{2}=\\dfrac{25+49-36}{2}=19.\\)'
     },
     {
       q: 'Si l\u2019angle \\(\\widehat A\\) est obtus, alors :',
@@ -1200,7 +1216,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
       expl: '\\(\\cos\\widehat A<0\\) donc \\(-2bc\\cos\\widehat A>0\\) : on ajoute une quantité positive.'
     },
     {
-      q: 'Si \\(\\vec{MA}\\cdot\\vec{MB}<0\\), le point \\(M\\) est :',
+      q: 'Si \\(\\vec{MA}\\cdot\\vec{MB}<0,\\) le point \\(M\\) est :',
       choices: [
         'à l\u2019extérieur du cercle de diamètre \\([AB]\\)',
         'sur le cercle de diamètre \\([AB]\\)',
@@ -1211,13 +1227,13 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
       expl: '\\(MI^2-\\dfrac{AB^2}{4}<0\\) signifie \\(MI<\\dfrac{AB}{2}\\) : \\(M\\) est plus près de \\(I\\) que le rayon.'
     },
     {
-      q: 'Un triangle a pour côtés \\(a=7\\), \\(b=5\\), \\(c=8\\). L\u2019angle \\(\\widehat A\\) vaut :',
+      q: 'Un triangle a pour côtés \\(a=7,\\) \\(b=5,\\) \\(c=8.\\) L\u2019angle \\(\\widehat A\\) vaut :',
       choices: ['\\(30^\\circ\\)', '\\(45^\\circ\\)', '\\(60^\\circ\\)', '\\(90^\\circ\\)'],
       correct: 2,
-      expl: '\\(\\cos\\widehat A=\\dfrac{25+64-49}{2\\times5\\times8}=\\dfrac{40}{80}=0{,}5\\), donc \\(\\widehat A=60^\\circ\\).'
+      expl: '\\(\\cos\\widehat A=\\dfrac{25+64-49}{2\\times5\\times8}=\\dfrac{40}{80}=0{,}5,\\) donc \\(\\widehat A=60^\\circ.\\)'
     },
     {
-      q: 'On a \\(AB=10\\) et on cherche les points \\(M\\) tels que \\(\\vec{MA}\\cdot\\vec{MB}=11\\). L\u2019ensemble est :',
+      q: 'On a \\(AB=10\\) et on cherche les points \\(M\\) tels que \\(\\vec{MA}\\cdot\\vec{MB}=11.\\) L\u2019ensemble est :',
       choices: [
         'le cercle de centre \\(I\\) (milieu de \\([AB]\\)) et de rayon \\(6\\)',
         'le cercle de centre \\(I\\) et de rayon \\(11\\)',
@@ -1225,7 +1241,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
         'l\u2019ensemble vide'
       ],
       correct: 0,
-      expl: '\\(MI^2=11+\\dfrac{100}{4}=36\\), donc \\(MI=6\\).'
+      expl: '\\(MI^2=11+\\dfrac{100}{4}=36,\\) donc \\(MI=6.\\)'
     },
     {
       q: 'En isolant le cosinus dans Al-Kashi, on obtient :',
@@ -1236,19 +1252,19 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
         '\\(\\cos\\widehat A=\\dfrac{a^2+b^2-c^2}{2ab}\\)'
       ],
       correct: 0,
-      expl: 'De \\(a^2=b^2+c^2-2bc\\cos\\widehat A\\) on tire \\(2bc\\cos\\widehat A=b^2+c^2-a^2\\).'
+      expl: 'De \\(a^2=b^2+c^2-2bc\\cos\\widehat A\\) on tire \\(2bc\\cos\\widehat A=b^2+c^2-a^2.\\)'
     },
     {
-      q: 'Avec \\(\\|\\vec u\\|=3\\), \\(\\|\\vec v\\|=2\\) et \\(\\vec u\\cdot\\vec v=-4\\), \\(\\|\\vec u-\\vec v\\|^2\\) vaut :',
+      q: 'Avec \\(\\|\\vec u\\|=3,\\) \\(\\|\\vec v\\|=2\\) et \\(\\vec u\\cdot\\vec v=-4,\\) \\(\\|\\vec u-\\vec v\\|^2\\) vaut :',
       choices: ['\\(5\\)', '\\(13\\)', '\\(21\\)', '\\(-3\\)'],
       correct: 2,
       expl: '\\(9-2\\times(-4)+4=9+8+4=21\\) : attention au double signe « moins ».'
     },
     {
-      q: 'Dans un triangle \\(ABC\\), quel vecteur est égal à \\(\\vec{AC}-\\vec{AB}\\) ?',
+      q: 'Dans un triangle \\(ABC,\\) quel vecteur est égal à \\(\\vec{AC}-\\vec{AB}\\) ?',
       choices: ['\\(\\vec{BC}\\)', '\\(\\vec{CB}\\)', '\\(\\vec{BA}\\)', '\\(\\vec{AB}+\\vec{AC}\\)'],
       correct: 0,
-      expl: 'Relation de Chasles : \\(\\vec{AC}-\\vec{AB}=\\vec{BA}+\\vec{AC}=\\vec{BC}\\).'
+      expl: 'Relation de Chasles : \\(\\vec{AC}-\\vec{AB}=\\vec{BA}+\\vec{AC}=\\vec{BC}.\\)'
     }
   ];
 

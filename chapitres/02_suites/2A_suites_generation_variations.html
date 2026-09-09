@@ -99,10 +99,25 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:24px 16px 40
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -125,6 +140,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -561,11 +577,11 @@ function drawExp(){
   // intuition de limite
   var lEl=document.getElementById('expLim'), lim;
   switch(famSel.value){
-    case 'aff': lim = a===0 ? 'Suite constante : les termes valent toujours '+fmt(b)+'.' : (a>0?'Les termes deviennent aussi grands qu\'on veut : la suite tend vers \\(+\\infty\\).':'Les termes deviennent aussi négatifs qu\'on veut : la suite tend vers \\(-\\infty\\).'); break;
-    case 'quad': lim = a===0 ? 'Suite constante.' : (a>0?'Les termes grandissent de plus en plus vite : la suite tend vers \\(+\\infty\\).':'La suite tend vers \\(-\\infty\\).'); break;
+    case 'aff': lim = a===0 ? 'Suite constante : les termes valent toujours '+fmt(b)+'.' : (a>0?'Les termes deviennent aussi grands qu\'on veut : la suite tend vers \\(+\\infty.\\)':'Les termes deviennent aussi négatifs qu\'on veut : la suite tend vers \\(-\\infty.\\)'); break;
+    case 'quad': lim = a===0 ? 'Suite constante.' : (a>0?'Les termes grandissent de plus en plus vite : la suite tend vers \\(+\\infty.\\)':'La suite tend vers \\(-\\infty.\\)'); break;
     case 'inv': lim = a===0 ? 'Suite constante.' : 'Comme \\(\\frac{'+fmt(a)+'}{n}\\) se rapproche de 0, les termes se rapprochent de '+fmt(b)+' : la suite tend vers '+fmt(b)+'.'; break;
     case 'alt': lim = a===0 ? 'Suite constante.' : 'Les termes oscillent autour de '+fmt(b)+' avec une amplitude qui diminue : la suite tend vers '+fmt(b)+' (sans être monotone).'; break;
-    case 'osc': lim = (a===0&&b===0) ? 'Suite nulle.' : (b===0 ? 'Les termes alternent entre '+fmt(a)+' et '+fmt(-a)+' : pas de limite.' : (b>0?'Malgré les oscillations, les termes finissent par dépasser tout nombre : la suite tend vers \\(+\\infty\\).':'La suite tend vers \\(-\\infty\\).')); break;
+    case 'osc': lim = (a===0&&b===0) ? 'Suite nulle.' : (b===0 ? 'Les termes alternent entre '+fmt(a)+' et '+fmt(-a)+' : pas de limite.' : (b>0?'Malgré les oscillations, les termes finissent par dépasser tout nombre : la suite tend vers \\(+\\infty.\\)':'La suite tend vers \\(-\\infty.\\)')); break;
   }
   lEl.innerHTML='<strong>Intuition de limite :</strong> '+lim; typeset(lEl);
 }
@@ -655,7 +671,7 @@ function recDraw(){
   }
   // terme courant
   var cur=document.getElementById('recCurrent');
-  if(k===0) cur.innerHTML='Terme courant : \\(u_0 = '+fmt(t[0])+'\\). Appuie sur « Étape suivante » pour calculer \\(u_1 = a\\,u_0 + b\\).';
+  if(k===0) cur.innerHTML='Terme courant : \\(u_0 = '+fmt(t[0])+'.\\) Appuie sur « Étape suivante » pour calculer \\(u_1 = a\\,u_0 + b.\\)';
   else cur.innerHTML='Étape '+k+' : \\(u_{'+k+'} = '+fmt(a)+' \\times '+(t[k-1]<0?'('+fmt(t[k-1])+')':fmt(t[k-1]))+' '+fmtSigned(b)+' = '+fmt(t[k])+'\\)';
   typeset(cur);
   document.getElementById('recStep').disabled = (k>=REC_MAX);
@@ -674,7 +690,7 @@ function recDraw(){
     else if(up){ msg='Sur les termes calculés : croissante.'; cls+=' good'; }
     else if(down){ msg='Sur les termes calculés : décroissante.'; cls+=' good'; }
     else { msg='Les termes oscillent : ni croissante ni décroissante (cela arrive quand \\(a<0\\)).'; cls+=' bad'; }
-    var beh = Math.abs(a)<1 ? ' Comme \\(|a|<1\\), l\'escalier se resserre vers le point d\'intersection des deux droites.' : (Math.abs(a)>1 ? ' Comme \\(|a|>1\\), les termes s\'éloignent de plus en plus.' : '');
+    var beh = Math.abs(a)<1 ? ' Comme \\(|a|<1,\\) l\'escalier se resserre vers le point d\'intersection des deux droites.' : (Math.abs(a)>1 ? ' Comme \\(|a|>1,\\) les termes s\'éloignent de plus en plus.' : '');
     vEl.className=cls; vEl.innerHTML=msg+beh; typeset(vEl);
   }
 }
@@ -697,16 +713,16 @@ function ex1New(){
     var a=pick([-3,-2,-1,1,2,3]), b=rnd(-5,5), c=rnd(-5,5);
     var tex=polyTex(a,b,c);
     ans = a*N*N + b*N + c;
-    stmt = 'La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq 0\\) par \\(u_n = '+tex+'\\). Calculer \\(u_{'+N+'}\\).';
+    stmt = 'La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq 0\\) par \\(u_n = '+tex+'.\\) Calculer \\(u_{'+N+'}.\\)';
     corr = '<p>On remplace \\(n\\) par \\('+N+'\\) dans la formule :</p>'
       + '<p>\\(u_{'+N+'} = '+polyTex(a,b,c).replace(/n\^2/g,'\\times '+N+'^2').replace(/n(?!\^)/g,'\\times '+N)+'\\)</p>'
       + '<p>\\(u_{'+N+'} = '+fmt(a*N*N)+' '+fmtSigned(b*N)+' '+fmtSigned(c)+' = '+fmt(ans)+'\\)</p>'
-      + '<p>Remarque : \\(u_{'+N+'}\\) est le terme de rang '+N+' ; comme la suite commence à \\(u_0\\), c\'est le '+(N+1)+'<sup>e</sup> terme.</p>';
+      + '<p>Remarque : \\(u_{'+N+'}\\) est le terme de rang '+N+' ; comme la suite commence à \\(u_0,\\) c\'est le '+(N+1)+'<sup>e</sup> terme.</p>';
   } else {
     var a=rnd(1,5), b=rnd(-4,6), c=pick([1,2]);
     var num=a*N+b, den=N+c;
     ans = num/den;
-    stmt = 'La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+'+c+'}\\). Calculer \\(u_{'+N+'}\\) (fraction ou valeur décimale à \\(10^{-2}\\) près).';
+    stmt = 'La suite \\((u_n)\\) est définie pour tout entier \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+'+c+'}.\\) Calculer \\(u_{'+N+'}\\) (fraction ou valeur décimale à \\(10^{-2}\\) près).';
     var g=gcd(Math.abs(num),den), sn=num/g, sd=den/g;
     corr = '<p>On remplace \\(n\\) par \\('+N+'\\) au numérateur et au dénominateur :</p>'
       + '<p>\\(u_{'+N+'} = \\dfrac{'+a+'\\times '+N+' '+fmtSigned(b)+'}{'+N+' + '+c+'} = \\dfrac{'+num+'}{'+den+'}\\)'
@@ -725,7 +741,7 @@ document.getElementById('ex1Corr').addEventListener('click', function(){ documen
 document.getElementById('ex1Check').addEventListener('click', function(){
   var v=parseNum(document.getElementById('ex1In').value), fb=document.getElementById('ex1Fb');
   if(isNaN(v)){ setFb(fb,false,'Écris un nombre (ex. −7, 2,5 ou 3/4).'); return; }
-  if(close(v,ex1.ans)) setFb(fb,true,'Bravo ! \\(u_{'+ex1.N+'} = '+fmt(ex1.ans)+'\\).');
+  if(close(v,ex1.ans)) setFb(fb,true,'Bravo ! \\(u_{'+ex1.N+'} = '+fmt(ex1.ans)+'.\\)');
   else setFb(fb,false,'Ce n\'est pas ça. Remplace \\(n\\) par '+ex1.N+' (avec des parenthèses) et recalcule pas à pas.');
 });
 
@@ -738,14 +754,14 @@ function ex2New(){
   ex2.t=t;
   var rel='u_{n+1} = '+coef(a,true)+'u_n'+(b===0?'':' '+fmtSigned(b));
   var s=document.getElementById('ex2Stmt');
-  s.innerHTML='<p>La suite \\((u_n)\\) est définie par \\(u_0 = '+fmt(u0)+'\\) et, pour tout entier \\(n \\geq 0\\), \\('+rel+'\\). Calculer \\(u_1\\), \\(u_2\\) et \\(u_3\\).</p>';
+  s.innerHTML='<p>La suite \\((u_n)\\) est définie par \\(u_0 = '+fmt(u0)+'\\) et, pour tout entier \\(n \\geq 0,\\) \\('+rel+'.\\) Calculer \\(u_1,\\) \\(u_2\\) et \\(u_3.\\)</p>';
   typeset(s);
   var corr='<p>On calcule de proche en proche, en partant de \\(u_0 = '+fmt(u0)+'\\) :</p>';
   for(var i=0;i<3;i++){
     var prev = t[i]<0 ? '('+fmt(t[i])+')' : fmt(t[i]);
     corr+='<p>\\(u_{'+(i+1)+'} = '+fmt(a)+' \\times u_{'+i+'} '+(b===0?'':fmtSigned(b))+' = '+fmt(a)+' \\times '+prev+' '+(b===0?'':fmtSigned(b))+' = '+fmt(t[i+1])+'\\)</p>';
   }
-  corr+='<p>Vérifie le sens : dans \\(u_{n+1} = a u_n + b\\), on multiplie <em>d\'abord</em> par \\(a\\), <em>puis</em> on ajoute \\(b\\).</p>';
+  corr+='<p>Vérifie le sens : dans \\(u_{n+1} = a u_n + b,\\) on multiplie <em>d\'abord</em> par \\(a,\\) <em>puis</em> on ajoute \\(b.\\)</p>';
   var cb=document.getElementById('ex2CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
   ['ex2In1','ex2In2','ex2In3'].forEach(function(id){ document.getElementById(id).value=''; });
   document.getElementById('ex2Fb').className='feedback';
@@ -760,7 +776,7 @@ document.getElementById('ex2Check').addEventListener('click', function(){
     if(!ok) allOk=false;
     res.push('\\(u_'+i+'\\) : '+(ok?'✔':'✘'));
   }
-  if(allOk) setFb(fb,true,'Parfait ! \\(u_1 = '+fmt(ex2.t[1])+'\\), \\(u_2 = '+fmt(ex2.t[2])+'\\), \\(u_3 = '+fmt(ex2.t[3])+'\\).');
+  if(allOk) setFb(fb,true,'Parfait ! \\(u_1 = '+fmt(ex2.t[1])+',\\) \\(u_2 = '+fmt(ex2.t[2])+',\\) \\(u_3 = '+fmt(ex2.t[3])+'.\\)');
   else setFb(fb,false,res.join(' · ')+'<br>Une erreur sur \\(u_1\\) se propage à \\(u_2\\) et \\(u_3\\) : reprends depuis le premier terme faux.');
 });
 
@@ -776,25 +792,25 @@ function ex3New(){
     var kind;
     if(s===1) kind = (k>=-1)?'up':'none'; else kind = (k<=1)?'down':'none';
     ex3.type='poly'; ex3.A=A; ex3.B=B; ex3.kind=kind;
-    stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = '+polyTex(s,k,0)+'\\).<br>1. Exprimer \\(u_{n+1} - u_n\\) sous la forme \\(\\alpha n + \\beta\\).<br>2. En déduire le sens de variation de \\((u_n)\\) sur \\(\\mathbb N\\).';
+    stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = '+polyTex(s,k,0)+'.\\)<br>1. Exprimer \\(u_{n+1} - u_n\\) sous la forme \\(\\alpha n + \\beta.\\)<br>2. En déduire le sens de variation de \\((u_n)\\) sur \\(\\mathbb N.\\)';
     fields.innerHTML='<div class="field"><span class="lab">u<sub>n+1</sub> − u<sub>n</sub> =</span><input type="text" id="ex3A" inputmode="decimal" placeholder="α" style="max-width:90px"> <span>· n +</span> <input type="text" id="ex3B" inputmode="decimal" placeholder="β" style="max-width:90px"></div>';
     var u0=0, u1=s+k, u2=4*s+2*k;
     corr='<p>\\(u_{n+1} = '+coef(s,true)+'(n+1)^2 '+coef(k,false)+'(n+1) = '+coef(s,true)+'(n^2+2n+1) '+coef(k,false)+'n '+fmtSigned(k)+'\\)</p>'
       +'<p>\\(u_{n+1} - u_n = '+polyTex(s,2*s+k,s+k)+' - ('+polyTex(s,k,0)+') = '+linTex(A,B)+'\\)</p>';
-    if(kind==='up') corr+='<p>Pour tout \\(n \\geq 0\\) : \\('+linTex(A,B)+' \\geq '+fmt(B)+' \\geq 0\\), donc \\(u_{n+1} \\geq u_n\\) : la suite est <strong>croissante</strong>.</p>';
-    else if(kind==='down') corr+='<p>Pour tout \\(n \\geq 0\\) : \\('+linTex(A,B)+' \\leq '+fmt(B)+' \\leq 0\\), donc \\(u_{n+1} \\leq u_n\\) : la suite est <strong>décroissante</strong>.</p>';
-    else corr+='<p>Le signe de \\('+linTex(A,B)+'\\) change : pour \\(n = 0\\) il vaut \\('+fmt(B)+'\\) ('+(B<0?'négatif':'positif')+'), puis pour \\(n\\) grand il est '+(A>0?'positif':'négatif')+'. Exemple : \\(u_0 = 0,\\ u_1 = '+fmt(u1)+',\\ u_2 = '+fmt(u2)+'\\). La suite n\'est <strong>ni croissante ni décroissante</strong> sur \\(\\mathbb N\\) (elle est '+(A>0?'croissante':'décroissante')+' à partir du rang \\('+Math.ceil(-B/A)+'\\)).</p>';
+    if(kind==='up') corr+='<p>Pour tout \\(n \\geq 0\\) : \\('+linTex(A,B)+' \\geq '+fmt(B)+' \\geq 0,\\) donc \\(u_{n+1} \\geq u_n\\) : la suite est <strong>croissante</strong>.</p>';
+    else if(kind==='down') corr+='<p>Pour tout \\(n \\geq 0\\) : \\('+linTex(A,B)+' \\leq '+fmt(B)+' \\leq 0,\\) donc \\(u_{n+1} \\leq u_n\\) : la suite est <strong>décroissante</strong>.</p>';
+    else corr+='<p>Le signe de \\('+linTex(A,B)+'\\) change : pour \\(n = 0\\) il vaut \\('+fmt(B)+'\\) ('+(B<0?'négatif':'positif')+'), puis pour \\(n\\) grand il est '+(A>0?'positif':'négatif')+'. Exemple : \\(u_0 = 0,\\ u_1 = '+fmt(u1)+',\\ u_2 = '+fmt(u2)+'.\\) La suite n\'est <strong>ni croissante ni décroissante</strong> sur \\(\\mathbb N\\) (elle est '+(A>0?'croissante':'décroissante')+' à partir du rang \\('+Math.ceil(-B/A)+'\\)).</p>';
   } else {
     var a=rnd(1,6), b=rnd(-6,6); if(b===a) b=a-1;
     // u_n = (a n + b)/(n+1) ; u_{n+1}-u_n = (a-b)/((n+1)(n+2))
     ex3.type='quot'; ex3.A=a-b; ex3.kind=(a>b)?'up':'down';
-    stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+1}\\).<br>1. Montrer que \\(u_{n+1} - u_n = \\dfrac{K}{(n+1)(n+2)}\\) et donner \\(K\\).<br>2. En déduire le sens de variation de \\((u_n)\\).';
+    stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+1}.\\)<br>1. Montrer que \\(u_{n+1} - u_n = \\dfrac{K}{(n+1)(n+2)}\\) et donner \\(K.\\)<br>2. En déduire le sens de variation de \\((u_n).\\)';
     fields.innerHTML='<div class="field"><span class="lab">K =</span><input type="text" id="ex3A" inputmode="decimal" style="max-width:90px"></div>';
     corr='<p>\\(u_{n+1} = \\dfrac{'+a+'(n+1) '+fmtSigned(b)+'}{n+2} = \\dfrac{'+linTex(a,a+b)+'}{n+2}\\)</p>'
       +'<p>\\(u_{n+1} - u_n = \\dfrac{('+linTex(a,a+b)+')(n+1) - ('+linTex(a,b)+')(n+2)}{(n+1)(n+2)}\\)</p>'
-      +'<p>Numérateur : \\('+polyTex(a,2*a+b,a+b)+' - ('+polyTex(a,2*a+b,2*b)+') = '+fmt(a-b)+'\\), donc \\(K = '+fmt(a-b)+'\\).</p>'
+      +'<p>Numérateur : \\('+polyTex(a,2*a+b,a+b)+' - ('+polyTex(a,2*a+b,2*b)+') = '+fmt(a-b)+',\\) donc \\(K = '+fmt(a-b)+'.\\)</p>'
       +'<p>Le dénominateur \\((n+1)(n+2)\\) est toujours strictement positif ; le signe de la différence est celui de \\(K = '+fmt(a-b)+'\\) : la suite est <strong>'+(a>b?'croissante':'décroissante')+'</strong>.</p>'
-      +'<p>Vérification : \\(u_0 = '+fmt(b)+'\\), \\(u_1 = '+fmt((a+b)/2)+'\\), \\(u_2 = '+fmt((2*a+b)/3)+'\\).</p>';
+      +'<p>Vérification : \\(u_0 = '+fmt(b)+',\\) \\(u_1 = '+fmt((a+b)/2)+',\\) \\(u_2 = '+fmt((2*a+b)/3)+'.\\)</p>';
   }
   var st=document.getElementById('ex3Stmt'); st.innerHTML='<p>'+stmt+'</p>'; typeset(st);
   document.getElementById('ex3Sel').value='';
@@ -809,7 +825,7 @@ document.getElementById('ex3Check').addEventListener('click', function(){
   if(ex3.type==='poly'){
     var A=parseNum(document.getElementById('ex3A').value), B=parseNum(document.getElementById('ex3B').value);
     okExpr = !isNaN(A)&&!isNaN(B)&&close(A,ex3.A)&&close(B,ex3.B);
-    msgExpr = okExpr ? 'Expression correcte.' : 'Expression fausse : développe \\((n+1)^2\\) avec soin, puis soustrais \\(u_n\\).';
+    msgExpr = okExpr ? 'Expression correcte.' : 'Expression fausse : développe \\((n+1)^2\\) avec soin, puis soustrais \\(u_n.\\)';
   } else {
     var K=parseNum(document.getElementById('ex3A').value);
     okExpr = !isNaN(K)&&close(K,ex3.A);
@@ -818,7 +834,7 @@ document.getElementById('ex3Check').addEventListener('click', function(){
   if(sel==='') { setFb(fb,false,msgExpr+' Choisis aussi une conclusion.'); return; }
   var okKind = (sel===ex3.kind);
   var labels={up:'croissante',down:'décroissante',none:'ni croissante ni décroissante'};
-  var msgKind = okKind ? 'Conclusion correcte : la suite est '+labels[ex3.kind]+'.' : 'Conclusion fausse : étudie le signe de la différence pour <em>tout</em> \\(n \\geq 0\\), y compris \\(n = 0\\).';
+  var msgKind = okKind ? 'Conclusion correcte : la suite est '+labels[ex3.kind]+'.' : 'Conclusion fausse : étudie le signe de la différence pour <em>tout</em> \\(n \\geq 0,\\) y compris \\(n = 0.\\)';
   setFb(fb, okExpr&&okKind, msgExpr+' '+msgKind);
 });
 </script>
@@ -826,22 +842,22 @@ document.getElementById('ex3Check').addEventListener('click', function(){
 <script>
 /* ---------- QCM ---------- */
 var QCM_BANK = [
-  { q:'Soit \\(u_n = 3n - 2\\). Que vaut \\(u_4\\) ?', opts:['\\(10\\)','\\(13\\)','\\(7\\)','\\(4\\)'], correct:0, expl:'\\(u_4 = 3\\times 4 - 2 = 10\\). On remplace \\(n\\) par 4.' },
-  { q:'\\(u_0 = 3\\) et \\(u_{n+1} = 2u_n - 1\\). Que vaut \\(u_2\\) ?', opts:['\\(9\\)','\\(5\\)','\\(7\\)','\\(11\\)'], correct:0, expl:'\\(u_1 = 2\\times 3 - 1 = 5\\) puis \\(u_2 = 2\\times 5 - 1 = 9\\).' },
+  { q:'Soit \\(u_n = 3n - 2.\\) Que vaut \\(u_4\\) ?', opts:['\\(10\\)','\\(13\\)','\\(7\\)','\\(4\\)'], correct:0, expl:'\\(u_4 = 3\\times 4 - 2 = 10.\\) On remplace \\(n\\) par 4.' },
+  { q:'\\(u_0 = 3\\) et \\(u_{n+1} = 2u_n - 1.\\) Que vaut \\(u_2\\) ?', opts:['\\(9\\)','\\(5\\)','\\(7\\)','\\(11\\)'], correct:0, expl:'\\(u_1 = 2\\times 3 - 1 = 5\\) puis \\(u_2 = 2\\times 5 - 1 = 9.\\)' },
   { q:'Laquelle de ces définitions est <em>explicite</em> ?', opts:['\\(u_n = n^2 + 1\\)','\\(u_{n+1} = u_n + 3\\)','\\(u_0 = 2,\\ u_{n+1} = 2u_n\\)','\\(u_{n+1} - u_n = 5\\)'], correct:0, expl:'Une définition explicite donne \\(u_n\\) directement en fonction de \\(n\\) ; les autres lient un terme au précédent.' },
-  { q:'Si \\(u_n = n^2\\), alors \\(u_{n+1} - u_n\\) vaut :', opts:['\\(2n + 1\\)','\\(1\\)','\\(n^2 + 1\\)','\\(2n\\)'], correct:0, expl:'\\((n+1)^2 - n^2 = n^2 + 2n + 1 - n^2 = 2n + 1\\).' },
+  { q:'Si \\(u_n = n^2,\\) alors \\(u_{n+1} - u_n\\) vaut :', opts:['\\(2n + 1\\)','\\(1\\)','\\(n^2 + 1\\)','\\(2n\\)'], correct:0, expl:'\\((n+1)^2 - n^2 = n^2 + 2n + 1 - n^2 = 2n + 1.\\)' },
   { q:'Vers quoi tend la suite \\(u_n = \\dfrac{1}{n}\\) quand \\(n\\) devient très grand ?', opts:['\\(0\\)','\\(1\\)','\\(+\\infty\\)','Elle n\'a pas de limite'], correct:0, expl:'\\(1 ;\\ 0{,}1 ;\\ 0{,}001\\dots\\) les termes se rapprochent de 0 autant qu\'on veut.' },
   { q:'La suite \\(u_n = (-1)^n\\) :', opts:['n\'a pas de limite','tend vers \\(1\\)','tend vers \\(-1\\)','tend vers \\(0\\)'], correct:0, expl:'Ses termes valent alternativement \\(1\\) et \\(-1\\) : elle oscille sans se stabiliser.' },
-  { q:'Tous les termes de \\((u_n)\\) sont strictement positifs et \\(\\dfrac{u_{n+1}}{u_n} = 0{,}8\\). La suite est :', opts:['décroissante','croissante','constante','on ne peut pas savoir'], correct:0, expl:'Quotient \\(< 1\\) avec des termes positifs : \\(u_{n+1} < u_n\\), donc décroissante.' },
+  { q:'Tous les termes de \\((u_n)\\) sont strictement positifs et \\(\\dfrac{u_{n+1}}{u_n} = 0{,}8.\\) La suite est :', opts:['décroissante','croissante','constante','on ne peut pas savoir'], correct:0, expl:'Quotient \\(< 1\\) avec des termes positifs : \\(u_{n+1} < u_n,\\) donc décroissante.' },
   { q:'Que désigne la notation \\((u_n)\\) ?', opts:['La suite entière','Le terme de rang \\(n\\)','Le produit \\(u \\times n\\)','Le \\(n\\)-ième terme mis entre parenthèses'], correct:0, expl:'\\((u_n)\\) est la suite (la fonction) ; \\(u_n\\) est un terme, c\'est-à-dire un nombre.' },
-  { q:'Les nombres triangulaires vérifient \\(T_n = \\dfrac{n(n+1)}{2}\\). Que vaut \\(T_4\\) ?', opts:['\\(10\\)','\\(6\\)','\\(8\\)','\\(12\\)'], correct:0, expl:'\\(T_4 = \\dfrac{4\\times 5}{2} = 10\\) : \\(1 + 2 + 3 + 4 = 10\\) points.' },
-  { q:'Quelle affirmation est <strong>fausse</strong> en général ?', opts:['\\(u_{n+1} = u_n + 1\\)','\\(u_{n+1}\\) est le terme qui suit \\(u_n\\)','\\(u_5\\) est le sixième terme d\'une suite définie sur \\(\\mathbb N\\)','\\(u_{n+1} = f(u_n)\\) permet de calculer de proche en proche'], correct:0, expl:'\\(u_{n+1}\\) est le terme suivant ; il n\'a aucune raison de valoir \\(u_n + 1\\).' },
-  { q:'Que renvoie cette fonction pour <code>u(3)</code> ?<pre>def u(n):\n    x = 1\n    for k in range(n):\n        x = 2*x\n    return x</pre>', opts:['\\(8\\)','\\(6\\)','\\(4\\)','\\(16\\)'], correct:0, expl:'La boucle tourne 3 fois : \\(1 \\to 2 \\to 4 \\to 8\\). Elle calcule \\(u_3 = 2^3\\).' },
+  { q:'Les nombres triangulaires vérifient \\(T_n = \\dfrac{n(n+1)}{2}.\\) Que vaut \\(T_4\\) ?', opts:['\\(10\\)','\\(6\\)','\\(8\\)','\\(12\\)'], correct:0, expl:'\\(T_4 = \\dfrac{4\\times 5}{2} = 10\\) : \\(1 + 2 + 3 + 4 = 10\\) points.' },
+  { q:'Quelle affirmation est <strong>fausse</strong> en général ?', opts:['\\(u_{n+1} = u_n + 1\\)','\\(u_{n+1}\\) est le terme qui suit \\(u_n\\)','\\(u_5\\) est le sixième terme d\'une suite définie sur \\(\\mathbb N\\)','\\(u_{n+1} = f(u_n)\\) permet de calculer de proche en proche'], correct:0, expl:'\\(u_{n+1}\\) est le terme suivant ; il n\'a aucune raison de valoir \\(u_n + 1.\\)' },
+  { q:'Que renvoie cette fonction pour <code>u(3)</code> ?<pre>def u(n):\n    x = 1\n    for k in range(n):\n        x = 2*x\n    return x</pre>', opts:['\\(8\\)','\\(6\\)','\\(4\\)','\\(16\\)'], correct:0, expl:'La boucle tourne 3 fois : \\(1 \\to 2 \\to 4 \\to 8.\\) Elle calcule \\(u_3 = 2^3.\\)' },
   { q:'La représentation graphique d\'une suite est :', opts:['un nuage de points isolés','une courbe continue','une droite','un histogramme'], correct:0, expl:'\\(n\\) ne prend que des valeurs entières : on place les points \\((n\\,;\\,u_n)\\) sans les relier.' },
-  { q:'Soit \\(u_n = 5 - n\\). La suite est :', opts:['décroissante','croissante','ni l\'une ni l\'autre','constante'], correct:0, expl:'\\(u_{n+1} - u_n = -1 < 0\\) pour tout \\(n\\).' },
-  { q:'\\(u_n = f(n)\\) avec \\(f\\) croissante sur \\([0;+\\infty[\\). Alors \\((u_n)\\) est :', opts:['croissante','décroissante','non monotone','on ne peut pas conclure'], correct:0, expl:'Si \\(n < n+1\\) et \\(f\\) croissante, alors \\(f(n) \\leq f(n+1)\\), c\'est-à-dire \\(u_n \\leq u_{n+1}\\).' },
-  { q:'\\(u_n = 2n + 1\\) est définie pour \\(n \\geq 1\\). Son premier terme est :', opts:['\\(u_1 = 3\\)','\\(u_0 = 1\\)','\\(u_1 = 1\\)','\\(u_0 = 3\\)'], correct:0, expl:'La suite commence à l\'indice 1 : le premier terme est \\(u_1 = 2\\times 1 + 1 = 3\\).' },
-  { q:'Les trois premiers termes d\'une suite sont \\(1, 4, 9\\). Peut-on affirmer qu\'elle est croissante ?', opts:['Non, trois termes ne suffisent pas','Oui, car \\(1 < 4 < 9\\)','Oui, car c\'est \\(n^2\\)','Non, car elle est décroissante'], correct:0, expl:'Une suite peut commencer par croître puis redescendre : il faut un argument pour tout \\(n\\) (signe de \\(u_{n+1} - u_n\\), par exemple).' }
+  { q:'Soit \\(u_n = 5 - n.\\) La suite est :', opts:['décroissante','croissante','ni l\'une ni l\'autre','constante'], correct:0, expl:'\\(u_{n+1} - u_n = -1 < 0\\) pour tout \\(n.\\)' },
+  { q:'\\(u_n = f(n)\\) avec \\(f\\) croissante sur \\([0;+\\infty[.\\) Alors \\((u_n)\\) est :', opts:['croissante','décroissante','non monotone','on ne peut pas conclure'], correct:0, expl:'Si \\(n < n+1\\) et \\(f\\) croissante, alors \\(f(n) \\leq f(n+1),\\) c\'est-à-dire \\(u_n \\leq u_{n+1}.\\)' },
+  { q:'\\(u_n = 2n + 1\\) est définie pour \\(n \\geq 1.\\) Son premier terme est :', opts:['\\(u_1 = 3\\)','\\(u_0 = 1\\)','\\(u_1 = 1\\)','\\(u_0 = 3\\)'], correct:0, expl:'La suite commence à l\'indice 1 : le premier terme est \\(u_1 = 2\\times 1 + 1 = 3.\\)' },
+  { q:'Les trois premiers termes d\'une suite sont \\(1, 4, 9.\\) Peut-on affirmer qu\'elle est croissante ?', opts:['Non, trois termes ne suffisent pas','Oui, car \\(1 < 4 < 9\\)','Oui, car c\'est \\(n^2\\)','Non, car elle est décroissante'], correct:0, expl:'Une suite peut commencer par croître puis redescendre : il faut un argument pour tout \\(n\\) (signe de \\(u_{n+1} - u_n,\\) par exemple).' }
 ];
 var qcmMap = {};
 var qcmState = { answered:0, score:0, total:4 };

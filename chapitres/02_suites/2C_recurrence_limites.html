@@ -114,10 +114,25 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:24px 16px 40
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -140,6 +155,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -777,16 +793,16 @@ function drawLim(){
   var nEl=document.getElementById('limN');
   nEl.className='stat good';
   if(isConv){
-    nEl.innerHTML = 'Pour \\(\\varepsilon = '+fmt(eps)+'\\) : tous les termes de rang \\(n \\geq '+N+'\\) vérifient \\(|u_n - '+fmt(s.l)+'| \\leq \\varepsilon\\). Donc \\(N = '+N+'\\).';
+    nEl.innerHTML = 'Pour \\(\\varepsilon = '+fmt(eps)+'\\) : tous les termes de rang \\(n \\geq '+N+'\\) vérifient \\(|u_n - '+fmt(s.l)+'| \\leq \\varepsilon.\\) Donc \\(N = '+N+'.\\)';
   } else {
-    nEl.innerHTML = 'Pour \\(A = '+fmt(A)+'\\) : tous les termes de rang \\(n \\geq '+N+'\\) vérifient \\(u_n \\geq A\\). Donc \\(N = '+N+'\\).';
+    nEl.innerHTML = 'Pour \\(A = '+fmt(A)+'\\) : tous les termes de rang \\(n \\geq '+N+'\\) vérifient \\(u_n \\geq A.\\) Donc \\(N = '+N+'.\\)';
   }
   typeset(nEl);
   var mEl=document.getElementById('limMsg');
   if(isConv){
-    mEl.innerHTML = 'Diminue \\(\\varepsilon\\) : le rang \\(N\\) augmente, mais il <strong>existe toujours</strong>. C\'est exactement la définition : <em>tout</em> intervalle ouvert contenant \\(\\ell\\) contient tous les termes à partir d\'un certain rang. Ici \\(\\lim u_n = '+fmt(s.l)+'\\).';
+    mEl.innerHTML = 'Diminue \\(\\varepsilon\\) : le rang \\(N\\) augmente, mais il <strong>existe toujours</strong>. C\'est exactement la définition : <em>tout</em> intervalle ouvert contenant \\(\\ell\\) contient tous les termes à partir d\'un certain rang. Ici \\(\\lim u_n = '+fmt(s.l)+'.\\)';
   } else {
-    mEl.innerHTML = 'Augmente \\(A\\) : le rang \\(N\\) augmente, mais il <strong>existe toujours</strong>. C\'est la définition : <em>tout</em> intervalle \\([A\\,;+\\infty[\\) contient tous les termes à partir d\'un certain rang. Ici \\(\\lim u_n = +\\infty\\).';
+    mEl.innerHTML = 'Augmente \\(A\\) : le rang \\(N\\) augmente, mais il <strong>existe toujours</strong>. C\'est la définition : <em>tout</em> intervalle \\([A\\,;+\\infty[\\) contient tous les termes à partir d\'un certain rang. Ici \\(\\lim u_n = +\\infty.\\)';
   }
   typeset(mEl);
 }
@@ -836,10 +852,10 @@ function drawQ(){
     c.style.transformOrigin=X(n)+'px '+Y(v)+'px'; c.style.animationDelay=(n*0.02)+'s';
   });
   var msg, cls='stat';
-  if(q>1){ msg='\\(q = '+fmt(q)+' > 1\\) : les termes grandissent sans limite, \\(\\lim q^n = +\\infty\\). <em>(Démonstration par l\'inégalité de Bernoulli : \\(q^n \\geq 1 + n(q-1)\\).)</em>'; cls+=' good'; }
-  else if(q===1){ msg='\\(q = 1\\) : la suite est <strong>constante</strong> égale à \\(1\\), donc \\(\\lim q^n = 1\\).'; }
+  if(q>1){ msg='\\(q = '+fmt(q)+' > 1\\) : les termes grandissent sans limite, \\(\\lim q^n = +\\infty.\\) <em>(Démonstration par l\'inégalité de Bernoulli : \\(q^n \\geq 1 + n(q-1).\\))</em>'; cls+=' good'; }
+  else if(q===1){ msg='\\(q = 1\\) : la suite est <strong>constante</strong> égale à \\(1,\\) donc \\(\\lim q^n = 1.\\)'; }
   else if(q>-1 && q<1){
-    msg = '\\(-1 < q = '+fmt(q)+' < 1\\) : \\(|q|^n\\) s\'écrase, \\(\\lim q^n = 0\\).' + (q<0? ' Comme \\(q < 0\\), les termes changent de signe à chaque rang, mais l\'amplitude tend vers 0 : la suite converge quand même vers \\(0\\).' : (q===0?' (Tous les termes sont nuls à partir du rang 1.)':''));
+    msg = '\\(-1 < q = '+fmt(q)+' < 1\\) : \\(|q|^n\\) s\'écrase, \\(\\lim q^n = 0.\\)' + (q<0? ' Comme \\(q < 0,\\) les termes changent de signe à chaque rang, mais l\'amplitude tend vers 0 : la suite converge quand même vers \\(0.\\)' : (q===0?' (Tous les termes sont nuls à partir du rang 1.)':''));
     cls+=' good';
   }
   else if(q===-1){ msg='\\(q = -1\\) : les termes valent \\(1, -1, 1, -1,\\dots\\) : la suite <strong>n\'a pas de limite</strong>.'; cls+=' bad'; }
@@ -957,8 +973,8 @@ function cobDraw(){
   }
   /* textes */
   var cur=document.getElementById('cobCur');
-  if(k===0) cur.innerHTML='Terme courant : \\(u_0 = '+fmt(t[0])+'\\). Appuie sur « Étape suivante » ou « Animer ».';
-  else if(!isFinite(t[k])) cur.innerHTML='Étape '+k+' : le calcul sort du domaine de \\(f\\) (ou explose). Change \\(u_0\\).';
+  if(k===0) cur.innerHTML='Terme courant : \\(u_0 = '+fmt(t[0])+'.\\) Appuie sur « Étape suivante » ou « Animer ».';
+  else if(!isFinite(t[k])) cur.innerHTML='Étape '+k+' : le calcul sort du domaine de \\(f\\) (ou explose). Change \\(u_0.\\)';
   else cur.innerHTML='Étape '+k+' : \\(u_{'+k+'} = f(u_{'+(k-1)+'}) = f('+fmt2(t[k-1])+') = '+fmt(t[k])+'\\)';
   typeset(cur);
   document.getElementById('cobStep').disabled = (k>=COB_MAX);
@@ -968,11 +984,11 @@ function cobDraw(){
   var fx=document.getElementById('cobFix');
   var last=t[COB_MAX], conv = isFinite(last) && Math.abs(last-o.fixv)<0.05;
   var diag;
-  if(conv) diag='<strong>La suite semble converger vers \\(\\ell = '+fmt2(o.fixv)+'\\).</strong> ';
+  if(conv) diag='<strong>La suite semble converger vers \\(\\ell = '+fmt2(o.fixv)+'.\\)</strong> ';
   else if(!isFinite(last)) diag='<strong>La suite diverge</strong> (les termes explosent ou sortent du domaine de \\(f\\)). ';
   else diag='<strong>Les termes ne se stabilisent pas encore</strong> vers le point fixe. ';
   fx.className='stat'+(conv?' good':'');
-  fx.innerHTML = diag + 'Point fixe : \\('+o.fixTex+'\\).<br><em>Attention : écrire \\(\\ell = f(\\ell)\\) suppose que \\(f\\) est continue — notion vue plus tard dans l\'année. Et cela ne donne la limite que si l\'on a déjà démontré que la suite converge.</em>';
+  fx.innerHTML = diag + 'Point fixe : \\('+o.fixTex+'.\\)<br><em>Attention : écrire \\(\\ell = f(\\ell)\\) suppose que \\(f\\) est continue — notion vue plus tard dans l\'année. Et cela ne donne la limite que si l\'on a déjà démontré que la suite converge.</em>';
   typeset(fx);
 }
 function cobReset(){ cobStop(); cobSyncSlider(false); cobCompute(); cobState.k=0; cobDraw(); }
@@ -1006,50 +1022,50 @@ function ex1New(){
     var b = pick([-5,-4,-3,-2,-1,1,2,3,4,5]), d = pick([1,2,3,4,5]);
     tex = '\\dfrac{'+linTex(a,b)+'}{'+linTex(c,d)+'}';
     kind='reel'; l=k;
-    corr = '<p>Le numérateur et le dénominateur tendent tous les deux vers \\(\\pm\\infty\\) : c\'est une forme indéterminée \\(\\frac{\\infty}{\\infty}\\). On <strong>factorise par \\(n\\)</strong> en haut et en bas :</p>'
+    corr = '<p>Le numérateur et le dénominateur tendent tous les deux vers \\(\\pm\\infty\\) : c\'est une forme indéterminée \\(\\frac{\\infty}{\\infty}.\\) On <strong>factorise par \\(n\\)</strong> en haut et en bas :</p>'
       + '<p>\\(u_n = \\dfrac{n\\left('+texNum(a)+plusFrac(b,'n')+'\\right)}{n\\left('+texNum(c)+plusFrac(d,'n')+'\\right)} = \\dfrac{'+texNum(a)+plusFrac(b,'n')+'}{'+texNum(c)+plusFrac(d,'n')+'}\\)</p>'
-      + '<p>Or \\(\\frac{'+texNum(b)+'}{n} \\to 0\\) et \\(\\frac{'+texNum(d)+'}{n} \\to 0\\). Par quotient de limites : \\(\\lim u_n = \\dfrac{'+texNum(a)+'}{'+texNum(c)+'} = '+texNum(k)+'\\).</p>';
+      + '<p>Or \\(\\frac{'+texNum(b)+'}{n} \\to 0\\) et \\(\\frac{'+texNum(d)+'}{n} \\to 0.\\) Par quotient de limites : \\(\\lim u_n = \\dfrac{'+texNum(a)+'}{'+texNum(c)+'} = '+texNum(k)+'.\\)</p>';
   } else if(type==='ratInf'){
     var a = pick([-3,-2,-1,1,2,3]), b = rnd(-4,4), cc = rnd(-4,4), d = pick([1,2,3]), e = pick([1,2,3,4]);
     tex = '\\dfrac{'+polyTex(a,b,cc)+'}{'+linTex(d,e)+'}';
     kind = (a>0)?'pinf':'minf';
     corr = '<p>Forme indéterminée \\(\\frac{\\infty}{\\infty}\\) : on factorise par le terme de plus haut degré de chaque partie, \\(n^2\\) en haut et \\(n\\) en bas.</p>'
       + '<p>\\(u_n = \\dfrac{n^2\\left('+texNum(a)+plusFrac(b,'n')+''+plusFrac(cc,'n^2')+'\\right)}{n\\left('+texNum(d)+plusFrac(e,'n')+'\\right)} = n \\times \\dfrac{'+texNum(a)+plusFrac(b,'n')+''+plusFrac(cc,'n^2')+'}{'+texNum(d)+plusFrac(e,'n')+'}\\)</p>'
-      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(d)+'} = '+texNum(a/d)+'\\) et \\(n \\to +\\infty\\). Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty\\).</p>';
+      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(d)+'} = '+texNum(a/d)+'\\) et \\(n \\to +\\infty.\\) Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty.\\)</p>';
   } else if(type==='ratZero'){
     var a = pick([-4,-3,-2,-1,1,2,3,4]), b = rnd(-4,4), c2 = pick([1,2,3]), d2 = pick([1,2,3,4]);
     tex = '\\dfrac{'+linTex(a,b)+'}{'+polyTex(c2,0,d2)+'}';
     kind='reel'; l=0;
-    corr = '<p>Forme indéterminée \\(\\frac{\\infty}{\\infty}\\). Le dénominateur est de degré 2, le numérateur de degré 1 : le bas « gagne ».</p>'
+    corr = '<p>Forme indéterminée \\(\\frac{\\infty}{\\infty}.\\) Le dénominateur est de degré 2, le numérateur de degré 1 : le bas « gagne ».</p>'
       + '<p>\\(u_n = \\dfrac{n\\left('+texNum(a)+plusFrac(b,'n')+'\\right)}{n^2\\left('+texNum(c2)+plusFrac(d2,'n^2')+'\\right)} = \\dfrac1n \\times \\dfrac{'+texNum(a)+plusFrac(b,'n')+'}{'+texNum(c2)+plusFrac(d2,'n^2')+'}\\)</p>'
-      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(c2)+'}\\) (un réel) et \\(\\frac1n \\to 0\\). Par produit : \\(\\lim u_n = 0\\). La suite <strong>converge vers 0</strong>.</p>';
+      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(c2)+'}\\) (un réel) et \\(\\frac1n \\to 0.\\) Par produit : \\(\\lim u_n = 0.\\) La suite <strong>converge vers 0</strong>.</p>';
   } else if(type==='poly'){
     var a = pick([-3,-2,-1,1,2,3]), b = pick([-6,-5,-4,-3,3,4,5,6]), c3 = rnd(-5,5);
     tex = polyTex(a,b,c3);
     kind = (a>0)?'pinf':'minf';
-    corr = '<p>Ici \\(n^2 \\to +\\infty\\) et \\('+texNum(b)+'n \\to '+(b>0?'+':'-')+'\\infty\\) : sans précaution on tomberait sur une forme \\(\\infty - \\infty\\). On <strong>factorise par le terme dominant \\(n^2\\)</strong> :</p>'
+    corr = '<p>Ici \\(n^2 \\to +\\infty\\) et \\('+texNum(b)+'n \\to '+(b>0?'+':'-')+'\\infty\\) : sans précaution on tomberait sur une forme \\(\\infty - \\infty.\\) On <strong>factorise par le terme dominant \\(n^2\\)</strong> :</p>'
       + '<p>\\(u_n = n^2\\left('+texNum(a)+plusFrac(b,'n')+''+plusFrac(c3,'n^2')+'\\right)\\)</p>'
-      + '<p>La parenthèse tend vers \\('+texNum(a)+'\\) et \\(n^2 \\to +\\infty\\). Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty\\).</p>';
+      + '<p>La parenthèse tend vers \\('+texNum(a)+'\\) et \\(n^2 \\to +\\infty.\\) Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty.\\)</p>';
   } else if(type==='geoConv'){
     var q = pick([0.5,0.25,0.8,-0.5,-0.75]), a = rnd(-4,6), bq = pick([-4,-3,-2,-1,1,2,3,4]);
     tex = texNum(a)+' '+(bq<0?'-':'+')+' '+(Math.abs(bq)===1?'':texNum(Math.abs(bq)))+texPow(q);
     kind='reel'; l=a;
-    corr = '<p>On reconnaît une suite géométrique de raison \\(q = '+texNum(q)+'\\).</p>'
-      + '<p>Comme \\(-1 < '+texNum(q)+' < 1\\), on a \\(\\lim '+texPow(q)+' = 0\\)'+(q<0?' (les termes changent de signe mais leur valeur absolue s\'écrase)':'')+'.</p>'
-      + '<p>Par produit puis par somme : \\(\\lim u_n = '+texNum(a)+' + '+texNum(bq)+' \\times 0 = '+texNum(a)+'\\). La suite <strong>converge vers '+fmt(a)+'</strong>.</p>';
+    corr = '<p>On reconnaît une suite géométrique de raison \\(q = '+texNum(q)+'.\\)</p>'
+      + '<p>Comme \\(-1 < '+texNum(q)+' < 1,\\) on a \\(\\lim '+texPow(q)+' = 0\\)'+(q<0?' (les termes changent de signe mais leur valeur absolue s\'écrase)':'')+'.</p>'
+      + '<p>Par produit puis par somme : \\(\\lim u_n = '+texNum(a)+' + '+texNum(bq)+' \\times 0 = '+texNum(a)+'.\\) La suite <strong>converge vers '+fmt(a)+'</strong>.</p>';
   } else if(type==='alt'){
     var a = rnd(-3,5), b = pick([1,2,3,4]);
     tex = texNum(a)+' + '+(b===1?'':texNum(b))+'(-1)^n';
     kind='none';
-    corr = '<p>Calculons les premiers termes : \\(u_0 = '+fmt(a+b)+'\\), \\(u_1 = '+fmt(a-b)+'\\), \\(u_2 = '+fmt(a+b)+'\\), \\(u_3 = '+fmt(a-b)+'\\)…</p>'
-      + '<p>Les termes prennent alternativement les deux valeurs \\('+fmt(a+b)+'\\) et \\('+fmt(a-b)+'\\), qui sont distinctes : ils ne se rapprochent d\'aucun réel et ne dépassent aucun seuil.</p>'
+    corr = '<p>Calculons les premiers termes : \\(u_0 = '+fmt(a+b)+',\\) \\(u_1 = '+fmt(a-b)+',\\) \\(u_2 = '+fmt(a+b)+',\\) \\(u_3 = '+fmt(a-b)+'\\)…</p>'
+      + '<p>Les termes prennent alternativement les deux valeurs \\('+fmt(a+b)+'\\) et \\('+fmt(a-b)+',\\) qui sont distinctes : ils ne se rapprochent d\'aucun réel et ne dépassent aucun seuil.</p>'
       + '<p>Donc la suite <strong>n\'a pas de limite</strong> (elle est divergente, mais pas vers \\(\\pm\\infty\\)). Attention : \\((-1)^n\\) n\'a pas de limite, on ne peut pas « passer à la limite » dessus.</p>';
   } else {
     var q2 = pick([1.5,2,3]), a2 = pick([-3,-2,-1,1,2,3]), b2 = rnd(-5,5);
     tex = (Math.abs(a2)===1?(a2<0?'-':''):texNum(a2))+texPow(q2)+' '+(b2<0?'-':'+')+' '+texNum(Math.abs(b2));
     kind = (a2>0)?'pinf':'minf';
-    corr = '<p>Comme \\('+texNum(q2)+' > 1\\), on a \\(\\lim '+texPow(q2)+' = +\\infty\\) (théorème sur \\((q^n)\\), démontré grâce à l\'inégalité de Bernoulli).</p>'
-      + '<p>En multipliant par \\('+texNum(a2)+'\\)'+(a2<0?' (négatif, la limite change de signe)':'')+' puis en ajoutant \\('+texNum(b2)+'\\) : \\(\\lim u_n = '+(a2>0?'+':'-')+'\\infty\\).</p>';
+    corr = '<p>Comme \\('+texNum(q2)+' > 1,\\) on a \\(\\lim '+texPow(q2)+' = +\\infty\\) (théorème sur \\((q^n),\\) démontré grâce à l\'inégalité de Bernoulli).</p>'
+      + '<p>En multipliant par \\('+texNum(a2)+'\\)'+(a2<0?' (négatif, la limite change de signe)':'')+' puis en ajoutant \\('+texNum(b2)+'\\) : \\(\\lim u_n = '+(a2>0?'+':'-')+'\\infty.\\)</p>';
   }
   ex1.kind=kind; ex1.l=l;
   var s=document.getElementById('ex1Stmt');
@@ -1076,9 +1092,9 @@ document.getElementById('ex1Check').addEventListener('click', function(){
   }
   if(v==='reel'){
     var x=parseNum(document.getElementById('ex1In').value);
-    if(isNaN(x)){ setFb(fb,false,'La nature est bonne (limite finie), mais écris la valeur de \\(\\ell\\).'); return; }
-    if(close(x,ex1.l)) setFb(fb,true,'Bravo : \\(\\lim u_n = '+fmt(ex1.l)+'\\).');
-    else setFb(fb,false,'La suite converge bien, mais la valeur n\'est pas la bonne : après factorisation, le rapport des coefficients dominants donne \\(\\ell\\).');
+    if(isNaN(x)){ setFb(fb,false,'La nature est bonne (limite finie), mais écris la valeur de \\(\\ell.\\)'); return; }
+    if(close(x,ex1.l)) setFb(fb,true,'Bravo : \\(\\lim u_n = '+fmt(ex1.l)+'.\\)');
+    else setFb(fb,false,'La suite converge bien, mais la valeur n\'est pas la bonne : après factorisation, le rapport des coefficients dominants donne \\(\\ell.\\)');
     return;
   }
   setFb(fb,true,'Correct : la réponse est '+names[v]+'.');
@@ -1135,8 +1151,8 @@ function ex2New(){
   var pn = 'u_n = '+ex2Tex(d,a,c,'n');
   var pn1 = 'u_{n+1} = '+ex2Tex(d,a,c,'n+1');
   var s=document.getElementById('ex2Stmt');
-  s.innerHTML = '<p>Soit \\((u_n)\\) définie par \\(u_0 = '+fmt(u0)+'\\) et, pour tout \\(n \\in \\mathbb N\\), \\('+rel+'\\).</p>'
-    + '<p>On veut démontrer par récurrence que, pour tout \\(n \\in \\mathbb N\\), \\(P(n)\\) : \\('+pn+'\\).</p>';
+  s.innerHTML = '<p>Soit \\((u_n)\\) définie par \\(u_0 = '+fmt(u0)+'\\) et, pour tout \\(n \\in \\mathbb N,\\) \\('+rel+'.\\)</p>'
+    + '<p>On veut démontrer par récurrence que, pour tout \\(n \\in \\mathbb N,\\) \\(P(n)\\) : \\('+pn+'.\\)</p>';
   typeset(s);
   var f=document.getElementById('ex2Form');
   f.innerHTML = '\\(u_{n+1} = \\alpha \\times '+texNum(a)+'^{\\,n+1} + \\beta\\)';
@@ -1154,14 +1170,14 @@ function ex2New(){
   document.getElementById('ex2A').value=''; document.getElementById('ex2B').value='';
   document.getElementById('ex2Fb').className='feedback';
   var corr = '<p><strong>Rédaction complète (type bac).</strong></p>'
-    + '<p>Pour tout \\(n \\in \\mathbb N\\), on note \\(P(n)\\) la propriété : « \\('+pn+'\\) ».</p>'
-    + '<p><strong>Initialisation.</strong> Pour \\(n = 0\\) : d\'une part \\(u_0 = '+fmt(u0)+'\\) (donné par l\'énoncé) ; d\'autre part \\('+ex2Tex(d,a,c,'0')+' = '+texNum(d)+' \\times 1 '+(c<0?'- '+texNum(-c):'+ '+texNum(c))+' = '+fmt(u0)+'\\). Les deux valeurs sont égales, donc \\(P(0)\\) est vraie.</p>'
-    + '<p><strong>Hérédité.</strong> Soit \\(n \\in \\mathbb N\\). Supposons \\(P(n)\\) vraie, c\'est-à-dire \\('+pn+'\\). Montrons que \\(P(n+1)\\) est vraie, c\'est-à-dire \\('+pn1+'\\).</p>'
+    + '<p>Pour tout \\(n \\in \\mathbb N,\\) on note \\(P(n)\\) la propriété : « \\('+pn+'\\) ».</p>'
+    + '<p><strong>Initialisation.</strong> Pour \\(n = 0\\) : d\'une part \\(u_0 = '+fmt(u0)+'\\) (donné par l\'énoncé) ; d\'autre part \\('+ex2Tex(d,a,c,'0')+' = '+texNum(d)+' \\times 1 '+(c<0?'- '+texNum(-c):'+ '+texNum(c))+' = '+fmt(u0)+'.\\) Les deux valeurs sont égales, donc \\(P(0)\\) est vraie.</p>'
+    + '<p><strong>Hérédité.</strong> Soit \\(n \\in \\mathbb N.\\) Supposons \\(P(n)\\) vraie, c\'est-à-dire \\('+pn+'.\\) Montrons que \\(P(n+1)\\) est vraie, c\'est-à-dire \\('+pn1+'.\\)</p>'
     + '<p>\\(u_{n+1} = '+texNum(a)+'u_n'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)))+' = '+texNum(a)+'\\left('+ex2Tex(d,a,c,'n')+'\\right)'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)))+'\\)</p>'
     + '<p>\\(u_{n+1} = '+texNum(d)+' \\times '+texNum(a)+'^{\\,n+1} + '+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+ex2Tex(d,a,c,'n+1')+'\\)</p>'
-    + '<p>car \\('+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+texNum(c)+'\\). Donc \\(P(n+1)\\) est vraie : \\(\\alpha = '+fmt(d)+'\\) et \\(\\beta = '+fmt(c)+'\\).</p>'
-    + '<p><strong>Conclusion.</strong> \\(P(0)\\) est vraie et \\(P\\) est héréditaire ; d\'après le principe de récurrence, pour tout \\(n \\in \\mathbb N\\), \\('+pn+'\\).</p>'
-    + '<p><em>Bonus :</em> comme \\('+texNum(a)+' > 1\\), \\('+texNum(a)+'^{\\,n} \\to +\\infty\\), donc \\(\\lim u_n = '+(d>0?'+':'-')+'\\infty\\).</p>';
+    + '<p>car \\('+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+texNum(c)+'.\\) Donc \\(P(n+1)\\) est vraie : \\(\\alpha = '+fmt(d)+'\\) et \\(\\beta = '+fmt(c)+'.\\)</p>'
+    + '<p><strong>Conclusion.</strong> \\(P(0)\\) est vraie et \\(P\\) est héréditaire ; d\'après le principe de récurrence, pour tout \\(n \\in \\mathbb N,\\) \\('+pn+'.\\)</p>'
+    + '<p><em>Bonus :</em> comme \\('+texNum(a)+' > 1,\\) \\('+texNum(a)+'^{\\,n} \\to +\\infty,\\) donc \\(\\lim u_n = '+(d>0?'+':'-')+'\\infty.\\)</p>';
   var cb=document.getElementById('ex2CorrBox'); cb.innerHTML=corr; cb.classList.remove('open'); typeset(cb);
 }
 document.getElementById('ex2New').addEventListener('click', ex2New);
@@ -1173,7 +1189,7 @@ document.getElementById('ex2Check').addEventListener('click', function(){
   var sel=document.getElementById('ex2Sel').value;
   var msgs=[];
   msgs.push('a. \\(\\alpha\\) : '+(okA?'✔':'✘')+' · \\(\\beta\\) : '+(okB?'✔':'✘'));
-  if(!okA||!okB) msgs.push('Développe \\('+texNum(ex2.a)+'\\left('+ex2Tex(ex2.d,ex2.a,ex2.c,'n')+'\\right)'+(ex2.b<0?' - '+texNum(-ex2.b):' + '+texNum(ex2.b))+'\\) : le facteur devant \\('+texNum(ex2.a)+'^{\\,n}\\) est multiplié par \\('+texNum(ex2.a)+'\\), et les constantes se regroupent.');
+  if(!okA||!okB) msgs.push('Développe \\('+texNum(ex2.a)+'\\left('+ex2Tex(ex2.d,ex2.a,ex2.c,'n')+'\\right)'+(ex2.b<0?' - '+texNum(-ex2.b):' + '+texNum(ex2.b))+'\\) : le facteur devant \\('+texNum(ex2.a)+'^{\\,n}\\) est multiplié par \\('+texNum(ex2.a)+',\\) et les constantes se regroupent.');
   var okQ=false;
   if(sel===''){ msgs.push('b. Choisis une réponse pour la question de rédaction.'); }
   else { okQ = (parseInt(sel,10)===ex2.correctIdx); msgs.push('b. '+(okQ?'✔':'✘')+' '+ex2.expl); }
@@ -1194,33 +1210,33 @@ function ex3New(){
       + '<p><strong>1.</strong> Encadre \\(u_n\\) en utilisant \\(-1 \\leq (-1)^n \\leq 1\\) : complète \\(A\\) et \\(B\\) ci-dessous.<br><strong>2.</strong> Conclus sur la limite.</p>';
     fields.innerHTML = '<div class="field"><span class="lab">Encadrement :</span><span>\\(A - \\dfrac{B}{n} \\leq u_n \\leq A + \\dfrac{B}{n}\\)</span></div>'
       + '<div class="field"><span class="lab">A =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F2" inputmode="decimal" style="max-width:110px"></div>';
-    corr = '<p><strong>1. Encadrement.</strong> Pour tout \\(n \\geq 1\\), \\(-1 \\leq (-1)^n \\leq 1\\). En multipliant par \\(\\dfrac{'+texNum(b)+'}{n} > 0\\) (le sens est conservé) :</p>'
+    corr = '<p><strong>1. Encadrement.</strong> Pour tout \\(n \\geq 1,\\) \\(-1 \\leq (-1)^n \\leq 1.\\) En multipliant par \\(\\dfrac{'+texNum(b)+'}{n} > 0\\) (le sens est conservé) :</p>'
       + '<p>\\(-\\dfrac{'+texNum(b)+'}{n} \\leq \\dfrac{'+texNum(b)+'(-1)^n}{n} \\leq \\dfrac{'+texNum(b)+'}{n}\\)</p>'
-      + '<p>puis en ajoutant \\('+texNum(a)+'\\) : \\('+texNum(a)+' - \\dfrac{'+texNum(b)+'}{n} \\leq u_n \\leq '+texNum(a)+' + \\dfrac{'+texNum(b)+'}{n}\\). Donc \\(A = '+fmt(a)+'\\) et \\(B = '+fmt(b)+'\\).</p>'
-      + '<p><strong>2. Limite.</strong> \\(\\lim\\dfrac{'+texNum(b)+'}{n} = 0\\), donc les deux suites qui encadrent tendent vers la <em>même</em> limite \\('+texNum(a)+'\\).</p>'
-      + '<p>D\'après le <strong>théorème des gendarmes</strong>, \\((u_n)\\) converge et \\(\\lim u_n = '+fmt(a)+'\\).</p>'
+      + '<p>puis en ajoutant \\('+texNum(a)+'\\) : \\('+texNum(a)+' - \\dfrac{'+texNum(b)+'}{n} \\leq u_n \\leq '+texNum(a)+' + \\dfrac{'+texNum(b)+'}{n}.\\) Donc \\(A = '+fmt(a)+'\\) et \\(B = '+fmt(b)+'.\\)</p>'
+      + '<p><strong>2. Limite.</strong> \\(\\lim\\dfrac{'+texNum(b)+'}{n} = 0,\\) donc les deux suites qui encadrent tendent vers la <em>même</em> limite \\('+texNum(a)+'.\\)</p>'
+      + '<p>D\'après le <strong>théorème des gendarmes</strong>, \\((u_n)\\) converge et \\(\\lim u_n = '+fmt(a)+'.\\)</p>'
       + '<p><em>Remarque :</em> la suite n\'est ni croissante ni décroissante (les termes sautent au-dessus et en dessous de \\('+fmt(a)+'\\)) ; les gendarmes fonctionnent quand même.</p>';
   } else if(type==='compP'){
     var b2 = rnd(2,6);
     ex3.type='compP'; ex3.B=b2; ex3.kind='pinf'; ex3.l=null;
     stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 0\\) par</p><p style="text-align:center">\\(u_n = n + '+texNum(b2)+'(-1)^n\\)</p>'
-      + '<p><strong>1.</strong> Minore \\(u_n\\) par une suite simple : \\(u_n \\geq n - B\\). Donne \\(B\\).<br><strong>2.</strong> Conclus sur la limite.</p>';
+      + '<p><strong>1.</strong> Minore \\(u_n\\) par une suite simple : \\(u_n \\geq n - B.\\) Donne \\(B.\\)<br><strong>2.</strong> Conclus sur la limite.</p>';
     fields.innerHTML = '<div class="field"><span class="lab">Minorant :</span><span>\\(u_n \\geq n - B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"></div>';
-    corr = '<p><strong>1. Minoration.</strong> Pour tout \\(n\\), \\((-1)^n \\geq -1\\), donc \\('+texNum(b2)+'(-1)^n \\geq -'+texNum(b2)+'\\), donc</p>'
-      + '<p>\\(u_n = n + '+texNum(b2)+'(-1)^n \\geq n - '+texNum(b2)+'\\), c\'est-à-dire \\(B = '+fmt(b2)+'\\).</p>'
-      + '<p><strong>2. Limite.</strong> La suite \\(v_n = n - '+texNum(b2)+'\\) est arithmétique de raison \\(1 > 0\\) : \\(\\lim v_n = +\\infty\\).</p>'
-      + '<p>Comme \\(u_n \\geq v_n\\) pour tout \\(n\\) et \\(\\lim v_n = +\\infty\\), le <strong>théorème de comparaison</strong> donne \\(\\lim u_n = +\\infty\\).</p>'
-      + '<p><em>Remarque :</em> \\((u_n)\\) n\'est pas croissante (\\(u_0 = '+fmt(b2)+'\\), \\(u_1 = '+fmt(1-b2)+'\\)) et pourtant elle tend vers \\(+\\infty\\).</p>';
+    corr = '<p><strong>1. Minoration.</strong> Pour tout \\(n,\\) \\((-1)^n \\geq -1,\\) donc \\('+texNum(b2)+'(-1)^n \\geq -'+texNum(b2)+',\\) donc</p>'
+      + '<p>\\(u_n = n + '+texNum(b2)+'(-1)^n \\geq n - '+texNum(b2)+',\\) c\'est-à-dire \\(B = '+fmt(b2)+'.\\)</p>'
+      + '<p><strong>2. Limite.</strong> La suite \\(v_n = n - '+texNum(b2)+'\\) est arithmétique de raison \\(1 > 0\\) : \\(\\lim v_n = +\\infty.\\)</p>'
+      + '<p>Comme \\(u_n \\geq v_n\\) pour tout \\(n\\) et \\(\\lim v_n = +\\infty,\\) le <strong>théorème de comparaison</strong> donne \\(\\lim u_n = +\\infty.\\)</p>'
+      + '<p><em>Remarque :</em> \\((u_n)\\) n\'est pas croissante (\\(u_0 = '+fmt(b2)+',\\) \\(u_1 = '+fmt(1-b2)+'\\)) et pourtant elle tend vers \\(+\\infty.\\)</p>';
   } else {
     var b3 = rnd(2,6);
     ex3.type='compM'; ex3.B=b3; ex3.kind='minf'; ex3.l=null;
     stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 0\\) par</p><p style="text-align:center">\\(u_n = -n + '+texNum(b3)+'(-1)^n\\)</p>'
-      + '<p><strong>1.</strong> Majore \\(u_n\\) par une suite simple : \\(u_n \\leq -n + B\\). Donne \\(B\\).<br><strong>2.</strong> Conclus sur la limite.</p>';
+      + '<p><strong>1.</strong> Majore \\(u_n\\) par une suite simple : \\(u_n \\leq -n + B.\\) Donne \\(B.\\)<br><strong>2.</strong> Conclus sur la limite.</p>';
     fields.innerHTML = '<div class="field"><span class="lab">Majorant :</span><span>\\(u_n \\leq -n + B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"></div>';
-    corr = '<p><strong>1. Majoration.</strong> Pour tout \\(n\\), \\((-1)^n \\leq 1\\), donc \\('+texNum(b3)+'(-1)^n \\leq '+texNum(b3)+'\\), donc</p>'
-      + '<p>\\(u_n \\leq -n + '+texNum(b3)+'\\), c\'est-à-dire \\(B = '+fmt(b3)+'\\).</p>'
-      + '<p><strong>2. Limite.</strong> \\(\\lim(-n + '+texNum(b3)+') = -\\infty\\).</p>'
-      + '<p>Comme \\(u_n \\leq -n + '+texNum(b3)+'\\) pour tout \\(n\\) et que ce majorant tend vers \\(-\\infty\\), le <strong>théorème de comparaison</strong> donne \\(\\lim u_n = -\\infty\\).</p>';
+    corr = '<p><strong>1. Majoration.</strong> Pour tout \\(n,\\) \\((-1)^n \\leq 1,\\) donc \\('+texNum(b3)+'(-1)^n \\leq '+texNum(b3)+',\\) donc</p>'
+      + '<p>\\(u_n \\leq -n + '+texNum(b3)+',\\) c\'est-à-dire \\(B = '+fmt(b3)+'.\\)</p>'
+      + '<p><strong>2. Limite.</strong> \\(\\lim(-n + '+texNum(b3)+') = -\\infty.\\)</p>'
+      + '<p>Comme \\(u_n \\leq -n + '+texNum(b3)+'\\) pour tout \\(n\\) et que ce majorant tend vers \\(-\\infty,\\) le <strong>théorème de comparaison</strong> donne \\(\\lim u_n = -\\infty.\\)</p>';
   }
   var st=document.getElementById('ex3Stmt'); st.innerHTML=stmt; typeset(st); typeset(fields);
   document.getElementById('ex3Sel').value='';
@@ -1251,7 +1267,7 @@ document.getElementById('ex3Check').addEventListener('click', function(){
   if(okLim && sel==='reel'){
     var x=parseNum(document.getElementById('ex3Lim').value);
     okLim = !isNaN(x)&&close(x,ex3.l);
-    msgs.push('2. '+(okLim?'✔ Théorème des gendarmes : \\(\\lim u_n = '+fmt(ex3.l)+'\\).':'✘ La nature est bonne, mais la valeur de \\(\\ell\\) ne l\'est pas : les deux gendarmes tendent vers la même valeur.'));
+    msgs.push('2. '+(okLim?'✔ Théorème des gendarmes : \\(\\lim u_n = '+fmt(ex3.l)+'.\\)':'✘ La nature est bonne, mais la valeur de \\(\\ell\\) ne l\'est pas : les deux gendarmes tendent vers la même valeur.'));
   } else {
     var noms={pinf:'\\(+\\infty\\)',minf:'\\(-\\infty\\)',reel:'une limite finie',none:'pas de limite'};
     msgs.push('2. '+(okLim?'✔ Correct : '+noms[sel]+'.':'✘ Compare avec la suite encadrante : c\'est elle qui impose la limite.'));
@@ -1267,53 +1283,53 @@ var QCM_BANK = [
     opts:['vérifier que la propriété est vraie au premier rang','supposer la propriété vraie au rang \\(n\\)','montrer que la propriété est héréditaire','vérifier la propriété pour trois valeurs de \\(n\\)'],
     correct:0, expl:'Sans initialisation, une propriété héréditaire peut être fausse pour tout \\(n\\) : c\'est le premier domino.' },
   { q:'Quelle phrase est <strong>interdite</strong> dans une récurrence ?',
-    opts:['« Supposons que \\(P(n)\\) est vraie pour tout \\(n\\). »','« Soit \\(n\\in\\mathbb N\\). Supposons \\(P(n)\\) vraie. »','« Montrons que \\(P(n+1)\\) est vraie. »','« \\(P(0)\\) est vraie et \\(P\\) est héréditaire. »'],
-    correct:0, expl:'Supposer la propriété vraie pour tout \\(n\\), c\'est supposer ce qu\'on veut démontrer : le raisonnement est circulaire.' },
+    opts:['« Supposons que \\(P(n)\\) est vraie pour tout \\(n.\\) »','« Soit \\(n\\in\\mathbb N.\\) Supposons \\(P(n)\\) vraie. »','« Montrons que \\(P(n+1)\\) est vraie. »','« \\(P(0)\\) est vraie et \\(P\\) est héréditaire. »'],
+    correct:0, expl:'Supposer la propriété vraie pour tout \\(n,\\) c\'est supposer ce qu\'on veut démontrer : le raisonnement est circulaire.' },
   { q:'On a montré : \\(P(0)\\) vraie, et « si \\(P(n)\\) alors \\(P(n+1)\\) ». On peut conclure que :',
     opts:['\\(P(n)\\) est vraie pour tout \\(n\\in\\mathbb N\\)','\\(P(n)\\) est vraie pour \\(n\\) assez grand','\\(P(n)\\) est vraie seulement pour \\(n\\leq 10\\)','on ne peut rien conclure'],
-    correct:0, expl:'C\'est exactement le principe de récurrence : initialisation + hérédité donnent le résultat pour tout \\(n\\).' },
-  { q:'\\(u_0=1\\), \\(u_{n+1}=2u_n+3\\). Dans l\'hérédité de « \\(u_n=2^{n+2}-3\\) », on part de :',
+    correct:0, expl:'C\'est exactement le principe de récurrence : initialisation + hérédité donnent le résultat pour tout \\(n.\\)' },
+  { q:'\\(u_0=1,\\) \\(u_{n+1}=2u_n+3.\\) Dans l\'hérédité de « \\(u_n=2^{n+2}-3\\) », on part de :',
     opts:['\\(u_{n+1}=2u_n+3\\) et on remplace \\(u_n\\) par \\(2^{n+2}-3\\)','\\(u_{n+1}=2^{n+3}-3\\) qu\'on simplifie','\\(u_0=1\\)','\\(u_n=2^{n+2}-3\\) qu\'on dérive'],
     correct:0, expl:'On part de ce qu\'on sait calculer (\\(u_{n+1}\\) par la relation) et on injecte l\'hypothèse de récurrence.' },
   { q:'« \\((u_n)\\) tend vers \\(+\\infty\\) » signifie :',
     opts:['tout intervalle \\([A;+\\infty[\\) contient tous les termes à partir d\'un certain rang','la suite est croissante','tous les termes sont positifs','la suite dépasse \\(+\\infty\\)'],
-    correct:0, expl:'C\'est la définition du programme : pour tout \\(A\\), il existe \\(N\\) tel que \\(u_n\\geq A\\) dès que \\(n\\geq N\\).' },
+    correct:0, expl:'C\'est la définition du programme : pour tout \\(A,\\) il existe \\(N\\) tel que \\(u_n\\geq A\\) dès que \\(n\\geq N.\\)' },
   { q:'Une suite qui tend vers \\(+\\infty\\) est nécessairement :',
     opts:['divergente','croissante','majorée','convergente'],
-    correct:0, expl:'« Convergente » signifie « limite finie ». Tendre vers \\(+\\infty\\), c\'est diverger. Et \\(n+(-1)^n\\) montre qu\'elle n\'est pas forcément croissante.' },
+    correct:0, expl:'« Convergente » signifie « limite finie ». Tendre vers \\(+\\infty,\\) c\'est diverger. Et \\(n+(-1)^n\\) montre qu\'elle n\'est pas forcément croissante.' },
   { q:'\\(\\lim\\dfrac{4n^2+3n}{2n^2-1}\\) vaut :',
     opts:['\\(2\\)','\\(+\\infty\\)','\\(0\\)','forme indéterminée, pas de limite'],
-    correct:0, expl:'On factorise par \\(n^2\\) : \\(\\frac{4+3/n}{2-1/n^2}\\to\\frac42=2\\).' },
+    correct:0, expl:'On factorise par \\(n^2\\) : \\(\\frac{4+3/n}{2-1/n^2}\\to\\frac42=2.\\)' },
   { q:'Laquelle de ces écritures est une <strong>forme indéterminée</strong> ?',
     opts:['\\(\\infty-\\infty\\)','\\(\\infty+\\infty\\)','\\(\\frac{1}{+\\infty}\\)','\\(2\\times(+\\infty)\\)'],
-    correct:0, expl:'Les quatre F.I. sont \\(\\infty-\\infty\\), \\(0\\times\\infty\\), \\(\\frac{\\infty}{\\infty}\\) et \\(\\frac00\\) ; les autres cas se concluent directement.' },
-  { q:'Pour lever la F.I. de \\(u_n=n^3-5n^2\\), on écrit :',
+    correct:0, expl:'Les quatre F.I. sont \\(\\infty-\\infty,\\) \\(0\\times\\infty,\\) \\(\\frac{\\infty}{\\infty}\\) et \\(\\frac00\\) ; les autres cas se concluent directement.' },
+  { q:'Pour lever la F.I. de \\(u_n=n^3-5n^2,\\) on écrit :',
     opts:['\\(u_n=n^3\\left(1-\\frac5n\\right)\\to+\\infty\\)','\\(u_n=\\infty-\\infty=0\\)','\\(u_n=n^2(n-5)\\to-\\infty\\)','on ne peut pas conclure'],
-    correct:0, expl:'On factorise par le terme dominant \\(n^3\\) : la parenthèse tend vers 1 et \\(n^3\\to+\\infty\\).' },
-  { q:'Si \\(u_n\\geq v_n\\) pour tout \\(n\\) et \\(\\lim v_n=+\\infty\\), alors :',
+    correct:0, expl:'On factorise par le terme dominant \\(n^3\\) : la parenthèse tend vers 1 et \\(n^3\\to+\\infty.\\)' },
+  { q:'Si \\(u_n\\geq v_n\\) pour tout \\(n\\) et \\(\\lim v_n=+\\infty,\\) alors :',
     opts:['\\(\\lim u_n=+\\infty\\)','\\(\\lim u_n=\\lim v_n\\) seulement si \\(u_n\\) est croissante','\\((u_n)\\) converge','on ne peut rien dire'],
-    correct:0, expl:'Théorème de comparaison : la suite du dessus est poussée vers \\(+\\infty\\). (Démonstration exigible au bac.)' },
-  { q:'On sait \\(2-\\frac1n\\leq u_n\\leq 2+\\frac3n\\). Alors :',
+    correct:0, expl:'Théorème de comparaison : la suite du dessus est poussée vers \\(+\\infty.\\) (Démonstration exigible au bac.)' },
+  { q:'On sait \\(2-\\frac1n\\leq u_n\\leq 2+\\frac3n.\\) Alors :',
     opts:['\\((u_n)\\) converge vers \\(2\\)','\\((u_n)\\) tend vers \\(+\\infty\\)','on ne peut rien dire car les deux bornes diffèrent','\\((u_n)\\) est croissante'],
     correct:0, expl:'Les deux gendarmes tendent vers la même limite \\(2\\) : le théorème des gendarmes s\'applique.' },
   { q:'\\(\\lim (-0{,}9)^n\\) vaut :',
     opts:['\\(0\\)','\\(-\\infty\\)','n\'existe pas','\\(-0{,}9\\)'],
-    correct:0, expl:'\\(|-0{,}9|<1\\) : les termes changent de signe mais leur valeur absolue s\'écrase, donc la limite est \\(0\\).' },
+    correct:0, expl:'\\(|-0{,}9|<1\\) : les termes changent de signe mais leur valeur absolue s\'écrase, donc la limite est \\(0.\\)' },
   { q:'\\(\\lim (-2)^n\\) vaut :',
     opts:['la suite n\'a pas de limite','\\(+\\infty\\)','\\(-\\infty\\)','\\(0\\)'],
     correct:0, expl:'Les termes valent \\(1,-2,4,-8,\\dots\\) : ils changent de signe en grandissant, il n\'y a aucune limite.' },
   { q:'L\'inégalité de Bernoulli affirme que, pour \\(a\\geq0\\) et \\(n\\in\\mathbb N\\) :',
     opts:['\\((1+a)^n\\geq 1+na\\)','\\((1+a)^n\\leq 1+na\\)','\\((1+a)^n=1+na\\)','\\((1+a)^n\\geq n^a\\)'],
-    correct:0, expl:'Elle se démontre par récurrence et sert à prouver que \\(q^n\\to+\\infty\\) quand \\(q>1\\).' },
+    correct:0, expl:'Elle se démontre par récurrence et sert à prouver que \\(q^n\\to+\\infty\\) quand \\(q>1.\\)' },
   { q:'Une suite croissante et majorée par \\(10\\) :',
     opts:['converge vers un réel \\(\\ell\\leq 10\\)','converge vers \\(10\\)','tend vers \\(+\\infty\\)','peut ne pas avoir de limite'],
     correct:0, expl:'Théorème de convergence monotone (admis) : elle converge, mais la limite n\'est pas forcément le majorant.' },
   { q:'Une suite croissante et <strong>non majorée</strong> :',
     opts:['tend vers \\(+\\infty\\)','converge','n\'a pas de limite','tend vers \\(-\\infty\\)'],
-    correct:0, expl:'Démonstration exigible : pour tout \\(A\\) il existe \\(N\\) avec \\(u_N>A\\), et la croissance donne \\(u_n\\geq u_N>A\\) pour \\(n\\geq N\\).' },
-  { q:'Pour \\(u_{n+1}=f(u_n)\\) convergente vers \\(\\ell\\), l\'égalité \\(\\ell=f(\\ell)\\) s\'obtient :',
+    correct:0, expl:'Démonstration exigible : pour tout \\(A\\) il existe \\(N\\) avec \\(u_N>A,\\) et la croissance donne \\(u_n\\geq u_N>A\\) pour \\(n\\geq N.\\)' },
+  { q:'Pour \\(u_{n+1}=f(u_n)\\) convergente vers \\(\\ell,\\) l\'égalité \\(\\ell=f(\\ell)\\) s\'obtient :',
     opts:['en utilisant la continuité de \\(f\\) (notion vue plus tard dans l\'année)','en dérivant \\(f\\)','en remplaçant \\(n\\) par \\(\\ell\\)','sans aucune hypothèse sur \\(f\\)'],
-    correct:0, expl:'C\'est le passage à la limite dans \\(u_{n+1}=f(u_n)\\), qui suppose \\(f\\) continue en \\(\\ell\\).' },
+    correct:0, expl:'C\'est le passage à la limite dans \\(u_{n+1}=f(u_n),\\) qui suppose \\(f\\) continue en \\(\\ell.\\)' },
   { q:'Que renvoie ce programme ?<pre>u = 1\nn = 0\nwhile u &lt; 50:\n    u = 3*u\n    n = n + 1\nprint(n)</pre>',
     opts:['\\(4\\)','\\(3\\)','\\(5\\)','une boucle infinie'],
     correct:0, expl:'\\(1\\to3\\to9\\to27\\to81\\) : il faut 4 tours pour dépasser 50.' }

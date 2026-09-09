@@ -107,10 +107,25 @@ mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -133,6 +148,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -695,8 +711,8 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
   wireExercise(1, function () {
     var a = rndNonZero(-7, 7), b = rndNonZero(-7, 7), c = rndNonZero(-7, 7), d = rndNonZero(-7, 7);
     var res = a * c + b * d;
-    var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,' + coord(a, b) + '\\) et \\(\\vec v\\,' + coord(c, d) + '\\).</p><p>Calculer \\(\\vec u\\cdot\\vec v\\).</p>';
-    var correction = '<p><strong>Formule :</strong> en repère orthonormé, \\(\\vec u\\cdot\\vec v = xx\' + yy\'\\).</p>' +
+    var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,' + coord(a, b) + '\\) et \\(\\vec v\\,' + coord(c, d) + '.\\)</p><p>Calculer \\(\\vec u\\cdot\\vec v.\\)</p>';
+    var correction = '<p><strong>Formule :</strong> en repère orthonormé, \\(\\vec u\\cdot\\vec v = xx\' + yy\'.\\)</p>' +
       '<p>\\(\\vec u\\cdot\\vec v = ' + a + '\\times' + fmtSigned(c) + ' + ' + fmtSigned(b) + '\\times' + fmtSigned(d) + ' = ' + (a * c) + ' + ' + fmtSigned(b * d) + ' = ' + res + '\\)</p>' +
       '<p>Le produit scalaire est le <strong>nombre</strong> \\(' + res + '\\)' + (res > 0 ? ' (positif : angle aigu).' : (res < 0 ? ' (négatif : angle obtus).' : ' : les vecteurs sont orthogonaux.')) + '</p>';
     return { a: a, b: b, c: c, d: d, res: res, enonce: enonce, correction: correction };
@@ -714,11 +730,11 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     var c = b * m;
     var a = rndNonZero(-5, 5);
     var k = -a * m; // k*b + a*c = 0  =>  k = -a*c/b = -a*m
-    var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,(k\\,;\\,' + a + ')\\) et \\(\\vec v\\,' + coord(b, c) + '\\), où \\(k\\) est un nombre réel.</p><p>Déterminer la valeur de \\(k\\) pour laquelle \\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux.</p>';
-    var correction = '<p><strong>Étape 1 :</strong> \\(\\vec u\\perp\\vec v \\iff \\vec u\\cdot\\vec v = 0\\).</p>' +
-      '<p><strong>Étape 2 :</strong> \\(\\vec u\\cdot\\vec v = k\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + b + 'k + ' + fmtSigned(a * c) + '\\).</p>' +
-      '<p><strong>Étape 3 :</strong> on résout \\(' + b + 'k + ' + fmtSigned(a * c) + ' = 0\\), soit \\(' + b + 'k = ' + (-a * c) + '\\), donc \\(k = \\dfrac{' + (-a * c) + '}{' + b + '} = ' + k + '\\).</p>' +
-      '<p><strong>Vérification :</strong> \\(' + k + '\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + (k * b) + ' + ' + fmtSigned(a * c) + ' = 0\\). ✓</p>';
+    var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,(k\\,;\\,' + a + ')\\) et \\(\\vec v\\,' + coord(b, c) + ',\\) où \\(k\\) est un nombre réel.</p><p>Déterminer la valeur de \\(k\\) pour laquelle \\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux.</p>';
+    var correction = '<p><strong>Étape 1 :</strong> \\(\\vec u\\perp\\vec v \\iff \\vec u\\cdot\\vec v = 0.\\)</p>' +
+      '<p><strong>Étape 2 :</strong> \\(\\vec u\\cdot\\vec v = k\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + b + 'k + ' + fmtSigned(a * c) + '.\\)</p>' +
+      '<p><strong>Étape 3 :</strong> on résout \\(' + b + 'k + ' + fmtSigned(a * c) + ' = 0,\\) soit \\(' + b + 'k = ' + (-a * c) + ',\\) donc \\(k = \\dfrac{' + (-a * c) + '}{' + b + '} = ' + k + '.\\)</p>' +
+      '<p><strong>Vérification :</strong> \\(' + k + '\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + (k * b) + ' + ' + fmtSigned(a * c) + ' = 0.\\) ✓</p>';
     return { a: a, b: b, c: c, k: k, enonce: enonce, correction: correction };
   }, function (e, val) {
     if (Math.abs(val - e.k) < 0.01) return { ok: true, msg: 'Correct ! Pour k = ' + e.k + ', le produit scalaire vaut 0.' };
@@ -742,15 +758,15 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     } while ((n1 < 1 || n2 < 1 || ang < 8 || ang > 172 || Math.abs(abx * acy - aby * acx) < 0.5) && tries < 200);
     var n1sq = abx * abx + aby * aby, n2sq = acx * acx + acy * acy;
     var angR = Math.round(ang);
-    var enonce = '<p>Dans un repère orthonormé, on donne \\(A' + coord(A[0], A[1]) + '\\), \\(B' + coord(B[0], B[1]) + '\\) et \\(C' + coord(C[0], C[1]) + '\\).</p><p>Déterminer une mesure de l\'angle \\(\\widehat{BAC}\\), arrondie au degré.</p>';
-    var correction = '<p><strong>Étape 1 : coordonnées des vecteurs.</strong> \\(\\vec{AB}\\,' + coord(abx, aby) + '\\) et \\(\\vec{AC}\\,' + coord(acx, acy) + '\\).</p>' +
-      '<p><strong>Étape 2 : produit scalaire.</strong> \\(\\vec{AB}\\cdot\\vec{AC} = ' + abx + '\\times' + fmtSigned(acx) + ' + ' + fmtSigned(aby) + '\\times' + fmtSigned(acy) + ' = ' + dot + '\\).</p>' +
+    var enonce = '<p>Dans un repère orthonormé, on donne \\(A' + coord(A[0], A[1]) + ',\\) \\(B' + coord(B[0], B[1]) + '\\) et \\(C' + coord(C[0], C[1]) + '.\\)</p><p>Déterminer une mesure de l\'angle \\(\\widehat{BAC},\\) arrondie au degré.</p>';
+    var correction = '<p><strong>Étape 1 : coordonnées des vecteurs.</strong> \\(\\vec{AB}\\,' + coord(abx, aby) + '\\) et \\(\\vec{AC}\\,' + coord(acx, acy) + '.\\)</p>' +
+      '<p><strong>Étape 2 : produit scalaire.</strong> \\(\\vec{AB}\\cdot\\vec{AC} = ' + abx + '\\times' + fmtSigned(acx) + ' + ' + fmtSigned(aby) + '\\times' + fmtSigned(acy) + ' = ' + dot + '.\\)</p>' +
       '<p><strong>Étape 3 : normes.</strong><br>' +
       '\\(AB = \\sqrt{' + fmtSigned(abx) + '^2 + ' + fmtSigned(aby) + '^2} = ' + normeTex(n1sq, n1) + '\\)<br>' +
       '\\(AC = \\sqrt{' + fmtSigned(acx) + '^2 + ' + fmtSigned(acy) + '^2} = ' + normeTex(n2sq, n2) + '\\)</p>' +
       '<p><strong>Étape 4 : cosinus.</strong></p>' +
       '\\[\\cos\\widehat{BAC} = \\frac{\\vec{AB}\\cdot\\vec{AC}}{AB\\times AC} = \\frac{' + dot + '}{' + sqrtTex(n1sq) + '\\times' + sqrtTex(n2sq) + '} \\approx ' + fmt(cosv, 4) + '\\]' +
-      '<p><strong>Étape 5 : angle.</strong> \\(\\widehat{BAC} = \\arccos(' + fmt(cosv, 4) + ') \\approx ' + fmt(ang, 1) + '^\\circ\\), soit environ \\(' + angR + '^\\circ\\)' + (dot < 0 ? ' (produit scalaire négatif : angle obtus, cohérent).' : (dot === 0 ? ' : angle droit.' : ' (produit scalaire positif : angle aigu, cohérent).')) + '</p>';
+      '<p><strong>Étape 5 : angle.</strong> \\(\\widehat{BAC} = \\arccos(' + fmt(cosv, 4) + ') \\approx ' + fmt(ang, 1) + '^\\circ,\\) soit environ \\(' + angR + '^\\circ\\)' + (dot < 0 ? ' (produit scalaire négatif : angle obtus, cohérent).' : (dot === 0 ? ' : angle droit.' : ' (produit scalaire positif : angle aigu, cohérent).')) + '</p>';
     return { ang: ang, angR: angR, dot: dot, enonce: enonce, correction: correction };
   }, function (e, val) {
     if (Math.abs(val - e.ang) <= 1.01) return { ok: true, msg: 'Correct ! L\'angle vaut environ ' + e.angR + '°.' };
@@ -765,21 +781,21 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
       var a = rndNonZero(-6, 6), b = rndNonZero(-6, 6), c = rndNonZero(-6, 6), d = rndNonZero(-6, 6);
       var good = a * c + b * d;
       var opts = [good, a * c - b * d, a * d + b * c, good + 2 * Math.sign(good || 1)];
-      return build('Dans un repère orthonormé, \\(\\vec u\\,' + coord(a, b) + '\\) et \\(\\vec v\\,' + coord(c, d) + '\\). Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts.map(String), 0,
+      return build('Dans un repère orthonormé, \\(\\vec u\\,' + coord(a, b) + '\\) et \\(\\vec v\\,' + coord(c, d) + '.\\) Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts.map(String), 0,
         'On calcule xx\' + yy\' = ' + a + ' × ' + fmtSigned(c) + ' + ' + fmtSigned(b) + ' × ' + fmtSigned(d) + ' = ' + good + '.');
     },
     function () {
       var a = rnd(2, 6), b = rnd(2, 6);
       var good = a * b / 2;
       var opts = [fmt(good), String(a * b), fmt(a * b * Math.sqrt(3) / 2), '0'];
-      return build('\\(\\|\\vec u\\| = ' + a + '\\), \\(\\|\\vec v\\| = ' + b + '\\) et \\((\\vec u,\\vec v) = 60^\\circ\\). Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts, 0,
+      return build('\\(\\|\\vec u\\| = ' + a + ',\\) \\(\\|\\vec v\\| = ' + b + '\\) et \\((\\vec u,\\vec v) = 60^\\circ.\\) Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts, 0,
         'u · v = ‖u‖ × ‖v‖ × cos 60° = ' + a + ' × ' + b + ' × 1/2 = ' + fmt(good) + '.');
     },
     function () {
       var a = rnd(2, 6), b = rnd(2, 6);
       var good = -a * b / 2;
       var opts = [fmt(good), fmt(a * b / 2), String(a * b), String(-a * b)];
-      return build('\\(\\|\\vec u\\| = ' + a + '\\), \\(\\|\\vec v\\| = ' + b + '\\) et \\((\\vec u,\\vec v) = 120^\\circ\\). Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts, 0,
+      return build('\\(\\|\\vec u\\| = ' + a + ',\\) \\(\\|\\vec v\\| = ' + b + '\\) et \\((\\vec u,\\vec v) = 120^\\circ.\\) Que vaut \\(\\vec u\\cdot\\vec v\\) ?', opts, 0,
         'cos 120° = −1/2, donc u · v = ' + a + ' × ' + b + ' × (−1/2) = ' + fmt(good) + '. Angle obtus : résultat négatif.');
     },
     function () {
@@ -787,7 +803,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
         'Le produit scalaire est toujours un nombre (positif, négatif ou nul), jamais un vecteur.');
     },
     function () {
-      return build('\\(\\vec u\\) et \\(\\vec v\\) sont non nuls et \\(\\vec u\\cdot\\vec v = 0\\). Alors…', ['\\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux', '\\(\\vec u\\) et \\(\\vec v\\) sont colinéaires', '\\(\\vec u = \\vec v\\)', '\\(\\vec u = -\\vec v\\)'], 0,
+      return build('\\(\\vec u\\) et \\(\\vec v\\) sont non nuls et \\(\\vec u\\cdot\\vec v = 0.\\) Alors…', ['\\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux', '\\(\\vec u\\) et \\(\\vec v\\) sont colinéaires', '\\(\\vec u = \\vec v\\)', '\\(\\vec u = -\\vec v\\)'], 0,
         'Un produit scalaire nul entre deux vecteurs non nuls caractérise l\'orthogonalité (cos = 0, angle droit).');
     },
     function () {
@@ -797,25 +813,25 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     function () {
       var t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [-3, 4, 5], [6, -8, 10]]);
       var opts = [String(t[2]), String(t[0] * t[0] + t[1] * t[1]), String(Math.abs(t[0]) + Math.abs(t[1])), String(Math.abs(t[0] * t[1]))];
-      return build('Dans un repère orthonormé, \\(\\vec u\\,' + coord(t[0], t[1]) + '\\). Que vaut \\(\\|\\vec u\\|\\) ?', opts, 0,
+      return build('Dans un repère orthonormé, \\(\\vec u\\,' + coord(t[0], t[1]) + '.\\) Que vaut \\(\\|\\vec u\\|\\) ?', opts, 0,
         '‖u‖ = √(x² + y²) = √(' + t[0] * t[0] + ' + ' + t[1] * t[1] + ') = √' + (t[0] * t[0] + t[1] * t[1]) + ' = ' + t[2] + '.');
     },
     function () {
       var p = rnd(2, 4), q = rnd(2, 5), s = rndNonZero(-6, 6);
       var opts = [String(p * q * s), String((p + q) * s), String(s), String(p * q + s)];
-      return build('On sait que \\(\\vec u\\cdot\\vec v = ' + s + '\\). Que vaut \\((' + p + '\\vec u)\\cdot(' + q + '\\vec v)\\) ?', opts, 0,
+      return build('On sait que \\(\\vec u\\cdot\\vec v = ' + s + '.\\) Que vaut \\((' + p + '\\vec u)\\cdot(' + q + '\\vec v)\\) ?', opts, 0,
         'Par bilinéarité, (' + p + 'u) · (' + q + 'v) = ' + p + ' × ' + q + ' × (u · v) = ' + (p * q) + ' × ' + fmtSigned(s) + ' = ' + (p * q * s) + '.');
     },
     function () {
       var n = rnd(2, 7);
       var opts = [String(n * n), String(n), String(2 * n), '0'];
-      return build('Si \\(\\|\\vec u\\| = ' + n + '\\), que vaut \\(\\vec u\\cdot\\vec u\\) ?', opts, 0,
+      return build('Si \\(\\|\\vec u\\| = ' + n + ',\\) que vaut \\(\\vec u\\cdot\\vec u\\) ?', opts, 0,
         'u · u = ‖u‖² = ' + n + '² = ' + (n * n) + '.');
     },
     function () {
       var oa = rnd(3, 8), oh = rnd(1, 5);
       var opts = [String(-oa * oh), String(oa * oh), String(oa - oh), String(oa + oh)];
-      return build('\\(\\vec u = \\vec{OA}\\) avec \\(OA = ' + oa + '\\). Le projeté orthogonal \\(H\\) de \\(B\\) sur \\((OA)\\) vérifie \\(OH = ' + oh + '\\), avec \\(\\vec{OH}\\) et \\(\\vec{OA}\\) de sens contraires. Que vaut \\(\\vec{OA}\\cdot\\vec{OB}\\) ?', opts, 0,
+      return build('\\(\\vec u = \\vec{OA}\\) avec \\(OA = ' + oa + '.\\) Le projeté orthogonal \\(H\\) de \\(B\\) sur \\((OA)\\) vérifie \\(OH = ' + oh + ',\\) avec \\(\\vec{OH}\\) et \\(\\vec{OA}\\) de sens contraires. Que vaut \\(\\vec{OA}\\cdot\\vec{OB}\\) ?', opts, 0,
         'Sens contraires : OA · OB = − OA × OH = −' + oa + ' × ' + oh + ' = ' + (-oa * oh) + '.');
     },
     function () {
@@ -823,7 +839,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
       var dot = data[0], nu = data[1], nv = data[2], good = data[3];
       var others = ['30', '45', '60', '90', '120', '135', '150'].filter(function (x) { return x !== good; });
       var opts = [good + '°'].concat(shuffle(others).slice(0, 3).map(function (x) { return x + '°'; }));
-      return build('\\(\\vec u\\cdot\\vec v = ' + dot + '\\), \\(\\|\\vec u\\| = ' + nu + '\\), \\(\\|\\vec v\\| = ' + nv + '\\). Quelle est la mesure de l\'angle \\((\\vec u,\\vec v)\\) ?', opts, 0,
+      return build('\\(\\vec u\\cdot\\vec v = ' + dot + ',\\) \\(\\|\\vec u\\| = ' + nu + ',\\) \\(\\|\\vec v\\| = ' + nv + '.\\) Quelle est la mesure de l\'angle \\((\\vec u,\\vec v)\\) ?', opts, 0,
         'cos(u, v) = (u · v)/(‖u‖ ‖v‖) = ' + dot + '/' + (nu * nv) + ' = ' + fmt(dot / (nu * nv), 2) + ', donc l\'angle vaut ' + good + '°.');
     },
     function () {
@@ -839,7 +855,7 @@ p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
     function () {
       var s = rndNonZero(-6, 6), t = rndNonZero(-6, 6);
       var opts = [String(s + t), String(s * t), String(s - t), String(s)];
-      return build('On sait que \\(\\vec u\\cdot\\vec v = ' + s + '\\) et \\(\\vec u\\cdot\\vec w = ' + t + '\\). Que vaut \\(\\vec u\\cdot(\\vec v + \\vec w)\\) ?', opts, 0,
+      return build('On sait que \\(\\vec u\\cdot\\vec v = ' + s + '\\) et \\(\\vec u\\cdot\\vec w = ' + t + '.\\) Que vaut \\(\\vec u\\cdot(\\vec v + \\vec w)\\) ?', opts, 0,
         'Bilinéarité : u · (v + w) = u · v + u · w = ' + s + ' + ' + fmtSigned(t) + ' = ' + (s + t) + '.');
     }
   ];

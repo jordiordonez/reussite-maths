@@ -113,10 +113,25 @@ window.MathJax = {
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -139,6 +154,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -705,9 +721,9 @@ function drawCmp(){
   if(q > 1.0001 && r > 0){
     note = 'Après '+N+' termes, la géométrique atteint '+nf(G[N-1],2)+' contre '+nf(A[N-1])+' pour l\'arithmétique, soit '+nf(G[N-1]/A[N-1],2)+' fois plus. Sa somme est '+nf(SG/SA,2)+' fois celle de la suite arithmétique.';
   } else if(q < 0.9999){
-    note = 'Avec \\(0\\lt q\\lt 1\\), la géométrique se rapproche de 0 : ses bandes rétrécissent et sa somme se stabilise (ici '+nf(SG,2)+').';
+    note = 'Avec \\(0\\lt q\\lt 1,\\) la géométrique se rapproche de 0 : ses bandes rétrécissent et sa somme se stabilise (ici '+nf(SG,2)+').';
   } else {
-    note = 'Avec \\(q = 1\\), la suite géométrique est constante : toutes ses bandes ont la même hauteur.';
+    note = 'Avec \\(q = 1,\\) la suite géométrique est constante : toutes ses bandes ont la même hauteur.';
   }
   note += ' Les deux suites sont dessinées à la même échelle : quand \\(q\\) grandit, la bleue paraît écrasée, c\'est normal.';
   document.getElementById('cmpNote').innerHTML = note;
@@ -785,7 +801,7 @@ function drawTaux(){
     msg = 'Avec \\(t = 0\\) %, le capital reste égal à '+nf(C0,2)+' € : il ne franchira jamais le seuil.';
   } else if(q > 1){
     if(C0 > S){
-      msg = 'Le capital de départ ('+nf(C0,2)+' €) dépasse déjà le seuil : la réponse est \\(n = 0\\).';
+      msg = 'Le capital de départ ('+nf(C0,2)+' €) dépasse déjà le seuil : la réponse est \\(n = 0.\\)';
     } else {
       var u = C0, k = 0;
       while(u <= S && k < 3000){ u = u*q; k++; }
@@ -843,11 +859,11 @@ function ex1New(){
   }
   var stmt;
   if(ex1.type === 'a'){
-    stmt = '<p>Soit \\((u_n)\\) la suite <strong>arithmétique</strong> définie par \\(u_0 = ' + ex1.u0 + '\\) et \\(u_{n+1} = u_n ' + texSigned(ex1.r) + '\\).</p>'
-         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}\\).</p>';
+    stmt = '<p>Soit \\((u_n)\\) la suite <strong>arithmétique</strong> définie par \\(u_0 = ' + ex1.u0 + '\\) et \\(u_{n+1} = u_n ' + texSigned(ex1.r) + '.\\)</p>'
+         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}.\\)</p>';
   } else {
-    stmt = '<p>Soit \\((u_n)\\) la suite <strong>géométrique</strong> définie par \\(u_0 = ' + tex(ex1.u0) + '\\) et \\(u_{n+1} = ' + tex(ex1.q) + '\\,u_n\\).</p>'
-         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}\\).</p>';
+    stmt = '<p>Soit \\((u_n)\\) la suite <strong>géométrique</strong> définie par \\(u_0 = ' + tex(ex1.u0) + '\\) et \\(u_{n+1} = ' + tex(ex1.q) + '\\,u_n.\\)</p>'
+         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}.\\)</p>';
   }
   document.getElementById('ex1Stmt').innerHTML = stmt;
   document.getElementById('ex1Lab').innerHTML = '\\(u_{' + ex1.n + '} = \\)';
@@ -868,7 +884,7 @@ function ex1Check(){
   var numOk = approx(val, ex1.ans);
   var fb = document.getElementById('ex1Fb');
   if(selOk && numOk){
-    setFb(fb, true, 'Parfait : terme général correct et \\(u_{'+ex1.n+'} = '+tex(ex1.ans)+'\\).');
+    setFb(fb, true, 'Parfait : terme général correct et \\(u_{'+ex1.n+'} = '+tex(ex1.ans)+'.\\)');
   } else if(!selOk && numOk){
     setFb(fb, false, 'La valeur est bonne, mais le terme général choisi ne l\'est pas : attention au décalage d\'indice et au rôle de la raison.');
   } else if(selOk && !numOk){
@@ -881,19 +897,19 @@ function ex1Check(){
 function ex1BuildCorr(){
   var c = document.getElementById('ex1CorrBox'), h;
   if(ex1.type === 'a'){
-    h = '<p><strong>a. Terme général.</strong> La suite est arithmétique de premier terme \\(u_0 = '+ex1.u0+'\\) et de raison \\(r = '+tex(ex1.r)+'\\). La formule du cours donne</p>'
+    h = '<p><strong>a. Terme général.</strong> La suite est arithmétique de premier terme \\(u_0 = '+ex1.u0+'\\) et de raison \\(r = '+tex(ex1.r)+'.\\) La formule du cours donne</p>'
       + '\\[u_n = u_0 + n\\,r = '+ex1.u0+' '+texSigned(ex1.r)+'\\,n\\]'
-      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}\\).</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
+      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}.\\)</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
       + '\\[u_{'+ex1.n+'} = '+ex1.u0+' + '+ex1.n+'\\times '+(ex1.r<0 ? '('+tex(ex1.r)+')' : tex(ex1.r))+' = '+ex1.u0+' '+texSigned(ex1.n*ex1.r)+' = '+tex(ex1.ans)+'\\]'
       + '<p class="small">Vérification rapide : les trois premiers termes sont '+nf(ex1.u0)+' ; '+nf(ex1.u0+ex1.r)+' ; '+nf(ex1.u0+2*ex1.r)+'. On ajoute bien '+nf(ex1.r)+' à chaque fois.</p>'
-      + '<p class="small">Erreur classique : écrire \\(u_n = u_0 + (n-1)r\\). Cette formule-là servirait si la suite commençait à \\(u_1\\).</p>';
+      + '<p class="small">Erreur classique : écrire \\(u_n = u_0 + (n-1)r.\\) Cette formule-là servirait si la suite commençait à \\(u_1.\\)</p>';
   } else {
-    h = '<p><strong>a. Terme général.</strong> La suite est géométrique de premier terme \\(u_0 = '+tex(ex1.u0)+'\\) et de raison \\(q = '+tex(ex1.q)+'\\). La formule du cours donne</p>'
+    h = '<p><strong>a. Terme général.</strong> La suite est géométrique de premier terme \\(u_0 = '+tex(ex1.u0)+'\\) et de raison \\(q = '+tex(ex1.q)+'.\\) La formule du cours donne</p>'
       + '\\[u_n = u_0\\,q^{\\,n} = '+tex(ex1.u0)+'\\times '+tex(ex1.q)+'^{\\,n}\\]'
-      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}\\).</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
+      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}.\\)</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
       + '\\[u_{'+ex1.n+'} = '+tex(ex1.u0)+'\\times '+tex(ex1.q)+'^{'+ex1.n+'} = '+tex(ex1.u0)+'\\times '+(ex1.q<1 ? '\\frac{1}{'+tex(Math.pow(2,ex1.n))+'}' : tex(Math.pow(ex1.q, ex1.n)))+' = '+tex(ex1.ans)+'\\]'
       + '<p class="small">Vérification rapide : les trois premiers termes sont '+nf(ex1.u0)+' ; '+nf(ex1.u0*ex1.q)+' ; '+nf(ex1.u0*ex1.q*ex1.q)+'. On multiplie bien par '+nf(ex1.q)+' à chaque fois.</p>'
-      + '<p class="small">Erreur classique : confondre \\(u_0\\,q^n\\) et \\((u_0\\,q)^n\\). Seule la raison est élevée à la puissance \\(n\\).</p>';
+      + '<p class="small">Erreur classique : confondre \\(u_0\\,q^n\\) et \\((u_0\\,q)^n.\\) Seule la raison est élevée à la puissance \\(n.\\)</p>';
   }
   c.innerHTML = h; c.classList.add('show'); typeset(c);
 }
@@ -927,12 +943,12 @@ function ex2New(){
   }
   var stmt;
   if(ex2.type === 'a'){
-    stmt = '<p>Soit \\((u_n)\\) la suite arithmétique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(r = '+tex(ex2.r)+'\\).</p>'
-         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}\\).</p>'
+    stmt = '<p>Soit \\((u_n)\\) la suite arithmétique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(r = '+tex(ex2.r)+'.\\)</p>'
+         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}.\\)</p>'
          + '<p class="small">Commence par compter le nombre de termes : c\'est là que se cachent la plupart des erreurs.</p>';
   } else {
-    stmt = '<p>Soit \\((u_n)\\) la suite géométrique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(q = '+ex2.q+'\\).</p>'
-         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}\\).</p>'
+    stmt = '<p>Soit \\((u_n)\\) la suite géométrique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(q = '+ex2.q+'.\\)</p>'
+         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}.\\)</p>'
          + '<p class="small">Commence par compter le nombre de termes : c\'est l\'exposant qui apparaît dans la formule.</p>';
   }
   document.getElementById('ex2Stmt').innerHTML = stmt;
@@ -948,11 +964,11 @@ function ex2Check(){
   var okN = approx(vN, ex2.N), okS = approx(vS, ex2.S);
   var fb = document.getElementById('ex2Fb');
   if(okN && okS){
-    setFb(fb, true, 'Exact : '+ex2.N+' termes et \\(S = '+tex(ex2.S)+'\\).');
+    setFb(fb, true, 'Exact : '+ex2.N+' termes et \\(S = '+tex(ex2.S)+'.\\)');
   } else if(!okN && okS){
-    setFb(fb, false, 'La somme est bonne, mais le nombre de termes est faux : de \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) il y en a \\('+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'\\).');
+    setFb(fb, false, 'La somme est bonne, mais le nombre de termes est faux : de \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) il y en a \\('+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'.\\)');
   } else if(okN && !okS){
-    setFb(fb, false, 'Bon comptage ('+ex2.N+' termes). Reprends la formule de somme avec ce \\(N\\) : ' + (ex2.type==='a' ? '\\(S = N\\times\\frac{\\text{premier}+\\text{dernier}}{2}\\).' : '\\(S = \\text{premier}\\times\\frac{1-q^{N}}{1-q}\\).'));
+    setFb(fb, false, 'Bon comptage ('+ex2.N+' termes). Reprends la formule de somme avec ce \\(N\\) : ' + (ex2.type==='a' ? '\\(S = N\\times\\frac{\\text{premier}+\\text{dernier}}{2}.\\)' : '\\(S = \\text{premier}\\times\\frac{1-q^{N}}{1-q}.\\)'));
   } else {
     setFb(fb, false, 'Pas encore. Étape 1 : compter les termes (\\('+ex2.b+' - '+ex2.a+' + 1\\)). Étape 2 : calculer le premier et le dernier terme de la somme.');
   }
@@ -965,13 +981,13 @@ function ex2BuildCorr(){
   }
   h = '<p><strong>Étape 1 — nombre de termes.</strong> De \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) : \\(N = '+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'\\) termes.</p>';
   if(ex2.type === 'a'){
-    h += '<p><strong>Étape 2 — premier et dernier terme.</strong> \\(u_n = '+ex2.u0+' '+texSigned(ex2.r)+'\\,n\\), donc</p>'
+    h += '<p><strong>Étape 2 — premier et dernier terme.</strong> \\(u_n = '+ex2.u0+' '+texSigned(ex2.r)+'\\,n,\\) donc</p>'
       + '\\[u_{'+ex2.a+'} = '+ex2.u0+' '+texSigned(ex2.a*ex2.r)+' = '+tex(ex2.ua)+',\\qquad u_{'+ex2.b+'} = '+ex2.u0+' '+texSigned(ex2.b*ex2.r)+' = '+tex(ex2.ub)+'\\]'
       + '<p><strong>Étape 3 — formule de la somme arithmétique.</strong></p>'
       + '\\[S = N\\times\\frac{u_{'+ex2.a+'} + u_{'+ex2.b+'}}{2} = '+ex2.N+'\\times\\frac{'+tex(ex2.ua)+' + '+tex(ex2.ub)+'}{2} = '+ex2.N+'\\times '+tex((ex2.ua+ex2.ub)/2)+' = '+tex(ex2.S)+'\\]';
   } else {
-    h += '<p><strong>Étape 2 — premier terme de la somme.</strong> \\(u_n = '+ex2.u0+'\\times '+ex2.q+'^{\\,n}\\), donc \\(u_{'+ex2.a+'} = '+ex2.u0+'\\times '+ex2.q+'^{'+ex2.a+'} = '+tex(ex2.ua)+'\\).</p>'
-      + '<p><strong>Étape 3 — formule de la somme géométrique.</strong> L\'exposant est le <em>nombre de termes</em> \\(N = '+ex2.N+'\\), pas le dernier indice :</p>'
+    h += '<p><strong>Étape 2 — premier terme de la somme.</strong> \\(u_n = '+ex2.u0+'\\times '+ex2.q+'^{\\,n},\\) donc \\(u_{'+ex2.a+'} = '+ex2.u0+'\\times '+ex2.q+'^{'+ex2.a+'} = '+tex(ex2.ua)+'.\\)</p>'
+      + '<p><strong>Étape 3 — formule de la somme géométrique.</strong> L\'exposant est le <em>nombre de termes</em> \\(N = '+ex2.N+',\\) pas le dernier indice :</p>'
       + '\\[S = u_{'+ex2.a+'}\\times\\frac{1-q^{N}}{1-q} = '+tex(ex2.ua)+'\\times\\frac{1-'+ex2.q+'^{'+ex2.N+'}}{1-'+ex2.q+'} = '+tex(ex2.ua)+'\\times '+tex((Math.pow(ex2.q,ex2.N)-1)/(ex2.q-1))+' = '+tex(ex2.S)+'\\]';
   }
   h += '<p><strong>Vérification.</strong> Les termes sont : '+liste.join(' + ')+' = '+nf(ex2.S)+'. ✓</p>';
@@ -1000,7 +1016,7 @@ function ex3New(){
   ex3 = { P0:P0, t:t, q:q, seuil:seuil, ans:n, ville:ville, val:u };
   document.getElementById('ex3Stmt').innerHTML =
       '<p>En 2025, la commune de <strong>'+ville+'</strong> compte '+nf(P0)+' habitants. Les études prévoient une augmentation de <strong>'+nf(t)+' % par an</strong>.</p>'
-    + '<p>On note \\(u_n\\) le nombre d\'habitants \\(n\\) années après 2025, donc \\(u_0 = '+tex(P0)+'\\).</p>'
+    + '<p>On note \\(u_n\\) le nombre d\'habitants \\(n\\) années après 2025, donc \\(u_0 = '+tex(P0)+'.\\)</p>'
     + '<p><strong>Au bout de combien d\'années la population dépassera-t-elle '+nf(seuil)+' habitants ?</strong> (réponse : un nombre entier d\'années)</p>'
     + '<p class="small">Pas de logarithme : on teste les valeurs, à la calculatrice ou avec une boucle.</p>';
   document.getElementById('ex3In').value = '';
@@ -1018,7 +1034,7 @@ function ex3Check(){
   } else if(Math.abs(v - ex3.ans) === 1){
     setFb(fb, false, 'Tout près ! Vérifie les deux valeurs qui encadrent le seuil : il faut le <strong>premier</strong> rang où \\(u_n\\) dépasse '+nf(ex3.seuil)+'.');
   } else {
-    setFb(fb, false, 'Pas encore. Commence par le coefficient multiplicateur \\(q = 1 + \\frac{'+tex(ex3.t)+'}{100}\\), puis calcule \\(u_n = u_0\\,q^n\\) de proche en proche.');
+    setFb(fb, false, 'Pas encore. Commence par le coefficient multiplicateur \\(q = 1 + \\frac{'+tex(ex3.t)+'}{100},\\) puis calcule \\(u_n = u_0\\,q^n\\) de proche en proche.');
   }
   ex3BuildCorr();
 }
@@ -1033,16 +1049,16 @@ function ex3BuildCorr(){
   }
   var h = '<p><strong>Étape 1 — modéliser.</strong> Augmenter de '+nf(ex3.t)+' % par an revient à multiplier par</p>'
     + '\\[q = 1 + \\frac{'+tex(ex3.t)+'}{100} = '+tex(ex3.q)+'\\]'
-    + '<p>La suite \\((u_n)\\) est donc <strong>géométrique</strong> de raison \\(q = '+tex(ex3.q)+'\\) et de premier terme \\(u_0 = '+tex(ex3.P0)+'\\).</p>'
+    + '<p>La suite \\((u_n)\\) est donc <strong>géométrique</strong> de raison \\(q = '+tex(ex3.q)+'\\) et de premier terme \\(u_0 = '+tex(ex3.P0)+'.\\)</p>'
     + '<p><strong>Étape 2 — terme général.</strong></p>'
     + '\\[u_n = '+tex(ex3.P0)+'\\times '+tex(ex3.q)+'^{\\,n}\\]'
     + '<p><strong>Étape 3 — chercher le seuil.</strong> On calcule les termes jusqu\'à dépasser '+nf(ex3.seuil)+' :</p>'
     + '<div class="tablewrap"><table>'+th+'</tr>'+rv+'</tr></table></div>'
-    + '<p>On lit \\(u_{'+(ex3.ans-1)+'} \\approx '+tex(ex3.P0*Math.pow(ex3.q,ex3.ans-1),0)+' \\lt '+tex(ex3.seuil)+'\\) et \\(u_{'+ex3.ans+'} \\approx '+tex(ex3.val,0)+' \\gt '+tex(ex3.seuil)+'\\).</p>'
+    + '<p>On lit \\(u_{'+(ex3.ans-1)+'} \\approx '+tex(ex3.P0*Math.pow(ex3.q,ex3.ans-1),0)+' \\lt '+tex(ex3.seuil)+'\\) et \\(u_{'+ex3.ans+'} \\approx '+tex(ex3.val,0)+' \\gt '+tex(ex3.seuil)+'.\\)</p>'
     + '<div class="box green"><span class="lbl">Conclusion</span>La population dépasse '+nf(ex3.seuil)+' habitants au bout de <strong>'+ex3.ans+' ans</strong>, c\'est-à-dire en '+(2025+ex3.ans)+'.</div>'
     + '<p><strong>Remarque — algorithme de seuil.</strong> Plutôt que de remplir un tableau, on programme la même recherche :</p>'
     + '<pre class="py">u = '+ex3.P0+'\nn = 0\nwhile u &lt;= '+ex3.seuil+':\n    u = u * '+String(ex3.q)+'\n    n = n + 1\nprint(n)   # affiche '+ex3.ans+'</pre>'
-    + '<p class="small">La boucle s\'arrête au <em>premier</em> rang où la condition \\(u \\le '+tex(ex3.seuil)+'\\) devient fausse : c\'est bien le premier rang où la population dépasse le seuil. En Première on n\'utilise pas le logarithme pour résoudre \\(q^n \\gt k\\).</p>';
+    + '<p class="small">La boucle s\'arrête au <em>premier</em> rang où la condition \\(u \\le '+tex(ex3.seuil)+'\\) devient fausse : c\'est bien le premier rang où la population dépasse le seuil. En Première on n\'utilise pas le logarithme pour résoudre \\(q^n \\gt k.\\)</p>';
   c.innerHTML = h; c.classList.add('show'); typeset(c);
 }
 document.getElementById('ex3Check').addEventListener('click', ex3Check);
@@ -1053,54 +1069,54 @@ document.getElementById('ex3New').addEventListener('click', ex3New);
 <script>
 /* ================= QCM ================= */
 var QCM_BANK = [
-  { q:'\\((u_n)\\) est arithmétique de raison \\(r = 4\\) et \\(u_0 = 7\\). Que vaut \\(u_{10}\\) ?',
+  { q:'\\((u_n)\\) est arithmétique de raison \\(r = 4\\) et \\(u_0 = 7.\\) Que vaut \\(u_{10}\\) ?',
     opts:['\\(47\\)','\\(40\\)','\\(43\\)','\\(28\\)'], correct:0,
-    expl:'\\(u_n = u_0 + nr\\), donc \\(u_{10} = 7 + 10\\times 4 = 47\\).' },
-  { q:'\\((u_n)\\) est géométrique de raison \\(q = 3\\) et \\(u_0 = 2\\). Que vaut \\(u_4\\) ?',
+    expl:'\\(u_n = u_0 + nr,\\) donc \\(u_{10} = 7 + 10\\times 4 = 47.\\)' },
+  { q:'\\((u_n)\\) est géométrique de raison \\(q = 3\\) et \\(u_0 = 2.\\) Que vaut \\(u_4\\) ?',
     opts:['\\(162\\)','\\(54\\)','\\(24\\)','\\(486\\)'], correct:0,
-    expl:'\\(u_4 = 2\\times 3^4 = 2\\times 81 = 162\\).' },
+    expl:'\\(u_4 = 2\\times 3^4 = 2\\times 81 = 162.\\)' },
   { q:'Une population baisse de \\(5\\,\\%\\) par an. Le coefficient multiplicateur est :',
     opts:['\\(0{,}95\\)','\\(-0{,}05\\)','\\(1{,}05\\)','\\(-5\\)'], correct:0,
-    expl:'Baisser de \\(t\\,\\%\\) revient à multiplier par \\(1 - \\frac{t}{100} = 0{,}95\\).' },
+    expl:'Baisser de \\(t\\,\\%\\) revient à multiplier par \\(1 - \\frac{t}{100} = 0{,}95.\\)' },
   { q:'Combien y a-t-il de termes dans la somme \\(u_4 + u_5 + \\dots + u_{15}\\) ?',
     opts:['\\(12\\)','\\(11\\)','\\(15\\)','\\(13\\)'], correct:0,
-    expl:'De \\(u_a\\) à \\(u_b\\) il y a \\(b - a + 1\\) termes : \\(15 - 4 + 1 = 12\\).' },
+    expl:'De \\(u_a\\) à \\(u_b\\) il y a \\(b - a + 1\\) termes : \\(15 - 4 + 1 = 12.\\)' },
   { q:'Que vaut \\(1 + 2 + 3 + \\dots + 50\\) ?',
     opts:['\\(1275\\)','\\(1250\\)','\\(2550\\)','\\(1225\\)'], correct:0,
-    expl:'\\(\\frac{n(n+1)}{2} = \\frac{50\\times 51}{2} = 1275\\).' },
+    expl:'\\(\\frac{n(n+1)}{2} = \\frac{50\\times 51}{2} = 1275.\\)' },
   { q:'Que vaut \\(1 + 2 + 4 + 8 + \\dots + 2^{6}\\) ?',
     opts:['\\(127\\)','\\(128\\)','\\(63\\)','\\(126\\)'], correct:0,
     expl:'\\(\\frac{1-2^{7}}{1-2} = \\frac{1-128}{-1} = 127\\) : il y a 7 termes, donc l\'exposant est 7.' },
-  { q:'Soit \\(u_n = 9 - 2n\\). La suite \\((u_n)\\) est :',
+  { q:'Soit \\(u_n = 9 - 2n.\\) La suite \\((u_n)\\) est :',
     opts:['arithmétique de raison \\(-2\\)','géométrique de raison \\(-2\\)','arithmétique de raison \\(9\\)','ni l\'une ni l\'autre'], correct:0,
-    expl:'\\(u_{n+1} - u_n = 9-2(n+1) - (9-2n) = -2\\), constante : arithmétique de raison \\(-2\\).' },
-  { q:'Soit \\(v_n = 5\\times 4^{\\,n}\\). Alors \\(\\dfrac{v_{n+1}}{v_n}\\) vaut :',
+    expl:'\\(u_{n+1} - u_n = 9-2(n+1) - (9-2n) = -2,\\) constante : arithmétique de raison \\(-2.\\)' },
+  { q:'Soit \\(v_n = 5\\times 4^{\\,n}.\\) Alors \\(\\dfrac{v_{n+1}}{v_n}\\) vaut :',
     opts:['\\(4\\)','\\(5\\)','\\(20\\)','\\(4^n\\)'], correct:0,
     expl:'\\(\\frac{5\\times 4^{n+1}}{5\\times 4^{n}} = 4\\) : la suite est géométrique de raison 4.' },
-  { q:'\\((u_n)\\) est géométrique avec \\(u_0 \\gt 0\\) et \\(q = 0{,}8\\). Elle est :',
+  { q:'\\((u_n)\\) est géométrique avec \\(u_0 \\gt 0\\) et \\(q = 0{,}8.\\) Elle est :',
     opts:['décroissante et se rapproche de 0','croissante','constante','décroissante puis croissante'], correct:0,
     expl:'\\(0 \\lt q \\lt 1\\) avec un premier terme positif : les termes diminuent et \\(q^n\\) tend vers 0.' },
-  { q:'\\((u_n)\\) est arithmétique, \\(u_3 = 11\\) et \\(r = 5\\). Que vaut \\(u_9\\) ?',
+  { q:'\\((u_n)\\) est arithmétique, \\(u_3 = 11\\) et \\(r = 5.\\) Que vaut \\(u_9\\) ?',
     opts:['\\(41\\)','\\(46\\)','\\(56\\)','\\(36\\)'], correct:0,
-    expl:'\\(u_9 = u_3 + (9-3)\\times 5 = 11 + 30 = 41\\).' },
+    expl:'\\(u_9 = u_3 + (9-3)\\times 5 = 11 + 30 = 41.\\)' },
   { q:'Un capital de \\(2000\\) € placé à \\(2\\,\\%\\) par an vaut, au bout de \\(n\\) années :',
     opts:['\\(2000\\times 1{,}02^{\\,n}\\)','\\(2000 + 0{,}02n\\)','\\(2000\\times 0{,}02^{\\,n}\\)','\\(2000\\times 1{,}2^{\\,n}\\)'], correct:0,
-    expl:'Taux constant \\(\\Rightarrow\\) suite géométrique de raison \\(q = 1{,}02\\), donc \\(C_n = C_0 q^n\\).' },
+    expl:'Taux constant \\(\\Rightarrow\\) suite géométrique de raison \\(q = 1{,}02,\\) donc \\(C_n = C_0 q^n.\\)' },
   { q:'Une entreprise embauche \\(30\\) personnes de plus chaque année. Le nombre d\'employés suit une suite :',
     opts:['arithmétique de raison 30','géométrique de raison 30','géométrique de raison \\(1{,}30\\)','ni arithmétique ni géométrique'], correct:0,
     expl:'On <em>ajoute</em> toujours le même nombre : c\'est arithmétique, de raison 30.' },
-  { q:'Pour une suite géométrique commençant à \\(u_1\\), le terme général est :',
+  { q:'Pour une suite géométrique commençant à \\(u_1,\\) le terme général est :',
     opts:['\\(u_n = u_1\\,q^{\\,n-1}\\)','\\(u_n = u_1\\,q^{\\,n}\\)','\\(u_n = u_1 + (n-1)q\\)','\\(u_n = (u_1 q)^{n-1}\\)'], correct:0,
-    expl:'De \\(u_1\\) à \\(u_n\\) on multiplie \\(n-1\\) fois par \\(q\\) : \\(u_n = u_1 q^{\\,n-1}\\).' },
+    expl:'De \\(u_1\\) à \\(u_n\\) on multiplie \\(n-1\\) fois par \\(q\\) : \\(u_n = u_1 q^{\\,n-1}.\\)' },
   { q:'Pour trouver le premier rang où \\(u_n\\) dépasse un seuil \\(S\\) en Première, on :',
     opts:['calcule les termes jusqu\'à dépasser \\(S\\) (boucle while)','résout \\(q^n \\gt S\\) avec le logarithme','utilise la dérivée','ne peut pas répondre'], correct:0,
     expl:'Le logarithme n\'est pas au programme de Première : on procède par essais successifs ou avec un algorithme de seuil.' },
-  { q:'\\(u_n = 6 + 2n\\). Que vaut \\(u_0 + u_1 + \\dots + u_{10}\\) ?',
+  { q:'\\(u_n = 6 + 2n.\\) Que vaut \\(u_0 + u_1 + \\dots + u_{10}\\) ?',
     opts:['\\(176\\)','\\(160\\)','\\(150\\)','\\(186\\)'], correct:0,
-    expl:'11 termes, \\(u_0 = 6\\), \\(u_{10} = 26\\) : \\(S = 11\\times\\frac{6+26}{2} = 11\\times 16 = 176\\).' },
+    expl:'11 termes, \\(u_0 = 6,\\) \\(u_{10} = 26\\) : \\(S = 11\\times\\frac{6+26}{2} = 11\\times 16 = 176.\\)' },
   { q:'Quelle suite finit par croître le plus vite ?',
     opts:['\\(v_n = 2^{\\,n}\\)','\\(u_n = 100n\\)','\\(w_n = 1000 + 50n\\)','elles croissent pareil'], correct:0,
-    expl:'Une croissance exponentielle finit toujours par dépasser une croissance linéaire : \\(2^{20} \\gt 1\\,000\\,000\\) alors que \\(100\\times 20 = 2000\\).' }
+    expl:'Une croissance exponentielle finit toujours par dépasser une croissance linéaire : \\(2^{20} \\gt 1\\,000\\,000\\) alors que \\(100\\times 20 = 2000.\\)' }
 ];
 var qcmMap = {};
 var qcmState = { answered:0, score:0, total:4 };

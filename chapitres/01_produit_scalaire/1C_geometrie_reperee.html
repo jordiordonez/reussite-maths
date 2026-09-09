@@ -101,10 +101,25 @@ mjx-container[display="true"]{margin:.6em 0 !important}
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -127,6 +142,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -700,7 +716,7 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
     $('ro-line').style.display = line ? '' : 'none';
     $('ro-circle').style.display = line ? 'none' : '';
     $('fig-hint').innerHTML = line
-      ? 'Touche ou glisse sur la figure pour déplacer le point M. La zone bleutée est le demi-plan où \\(ax+by+c>0\\), du côté vers lequel pointe \\(\\vec n\\).'
+      ? 'Touche ou glisse sur la figure pour déplacer le point M. La zone bleutée est le demi-plan où \\(ax+by+c>0,\\) du côté vers lequel pointe \\(\\vec n.\\)'
       : 'Touche ou glisse sur la figure pour déplacer le point M. Compare \\(\\Omega M^2\\) et \\(r^2\\) : égalité ⇔ M est sur le cercle.';
     typeset($('fig-hint'));
     render();
@@ -783,22 +799,22 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
     e1.a = a; e1.b = b; e1.c = c; e1.xa = xa; e1.ya = ya;
     $('ex1-enonce').innerHTML =
       '<p>Dans un repère orthonormé, on donne le point \\(A(' + tx(xa) + ';' + tx(ya) + ')\\) ' +
-      'et le vecteur \\(\\vec n(' + tx(a) + ';' + tx(b) + ')\\).</p>' +
+      'et le vecteur \\(\\vec n(' + tx(a) + ';' + tx(b) + ').\\)</p>' +
       '<p>Déterminer une équation cartésienne \\(ax+by+c=0\\) de la droite \\(d\\) passant par \\(A\\) ' +
-      'et de vecteur normal \\(\\vec n\\), puis recopier ci-dessous les trois coefficients.</p>' +
+      'et de vecteur normal \\(\\vec n,\\) puis recopier ci-dessous les trois coefficients.</p>' +
       '<p class="hint">Toute équation proportionnelle est acceptée (par exemple en multipliant tout par \\(-1\\) ou par \\(2\\)).</p>';
     $('ex1-corr').innerHTML =
-      '<p><b>1.</b> \\(M(x;y)\\in d\\iff\\overrightarrow{AM}\\cdot\\vec n=0\\), avec ' +
-      '\\(\\overrightarrow{AM}(x-(' + tx(xa) + ')\\,;\\,y-(' + tx(ya) + '))\\).</p>' +
-      '<p><b>2.</b> Produit scalaire : \\(' + tx(a) + '\\,(x-(' + tx(xa) + '))+' + texSigned(b) + '\\,(y-(' + tx(ya) + '))=0\\).</p>' +
+      '<p><b>1.</b> \\(M(x;y)\\in d\\iff\\overrightarrow{AM}\\cdot\\vec n=0,\\) avec ' +
+      '\\(\\overrightarrow{AM}(x-(' + tx(xa) + ')\\,;\\,y-(' + tx(ya) + ')).\\)</p>' +
+      '<p><b>2.</b> Produit scalaire : \\(' + tx(a) + '\\,(x-(' + tx(xa) + '))+' + texSigned(b) + '\\,(y-(' + tx(ya) + '))=0.\\)</p>' +
       '<p><b>3.</b> On développe : \\(' + linExpr([[a, 'x'], [b, 'y'], [0, '']], true) +
-      ' ' + (c < 0 ? '-' : '+') + ' ' + tx(Math.abs(c)) + '=0\\), c’est-à-dire ' +
+      ' ' + (c < 0 ? '-' : '+') + ' ' + tx(Math.abs(c)) + '=0,\\) c’est-à-dire ' +
       '\\(\\;' + linExpr([[a, 'x'], [b, 'y'], [c, '']], true) + '=0\\;\\) ' +
       '(on a bien \\(c=-a\\,x_A-b\\,y_A=' + tx(c) + '\\)).</p>' +
-      '<p><b>4.</b> Contrôle : en remplaçant \\(x\\) par \\(' + tx(xa) + '\\) et \\(y\\) par \\(' + tx(ya) + '\\), ' +
+      '<p><b>4.</b> Contrôle : en remplaçant \\(x\\) par \\(' + tx(xa) + '\\) et \\(y\\) par \\(' + tx(ya) + ',\\) ' +
       'on obtient \\(' + tx(a * xa) + '+' + texSigned(b * ya) + '+' + texSigned(c) + '=0\\) ✓, ' +
-      'et les coefficients de \\(x\\) et \\(y\\) sont bien ceux de \\(\\vec n\\).</p>' +
-      '<p><b>Réponse :</b> \\(a=' + tx(a) + '\\), \\(b=' + tx(b) + '\\), \\(c=' + tx(c) + '\\) ' +
+      'et les coefficients de \\(x\\) et \\(y\\) sont bien ceux de \\(\\vec n.\\)</p>' +
+      '<p><b>Réponse :</b> \\(a=' + tx(a) + ',\\) \\(b=' + tx(b) + ',\\) \\(c=' + tx(c) + '\\) ' +
       '(ou tout triplet proportionnel).</p>';
     resetEx('ex1', ['ex1-a', 'ex1-b', 'ex1-c']);
     typeset($('ex1-enonce'));
@@ -806,7 +822,7 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
   function checkEx1() {
     const ua = parseNum($('ex1-a').value), ub = parseNum($('ex1-b').value), uc = parseNum($('ex1-c').value);
     if (!isFinite(ua) || !isFinite(ub) || !isFinite(uc)) {
-      setFb('ex1', 'info', 'Remplis les trois cases \\(a\\), \\(b\\) et \\(c\\) (mets \\(0\\) si un coefficient est nul).');
+      setFb('ex1', 'info', 'Remplis les trois cases \\(a,\\) \\(b\\) et \\(c\\) (mets \\(0\\) si un coefficient est nul).');
       return;
     }
     if (Math.abs(ua) < 1e-9 && Math.abs(ub) < 1e-9) {
@@ -822,10 +838,10 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
         (Math.abs(k - 1) > 1e-9 ? ' (c’est \\(' + tx(k) + '\\) fois l’équation \\(' + linExpr([[e1.a, 'x'], [e1.b, 'y'], [e1.c, '']], true) + '=0\\)).' : '.'));
     } else if (near(ua, e1.a, 0.011) && near(ub, e1.b, 0.011)) {
       setFb('ex1', 'ko', 'Les coefficients \\(a\\) et \\(b\\) sont bons, mais pas \\(c\\) : ' +
-        'ici \\(c=-a\\,x_A-b\\,y_A\\). Revois la correction.');
+        'ici \\(c=-a\\,x_A-b\\,y_A.\\) Revois la correction.');
     } else {
       setFb('ex1', 'ko', 'Pas encore. Les coefficients de \\(x\\) et \\(y\\) doivent être ceux du vecteur <b>normal</b> ' +
-        '\\((' + tx(e1.a) + ';' + tx(e1.b) + ')\\), pas ceux d’un vecteur directeur.');
+        '\\((' + tx(e1.a) + ';' + tx(e1.b) + '),\\) pas ceux d’un vecteur directeur.');
     }
   }
 
@@ -846,45 +862,45 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
     e2.a = a; e2.b = b; e2.c = c; e2.hx = hx; e2.hy = hy; e2.mx = mx; e2.my = my; e2.s = s; e2.n2 = n2; e2.dist = dist;
     $('ex2-enonce').innerHTML =
       '<p>On considère la droite \\(d:\\;' + linExpr([[a, 'x'], [b, 'y'], [c, '']], true) + '=0\\) ' +
-      'et le point \\(M(' + tx(mx) + ';' + tx(my) + ')\\).</p>' +
-      '<p>Déterminer les coordonnées du projeté orthogonal \\(H\\) de \\(M\\) sur \\(d\\), ' +
+      'et le point \\(M(' + tx(mx) + ';' + tx(my) + ').\\)</p>' +
+      '<p>Déterminer les coordonnées du projeté orthogonal \\(H\\) de \\(M\\) sur \\(d,\\) ' +
       'puis la distance \\(MH\\) (valeur exacte ou arrondie à \\(0{,}01\\)).</p>';
     $('ex2-corr').innerHTML =
-      '<p><b>1.</b> Un vecteur normal de \\(d\\) est \\(\\vec n(' + tx(a) + ';' + tx(b) + ')\\). ' +
-      'La perpendiculaire à \\(d\\) passant par \\(M\\) est dirigée par \\(\\vec n\\), donc ' +
-      '\\(H(' + tx(mx) + '+' + texSigned(a) + 's\\;;\\;' + tx(my) + '+' + texSigned(b) + 's)\\).</p>' +
+      '<p><b>1.</b> Un vecteur normal de \\(d\\) est \\(\\vec n(' + tx(a) + ';' + tx(b) + ').\\) ' +
+      'La perpendiculaire à \\(d\\) passant par \\(M\\) est dirigée par \\(\\vec n,\\) donc ' +
+      '\\(H(' + tx(mx) + '+' + texSigned(a) + 's\\;;\\;' + tx(my) + '+' + texSigned(b) + 's).\\)</p>' +
       '<p><b>2.</b> \\(H\\in d\\) : \\(' + texSigned(a) + '(' + tx(mx) + '+' + texSigned(a) + 's)+' +
-      texSigned(b) + '(' + tx(my) + '+' + texSigned(b) + 's)+' + texSigned(c) + '=0\\).</p>' +
-      '<p><b>3.</b> On regroupe : \\(' + tx(n2) + 's+' + texSigned(a * mx + b * my + c) + '=0\\), donc ' +
-      '\\(s=\\dfrac{' + tx(-(a * mx + b * my + c)) + '}{' + tx(n2) + '}=' + tx(-s) + '\\).</p>' +
+      texSigned(b) + '(' + tx(my) + '+' + texSigned(b) + 's)+' + texSigned(c) + '=0.\\)</p>' +
+      '<p><b>3.</b> On regroupe : \\(' + tx(n2) + 's+' + texSigned(a * mx + b * my + c) + '=0,\\) donc ' +
+      '\\(s=\\dfrac{' + tx(-(a * mx + b * my + c)) + '}{' + tx(n2) + '}=' + tx(-s) + '.\\)</p>' +
       '<p><b>4.</b> D’où \\(H(' + tx(mx) + '+(' + tx(-s) + ')\\times' + tx(a) + '\\;;\\;' +
-      tx(my) + '+(' + tx(-s) + ')\\times' + tx(b) + ')=H(' + tx(hx) + ';' + tx(hy) + ')\\).</p>' +
+      tx(my) + '+(' + tx(-s) + ')\\times' + tx(b) + ')=H(' + tx(hx) + ';' + tx(hy) + ').\\)</p>' +
       '<p><b>5.</b> \\(MH=|s|\\,\\|\\vec n\\|=' + tx(Math.abs(s)) + '\\times' + radTex(n2) +
       '=' + tx(dist) + '\\) (à \\(0{,}01\\) près).</p>' +
       '<p><b>Contrôle :</b> \\(' + texSigned(a) + '\\times' + texSigned(hx) + '+' + texSigned(b) + '\\times' +
-      texSigned(hy) + '+' + texSigned(c) + '=0\\) ✓ : \\(H\\) est bien sur \\(d\\).</p>' +
-      '<p><b>Réponse :</b> \\(H(' + tx(hx) + ';' + tx(hy) + ')\\) et \\(MH=' + tx(dist) + '\\).</p>';
+      texSigned(hy) + '+' + texSigned(c) + '=0\\) ✓ : \\(H\\) est bien sur \\(d.\\)</p>' +
+      '<p><b>Réponse :</b> \\(H(' + tx(hx) + ';' + tx(hy) + ')\\) et \\(MH=' + tx(dist) + '.\\)</p>';
     resetEx('ex2', ['ex2-x', 'ex2-y', 'ex2-d']);
     typeset($('ex2-enonce'));
   }
   function checkEx2() {
     const ux = parseNum($('ex2-x').value), uy = parseNum($('ex2-y').value), ud = parseNum($('ex2-d').value);
     if (!isFinite(ux) || !isFinite(uy) || !isFinite(ud)) {
-      setFb('ex2', 'info', 'Remplis les trois cases : \\(x_H\\), \\(y_H\\) et \\(MH\\).');
+      setFb('ex2', 'info', 'Remplis les trois cases : \\(x_H,\\) \\(y_H\\) et \\(MH.\\)');
       return;
     }
     const okH = near(ux, e2.hx, 0.011) && near(uy, e2.hy, 0.011);
     const okD = near(ud, e2.dist, 0.02);
     if (okH && okD) {
-      setFb('ex2', 'ok', 'Parfait : \\(H(' + tx(e2.hx) + ';' + tx(e2.hy) + ')\\) et \\(MH=' + tx(e2.dist) + '\\).');
+      setFb('ex2', 'ok', 'Parfait : \\(H(' + tx(e2.hx) + ';' + tx(e2.hy) + ')\\) et \\(MH=' + tx(e2.dist) + '.\\)');
     } else if (okH) {
       setFb('ex2', 'ko', 'Les coordonnées de \\(H\\) sont justes, mais pas la distance : ' +
-        '\\(MH=\\sqrt{(x_H-x_M)^2+(y_H-y_M)^2}\\).');
+        '\\(MH=\\sqrt{(x_H-x_M)^2+(y_H-y_M)^2}.\\)');
     } else {
       const val = e2.a * ux + e2.b * uy + e2.c;
       setFb('ex2', 'ko', Math.abs(val) > 1e-9
-        ? 'Ton point \\(H\\) n’est même pas sur \\(d\\) : en le remplaçant dans l’équation on trouve \\(' + tx(val) + '\\neq 0\\).'
-        : 'Ton point est sur \\(d\\), mais \\(\\overrightarrow{MH}\\) n’est pas orthogonal à \\(d\\) : il doit être colinéaire à \\(\\vec n\\).');
+        ? 'Ton point \\(H\\) n’est même pas sur \\(d\\) : en le remplaçant dans l’équation on trouve \\(' + tx(val) + '\\neq 0.\\)'
+        : 'Ton point est sur \\(d,\\) mais \\(\\overrightarrow{MH}\\) n’est pas orthogonal à \\(d\\) : il doit être colinéaire à \\(\\vec n.\\)');
     }
   }
 
@@ -916,43 +932,43 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
     $('ex3-enonce').innerHTML =
       '<p>On considère l’ensemble \\(\\mathcal C\\) des points \\(M(x;y)\\) du plan vérifiant :</p>' +
       '<p style="text-align:center">\\[' + devEq(k, al, be, ga) + '\\]</p>' +
-      '<p>Montrer que \\(\\mathcal C\\) est un cercle, puis donner les coordonnées de son centre \\(\\Omega\\) et son rayon \\(r\\).</p>' +
-      (k === 1 ? '' : '<p class="hint">Commence par diviser toute l’équation par \\(' + k + '\\).</p>');
+      '<p>Montrer que \\(\\mathcal C\\) est un cercle, puis donner les coordonnées de son centre \\(\\Omega\\) et son rayon \\(r.\\)</p>' +
+      (k === 1 ? '' : '<p class="hint">Commence par diviser toute l’équation par \\(' + k + '.\\)</p>');
     const divis = (k === 1) ? '' :
-      '<p><b>0.</b> Les coefficients de \\(x^2\\) et \\(y^2\\) sont égaux à \\(' + k + '\\) : on divise toute l’équation par \\(' + k + '\\), ' +
-      'ce qui donne \\(' + devEq(1, al, be, ga) + '\\).</p>';
+      '<p><b>0.</b> Les coefficients de \\(x^2\\) et \\(y^2\\) sont égaux à \\(' + k + '\\) : on divise toute l’équation par \\(' + k + ',\\) ' +
+      'ce qui donne \\(' + devEq(1, al, be, ga) + '.\\)</p>';
     $('ex3-corr').innerHTML = divis +
       '<p><b>1.</b> On regroupe : \\((x^2' + tterm(al, 'x') + ')+(y^2' + tterm(be, 'y') + ')' +
-      tterm(ga, '') + '=0\\).</p>' +
+      tterm(ga, '') + '=0.\\)</p>' +
       '<p><b>2.</b> On complète les carrés : \\(x^2' + tterm(al, 'x') + '=' +
       sq('x', p, true) + tterm(-p * p, '') + '\\) et \\(y^2' + tterm(be, 'y') + '=' +
-      sq('y', q, true) + tterm(-q * q, '') + '\\).</p>' +
+      sq('y', q, true) + tterm(-q * q, '') + '.\\)</p>' +
       '<p><b>3.</b> L’équation devient \\(' + sq('x', p, true) + '+' + sq('y', q, true) +
-      tterm(-p * p, '') + tterm(-q * q, '') + tterm(ga, '') + '=0\\), soit ' +
-      '\\(' + sq('x', p, true) + '+' + sq('y', q, true) + '=' + tx(r2) + '\\).</p>' +
-      '<p><b>4.</b> Comme \\(' + tx(r2) + '>0\\), c’est bien un cercle : centre ' +
-      '\\(\\Omega(' + tx(p) + ';' + tx(q) + ')\\) et rayon \\(r=' + radTex(r2) + '\\approx' + tx(Math.sqrt(r2)) + '\\).</p>' +
-      '<p class="hint">Retiens : \\(r^2=' + tx(r2) + '\\), donc \\(r=' + radTex(r2) + '\\) — ne confonds pas \\(r\\) et \\(r^2\\).</p>';
+      tterm(-p * p, '') + tterm(-q * q, '') + tterm(ga, '') + '=0,\\) soit ' +
+      '\\(' + sq('x', p, true) + '+' + sq('y', q, true) + '=' + tx(r2) + '.\\)</p>' +
+      '<p><b>4.</b> Comme \\(' + tx(r2) + '>0,\\) c’est bien un cercle : centre ' +
+      '\\(\\Omega(' + tx(p) + ';' + tx(q) + ')\\) et rayon \\(r=' + radTex(r2) + '\\approx' + tx(Math.sqrt(r2)) + '.\\)</p>' +
+      '<p class="hint">Retiens : \\(r^2=' + tx(r2) + ',\\) donc \\(r=' + radTex(r2) + '\\) — ne confonds pas \\(r\\) et \\(r^2.\\)</p>';
     resetEx('ex3', ['ex3-x', 'ex3-y', 'ex3-r']);
     typeset($('ex3-enonce'));
   }
   function checkEx3() {
     const ux = parseNum($('ex3-x').value), uy = parseNum($('ex3-y').value), ur = parseNum($('ex3-r').value);
     if (!isFinite(ux) || !isFinite(uy) || !isFinite(ur)) {
-      setFb('ex3', 'info', 'Remplis les trois cases : \\(x_\\Omega\\), \\(y_\\Omega\\) et \\(r\\). ' +
+      setFb('ex3', 'info', 'Remplis les trois cases : \\(x_\\Omega,\\) \\(y_\\Omega\\) et \\(r.\\) ' +
         'Le rayon peut s’écrire <code>√5</code> ou <code>2,24</code>.');
       return;
     }
     const okC = near(ux, e3.p, 0.011) && near(uy, e3.q, 0.011);
     const okR = near(ur, Math.sqrt(e3.r2), 0.02);
     if (okC && okR) {
-      setFb('ex3', 'ok', 'Excellent : \\(\\Omega(' + tx(e3.p) + ';' + tx(e3.q) + ')\\) et \\(r=' + radTex(e3.r2) + '\\).');
+      setFb('ex3', 'ok', 'Excellent : \\(\\Omega(' + tx(e3.p) + ';' + tx(e3.q) + ')\\) et \\(r=' + radTex(e3.r2) + '.\\)');
     } else if (okC && near(ur, e3.r2, 0.02)) {
-      setFb('ex3', 'ko', 'Le centre est bon, mais tu as donné \\(r^2\\) et non \\(r\\) : ici \\(r=' + radTex(e3.r2) + '\\).');
+      setFb('ex3', 'ko', 'Le centre est bon, mais tu as donné \\(r^2\\) et non \\(r\\) : ici \\(r=' + radTex(e3.r2) + '.\\)');
     } else if (okC) {
-      setFb('ex3', 'ko', 'Le centre est bon. Pour le rayon : \\(r^2=\\dfrac{\\alpha^2}{4}+\\dfrac{\\beta^2}{4}-\\gamma\\), puis \\(r=\\sqrt{r^2}\\).');
+      setFb('ex3', 'ko', 'Le centre est bon. Pour le rayon : \\(r^2=\\dfrac{\\alpha^2}{4}+\\dfrac{\\beta^2}{4}-\\gamma,\\) puis \\(r=\\sqrt{r^2}.\\)');
     } else if (near(ux, -e3.p, 0.011) && near(uy, -e3.q, 0.011)) {
-      setFb('ex3', 'ko', 'Attention aux signes : dans \\((x-x_\\Omega)^2\\), le centre est l’opposé du nombre écrit dans la parenthèse.');
+      setFb('ex3', 'ko', 'Attention aux signes : dans \\((x-x_\\Omega)^2,\\) le centre est l’opposé du nombre écrit dans la parenthèse.');
     } else {
       setFb('ex3', 'ko', 'Pas encore : le centre est \\(\\left(-\\dfrac{\\alpha}{2};-\\dfrac{\\beta}{2}\\right)\\) ' +
         (e3.k === 1 ? '' : 'après avoir divisé l’équation par \\(' + e3.k + '\\) ') + '— déplie la correction.');
@@ -969,58 +985,58 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       q: 'Un vecteur normal à la droite \\(d:3x-5y+2=0\\) est :',
       choices: ['\\(\\vec n(3;-5)\\)', '\\(\\vec n(5;3)\\)', '\\(\\vec n(-5;3)\\)', '\\(\\vec n(3;5)\\)'],
       correct: 0,
-      expl: 'Pour \\(ax+by+c=0\\), le vecteur normal se lit directement : \\(\\vec n(a;b)=(3;-5)\\). Le vecteur \\((5;3)\\) est, lui, un vecteur directeur.'
+      expl: 'Pour \\(ax+by+c=0,\\) le vecteur normal se lit directement : \\(\\vec n(a;b)=(3;-5).\\) Le vecteur \\((5;3)\\) est, lui, un vecteur directeur.'
     },
     {
       q: 'Un vecteur directeur de la droite \\(d:2x+7y-1=0\\) est :',
       choices: ['\\(\\vec u(-7;2)\\)', '\\(\\vec u(2;7)\\)', '\\(\\vec u(7;2)\\)', '\\(\\vec u(-2;7)\\)'],
       correct: 0,
-      expl: 'Si \\(\\vec n(a;b)\\) est normal, \\(\\vec u(-b;a)\\) est directeur : \\((-7;2)\\). On vérifie \\(\\vec n\\cdot\\vec u=2\\times(-7)+7\\times2=0\\).'
+      expl: 'Si \\(\\vec n(a;b)\\) est normal, \\(\\vec u(-b;a)\\) est directeur : \\((-7;2).\\) On vérifie \\(\\vec n\\cdot\\vec u=2\\times(-7)+7\\times2=0.\\)'
     },
     {
       q: 'La droite passant par \\(A(2;-1)\\) et de vecteur normal \\(\\vec n(3;4)\\) a pour équation :',
       choices: ['\\(3x+4y-2=0\\)', '\\(3x+4y+2=0\\)', '\\(4x+3y-5=0\\)', '\\(-4x+3y+11=0\\)'],
       correct: 0,
-      expl: 'On écrit \\(3(x-2)+4(y+1)=0\\), soit \\(3x+4y-2=0\\). Contrôle : \\(3\\times2+4\\times(-1)-2=0\\).'
+      expl: 'On écrit \\(3(x-2)+4(y+1)=0,\\) soit \\(3x+4y-2=0.\\) Contrôle : \\(3\\times2+4\\times(-1)-2=0.\\)'
     },
     {
       q: 'Le cercle de centre \\(\\Omega(-2;5)\\) et de rayon \\(3\\) a pour équation :',
       choices: ['\\((x+2)^2+(y-5)^2=9\\)', '\\((x-2)^2+(y+5)^2=9\\)', '\\((x+2)^2+(y-5)^2=3\\)', '\\((x+2)^2+(y+5)^2=9\\)'],
       correct: 0,
-      expl: 'L’équation est \\((x-x_\\Omega)^2+(y-y_\\Omega)^2=r^2\\) : les signes s’inversent, et à droite on écrit \\(r^2=9\\).'
+      expl: 'L’équation est \\((x-x_\\Omega)^2+(y-y_\\Omega)^2=r^2\\) : les signes s’inversent, et à droite on écrit \\(r^2=9.\\)'
     },
     {
       q: 'L’ensemble d’équation \\(x^2+y^2-6x+4y+9=0\\) est un cercle de rayon :',
       choices: ['\\(2\\)', '\\(4\\)', '\\(3\\)', '\\(\\sqrt{13}\\)'],
       correct: 0,
-      expl: 'En complétant les carrés : \\((x-3)^2+(y+2)^2=9+4-9=4\\), donc \\(r^2=4\\) et \\(r=2\\).'
+      expl: 'En complétant les carrés : \\((x-3)^2+(y+2)^2=9+4-9=4,\\) donc \\(r^2=4\\) et \\(r=2.\\)'
     },
     {
       q: 'La distance du point \\(M(1;3)\\) à la droite \\(d:3x-4y+5=0\\) vaut :',
       choices: ['\\(0{,}8\\)', '\\(4\\)', '\\(0{,}16\\)', '\\(1{,}6\\)'],
       correct: 0,
-      expl: '\\(d(M,d)=\\dfrac{|3\\times1-4\\times3+5|}{\\sqrt{9+16}}=\\dfrac{4}{5}=0{,}8\\).'
+      expl: '\\(d(M,d)=\\dfrac{|3\\times1-4\\times3+5|}{\\sqrt{9+16}}=\\dfrac{4}{5}=0{,}8.\\)'
     },
     {
       q: 'Le point \\(A(1;-2)\\) et le cercle \\(\\mathcal C:(x-3)^2+(y+1)^2=5\\) : que peut-on dire ?',
       choices: ['\\(A\\) est sur le cercle', '\\(A\\) est à l’intérieur du disque', '\\(A\\) est à l’extérieur', 'On ne peut pas conclure'],
       correct: 0,
-      expl: 'On remplace : \\((1-3)^2+(-2+1)^2=4+1=5\\). L’égalité est vérifiée, donc \\(A\\in\\mathcal C\\).'
+      expl: 'On remplace : \\((1-3)^2+(-2+1)^2=4+1=5.\\) L’égalité est vérifiée, donc \\(A\\in\\mathcal C.\\)'
     },
     {
       q: 'La parabole d’équation \\(y=x^2-6x+1\\) admet pour axe de symétrie :',
       choices: ['\\(x=3\\)', '\\(x=-3\\)', '\\(x=6\\)', '\\(y=3\\)'],
       correct: 0,
-      expl: 'L’axe est la droite verticale \\(x=-\\dfrac{b}{2a}=-\\dfrac{-6}{2}=3\\).'
+      expl: 'L’axe est la droite verticale \\(x=-\\dfrac{b}{2a}=-\\dfrac{-6}{2}=3.\\)'
     },
     {
-      q: '\\(H\\) est le projeté orthogonal de \\(M\\) sur \\(d\\). Quelle caractérisation est correcte ?',
+      q: '\\(H\\) est le projeté orthogonal de \\(M\\) sur \\(d.\\) Quelle caractérisation est correcte ?',
       choices: ['\\(H\\in d\\) et \\(\\overrightarrow{MH}\\) est colinéaire à \\(\\vec n\\)',
         '\\(H\\in d\\) et \\(\\overrightarrow{MH}\\) est colinéaire à \\(\\vec u\\)',
         '\\(H\\) est le milieu de \\([OM]\\)',
         '\\(H\\) est le point de \\(d\\) le plus éloigné de \\(M\\)'],
       correct: 0,
-      expl: '\\(\\overrightarrow{MH}\\) doit être orthogonal à la droite, donc colinéaire au vecteur normal \\(\\vec n\\) ; \\(H\\) est alors le point de \\(d\\) le plus <em>proche</em> de \\(M\\).'
+      expl: '\\(\\overrightarrow{MH}\\) doit être orthogonal à la droite, donc colinéaire au vecteur normal \\(\\vec n\\) ; \\(H\\) est alors le point de \\(d\\) le plus <em>proche</em> de \\(M.\\)'
     },
     {
       q: 'L’ensemble des points vérifiant \\(x^2+y^2+2x-4y+10=0\\) est :',
@@ -1038,13 +1054,13 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       q: 'Toute droite perpendiculaire à \\(d:2x-3y+1=0\\) admet pour vecteur normal :',
       choices: ['\\((3;2)\\)', '\\((2;-3)\\)', '\\((2;3)\\)', '\\((-2;3)\\)'],
       correct: 0,
-      expl: 'Le vecteur normal de \\(d\\) est \\((2;-3)\\) : il devient vecteur <em>directeur</em> de la perpendiculaire, dont un vecteur normal est \\((3;2)\\).'
+      expl: 'Le vecteur normal de \\(d\\) est \\((2;-3)\\) : il devient vecteur <em>directeur</em> de la perpendiculaire, dont un vecteur normal est \\((3;2).\\)'
     },
     {
       q: 'Le cercle de diamètre \\([AB]\\) avec \\(A(-1;2)\\) et \\(B(3;4)\\) a pour centre et rayon :',
       choices: ['\\(\\Omega(1;3)\\) et \\(r=\\sqrt5\\)', '\\(\\Omega(1;3)\\) et \\(r=2\\sqrt5\\)', '\\(\\Omega(2;6)\\) et \\(r=\\sqrt5\\)', '\\(\\Omega(1;3)\\) et \\(r=5\\)'],
       correct: 0,
-      expl: 'Le centre est le milieu \\(\\left(\\frac{-1+3}{2};\\frac{2+4}{2}\\right)=(1;3)\\) et \\(r=\\frac{AB}{2}=\\frac{\\sqrt{16+4}}{2}=\\sqrt5\\).'
+      expl: 'Le centre est le milieu \\(\\left(\\frac{-1+3}{2};\\frac{2+4}{2}\\right)=(1;3)\\) et \\(r=\\frac{AB}{2}=\\frac{\\sqrt{16+4}}{2}=\\sqrt5.\\)'
     }
   ];
 

@@ -101,10 +101,25 @@ mjx-container[display="true"]{margin:8px 0 !important}
    Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
    étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
    maintenant horizontalement à l'intérieur de ses propres bordures. */
-mjx-container { max-width: 100%; }
-/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
-   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
-mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
 
 /* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
@@ -127,6 +142,7 @@ mjx-container > mjx-assistive-mml {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
 }
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
@@ -929,9 +945,9 @@ function genEx1(){
   E1 = {a:a, b:b, c:c, d:d, A:A};
   $('ex1enonce').innerHTML =
     '<p>Dans un repère orthonormé de l\u2019espace, on considère le point \\(' + ptTex('A',A) + '\\) ' +
-    'et le vecteur \\(' + vecTex('n',[a,b,c]) + '\\).</p>' +
+    'et le vecteur \\(' + vecTex('n',[a,b,c]) + '.\\)</p>' +
     '<p>Déterminer une équation cartésienne \\(ax+by+cz+d=0\\) du plan \\(\\mathcal P\\) passant par \\(A\\) ' +
-    'et de vecteur normal \\(\\vec{n}\\).</p>' +
+    'et de vecteur normal \\(\\vec{n}.\\)</p>' +
     '<p class="small">Toute équation proportionnelle est acceptée (par exemple en multipliant tout par \\(-1\\) ou par \\(2\\)).</p>';
   ['ex1a','ex1b','ex1c','ex1d'].forEach(function(id){ $(id).value=''; });
   $('ex1fb').className = 'feedback';
@@ -941,7 +957,7 @@ function genEx1(){
 }
 function checkEx1(){
   var u = [val('ex1a'), val('ex1b'), val('ex1c'), val('ex1d')];
-  if(u.some(isNaN)){ setFb('ex1fb', false, 'Remplis les quatre champs \\(a,b,c,d\\).'); return; }
+  if(u.some(isNaN)){ setFb('ex1fb', false, 'Remplis les quatre champs \\(a,b,c,d.\\)'); return; }
   if(Math.abs(u[0])<1e-9 && Math.abs(u[1])<1e-9 && Math.abs(u[2])<1e-9){
     setFb('ex1fb', false, 'Le triplet \\((a;b;c)\\) ne peut pas être nul : ce sont les coordonnées du vecteur normal.');
     return;
@@ -960,18 +976,18 @@ function checkEx1(){
   if(ok){
     setFb('ex1fb', true, 'Correct ! \\(' + planeTex(E1.a,E1.b,E1.c,E1.d) + '\\) (ton équation en est un multiple, c\u2019est le même plan).');
   } else {
-    setFb('ex1fb', false, 'Pas encore. Rappel : les coefficients de \\(x,y,z\\) sont les coordonnées de \\(\\vec{n}\\), puis on calcule \\(d\\) avec \\(A\\).');
+    setFb('ex1fb', false, 'Pas encore. Rappel : les coefficients de \\(x,y,z\\) sont les coordonnées de \\(\\vec{n},\\) puis on calcule \\(d\\) avec \\(A.\\)');
   }
 }
 function solEx1(){
   var a=E1.a, b=E1.b, c=E1.c, d=E1.d, A=E1.A;
   return '<p><b>1. Coefficients.</b> Le vecteur normal donne directement les coefficients de \\(x,y,z\\) : ' +
-    'l\u2019équation est de la forme \\((' + a + ')x + (' + b + ')y + (' + c + ')z + d = 0\\), c\u2019est-à-dire \\(' +
-    planeTex(a,b,c,0).replace(' = 0','') + ' + d = 0\\).</p>' +
-    '<p><b>2. Calcul de \\(d\\).</b> \\(A\\in\\mathcal P\\) donc \\(a x_A + b y_A + c z_A + d = 0\\) :<br>' +
+    'l\u2019équation est de la forme \\((' + a + ')x + (' + b + ')y + (' + c + ')z + d = 0,\\) c\u2019est-à-dire \\(' +
+    planeTex(a,b,c,0).replace(' = 0','') + ' + d = 0.\\)</p>' +
+    '<p><b>2. Calcul de \\(d.\\)</b> \\(A\\in\\mathcal P\\) donc \\(a x_A + b y_A + c z_A + d = 0\\) :<br>' +
     '\\((' + a + ')\\times(' + A[0] + ') + (' + b + ')\\times(' + A[1] + ') + (' + c + ')\\times(' + A[2] + ') + d = ' +
-    (a*A[0]+b*A[1]+c*A[2]) + ' + d = 0\\), donc \\(d = ' + d + '\\).</p>' +
-    '<p><b>3. Conclusion.</b> \\(\\mathcal P : ' + planeTex(a,b,c,d) + '\\).</p>' +
+    (a*A[0]+b*A[1]+c*A[2]) + ' + d = 0,\\) donc \\(d = ' + d + '.\\)</p>' +
+    '<p><b>3. Conclusion.</b> \\(\\mathcal P : ' + planeTex(a,b,c,d) + '.\\)</p>' +
     '<p><b>4. Vérification.</b> On remplace \\(A\\) : \\(' + (a*A[0]+b*A[1]+c*A[2]) + ' + (' + d + ') = 0\\) ✓.</p>' +
     '<p class="small">Toute équation obtenue en multipliant celle-ci par un réel non nul convient aussi.</p>';
 }
@@ -996,11 +1012,11 @@ function genEx2(){
   E2 = {a:a,b:b,c:c,d:d,A:A,u:[ua,ub,uc],t0:t0,I:I,ps:ps};
   $('ex2enonce').innerHTML =
     '<p>On considère le plan \\(\\mathcal P : ' + planeTex(a,b,c,d) + '\\) et la droite \\(\\mathcal D\\) ' +
-    'passant par \\(' + ptTex('A',A) + '\\) de vecteur directeur \\(' + vecTex('u',[ua,ub,uc]) + '\\).</p>' +
+    'passant par \\(' + ptTex('A',A) + '\\) de vecteur directeur \\(' + vecTex('u',[ua,ub,uc]) + '.\\)</p>' +
     '<p>\\(\\mathcal D : \\begin{cases} x = ' + affTex(A[0],ua,'t') + '\\\\' +
     ' y = ' + affTex(A[1],ub,'t') + '\\\\' +
     ' z = ' + affTex(A[2],uc,'t') + '\\end{cases}\\qquad t\\in\\mathbb R\\)</p>' +
-    '<p>Déterminer les coordonnées du point d\u2019intersection \\(I\\) de \\(\\mathcal D\\) et de \\(\\mathcal P\\). ' +
+    '<p>Déterminer les coordonnées du point d\u2019intersection \\(I\\) de \\(\\mathcal D\\) et de \\(\\mathcal P.\\) ' +
     '<span class="small">(la valeur du paramètre \\(t\\) est un entier)</span></p>';
   ['ex2x','ex2y','ex2z'].forEach(function(id){ $(id).value=''; });
   $('ex2fb').className = 'feedback';
@@ -1010,13 +1026,13 @@ function genEx2(){
 }
 function checkEx2(){
   var r = [val('ex2x'), val('ex2y'), val('ex2z')];
-  if(r.some(isNaN)){ setFb('ex2fb', false, 'Remplis les trois coordonnées de \\(I\\).'); return; }
+  if(r.some(isNaN)){ setFb('ex2fb', false, 'Remplis les trois coordonnées de \\(I.\\)'); return; }
   var ok = true, i;
   for(i=0;i<3;i++) if(Math.abs(r[i]-E2.I[i]) > 1e-3) ok = false;
   if(ok){
     setFb('ex2fb', true, 'Correct ! \\(' + ptTex('I',E2.I) + '\\) (obtenu pour \\(t = ' + E2.t0 + '\\)).');
   } else {
-    setFb('ex2fb', false, 'Pas encore. Substitue \\(x(t),y(t),z(t)\\) dans l\u2019équation du plan, résous en \\(t\\), puis reporte.');
+    setFb('ex2fb', false, 'Pas encore. Substitue \\(x(t),y(t),z(t)\\) dans l\u2019équation du plan, résous en \\(t,\\) puis reporte.');
   }
 }
 function solEx2(){
@@ -1027,14 +1043,14 @@ function solEx2(){
     'la droite coupe le plan en un unique point.</p>' +
     '<p><b>2. Substitution.</b> On remplace \\(x,y,z\\) par leurs expressions en \\(t\\) dans \\(' + planeTex(a,b,c,d) + '\\) :<br>' +
     '\\((' + a + ')\\times(' + affTex(A[0],u[0],'t') + ') + (' + b + ')\\times(' + affTex(A[1],u[1],'t') + ') + (' + c + ')\\times(' +
-    affTex(A[2],u[2],'t') + ') + (' + d + ') = 0\\).</p>' +
+    affTex(A[2],u[2],'t') + ') + (' + d + ') = 0.\\)</p>' +
     '<p><b>3. On regroupe.</b> \\(' + (Math.abs(E2.ps)===1 ? (E2.ps<0?'-':'') : String(E2.ps)) +
-    't + (' + cst + ') = 0\\), donc \\(t = ' + t0 + '\\).</p>' +
-    '<p><b>4. Coordonnées de \\(I\\).</b> On reporte \\(t = ' + t0 + '\\) :<br>' +
-    '\\(x = ' + A[0] + ' + (' + t0 + ')\\times(' + u[0] + ') = ' + I[0] + '\\), ' +
-    '\\(y = ' + A[1] + ' + (' + t0 + ')\\times(' + u[1] + ') = ' + I[1] + '\\), ' +
-    '\\(z = ' + A[2] + ' + (' + t0 + ')\\times(' + u[2] + ') = ' + I[2] + '\\).<br>' +
-    'Donc \\(' + ptTex('I',I) + '\\).</p>' +
+    't + (' + cst + ') = 0,\\) donc \\(t = ' + t0 + '.\\)</p>' +
+    '<p><b>4. Coordonnées de \\(I.\\)</b> On reporte \\(t = ' + t0 + '\\) :<br>' +
+    '\\(x = ' + A[0] + ' + (' + t0 + ')\\times(' + u[0] + ') = ' + I[0] + ',\\) ' +
+    '\\(y = ' + A[1] + ' + (' + t0 + ')\\times(' + u[1] + ') = ' + I[1] + ',\\) ' +
+    '\\(z = ' + A[2] + ' + (' + t0 + ')\\times(' + u[2] + ') = ' + I[2] + '.\\)<br>' +
+    'Donc \\(' + ptTex('I',I) + '.\\)</p>' +
     '<p><b>5. Vérification.</b> \\((' + a + ')\\times(' + I[0] + ') + (' + b + ')\\times(' + I[1] + ') + (' + c + ')\\times(' + I[2] +
     ') + (' + d + ') = 0\\) ✓</p>';
 }
@@ -1059,9 +1075,9 @@ function genEx3(){
   var d = -(n[0]*H[0]+n[1]*H[1]+n[2]*H[2]);
   E3 = {n:n, N:N, M:M, t0:t0, H:H, d:d, MH:Math.abs(t0)*N};
   $('ex3enonce').innerHTML =
-    '<p>On considère le plan \\(\\mathcal P : ' + planeTex(n[0],n[1],n[2],d) + '\\) et le point \\(' + ptTex('M',M) + '\\).</p>' +
-    '<ol class="steps"><li>Déterminer les coordonnées du projeté orthogonal \\(H\\) de \\(M\\) sur \\(\\mathcal P\\).</li>' +
-    '<li>En déduire la distance \\(MH = d(M,\\mathcal P)\\).</li></ol>' +
+    '<p>On considère le plan \\(\\mathcal P : ' + planeTex(n[0],n[1],n[2],d) + '\\) et le point \\(' + ptTex('M',M) + '.\\)</p>' +
+    '<ol class="steps"><li>Déterminer les coordonnées du projeté orthogonal \\(H\\) de \\(M\\) sur \\(\\mathcal P.\\)</li>' +
+    '<li>En déduire la distance \\(MH = d(M,\\mathcal P).\\)</li></ol>' +
     '<p class="small">Ici \\(\\|\\vec{n}\\|\\) est un entier : la distance tombe juste.</p>';
   ['ex3x','ex3y','ex3z','ex3d'].forEach(function(id){ $(id).value=''; });
   $('ex3fb').className = 'feedback';
@@ -1071,19 +1087,19 @@ function genEx3(){
 }
 function checkEx3(){
   var r = [val('ex3x'), val('ex3y'), val('ex3z')], dd = val('ex3d');
-  if(r.some(isNaN) || isNaN(dd)){ setFb('ex3fb', false, 'Remplis les coordonnées de \\(H\\) et la distance \\(MH\\).'); return; }
+  if(r.some(isNaN) || isNaN(dd)){ setFb('ex3fb', false, 'Remplis les coordonnées de \\(H\\) et la distance \\(MH.\\)'); return; }
   var okH = true, i;
   for(i=0;i<3;i++) if(Math.abs(r[i]-E3.H[i]) > 1e-3) okH = false;
   var okD = Math.abs(dd - E3.MH) <= 1e-2;
   if(okH && okD){
     setFb('ex3fb', true, 'Correct ! \\(' + ptTex('H',E3.H) + '\\) et \\(MH = |t|\\times\\|\\vec{n}\\| = ' +
-      Math.abs(E3.t0) + '\\times' + E3.N + ' = ' + E3.MH + '\\).');
+      Math.abs(E3.t0) + '\\times' + E3.N + ' = ' + E3.MH + '.\\)');
   } else if(okH && !okD){
-    setFb('ex3fb', false, 'Le projeté \\(H\\) est juste, mais pas la distance : \\(MH = |t|\\times\\|\\vec{n}\\|\\), avec \\(\\|\\vec{n}\\| = ' + E3.N + '\\).');
+    setFb('ex3fb', false, 'Le projeté \\(H\\) est juste, mais pas la distance : \\(MH = |t|\\times\\|\\vec{n}\\|,\\) avec \\(\\|\\vec{n}\\| = ' + E3.N + '.\\)');
   } else if(!okH && okD){
     setFb('ex3fb', false, 'La distance est juste, mais les coordonnées de \\(H\\) non : \\(H = M + t\\,\\vec{n}\\) coordonnée par coordonnée.');
   } else {
-    setFb('ex3fb', false, 'Pas encore. Pose \\(H(x_M+ta;\\,y_M+tb;\\,z_M+tc)\\), écris \\(H\\in\\mathcal P\\), résous en \\(t\\).');
+    setFb('ex3fb', false, 'Pas encore. Pose \\(H(x_M+ta;\\,y_M+tb;\\,z_M+tc),\\) écris \\(H\\in\\mathcal P,\\) résous en \\(t.\\)');
   }
 }
 function solEx3(){
@@ -1091,17 +1107,17 @@ function solEx3(){
   var n2 = n[0]*n[0]+n[1]*n[1]+n[2]*n[2];
   var scal = n[0]*M[0]+n[1]*M[1]+n[2]*M[2];
   return '<p><b>1. Vecteur normal.</b> L\u2019équation \\(' + planeTex(n[0],n[1],n[2],d) + '\\) donne \\(' + vecTex('n',n) +
-    '\\), avec \\(\\|\\vec{n}\\| = \\sqrt{' + (n[0]*n[0]) + '+' + (n[1]*n[1]) + '+' + (n[2]*n[2]) + '} = \\sqrt{' + n2 + '} = ' + N + '\\).</p>' +
-    '<p><b>2. Droite passant par \\(M\\) et dirigée par \\(\\vec{n}\\).</b> ' +
-    '\\(H(' + affTex(M[0],n[0],'t') + '\\,;\\,' + affTex(M[1],n[1],'t') + '\\,;\\,' + affTex(M[2],n[2],'t') + ')\\).</p>' +
-    '<p><b>3. On écrit \\(H\\in\\mathcal P\\).</b> En remplaçant dans l\u2019équation du plan :<br>' +
-    '\\(\\vec{n}\\cdot\\vec{OM} + t\\,\\|\\vec{n}\\|^2 + d = ' + scal + ' + ' + n2 + 't + (' + d + ') = 0\\), ' +
-    'donc \\(t = ' + t0 + '\\).</p>' +
-    '<p><b>4. Coordonnées de \\(H\\).</b> \\(' + ptTex('H',H) + '\\). ' +
+    ',\\) avec \\(\\|\\vec{n}\\| = \\sqrt{' + (n[0]*n[0]) + '+' + (n[1]*n[1]) + '+' + (n[2]*n[2]) + '} = \\sqrt{' + n2 + '} = ' + N + '.\\)</p>' +
+    '<p><b>2. Droite passant par \\(M\\) et dirigée par \\(\\vec{n}.\\)</b> ' +
+    '\\(H(' + affTex(M[0],n[0],'t') + '\\,;\\,' + affTex(M[1],n[1],'t') + '\\,;\\,' + affTex(M[2],n[2],'t') + ').\\)</p>' +
+    '<p><b>3. On écrit \\(H\\in\\mathcal P.\\)</b> En remplaçant dans l\u2019équation du plan :<br>' +
+    '\\(\\vec{n}\\cdot\\vec{OM} + t\\,\\|\\vec{n}\\|^2 + d = ' + scal + ' + ' + n2 + 't + (' + d + ') = 0,\\) ' +
+    'donc \\(t = ' + t0 + '.\\)</p>' +
+    '<p><b>4. Coordonnées de \\(H.\\)</b> \\(' + ptTex('H',H) + '.\\) ' +
     'Vérification : \\(' + (n[0]*H[0]+n[1]*H[1]+n[2]*H[2]) + ' + (' + d + ') = 0\\) ✓</p>' +
     '<p><b>5. Distance.</b> \\(\\vec{MH} = t\\,\\vec{n}\\) donc \\(MH = |t|\\,\\|\\vec{n}\\| = ' +
-    Math.abs(t0) + '\\times' + N + ' = ' + E3.MH + '\\). Ainsi \\(d(M,\\mathcal P) = ' + E3.MH + '\\).</p>' +
-    '<p class="small">Vérification facultative avec la formule d\u2019approfondissement : \\(\\dfrac{|' + (scal+d) + '|}{' + N + '} = ' + E3.MH + '\\).</p>';
+    Math.abs(t0) + '\\times' + N + ' = ' + E3.MH + '.\\) Ainsi \\(d(M,\\mathcal P) = ' + E3.MH + '.\\)</p>' +
+    '<p class="small">Vérification facultative avec la formule d\u2019approfondissement : \\(\\dfrac{|' + (scal+d) + '|}{' + N + '} = ' + E3.MH + '.\\)</p>';
 }
 
 /* branchement des exercices */
@@ -1139,7 +1155,7 @@ var QBANK = [
     q: 'Le plan passant par \\(A(1;0;2)\\) et de vecteur normal \\(\\vec{n}\\,(1;1;1)\\) a pour équation :',
     opts: ['\\(x+y+z-3=0\\)', '\\(x+y+z+3=0\\)', '\\(x+2z-3=0\\)', '\\(x+y+z=0\\)'],
     correct: 0,
-    expl: '\\(d=-(x_A+y_A+z_A)=-(1+0+2)=-3\\), d\u2019où \\(x+y+z-3=0\\).'
+    expl: '\\(d=-(x_A+y_A+z_A)=-(1+0+2)=-3,\\) d\u2019où \\(x+y+z-3=0.\\)'
   },
   {
     q: 'Une droite est orthogonale à un plan si son vecteur directeur est orthogonal :',
@@ -1148,10 +1164,10 @@ var QBANK = [
     expl: 'Un seul vecteur ne suffit pas ; deux vecteurs non colinéaires engendrent tout le plan, donc l\u2019orthogonalité se propage par bilinéarité.'
   },
   {
-    q: 'On a \\(\\vec{MH}=t\\,\\vec{n}\\) avec \\(t=-2\\) et \\(\\|\\vec{n}\\|=3\\). Que vaut \\(MH\\) ?',
+    q: 'On a \\(\\vec{MH}=t\\,\\vec{n}\\) avec \\(t=-2\\) et \\(\\|\\vec{n}\\|=3.\\) Que vaut \\(MH\\) ?',
     opts: ['\\(6\\)', '\\(-6\\)', '\\(2\\)', '\\(3\\)'],
     correct: 0,
-    expl: 'Une distance est positive : \\(MH=|t|\\times\\|\\vec{n}\\|=2\\times3=6\\).'
+    expl: 'Une distance est positive : \\(MH=|t|\\times\\|\\vec{n}\\|=2\\times3=6.\\)'
   },
   {
     q: 'La droite \\(\\mathcal D : x=2+t,\\ y=3t,\\ z=-1-2t\\) contient-elle \\(B(4;6;-5)\\) ?',
@@ -1181,7 +1197,7 @@ var QBANK = [
     q: 'Le projeté orthogonal \\(H\\) de \\(M\\) sur un plan \\(\\mathcal P\\) est :',
     opts: ['le point de \\(\\mathcal P\\) le plus proche de \\(M\\)', 'le milieu de \\(M\\) et d\u2019un point de \\(\\mathcal P\\)', 'toujours l\u2019origine du repère', 'le point de \\(\\mathcal P\\) le plus éloigné de \\(M\\)'],
     correct: 0,
-    expl: 'Pour tout \\(N\\in\\mathcal P\\), Pythagore donne \\(MN^2=MH^2+HN^2\\ge MH^2\\), avec égalité seulement si \\(N=H\\).'
+    expl: 'Pour tout \\(N\\in\\mathcal P,\\) Pythagore donne \\(MN^2=MH^2+HN^2\\ge MH^2,\\) avec égalité seulement si \\(N=H.\\)'
   },
   {
     q: 'Que vaut \\(\\|\\vec{u}\\|\\) pour \\(\\vec{u}\\,(2;-1;2)\\) ?',
@@ -1190,7 +1206,7 @@ var QBANK = [
     expl: '\\(\\|\\vec{u}\\|=\\sqrt{4+1+4}=\\sqrt{9}=3\\) : la norme est la racine de la somme des carrés.'
   },
   {
-    q: 'Pour montrer que \\(\\vec{n}\\) est normal au plan \\((ABC)\\), il suffit de vérifier :',
+    q: 'Pour montrer que \\(\\vec{n}\\) est normal au plan \\((ABC),\\) il suffit de vérifier :',
     opts: ['\\(\\vec{n}\\cdot\\vec{AB}=0\\) et \\(\\vec{n}\\cdot\\vec{AC}=0\\) avec \\(\\vec{AB},\\vec{AC}\\) non colinéaires', '\\(\\vec{n}\\cdot\\vec{AB}=0\\) seulement', '\\(\\vec{n}=\\vec{AB}+\\vec{AC}\\)', '\\(\\|\\vec{n}\\|=1\\)'],
     correct: 0,
     expl: 'Deux vecteurs non colinéaires du plan suffisent : tout vecteur du plan est combinaison linéaire de ces deux-là.'
@@ -1202,7 +1218,7 @@ var QBANK = [
     expl: 'La substitution donne une équation du premier degré en \\(t\\) ; on reporte ensuite la valeur trouvée dans la représentation paramétrique.'
   },
   {
-    q: 'Avec \\(\\vec{u}\\,(1;-2;1)\\) et \\(\\vec{v}\\,(2;1;0)\\), que vaut \\(\\vec{u}\\cdot\\vec{v}\\) ?',
+    q: 'Avec \\(\\vec{u}\\,(1;-2;1)\\) et \\(\\vec{v}\\,(2;1;0),\\) que vaut \\(\\vec{u}\\cdot\\vec{v}\\) ?',
     opts: ['\\(0\\) : ils sont orthogonaux', '\\(4\\)', '\\(-2\\)', '\\(3\\)'],
     correct: 0,
     expl: '\\(1\\times2+(-2)\\times1+1\\times0=2-2+0=0\\) : le produit scalaire est nul, les vecteurs sont orthogonaux.'
@@ -1211,7 +1227,7 @@ var QBANK = [
     q: 'Dans l\u2019espace, une droite est décrite par :',
     opts: ['une représentation paramétrique', 'une équation cartésienne \\(ax+by+cz+d=0\\)', 'une seule équation \\(y=mx+p\\)', 'son vecteur normal'],
     correct: 0,
-    expl: 'Dans l\u2019espace, \\(ax+by+cz+d=0\\) est toujours un plan ; une droite se décrit par \\(x=x_A+\\alpha t,\\ y=y_A+\\beta t,\\ z=z_A+\\gamma t\\).'
+    expl: 'Dans l\u2019espace, \\(ax+by+cz+d=0\\) est toujours un plan ; une droite se décrit par \\(x=x_A+\\alpha t,\\ y=y_A+\\beta t,\\ z=z_A+\\gamma t.\\)'
   }
 ];
 
