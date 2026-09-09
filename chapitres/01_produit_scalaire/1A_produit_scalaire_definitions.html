@@ -101,6 +101,70 @@ footer { text-align: center; color: var(--muted); font-size: 0.92rem; padding: 1
 footer .tip { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.9rem 1rem; max-width: 640px; margin: 0 auto; color: var(--ink); }
 mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
 </style>
+
+<style>
+/* ===== Débordement des formules sur petit écran =====
+   Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
+   étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
+   maintenant horizontalement à l'intérieur de ses propres bordures. */
+mjx-container { max-width: 100%; }
+/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
+   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
+mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
+
+/* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
+   invisible et sans largeur, sinon elle élargit la page sur mobile. */
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml {
+  position: absolute !important;
+  top: 0 !important; left: 0 !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  padding: 0 !important; border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Conteneurs connus de cette fiche (fonctionne sur tous les navigateurs) */
+.correction, .corr, .enonce, .feedback, .expl, .stem, .question,
+.correction p, .corr p, .enonce p, .expl p,
+.correction li, .corr li, .enonce li, .expl li {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Règle générale : tout élément dont un enfant direct est une formule */
+p:has(> mjx-container),
+li:has(> mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),
+dd:has(> mjx-container),
+summary:has(> mjx-container),
+div:has(> mjx-container) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Titres construits en flex : l'étiquette passe à la ligne au lieu de dépasser */
+h1, h2, h3, h4 { flex-wrap: wrap; }
+.tag, .badge, .chip, .pill { max-width: 100%; }
+
+/* Tableaux et blocs de code : défilement local plutôt que débordement.
+   On fait défiler le conteneur, sans toucher au rendu du tableau lui-même. */
+div:has(> table) { max-width: 100%; overflow-x: auto; }
+pre { max-width: 100%; overflow-x: auto; }
+
+/* Barre de défilement discrète mais visible au doigt */
+.correction::-webkit-scrollbar, .corr::-webkit-scrollbar,
+p::-webkit-scrollbar, li::-webkit-scrollbar { height: 4px; }
+.correction::-webkit-scrollbar-thumb, .corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
+  background: #d7d2ca; border-radius: 4px;
+}
+</style>
 </head>
 <body>
 
@@ -384,6 +448,12 @@ mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
     return Number(s);
   }
   function coord(x, y) { return '(' + x + '\\,;\\,' + y + ')'; }
+  // Écrit une norme sans répéter la racine : \sqrt{68} \approx 8,246 (et non \sqrt{68} = \sqrt{68} \approx …)
+  function normeTex(carre, valeur) {
+    var r = Math.round(Math.sqrt(carre));
+    if (r * r === carre) return '\\sqrt{' + carre + '} = ' + r;
+    return '\\sqrt{' + carre + '} \\approx ' + fmt(valeur, 3);
+  }
   function sqrtTex(n) {
     var r = Math.round(Math.sqrt(n));
     if (r * r === n) return String(r);
@@ -675,8 +745,11 @@ mjx-container { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
     var enonce = '<p>Dans un repère orthonormé, on donne \\(A' + coord(A[0], A[1]) + '\\), \\(B' + coord(B[0], B[1]) + '\\) et \\(C' + coord(C[0], C[1]) + '\\).</p><p>Déterminer une mesure de l\'angle \\(\\widehat{BAC}\\), arrondie au degré.</p>';
     var correction = '<p><strong>Étape 1 : coordonnées des vecteurs.</strong> \\(\\vec{AB}\\,' + coord(abx, aby) + '\\) et \\(\\vec{AC}\\,' + coord(acx, acy) + '\\).</p>' +
       '<p><strong>Étape 2 : produit scalaire.</strong> \\(\\vec{AB}\\cdot\\vec{AC} = ' + abx + '\\times' + fmtSigned(acx) + ' + ' + fmtSigned(aby) + '\\times' + fmtSigned(acy) + ' = ' + dot + '\\).</p>' +
-      '<p><strong>Étape 3 : normes.</strong> \\(AB = \\sqrt{' + abx + '^2 + ' + fmtSigned(aby) + '^2} = \\sqrt{' + n1sq + '} = ' + sqrtTex(n1sq) + (Math.round(Math.sqrt(n1sq)) ** 2 === n1sq ? '' : ' \\approx ' + fmt(n1, 3)) + '\\) et \\(AC = \\sqrt{' + n2sq + '} = ' + sqrtTex(n2sq) + (Math.round(Math.sqrt(n2sq)) ** 2 === n2sq ? '' : ' \\approx ' + fmt(n2, 3)) + '\\).</p>' +
-      '<p><strong>Étape 4 : cosinus.</strong> \\(\\cos\\widehat{BAC} = \\dfrac{\\vec{AB}\\cdot\\vec{AC}}{AB\\times AC} = \\dfrac{' + dot + '}{' + sqrtTex(n1sq) + '\\times' + sqrtTex(n2sq) + '} \\approx ' + fmt(cosv, 4) + '\\).</p>' +
+      '<p><strong>Étape 3 : normes.</strong><br>' +
+      '\\(AB = \\sqrt{' + fmtSigned(abx) + '^2 + ' + fmtSigned(aby) + '^2} = ' + normeTex(n1sq, n1) + '\\)<br>' +
+      '\\(AC = \\sqrt{' + fmtSigned(acx) + '^2 + ' + fmtSigned(acy) + '^2} = ' + normeTex(n2sq, n2) + '\\)</p>' +
+      '<p><strong>Étape 4 : cosinus.</strong></p>' +
+      '\\[\\cos\\widehat{BAC} = \\frac{\\vec{AB}\\cdot\\vec{AC}}{AB\\times AC} = \\frac{' + dot + '}{' + sqrtTex(n1sq) + '\\times' + sqrtTex(n2sq) + '} \\approx ' + fmt(cosv, 4) + '\\]' +
       '<p><strong>Étape 5 : angle.</strong> \\(\\widehat{BAC} = \\arccos(' + fmt(cosv, 4) + ') \\approx ' + fmt(ang, 1) + '^\\circ\\), soit environ \\(' + angR + '^\\circ\\)' + (dot < 0 ? ' (produit scalaire négatif : angle obtus, cohérent).' : (dot === 0 ? ' : angle droit.' : ' (produit scalaire positif : angle aigu, cohérent).')) + '</p>';
     return { ang: ang, angR: angR, dot: dot, enonce: enonce, correction: correction };
   }, function (e, val) {

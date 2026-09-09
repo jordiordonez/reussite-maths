@@ -95,6 +95,70 @@ mjx-container[display="true"]{margin:8px 0 !important}
 .small{font-size:.9rem;color:var(--muted)}
 @media (max-width:480px){.card{padding:14px 13px}main{padding:10px 8px 40px}section>h2{font-size:1.45rem}}
 </style>
+
+<style>
+/* ===== Débordement des formules sur petit écran =====
+   Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
+   étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
+   maintenant horizontalement à l'intérieur de ses propres bordures. */
+mjx-container { max-width: 100%; }
+/* Une formule trop large se REDUIT pour tenir, plutôt que d'être coupée :
+   sur un téléphone, rien n'est caché et il n'y a pas de défilement à deviner. */
+mjx-container > svg { max-width: 97%; height: auto; }   /* 97 % : laisse la place à la ponctuation finale sur la même ligne */
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
+
+/* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
+   invisible et sans largeur, sinon elle élargit la page sur mobile. */
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml {
+  position: absolute !important;
+  top: 0 !important; left: 0 !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  padding: 0 !important; border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Conteneurs connus de cette fiche (fonctionne sur tous les navigateurs) */
+.correction, .corr, .enonce, .feedback, .expl, .stem, .question,
+.correction p, .corr p, .enonce p, .expl p,
+.correction li, .corr li, .enonce li, .expl li {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Règle générale : tout élément dont un enfant direct est une formule */
+p:has(> mjx-container),
+li:has(> mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),
+dd:has(> mjx-container),
+summary:has(> mjx-container),
+div:has(> mjx-container) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Titres construits en flex : l'étiquette passe à la ligne au lieu de dépasser */
+h1, h2, h3, h4 { flex-wrap: wrap; }
+.tag, .badge, .chip, .pill { max-width: 100%; }
+
+/* Tableaux et blocs de code : défilement local plutôt que débordement.
+   On fait défiler le conteneur, sans toucher au rendu du tableau lui-même. */
+div:has(> table) { max-width: 100%; overflow-x: auto; }
+pre { max-width: 100%; overflow-x: auto; }
+
+/* Barre de défilement discrète mais visible au doigt */
+.correction::-webkit-scrollbar, .corr::-webkit-scrollbar,
+p::-webkit-scrollbar, li::-webkit-scrollbar { height: 4px; }
+.correction::-webkit-scrollbar-thumb, .corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
+  background: #d7d2ca; border-radius: 4px;
+}
+</style>
 </head>
 <body>
 <header class="hero">
