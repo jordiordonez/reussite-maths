@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TITRE DE LA FICHE</title>
+<title>4C — Continuité et théorème des valeurs intermédiaires</title>
 
 <script>
 window.MathJax = {
@@ -82,6 +82,29 @@ label{font-size:.92rem;color:var(--muted)}
 
 footer{text-align:center;color:var(--muted);font-size:.86rem;padding:1.5rem 1rem 2.5rem}
 
+h4{font-family:Georgia,"Times New Roman",serif;font-size:1rem;margin:.9rem 0 .3rem}
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-family:system-ui,sans-serif;font-weight:700;font-size:.92rem;margin-right:.4rem;vertical-align:middle;flex:0 0 auto}
+
+table{border-collapse:collapse;width:100%;font-size:.94rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+th{background:var(--blue-soft);font-family:system-ui,sans-serif}
+td.up{background:var(--green-soft);font-weight:700}
+td.down{background:var(--coral-soft);font-weight:700}
+.tablewrap{overflow-x:auto;margin:.6rem 0}
+
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+.tabs button{flex:1 1 8rem;background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none;font-size:.88rem;padding:.4rem .4rem}
+.tabs button.active{background:var(--blue);color:#fff}
+.slider{display:grid;grid-template-columns:3.2rem 1fr 3.4rem;gap:.5rem;align-items:center;margin:.35rem 0}
+.slider label{font-weight:600;color:var(--ink);font-size:.95rem}
+.slider output{font-variant-numeric:tabular-nums;text-align:right;font-size:.92rem;color:var(--blue);font-weight:600}
+.stat{background:#f4f2ee;border-radius:10px;padding:.5rem .7rem;margin:.5rem 0;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;font-size:.84rem;color:var(--muted);margin:.4rem 0}
+.legend span{display:inline-flex;align-items:center}
+.legend span::before{content:"";display:inline-block;width:14px;height:4px;border-radius:2px;background:var(--c,#999);margin-right:.35rem}
+.modele{background:#f4f2ee;border-left:4px solid var(--blue);border-radius:10px;padding:.6rem .8rem;margin:.6rem 0;font-size:.95rem}
+.modele .trou{color:var(--blue);font-weight:700;letter-spacing:.08em}
+.steps{font-size:.9rem}
 /* --- Figures. NE JAMAIS écrire une règle « svg { … } » globale :
    MathJax produit lui aussi des <svg> et ils seraient déformés.
    Toujours passer par la classe .figure. --- */
@@ -163,8 +186,8 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
 <body>
 
 <header>
-  <h1>TITRE DE LA FICHE</h1>
-  <div class="sub">Première · Mathématiques</div>
+  <h1>4C · Continuité et valeurs intermédiaires</h1>
+  <div class="sub">Terminale · Mathématiques</div>
 </header>
 
 <div class="navbar">
@@ -182,18 +205,279 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
 
 <section id="cours">
   <h2>Cours</h2>
-  <div class="card"><p>Cinq à sept points clés, avec exemples numériques.</p></div>
+
+  <div class="card blue">
+    <h3><span class="num">1</span>Continuité en un point, puis sur un intervalle</h3>
+    <p>Soit \(f\) une fonction définie sur un intervalle \(I\) et \(a\) un réel de \(I.\)</p>
+    <div class="ok">
+      <p><b>Définition.</b> \(f\) est <b>continue en \(a\)</b> lorsque \(f\) admet une limite en \(a\) et que cette limite est égale à l'image de \(a\) :</p>
+      <p>\[\lim_{x \to a} f(x) = f(a).\]</p>
+      <p>\(f\) est <b>continue sur \(I\)</b> lorsqu'elle est continue en <b>tout</b> point de \(I.\)</p>
+    </div>
+    <p>Il y a donc trois choses à vérifier : \(f(a)\) existe, la limite existe, et les deux coïncident.</p>
+    <div class="key">
+      <p><b>Exemple 1.</b> \(f(x) = x^2 + 3x\) et \(a = 2.\) On a \(f(2) = 4 + 6 = 10\) et \(\lim\limits_{x \to 2} (x^2+3x) = 10.\) Les deux valeurs sont égales : \(f\) est continue en \(2.\)</p>
+      <p><b>Exemple 2.</b> \(g(x) = \dfrac{1}{x}\) et \(a = 3.\) On a \(g(3) = \dfrac13\) et \(\lim\limits_{x \to 3} \dfrac1x = \dfrac13 :\) \(g\) est continue en \(3.\) En revanche \(g\) n'est <b>pas</b> continue en \(0,\) tout simplement parce que \(g(0)\) n'existe pas : \(0\) n'appartient pas à l'ensemble de définition.</p>
+    </div>
+    <h4>L'image intuitive : « on trace sans lever le crayon »</h4>
+    <p>Sur un intervalle, une fonction continue a une courbe <b>d'un seul morceau</b> : on peut la tracer sans lever le crayon. C'est une image utile pour <b>voir</b> ce qui se passe, mais ce n'est jamais une démonstration.</p>
+    <div class="warn">
+      <p><b>Contre-exemple 1 : la fonction partie entière.</b> \(E(x)\) est le plus grand entier inférieur ou égal à \(x\) : \(E(1{,}7) = 1,\) \(E(2) = 2,\) \(E(2{,}9) = 2,\) \(E(-0{,}5) = -1.\)</p>
+      <p>En \(a = 2 :\) quand \(x\) s'approche de \(2\) <b>par la gauche</b> (par exemple \(1{,}99\) puis \(1{,}999\)), \(E(x) = 1.\) Mais \(E(2) = 2.\) La limite à gauche vaut \(1\) et l'image vaut \(2 :\) \(E\) n'est <b>pas</b> continue en \(2.\) Sa courbe fait un <b>saut</b> de \(1\) à chaque entier, en marches d'escalier.</p>
+      <p><b>Contre-exemple 2 : une fonction définie par morceaux.</b></p>
+      <p>\[h(x) = \begin{cases} 2x+1 & \text{si } x &lt; 1\\ x^2+4 & \text{si } x \geqslant 1\end{cases}\]</p>
+      <p>À gauche de \(1 :\) \(\lim\limits_{x \to 1^-} (2x+1) = 3.\) À droite et en \(1 :\) \(h(1) = 1 + 4 = 5.\) Comme \(3 \neq 5,\) \(h\) n'est pas continue en \(1.\) Elle est en revanche continue sur \(]-\infty\,;1[\) et sur \([1\,;+\infty[,\) car sur chacun de ces intervalles c'est un polynôme.</p>
+      <p>Si on remplaçait le second morceau par \(x^2+2,\) on aurait \(h(1) = 3\) : le raccord se ferait et \(h\) serait continue sur \(\mathbb{R}.\)</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Toute fonction dérivable est continue</h3>
+    <div class="ok">
+      <p><b>Théorème (admis).</b> Si \(f\) est <b>dérivable</b> sur un intervalle \(I,\) alors \(f\) est <b>continue</b> sur \(I.\)</p>
+    </div>
+    <p>C'est l'argument le plus rapide en devoir : pour une fonction dont on vient de calculer la dérivée, on écrit « \(f\) est dérivable sur \(I,\) donc \(f\) est continue sur \(I\) ».</p>
+    <div class="warn">
+      <p><b>La réciproque est fausse :</b> continue n'entraîne pas dérivable.</p>
+      <p><b>Contre-exemple : \(f(x) = |x|\) en \(0.\)</b> La courbe (deux demi-droites formant un « V ») se trace sans lever le crayon : \(\lim\limits_{x \to 0} |x| = 0 = f(0),\) donc \(f\) est bien <b>continue</b> en \(0.\)</p>
+      <p>Mais le taux de variation en \(0\) vaut \(\dfrac{|h| - 0}{h} = \dfrac{|h|}{h},\) c'est-à-dire \(1\) si \(h &gt; 0\) et \(-1\) si \(h &lt; 0.\) Il n'a donc <b>pas</b> de limite quand \(h \to 0 :\) \(f\) n'est <b>pas dérivable</b> en \(0.\) Graphiquement, la courbe présente un <b>point anguleux</b>.</p>
+      <p>Autre exemple : \(x \mapsto \sqrt{x}\) est continue en \(0\) mais n'y est pas dérivable (la tangente y est verticale).</p>
+    </div>
+    <p class="stat">À retenir dans le bon sens : <b>dérivable \(\Rightarrow\) continue</b>, et <b>continue \(\not\Rightarrow\) dérivable</b>.</p>
+  </div>
+
+  <div class="card amber">
+    <h3><span class="num">3</span>Quelles fonctions sont continues ?</h3>
+    <p>Les fonctions de référence sont continues sur tout intervalle de leur ensemble de définition :</p>
+    <ul>
+      <li>les fonctions <b>polynômes</b> (dont les fonctions affines, le carré, le cube) : continues sur \(\mathbb{R}\) ;</li>
+      <li>la fonction <b>inverse</b> \(x \mapsto \dfrac1x\) : continue sur \(]-\infty\,;0[\) et sur \(]0\,;+\infty[\) ;</li>
+      <li>la fonction <b>racine carrée</b> : continue sur \([0\,;+\infty[\) ;</li>
+      <li>la <b>valeur absolue</b>, l'<b>exponentielle</b>, le <b>sinus</b> et le <b>cosinus</b> : continues sur \(\mathbb{R}.\)</li>
+    </ul>
+    <div class="ok">
+      <p><b>Règle pratique.</b> Toute fonction obtenue à partir des fonctions de référence par <b>somme</b>, <b>produit</b>, <b>quotient</b> (là où le dénominateur ne s'annule pas) ou <b>composition</b> est continue sur <b>tout intervalle contenu dans son ensemble de définition</b>.</p>
+    </div>
+    <div class="key">
+      <p><b>Exemple.</b> \(f(x) = \dfrac{3x^2+1}{x-2}\) est un quotient de deux polynômes ; le dénominateur s'annule pour \(x = 2.\) Donc \(f\) est continue sur \(]-\infty\,;2[\) et sur \(]2\,;+\infty[\) (deux intervalles séparés, jamais sur \(\mathbb{R}\) tout entier).</p>
+      <p><b>Exemple.</b> \(g(x) = \sqrt{x^2+5}\) est la composée de \(x \mapsto x^2+5\) (polynôme, continue et à valeurs \(\geqslant 5\)) suivie de la racine carrée (continue sur \([0\,;+\infty[\)) : \(g\) est continue sur \(\mathbb{R}.\)</p>
+      <p><b>Exemple.</b> \(k(x) = x\,e^{x}\) est un produit de fonctions continues sur \(\mathbb{R},\) donc continue sur \(\mathbb{R}.\)</p>
+    </div>
+    <p>Le programme précise que l'on n'a <b>pas</b> à démontrer ces continuités : une phrase suffit, du type « \(f\) est une fonction polynôme, donc continue sur \(\mathbb{R}\) » ou « \(f\) est dérivable sur \(I,\) donc continue sur \(I\) ».</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Image d'une suite convergente par une fonction continue</h3>
+    <div class="ok">
+      <p><b>Théorème.</b> Soit \(f\) continue en \(L\) et \((u_n)\) une suite telle que \(\lim\limits_{n \to +\infty} u_n = L.\) Alors</p>
+      <p>\[\lim_{n \to +\infty} f(u_n) = f(L).\]</p>
+    </div>
+    <p>Autrement dit, on peut « faire entrer la limite dans \(f\) » quand \(f\) est continue.</p>
+    <div class="key">
+      <p><b>Exemple.</b> \(u_n = 2 + \dfrac{1}{n}\) tend vers \(2,\) et \(f(x) = x^2+1\) est continue en \(2,\) donc \(f(u_n) = \left(2+\frac1n\right)^2+1\) tend vers \(f(2) = 5.\)</p>
+    </div>
+    <h4>L'application au bac : les suites \(u_{n+1} = f(u_n)\)</h4>
+    <p>Si \((u_n)\) est définie par \(u_{n+1} = f(u_n)\) avec \(f\) continue, et si \((u_n)\) <b>converge</b> vers un réel \(L,\) alors :</p>
+    <ul>
+      <li>d'un côté \(u_{n+1} \to L\) (c'est la même suite, décalée d'un rang) ;</li>
+      <li>de l'autre \(u_{n+1} = f(u_n) \to f(L)\) par continuité.</li>
+    </ul>
+    <p>Par unicité de la limite, \(L\) est solution de l'équation \(L = f(L).\)</p>
+    <div class="key">
+      <p><b>Exemple.</b> \(u_0 = 1\) et \(u_{n+1} = \sqrt{u_n+6}.\) On calcule \(u_1 = \sqrt{7} \approx 2{,}646,\) \(u_2 \approx 2{,}940,\) \(u_3 \approx 2{,}990 :\) la suite semble croître vers \(3.\)</p>
+      <p>On admet ici qu'elle converge vers un réel \(L \geqslant 0.\) La fonction \(f(x) = \sqrt{x+6}\) est continue sur \([0\,;+\infty[,\) donc \(L\) vérifie \(L = \sqrt{L+6},\) d'où \(L^2 = L+6,\) soit \(L^2 - L - 6 = 0.\) Les solutions sont \(L = 3\) et \(L = -2.\) Comme \(u_n \geqslant 0\) pour tout \(n,\) on a \(L \geqslant 0,\) donc \(L = 3.\)</p>
+    </div>
+    <div class="warn">
+      <p><b>Attention à l'ordre des arguments.</b> Résoudre \(L = f(L)\) ne prouve <b>pas</b> que la suite converge : cela donne seulement la valeur de la limite <b>si</b> elle existe. La convergence doit être établie avant, presque toujours par le théorème de la limite monotone (suite croissante et majorée, ou décroissante et minorée).</p>
+    </div>
+  </div>
+
+  <div class="card blue">
+    <h3><span class="num">5</span>Le théorème des valeurs intermédiaires</h3>
+    <div class="ok">
+      <p><b>Théorème des valeurs intermédiaires (TVI).</b> Soit \(f\) une fonction <b>continue</b> sur un intervalle \([a\,;b]\) et \(k\) un réel <b>compris entre \(f(a)\) et \(f(b)\)</b>. Alors l'équation \(f(x) = k\) admet <b>au moins une</b> solution dans \([a\,;b].\)</p>
+    </div>
+    <p>Traduction graphique : la courbe part de la hauteur \(f(a)\) et arrive à la hauteur \(f(b)\) sans lever le crayon ; elle doit donc couper la droite horizontale d'équation \(y = k\) au moins une fois.</p>
+    <div class="key">
+      <p><b>Exemple.</b> \(f(x) = x^3+x-1\) sur \([0\,;1].\) \(f\) est un polynôme, donc continue. \(f(0) = -1\) et \(f(1) = 1.\) Comme \(0\) est compris entre \(-1\) et \(1,\) l'équation \(f(x) = 0\) admet au moins une solution dans \([0\,;1].\) (À la calculatrice : \(f(0{,}6) = -0{,}184\) et \(f(0{,}7) = 0{,}043,\) la solution est entre \(0{,}6\) et \(0{,}7.\))</p>
+    </div>
+    <div class="warn">
+      <p><b>La continuité est indispensable.</b> Reprenons la partie entière sur \([0\,;2] :\) \(E(0) = 0,\) \(E(2) = 2,\) et pourtant l'équation \(E(x) = 0{,}5\) n'a <b>aucune</b> solution, car \(E\) ne prend que des valeurs entières. Le théorème tombe en défaut parce que \(E\) n'est pas continue.</p>
+    </div>
+    <p>Le TVI donne l'<b>existence</b> d'une solution, mais <b>ni le nombre</b> de solutions <b>ni leur valeur</b>. Il peut y en avoir une, deux, trois…</p>
+    <p class="stat"><b>Variante utile.</b> Le théorème s'étend aux intervalles ouverts ou infinis : sur \(]a\,;b[,\) sur \([a\,;+\infty[,\) etc., on remplace \(f(a)\) ou \(f(b)\) par la <b>limite</b> de \(f\) à la borne concernée (voir la fiche 4B). Par exemple, si \(f\) est continue sur \([0\,;+\infty[\) avec \(f(0) = -2\) et \(\lim\limits_{x \to +\infty} f(x) = +\infty,\) alors \(f(x) = 0\) a au moins une solution.</p>
+  </div>
+
+  <div class="card green">
+    <h3><span class="num">6</span>Le corollaire : continuité + stricte monotonie \(\Rightarrow\) unicité</h3>
+    <div class="ok">
+      <p><b>Corollaire (cas des fonctions strictement monotones).</b> Soit \(f\) une fonction <b>continue</b> et <b>strictement monotone</b> sur \([a\,;b],\) et \(k\) un réel compris entre \(f(a)\) et \(f(b).\) Alors l'équation \(f(x) = k\) admet <b>une unique</b> solution \(\alpha\) dans \([a\,;b].\)</p>
+    </div>
+    <p>Pourquoi l'unicité ? La continuité donne <b>au moins</b> une solution (TVI) ; la stricte monotonie interdit à \(f\) de reprendre deux fois la même valeur, donc il y en a <b>au plus</b> une. Au total : exactement une.</p>
+    <div class="key">
+      <p><b>Exemple.</b> \(f(x) = x^3+x-1\) sur \([0\,;1].\) On a \(f'(x) = 3x^2+1 &gt; 0,\) donc \(f\) est strictement croissante sur \([0\,;1].\) Avec \(f(0) = -1 &lt; 0 &lt; 1 = f(1),\) l'équation \(f(x) = 0\) admet une <b>unique</b> solution \(\alpha\) dans \([0\,;1],\) avec \(\alpha \approx 0{,}68.\)</p>
+    </div>
+    <div class="warn">
+      <p>Sans la stricte monotonie, on n'a <b>aucun</b> droit de parler d'unicité. Sur \([-2\,;2],\) la fonction \(f(x) = x^2\) est continue, \(f(-2) = 4\) et \(f(2) = 4\) ; l'équation \(f(x) = 1\) a <b>deux</b> solutions, \(-1\) et \(1.\)</p>
+    </div>
+    <h4>Avec un tableau de variations</h4>
+    <p>En pratique on découpe l'intervalle en morceaux sur lesquels \(f\) est strictement monotone, et on applique le corollaire sur <b>chaque</b> morceau. Le nombre de solutions de \(f(x)=k\) est alors le nombre de morceaux « traversés » par la valeur \(k.\)</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>\(x\)</th><th>\(-3\)</th><th></th><th>\(1\)</th><th></th><th>\(4\)</th></tr>
+        <tr><th>\(f(x)\)</th><td>\(-5\)</td><td class="up">↗</td><td>\(7\)</td><td class="down">↘</td><td>\(2\)</td></tr>
+      </table>
+    </div>
+    <p>Avec ce tableau (\(f\) continue sur \([-3\,;4]\)) : pour \(k = 4,\) il y a <b>une</b> solution sur \([-3\,;1]\) (car \(-5 &lt; 4 &lt; 7\)) et <b>une</b> sur \([1\,;4]\) (car \(2 &lt; 4 &lt; 7\)), soit <b>2 solutions</b>. Pour \(k = -1,\) il y en a <b>une seule</b> (sur \([-3\,;1]\) uniquement). Pour \(k = 9,\) il n'y en a <b>aucune</b>.</p>
+  </div>
+
+  <div class="card coral">
+    <h3><span class="num">7</span>La rédaction type attendue au bac <span class="tag demo">à recopier</span></h3>
+    <p>Voici le modèle à reproduire mot pour mot chaque fois qu'on demande de montrer que \(f(x) = k\) admet une unique solution sur \([a\,;b].\) Sur l'exemple \(f(x) = x^3+x-1,\) \(k = 0,\) \([a\,;b] = [0\,;1] :\)</p>
+    <div class="modele">
+      <p>• \(f\) est dérivable sur \([0\,;1],\) donc \(f\) est <b>continue</b> sur \([0\,;1].\)</p>
+      <p>• Pour tout \(x\) de \([0\,;1],\) \(f'(x) = 3x^2+1 &gt; 0,\) donc \(f\) est <b>strictement croissante</b> sur \([0\,;1].\)</p>
+      <p>• \(f(0) = -1\) et \(f(1) = 1,\) donc \(0\) est compris entre \(f(0)\) et \(f(1).\)</p>
+      <p>• D'après le <b>corollaire du théorème des valeurs intermédiaires</b>, l'équation \(f(x) = 0\) admet une <b>unique</b> solution \(\alpha\) dans \([0\,;1].\)</p>
+      <p>• À la calculatrice, \(f(0{,}6) \approx -0{,}18 &lt; 0\) et \(f(0{,}7) \approx 0{,}04 &gt; 0,\) donc \(0{,}6 &lt; \alpha &lt; 0{,}7.\)</p>
+    </div>
+    <p>Les quatre premières puces valent chacune des points : <b>continuité</b>, <b>stricte monotonie</b>, <b>valeurs aux bornes</b>, <b>conclusion nommant le théorème</b>. La cinquième répond à la question « donner un encadrement ».</p>
+  </div>
 </section>
 
 <section id="methode">
   <h2>Méthode</h2>
-  <div class="card"><p>Étapes de résolution par type d'exercice, puis erreurs fréquentes.</p></div>
+
+  <div class="card">
+    <h3>Méthode 1 — Justifier la continuité d'une fonction</h3>
+    <ol>
+      <li><b>Regarder la forme de \(f.\)</b> Polynôme ? quotient ? racine ? composée ?</li>
+      <li><b>Chercher les valeurs interdites</b> : dénominateur nul, quantité négative sous une racine. Elles découpent l'ensemble de définition en intervalles.</li>
+      <li><b>Conclure en une phrase</b> : « \(f\) est une somme (ou un produit, un quotient, une composée) de fonctions continues sur \(I,\) donc \(f\) est continue sur \(I.\) »</li>
+      <li><b>Raccourci très utile</b> : si on a déjà calculé \(f'\) dans la question précédente, écrire « \(f\) est dérivable sur \(I,\) donc continue sur \(I\) ».</li>
+    </ol>
+    <div class="key">
+      <p><b>Exemple.</b> \(f(x) = \dfrac{x+1}{x^2-9}.\) Le dénominateur s'annule en \(-3\) et \(3.\) Donc \(f\) est continue sur \(]-\infty\,;-3[,\) sur \(]-3\,;3[\) et sur \(]3\,;+\infty[.\)</p>
+    </div>
+    <div class="warn">
+      <p>Pour une fonction <b>définie par morceaux</b>, la continuité aux points de raccord ne se voit pas sur la formule : il faut comparer la <b>limite à gauche</b>, la <b>limite à droite</b> et l'<b>image</b> du point.</p>
+    </div>
+  </div>
+
+  <div class="card blue">
+    <h3>Méthode 2 — Montrer que \(f(x) = k\) a une unique solution sur \([a\,;b]\)</h3>
+    <ol>
+      <li><b>Continuité.</b> « \(f\) est dérivable (ou : polynomiale, quotient de…) sur \([a\,;b],\) donc continue sur \([a\,;b].\) »</li>
+      <li><b>Stricte monotonie.</b> Calculer \(f'(x),\) donner son <b>signe</b> sur \([a\,;b],\) conclure « \(f\) est strictement croissante (ou décroissante) sur \([a\,;b]\) ».</li>
+      <li><b>Valeurs aux bornes.</b> Calculer \(f(a)\) et \(f(b)\) et écrire l'encadrement \(f(a) &lt; k &lt; f(b)\) (ou l'inverse si \(f\) décroît).</li>
+      <li><b>Conclusion.</b> Nommer le théorème : « d'après le corollaire du théorème des valeurs intermédiaires, l'équation \(f(x)=k\) admet une unique solution \(\alpha\) sur \([a\,;b]\) ».</li>
+    </ol>
+    <p>Modèle de rédaction à compléter :</p>
+    <div class="modele">
+      <p>\(f\) est <span class="trou">………</span> sur \([a\,;b],\) donc elle y est <b>continue</b>.</p>
+      <p>Pour tout \(x\) de \([a\,;b],\) on calcule \(f'(x) = \) <span class="trou">………</span> dont le signe est <span class="trou">………</span>, donc \(f\) est <b>strictement</b> <span class="trou">………</span> sur \([a\,;b].\)</p>
+      <p>De plus \(f(a) = \) <span class="trou">……</span> et \(f(b) = \) <span class="trou">……</span> et \(k = \) <span class="trou">……</span> est compris entre ces deux valeurs.</p>
+      <p>D'après le <b>corollaire du théorème des valeurs intermédiaires</b>, l'équation \(f(x) = k\) admet une <b>unique</b> solution \(\alpha\) dans \([a\,;b].\)</p>
+    </div>
+    <p>Si la fonction n'est pas monotone sur tout l'intervalle, on dresse son <b>tableau de variations</b> et on applique les quatre étapes sur <b>chaque</b> intervalle de monotonie, puis on additionne le nombre de solutions.</p>
+  </div>
+
+  <div class="card green">
+    <h3>Méthode 3 — Encadrer la solution \(\alpha\)</h3>
+    <h4>a) Par balayage (le plus rapide à la calculatrice)</h4>
+    <ol>
+      <li>Choisir un pas adapté à la précision demandée : \(0{,}1\) pour une précision de \(10^{-1},\) \(0{,}01\) pour \(10^{-2}.\)</li>
+      <li>Calculer \(f\) de proche en proche à partir de \(a\) jusqu'à observer un <b>changement de signe</b> de \(f(x) - k.\)</li>
+      <li>Écrire l'encadrement entre les deux valeurs consécutives : si \(f(1{,}3) &lt; k &lt; f(1{,}4)\) avec \(f\) croissante, alors \(1{,}3 &lt; \alpha &lt; 1{,}4.\)</li>
+    </ol>
+    <h4>b) Par dichotomie (méthode au programme)</h4>
+    <p>On part d'un intervalle \([a\,;b]\) contenant \(\alpha,\) puis on répète :</p>
+    <ol>
+      <li>calculer le milieu \(m = \dfrac{a+b}{2}\) ;</li>
+      <li>calculer \(f(m)\) et comparer son signe à celui de \(f(a) - k\) ;</li>
+      <li>si \(f(m)\) et \(f(a)\) sont <b>du même côté</b> de \(k,\) la solution est dans \([m\,;b]\) : on remplace \(a\) par \(m\) ; sinon elle est dans \([a\,;m]\) : on remplace \(b\) par \(m\) ;</li>
+      <li>recommencer jusqu'à ce que l'amplitude soit assez petite.</li>
+    </ol>
+    <div class="key">
+      <p>À chaque étape l'amplitude est <b>divisée par 2</b> : après \(n\) étapes elle vaut \(\dfrac{b-a}{2^n}.\) Pour obtenir une précision \(\varepsilon,\) on cherche le plus petit \(n\) tel que \(\dfrac{b-a}{2^n} \leqslant \varepsilon.\)</p>
+      <p><b>Exemple.</b> Départ \([1\,;2]\) (amplitude \(1\)) et précision \(10^{-2} :\) il faut \(\dfrac{1}{2^n} \leqslant 0{,}01,\) soit \(2^n \geqslant 100.\) Comme \(2^6 = 64\) et \(2^7 = 128,\) il faut \(n = 7\) étapes.</p>
+    </div>
+  </div>
+
+  <div class="card amber">
+    <h3>Méthode 4 — Limite d'une suite définie par \(u_{n+1} = f(u_n)\)</h3>
+    <ol>
+      <li><b>Montrer que la suite converge.</b> En général : prouver par récurrence qu'elle est bornée (par exemple \(0 \leqslant u_n \leqslant 3\)) et monotone, puis invoquer le <b>théorème de la limite monotone</b> (croissante et majorée \(\Rightarrow\) convergente). On note \(L\) sa limite.</li>
+      <li><b>Appliquer la continuité.</b> « \(f\) est continue sur l'intervalle considéré ; comme \(u_n \to L,\) on a \(f(u_n) \to f(L).\) Or \(f(u_n) = u_{n+1} \to L.\) »</li>
+      <li><b>Résoudre \(L = f(L).\)</b> C'est une équation ordinaire (souvent du second degré après mise au carré ou produit en croix).</li>
+      <li><b>Conclure</b> en éliminant les solutions impossibles grâce à l'encadrement trouvé à l'étape 1 (par exemple \(L \geqslant 0,\) ou \(L \geqslant u_0\) si la suite est croissante).</li>
+    </ol>
+    <div class="key">
+      <p><b>Exemple complet.</b> \(u_0 = 0\) et \(u_{n+1} = \sqrt{u_n+6}.\)</p>
+      <p>1. On montre par récurrence que \(0 \leqslant u_n \leqslant 3\) puis que \((u_n)\) est croissante : elle est croissante et majorée par \(3,\) donc elle converge vers un réel \(L\) avec \(0 \leqslant L \leqslant 3.\)</p>
+      <p>2. \(f(x) = \sqrt{x+6}\) est continue sur \([0\,;3],\) donc \(u_{n+1} = f(u_n) \to f(L),\) et par ailleurs \(u_{n+1} \to L.\)</p>
+      <p>3. On résout \(L = \sqrt{L+6}.\) En élevant au carré : \(L^2 = L+6,\) soit \(L^2-L-6 = 0,\) c'est-à-dire \((L-3)(L+2) = 0.\)</p>
+      <p>4. Les solutions sont \(3\) et \(-2\) ; comme \(L \geqslant 0,\) on conclut \(L = 3.\)</p>
+    </div>
+  </div>
+
+  <div class="card coral">
+    <h3>Erreurs fréquentes</h3>
+    <ul>
+      <li><b>Oublier de justifier la continuité.</b> Sans elle, le TVI ne s'applique pas : la phrase « \(f\) est continue sur \([a\,;b]\) » doit être écrite, même si c'est évident.</li>
+      <li><b>Oublier la stricte monotonie et conclure à l'unicité.</b> Le TVI seul donne « au moins une solution ». Écrire « une unique solution » sans avoir étudié le signe de \(f'\) est une faute classique.</li>
+      <li><b>Se tromper de sens dans l'encadrement.</b> Quand \(f\) est <b>décroissante</b>, \(f(1{,}3) &gt; k &gt; f(1{,}4)\) donne quand même \(1{,}3 &lt; \alpha &lt; 1{,}4 :\) l'encadrement porte sur \(\alpha,\) pas sur les images. Toujours écrire les bornes dans l'ordre croissant.</li>
+      <li><b>Résoudre \(L = f(L)\) sans avoir prouvé la convergence.</b> Cette équation ne donne que la valeur d'une limite <b>si elle existe</b> ; une suite divergente peut très bien admettre un point fixe.</li>
+      <li><b>Confondre \(f(x) = k\) et \(f(x) = 0.\)</b> Si \(k \neq 0,\) c'est la valeur \(k\) qui doit être comprise entre \(f(a)\) et \(f(b),\) pas \(0.\)</li>
+      <li><b>Donner \(\alpha\) au lieu de son encadrement</b> (ou l'inverse). Lire la question : « valeur approchée à \(10^{-2}\) » et « encadrement d'amplitude \(10^{-2}\) » ne demandent pas la même écriture.</li>
+      <li><b>Croire que « continue » signifie « dérivable ».</b> \(x \mapsto |x|\) est continue partout mais n'est pas dérivable en \(0.\)</li>
+    </ul>
+  </div>
 </section>
 
 <section id="visu">
   <h2>Visualisation</h2>
   <div class="card">
-    <svg id="fig" class="figure" viewBox="0 0 400 300" aria-label="Description de la figure"></svg>
+    <div class="tabs" id="tabs">
+      <button type="button" id="tab1" class="active">TVI</button>
+      <button type="button" id="tab2">Dichotomie</button>
+      <button type="button" id="tab3">Point fixe</button>
+    </div>
+
+    <div id="panel1">
+      <p>Déplace la droite horizontale \(y = k\) et compte les points d'intersection avec la courbe. En mode <b>discontinu</b>, la fonction fait un saut en \(x = 2 :\) certaines valeurs de \(k\) ne sont jamais atteintes, et le théorème tombe en défaut.</p>
+      <div class="row">
+        <button type="button" class="secondary" id="m1">Fonction continue</button>
+        <button type="button" class="ghost" id="m2">Fonction discontinue</button>
+      </div>
+      <div class="slider"><label for="s1k">\(k\)</label><input type="range" id="s1k" min="0.4" max="7.6" step="0.05" value="2"><output id="o1k">2</output></div>
+      <svg id="svg1" class="figure" viewBox="0 0 440 330" role="img" aria-label="Courbe et droite horizontale y = k, points d'intersection"></svg>
+      <div class="legend"><span style="--c:#2563eb">courbe de f</span><span style="--c:#d97706">droite y = k</span><span style="--c:#22a06b">solutions</span></div>
+      <div class="stat" id="f1out"></div>
+      <div class="stat" id="f1msg"></div>
+    </div>
+
+    <div id="panel2" hidden>
+      <p>On résout \(x^3+x-3 = 0\) sur \([1\,;2]\) par <b>dichotomie</b>. À chaque étape on coupe l'intervalle en deux et on garde la moitié où \(f\) change de signe. Appuie sur « Étape suivante » : la figure se recentre à chaque fois sur l'intervalle que l'on coupe, et la zone bleue est la moitié conservée.</p>
+      <svg id="svg2" class="figure" viewBox="0 0 440 300" role="img" aria-label="Méthode de dichotomie : intervalle coupé en deux à chaque étape"></svg>
+      <div class="row">
+        <button type="button" id="b2next">Étape suivante</button>
+        <button type="button" class="ghost" id="b2reset">Recommencer</button>
+      </div>
+      <div class="stat" id="f2out"></div>
+      <div class="tablewrap"><table class="steps" id="f2tab"></table></div>
+    </div>
+
+    <div id="panel3" hidden>
+      <p>La <b>toile d'araignée</b> de \(u_{n+1} = f(u_n)\) : on part de \(u_0\) sur l'axe, on monte jusqu'à la courbe (\(u_1 = f(u_0)\)), on va horizontalement jusqu'à la droite \(y = x\) pour reporter \(u_1\) sur l'axe, et on recommence. Le point fixe \(L,\) intersection de la courbe et de \(y = x,\) vérifie \(L = f(L).\)</p>
+      <div class="row"><select id="s3fn" aria-label="Choix de la fonction"></select></div>
+      <div class="slider"><label for="s3u0">\(u_0\)</label><input type="range" id="s3u0" min="0" max="8" step="0.1" value="0.5"><output id="o3u0">0,5</output></div>
+      <div class="slider"><label for="s3n">étapes</label><input type="range" id="s3n" min="0" max="12" step="1" value="6"><output id="o3n">6</output></div>
+      <svg id="svg3" class="figure" viewBox="0 0 440 330" role="img" aria-label="Toile d'araignée d'une suite récurrente et son point fixe"></svg>
+      <div class="legend"><span style="--c:#2563eb">courbe de f</span><span style="--c:#6b7280">droite y = x</span><span style="--c:#f97362">toile d'araignée</span><span style="--c:#22a06b">point fixe L</span></div>
+      <div class="stat" id="f3out"></div>
+      <div class="stat" id="f3msg"></div>
+    </div>
   </div>
 </section>
 
@@ -203,10 +487,8 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
   <div class="card" id="ex1">
     <h3>Exercice 1 <span class="tag">Niveau 1</span></h3>
     <div id="ex1-enonce"></div>
-    <div class="row">
-      <input type="text" id="ex1-rep" inputmode="decimal" placeholder="réponse">
-      <button id="ex1-check" type="button">Vérifier</button>
-    </div>
+    <div class="row" id="ex1-inputs"></div>
+    <div class="row"><button id="ex1-check" type="button">Vérifier</button></div>
     <div class="feedback" id="ex1-fb"></div>
     <div class="row">
       <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
@@ -215,13 +497,37 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
     <div class="correction" id="ex1-correction"></div>
   </div>
 
-  <!-- Dupliquer le bloc pour ex2 (Niveau 2) et ex3 (Niveau 3). -->
+  <div class="card" id="ex2">
+    <h3>Exercice 2 <span class="tag">Niveau 2</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="row" id="ex2-inputs"></div>
+    <div class="row"><button id="ex2-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 <span class="tag">Niveau 3</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="row" id="ex3-inputs"></div>
+    <div class="row"><button id="ex3-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div>
 </section>
 
 <section id="qcm">
   <h2>QCM</h2>
   <div class="card">
-    <p>Quatre questions tirées au hasard. Une seule bonne réponse par question.</p>
+    <p>Quatre questions tirées au hasard dans une banque de dix-huit. Une seule bonne réponse par question.</p>
     <div id="qcm-container"></div>
     <div class="score" id="qcm-score"></div>
     <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
@@ -239,7 +545,7 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
 (function () {
   'use strict';
 
-  /* ---------- utilitaires ---------- */
+  /* ================= utilitaires ================= */
   function $(id) { return document.getElementById(id); }
   function typeset(el) {
     if (window.MathJax && window.MathJax.typesetPromise) {
@@ -247,7 +553,6 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
     }
   }
   function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
-  function rndNonZero(a, b) { var x = 0; while (x === 0) { x = rnd(a, b); } return x; }
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
   function shuffle(arr) {
     var a = arr.slice();
@@ -257,8 +562,17 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
   // Affichage à la française : virgule décimale.
   function fmt(x, d) {
     if (!isFinite(x)) return '—';
-    var p = Math.pow(10, d === undefined ? 3 : d);
-    return String(Math.round(x * p) / p).replace('.', ',');
+    var p = Math.pow(10, d === undefined ? 2 : d);
+    var v = Math.round(x * p) / p;
+    if (Object.is(v, -0)) v = 0;
+    return String(v).replace('.', ',');
+  }
+  // Nombre écrit à la française dans une formule TeX.
+  function texNum(x, d) {
+    var p = Math.pow(10, d === undefined ? 6 : d);
+    var v = Math.round(x * p) / p;
+    if (Object.is(v, -0)) v = 0;
+    return String(v).replace('.', '{,}');
   }
   // Un nombre négatif s'écrit entre parenthèses dans un produit ou avant un exposant.
   function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
@@ -273,8 +587,16 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
     el.innerHTML = (ok ? '✓ ' : '✗ ') + msg;
     typeset(el);
   }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  // Écriture TeX de x^3 + p x + q
+  function cubTex(p, q) {
+    var s = 'x^3';
+    if (p !== 0) s += (p > 0 ? ' + ' : ' - ') + (Math.abs(p) === 1 ? '' : Math.abs(p)) + 'x';
+    if (q !== 0) s += (q > 0 ? ' + ' : ' - ') + Math.abs(q);
+    return s;
+  }
 
-  /* ---------- navigation sticky ---------- */
+  /* ================= navigation sticky ================= */
   var links = [].slice.call(document.querySelectorAll('#nav a'));
   var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
   function updateNav() {
@@ -284,30 +606,282 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
   }
   window.addEventListener('scroll', updateNav); updateNav();
 
-  /* ---------- exercices génératifs ----------
-     gen()  -> objet décrivant l'exercice, avec .enonce et .correction (HTML)
-     check(e, valeurSaisie) -> {ok: bool, msg: string}
-  */
+  /* ================= boîte à outils graphique ================= */
+  function makePlot(o) {
+    var p = { xmin: o.xmin, xmax: o.xmax, ymin: o.ymin, ymax: o.ymax, px: o.px, py: o.py, pw: o.pw, ph: o.ph };
+    p.X = function (x) { return o.px + (x - o.xmin) / (o.xmax - o.xmin) * o.pw; };
+    p.Y = function (y) { return o.py + o.ph - (y - o.ymin) / (o.ymax - o.ymin) * o.ph; };
+    p.inY = function (y) { return isFinite(y) && y >= o.ymin && y <= o.ymax; };
+    return p;
+  }
+  function niceStep(span) {
+    var raw = span / 6, pw = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), n = raw / pw;
+    var m = n < 1.5 ? 1 : (n < 3 ? 2 : (n < 7 ? 5 : 10));
+    return m * pw;
+  }
+  function decOf(s) { return s >= 1 ? 0 : Math.min(6, Math.ceil(-Math.log(s) / Math.LN10) + 1); }
+  function axes(p, opt) {
+    opt = opt || {};
+    var g = '', sx = niceStep(p.xmax - p.xmin), sy = niceStep(p.ymax - p.ymin), v, i;
+    var dx = decOf(sx), dy = decOf(sy);
+    g += '<rect x="' + p.px + '" y="' + p.py + '" width="' + p.pw + '" height="' + p.ph + '" fill="#fff"/>';
+    for (i = Math.ceil(p.xmin / sx); i * sx <= p.xmax + 1e-9; i++) {
+      v = i * sx;
+      g += '<line x1="' + p.X(v).toFixed(1) + '" y1="' + p.py + '" x2="' + p.X(v).toFixed(1) + '" y2="' + (p.py + p.ph) + '" stroke="#eef0f3" stroke-width="1"/>';
+    }
+    for (i = Math.ceil(p.ymin / sy); i * sy <= p.ymax + 1e-9; i++) {
+      v = i * sy;
+      g += '<line x1="' + p.px + '" y1="' + p.Y(v).toFixed(1) + '" x2="' + (p.px + p.pw) + '" y2="' + p.Y(v).toFixed(1) + '" stroke="#eef0f3" stroke-width="1"/>';
+      g += '<text x="' + (p.px - 4) + '" y="' + (p.Y(v) + 4).toFixed(1) + '" font-size="10" fill="#9ca3af" text-anchor="end">' + fmt(v, dy) + '</text>';
+    }
+    var y0 = (p.ymin < 0 && p.ymax > 0) ? 0 : p.ymin;
+    g += '<line x1="' + p.px + '" y1="' + p.Y(y0).toFixed(1) + '" x2="' + (p.px + p.pw) + '" y2="' + p.Y(y0).toFixed(1) + '" stroke="#9ca3af" stroke-width="1.4"/>';
+    for (i = Math.ceil(p.xmin / sx); i * sx <= p.xmax + 1e-9; i++) {
+      v = i * sx;
+      g += '<text x="' + p.X(v).toFixed(1) + '" y="' + (p.Y(y0) + 13).toFixed(1) + '" font-size="10" fill="#6b7280" text-anchor="middle">' + fmt(v, dx) + '</text>';
+    }
+    if (p.xmin < 0 && p.xmax > 0) {
+      g += '<line x1="' + p.X(0).toFixed(1) + '" y1="' + p.py + '" x2="' + p.X(0).toFixed(1) + '" y2="' + (p.py + p.ph) + '" stroke="#9ca3af" stroke-width="1.4"/>';
+    }
+    g += '<rect x="' + p.px + '" y="' + p.py + '" width="' + p.pw + '" height="' + p.ph + '" fill="none" stroke="#e5e7eb"/>';
+    if (opt.title) g += '<text x="' + (p.px + 6) + '" y="' + (p.py + 15) + '" font-size="13" font-weight="700" fill="' + (opt.color || '#2563eb') + '">' + esc(opt.title) + '</text>';
+    return g;
+  }
+  function curve(fn, p, x1, x2, color, width, dash) {
+    var d = '', pen = false, n = 300, x, y, k;
+    for (k = 0; k <= n; k++) {
+      x = x1 + (x2 - x1) * k / n;
+      y = fn(x);
+      if (!p.inY(y)) { pen = false; continue; }
+      d += (pen ? 'L' : 'M') + p.X(x).toFixed(1) + ' ' + p.Y(y).toFixed(1) + ' ';
+      pen = true;
+    }
+    if (d === '') return '';
+    return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + (width || 2.4) + '"' +
+      (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  function seg(p, xa, ya, xb, yb, color, width, dash) {
+    return '<line x1="' + p.X(xa).toFixed(1) + '" y1="' + p.Y(ya).toFixed(1) + '" x2="' + p.X(xb).toFixed(1) + '" y2="' + p.Y(yb).toFixed(1) +
+      '" stroke="' + color + '" stroke-width="' + (width || 2) + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' stroke-linecap="round"/>';
+  }
+  function dot(p, x, y, color, r, label) {
+    var s = '<circle cx="' + p.X(x).toFixed(1) + '" cy="' + p.Y(y).toFixed(1) + '" r="' + (r || 4.5) + '" fill="' + color + '" stroke="#fff" stroke-width="1.6"/>';
+    if (label) s += '<text x="' + (p.X(x) + 7).toFixed(1) + '" y="' + (p.Y(y) - 7).toFixed(1) + '" font-size="12" font-weight="700" fill="' + color + '">' + esc(label) + '</text>';
+    return s;
+  }
+  function ring(p, x, y, color) {
+    return '<circle cx="' + p.X(x).toFixed(1) + '" cy="' + p.Y(y).toFixed(1) + '" r="4.5" fill="#fff" stroke="' + color + '" stroke-width="2.2"/>';
+  }
+  // Solutions de fn(x) = k sur [x1;x2] (balayage + dichotomie).
+  function rootsIn(fn, x1, x2, k) {
+    var res = [], N = 600, prev = fn(x1) - k, i, x, cur, lo, hi, m, j;
+    if (Math.abs(prev) < 1e-9) res.push(x1);
+    for (i = 1; i <= N; i++) {
+      x = x1 + (x2 - x1) * i / N;
+      cur = fn(x) - k;
+      if ((prev < 0 && cur > 0) || (prev > 0 && cur < 0)) {
+        lo = x1 + (x2 - x1) * (i - 1) / N; hi = x;
+        for (j = 0; j < 60; j++) {
+          m = (lo + hi) / 2;
+          if (((fn(lo) - k) < 0) === ((fn(m) - k) < 0)) lo = m; else hi = m;
+        }
+        res.push((lo + hi) / 2);
+      } else if (Math.abs(cur) < 1e-12 && i < N) { res.push(x); }
+      prev = cur;
+    }
+    return res;
+  }
+
+  /* ================= onglets de la visualisation ================= */
+  var tabsDef = [['tab1', 'panel1'], ['tab2', 'panel2'], ['tab3', 'panel3']];
+  tabsDef.forEach(function (t) {
+    $(t[0]).addEventListener('click', function () {
+      tabsDef.forEach(function (u) {
+        $(u[0]).classList.toggle('active', u[0] === t[0]);
+        $(u[1]).hidden = (u[1] !== t[1]);
+      });
+    });
+  });
+
+  /* ---------- onglet 1 : théorème des valeurs intermédiaires ---------- */
+  var base = function (x) { return 0.6 * x * x * x - 3 * x * x + 3.6 * x + 1; };
+  var mode1 = 'cont';
+  var P1 = makePlot({ xmin: 0, xmax: 4, ymin: 0, ymax: 8, px: 34, py: 10, pw: 394, ph: 296 });
+
+  function f1(x) { return base(x) + (mode1 === 'disc' && x >= 2 ? 2 : 0); }
+
+  function draw1() {
+    var k = parseFloat($('s1k').value);
+    $('o1k').textContent = fmt(k, 2);
+    var g = axes(P1);
+    var pieces = (mode1 === 'cont') ? [[0, 4]] : [[0, 2 - 1e-7], [2, 4]];
+    pieces.forEach(function (pc) { g += curve(f1, P1, pc[0], pc[1], '#2563eb', 2.8); });
+    if (mode1 === 'disc') {
+      g += ring(P1, 2, base(2), '#2563eb');
+      g += dot(P1, 2, base(2) + 2, '#2563eb', 4.5);
+      g += '<text x="' + (P1.X(2) + 8).toFixed(1) + '" y="' + (P1.Y(base(2) + 1).toFixed(1)) + '" font-size="11" fill="#f97362" font-weight="700">saut</text>';
+    }
+    g += seg(P1, 0, k, 4, k, '#d97706', 2.2, '7 5');
+    g += '<text x="' + (P1.px + 6) + '" y="' + (P1.Y(k) - 6).toFixed(1) + '" font-size="12" font-weight="700" fill="#d97706">y = ' + fmt(k, 2) + '</text>';
+    var sols = [];
+    pieces.forEach(function (pc) { sols = sols.concat(rootsIn(f1, pc[0], pc[1], k)); });
+    sols.forEach(function (s) {
+      g += seg(P1, s, 0, s, k, '#22a06b', 1.4, '3 3');
+      g += dot(P1, s, k, '#22a06b', 5);
+    });
+    $('svg1').innerHTML = g;
+
+    var liste = sols.map(function (s) { return '\\(' + texNum(s, 2) + '\\)'; }).join(' ; ');
+    $('f1out').innerHTML = 'Nombre de solutions de \\(f(x) = ' + texNum(k, 2) + '\\) sur \\([0\\,;4]\\) : <b style="color:' +
+      (sols.length ? '#22a06b' : '#f97362') + '">' + sols.length + '</b>' + (sols.length ? ' (environ ' + liste + ').' : '.');
+
+    var fa = f1(0), fb = f1(4), entre = (k > Math.min(fa, fb) && k < Math.max(fa, fb));
+    var msg;
+    if (mode1 === 'cont') {
+      msg = '\\(f\\) est un polynôme, donc <b>continue</b> sur \\([0\\,;4]\\) ; \\(f(0) = ' + texNum(fa, 2) + '\\) et \\(f(4) = ' + texNum(fb, 2) + '.\\) ';
+      if (entre) msg += 'Ici \\(' + texNum(fa, 2) + ' &lt; ' + texNum(k, 2) + ' &lt; ' + texNum(fb, 2) + '\\) : le <b>TVI garantit au moins une solution</b>, et on en compte ' + sols.length + '.';
+      else if (sols.length) msg += 'Ici \\(k\\) n\u2019est <b>pas</b> compris entre \\(f(0)\\) et \\(f(4),\\) donc le TVI ne dit rien\u2026 et pourtant il y a ' + sols.length + ' solution(s) : le théorème donne une condition <b>suffisante</b>, pas nécessaire.';
+      else msg += 'Ici \\(k\\) est en dehors des valeurs prises par \\(f\\) : aucune solution.';
+    } else {
+      msg = '\\(g\\) vaut \\(f(x)\\) pour \\(x &lt; 2\\) et \\(f(x)+2\\) pour \\(x \\geqslant 2 :\\) elle <b>n\u2019est pas continue</b> en \\(2\\) (limite à gauche \\(1,\\) image \\(3\\)). ';
+      if (entre && sols.length === 0) {
+        msg += '<b style="color:#f97362">Ici \\(g(0) = 1 &lt; ' + texNum(k, 2) + ' &lt; ' + texNum(fb, 2) + ' = g(4)\\) et pourtant l\u2019équation n\u2019a aucune solution :</b> le théorème des valeurs intermédiaires <b>tombe en défaut</b> dès que la continuité manque.';
+      } else if (sols.length) {
+        msg += 'Pour cette valeur de \\(k\\) il y a ' + sols.length + ' solution(s), mais essaie \\(k = 2{,}5 :\\) il n\u2019y en aura aucune, alors que \\(k\\) est bien compris entre \\(g(0)\\) et \\(g(4).\\)';
+      } else {
+        msg += 'Aucune solution ici.';
+      }
+    }
+    $('f1msg').innerHTML = msg;
+    typeset($('f1out')); typeset($('f1msg'));
+  }
+  $('s1k').addEventListener('input', draw1);
+  $('m1').addEventListener('click', function () {
+    mode1 = 'cont';
+    $('m1').className = 'secondary'; $('m2').className = 'ghost'; draw1();
+  });
+  $('m2').addEventListener('click', function () {
+    mode1 = 'disc';
+    $('m2').className = 'secondary'; $('m1').className = 'ghost'; draw1();
+  });
+  draw1();
+
+  /* ---------- onglet 2 : dichotomie pas à pas ---------- */
+  var fd = function (x) { return x * x * x + x - 3; };
+  var D = { a: 1, b: 2, steps: [], pa: 1, pb: 2 };
+
+  function draw2() {
+    // la fenêtre montre l'intervalle que l'on vient de couper : on voit la moitié gagnée
+    var w = D.pb - D.pa, x1 = D.pa - 0.1 * w, x2 = D.pb + 0.1 * w;
+    var y1 = fd(x1), y2 = fd(x2), pad = (y2 - y1) * 0.12;
+    var P2 = makePlot({ xmin: x1, xmax: x2, ymin: y1 - pad, ymax: y2 + pad, px: 44, py: 10, pw: 384, ph: 266 });
+    var g = axes(P2);
+    g += '<rect x="' + P2.X(D.a).toFixed(1) + '" y="' + P2.py + '" width="' + (P2.X(D.b) - P2.X(D.a)).toFixed(1) +
+      '" height="' + P2.ph + '" fill="#e8efff" opacity="0.5"/>';
+    g += curve(fd, P2, x1, x2, '#2563eb', 2.8);
+    g += dot(P2, D.a, fd(D.a), '#f97362', 4.5, 'a');
+    g += dot(P2, D.b, fd(D.b), '#22a06b', 4.5, 'b');
+    var m = (D.a + D.b) / 2;
+    g += seg(P2, m, P2.ymin, m, P2.ymax, '#d97706', 1.6, '5 4');
+    g += dot(P2, m, fd(m), '#d97706', 4.5, 'm');
+    $('svg2').innerHTML = g;
+
+    var n = D.steps.length;
+    $('f2out').innerHTML = '<b>Étape ' + n + '</b> — intervalle courant \\([' + texNum(D.a, 4) + '\\,;' + texNum(D.b, 4) + ']\\), ' +
+      'amplitude \\(' + texNum(D.b - D.a, 6) + ' = \\dfrac{1}{2^{' + n + '}}.\\) Prochain milieu : \\(m = ' + texNum(m, 4) + '.\\)' +
+      (n >= 10 ? ' <b style="color:#22a06b">Précision \\(10^{-3}\\) atteinte.</b>' : '');
+
+    var t = '<tr><th>étape</th><th>\\(a\\)</th><th>\\(b\\)</th><th>\\(m\\)</th><th>\\(f(m)\\)</th><th>on garde</th></tr>';
+    D.steps.forEach(function (s, i) {
+      t += '<tr><td>' + (i + 1) + '</td><td>' + fmt(s.a, 4) + '</td><td>' + fmt(s.b, 4) + '</td><td>' + fmt(s.m, 4) + '</td>' +
+        '<td style="color:' + (s.fm < 0 ? '#f97362' : '#22a06b') + '">' + fmt(s.fm, 3) + '</td>' +
+        '<td>[' + fmt(s.na, 4) + ' ; ' + fmt(s.nb, 4) + ']</td></tr>';
+    });
+    $('f2tab').innerHTML = t;
+    typeset($('f2out')); typeset($('f2tab'));
+  }
+  $('b2next').addEventListener('click', function () {
+    if (D.steps.length >= 10) return;
+    var m = (D.a + D.b) / 2, fm = fd(m), a0 = D.a, b0 = D.b;
+    if (fd(D.a) * fm > 0) D.a = m; else D.b = m;
+    D.pa = a0; D.pb = b0;
+    D.steps.push({ a: a0, b: b0, m: m, fm: fm, na: D.a, nb: D.b });
+    draw2();
+  });
+  $('b2reset').addEventListener('click', function () { D.a = 1; D.b = 2; D.pa = 1; D.pb = 2; D.steps = []; draw2(); });
+  draw2();
+
+  /* ---------- onglet 3 : suite récurrente et point fixe ---------- */
+  var COB = [
+    { nom: 'f(x) = √(x+6)', f: function (x) { return Math.sqrt(x + 6); }, tex: '\\sqrt{x+6}', L: 3, xmin: 0, xmax: 8, u0: 0.5,
+      eq: 'L = \\sqrt{L+6} \\;\\Longrightarrow\\; L^2-L-6 = 0' },
+    { nom: 'f(x) = 0,5x + 2', f: function (x) { return 0.5 * x + 2; }, tex: '0{,}5x+2', L: 4, xmin: 0, xmax: 8, u0: 7.5,
+      eq: 'L = 0{,}5L+2 \\iff 0{,}5L = 2' },
+    { nom: 'f(x) = −0,6x + 3', f: function (x) { return -0.6 * x + 3; }, tex: '-0{,}6x+3', L: 1.875, xmin: 0, xmax: 5, u0: 0.4,
+      eq: 'L = -0{,}6L+3 \\iff 1{,}6L = 3' }
+  ];
+  (function () {
+    var s = $('s3fn');
+    COB.forEach(function (c, i) { s.innerHTML += '<option value="' + i + '">' + c.nom + '</option>'; });
+  })();
+
+  function draw3() {
+    var c = COB[parseInt($('s3fn').value, 10) || 0];
+    var u0 = parseFloat($('s3u0').value), n = parseInt($('s3n').value, 10);
+    $('o3u0').textContent = fmt(u0, 2); $('o3n').textContent = n;
+    var P = makePlot({ xmin: c.xmin, xmax: c.xmax, ymin: c.xmin, ymax: c.xmax, px: 34, py: 10, pw: 394, ph: 296 });
+    var g = axes(P);
+    g += curve(function (x) { return x; }, P, c.xmin, c.xmax, '#6b7280', 1.8, '5 4');
+    g += curve(c.f, P, c.xmin, c.xmax, '#2563eb', 2.8);
+    var u = u0, i, liste = [];
+    liste.push(u);
+    g += seg(P, u, c.xmin, u, u, '#f97362', 1.2, '3 3');
+    for (i = 0; i < n; i++) {
+      var v = c.f(u);
+      g += seg(P, u, u, u, v, '#f97362', 2);
+      g += seg(P, u, v, v, v, '#f97362', 2);
+      u = v; liste.push(u);
+    }
+    g += dot(P, c.L, c.L, '#22a06b', 5.5, 'L');
+    g += dot(P, u0, u0, '#f97362', 4, 'u₀');
+    $('svg3').innerHTML = g;
+
+    var aff = liste.slice(0, 6).map(function (v, i2) { return '\\(u_{' + i2 + '} = ' + texNum(v, 3) + '\\)'; }).join(' ; ');
+    $('f3out').innerHTML = aff + (liste.length > 6 ? ' … ' : ' ') + '<br>\\(u_{' + n + '} = ' + texNum(u, 5) + '\\) et \\(|u_{' + n + '} - L| = ' + texNum(Math.abs(u - c.L), 5) + '.\\)';
+    $('f3msg').innerHTML = 'La fonction \\(f(x) = ' + c.tex + '\\) est continue. Si \\((u_n)\\) converge vers \\(L,\\) alors \\(u_{n+1} = f(u_n)\\) tend à la fois vers \\(L\\) et vers \\(f(L),\\) donc \\(L = f(L) :\\) \\[' + c.eq + '.\\] Le point fixe est \\(L = ' + texNum(c.L, 4) + ',\\) l\u2019abscisse du point où la courbe coupe la droite \\(y = x.\\)';
+    typeset($('f3out')); typeset($('f3msg'));
+  }
+  $('s3fn').addEventListener('change', function () {
+    var c = COB[parseInt($('s3fn').value, 10) || 0];
+    $('s3u0').min = c.xmin; $('s3u0').max = c.xmax; $('s3u0').value = c.u0;
+    draw3();
+  });
+  $('s3u0').addEventListener('input', draw3);
+  $('s3n').addEventListener('input', draw3);
+  draw3();
+
+  /* ================= exercices génératifs ================= */
   function wireExercise(n, gen, check) {
     var id = 'ex' + n, cur = null;
     function render() {
       cur = gen();
       $(id + '-enonce').innerHTML = cur.enonce;
-      $(id + '-rep').value = '';
+      $(id + '-inputs').innerHTML = cur.inputs;
       $(id + '-fb').textContent = '';
       $(id + '-fb').className = 'feedback';
       $(id + '-correction').classList.remove('show');
       $(id + '-correction').innerHTML = '';
       $(id + '-corr').textContent = 'Voir la correction';
       typeset($(id + '-enonce'));
+      typeset($(id + '-inputs'));
+      [].slice.call($(id + '-inputs').querySelectorAll('input')).forEach(function (c) {
+        c.addEventListener('keydown', function (e) { if (e.key === 'Enter') $(id + '-check').click(); });
+      });
     }
     $(id + '-check').addEventListener('click', function () {
-      var v = parseNum($(id + '-rep').value);
-      if (isNaN(v)) { setFeedback($(id + '-fb'), false, 'Écris une réponse numérique.'); return; }
-      var r = check(cur, v);
+      var r = check(cur, function (k) { return $(id + '-' + k); });
       setFeedback($(id + '-fb'), r.ok, r.msg);
     });
-    $(id + '-rep').addEventListener('keydown', function (e) { if (e.key === 'Enter') $(id + '-check').click(); });
     $(id + '-corr').addEventListener('click', function () {
       var box = $(id + '-correction');
       if (box.classList.contains('show')) {
@@ -320,12 +894,196 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
     $(id + '-new').addEventListener('click', render);
     render();
   }
+  function champNum(id, label) {
+    return '<label for="' + id + '">' + label + '</label> <input type="text" id="' + id + '" inputmode="text" placeholder="…" size="6">';
+  }
 
-  /* ---------- QCM ----------
-     Chaque entrée de la banque est une fonction rendant
-     { q, options: [4 chaînes], correct: index, expl }.
-     Les réponses vivent dans qcmMap, JAMAIS dans un attribut onclick ou data-.
-  */
+  /* --- Exercice 1 : nombre de solutions à partir d'un tableau de variations --- */
+  wireExercise(1, function () {
+    var xs, ys, p, k, nb, guard = 0;
+    do {
+      p = pick([2, 2, 3]);
+      xs = []; ys = [];
+      var x = rnd(-4, -2), y = rnd(-5, 5), dir = pick([1, -1]), i;
+      xs.push(x); ys.push(y);
+      for (i = 0; i < p; i++) {
+        x += rnd(1, 3); xs.push(x);
+        y += dir * rnd(3, 7); ys.push(y); dir = -dir;
+      }
+      var lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys);
+      k = rnd(lo - 2, hi + 1) + 0.5;
+      nb = 0;
+      for (i = 0; i < p; i++) {
+        if (k > Math.min(ys[i], ys[i + 1]) && k < Math.max(ys[i], ys[i + 1])) nb++;
+      }
+      guard++;
+    } while (guard < 40 && nb === 0 && Math.random() < 0.75);
+
+    var th = '<tr><th>\\(x\\)</th>', tr = '<tr><th>\\(f(x)\\)</th>', j;
+    for (j = 0; j <= p; j++) {
+      th += '<th>\\(' + xs[j] + '\\)</th>';
+      tr += '<td>\\(' + ys[j] + '\\)</td>';
+      if (j < p) {
+        th += '<th></th>';
+        tr += ys[j + 1] > ys[j] ? '<td class="up">↗</td>' : '<td class="down">↘</td>';
+      }
+    }
+    var tableau = '<div class="tablewrap"><table>' + th + '</tr>' + tr + '</tr></table></div>';
+
+    var detail = '', total = 0;
+    for (j = 0; j < p; j++) {
+      var a = ys[j], b = ys[j + 1], mn = Math.min(a, b), mx = Math.max(a, b);
+      var dedans = (k > mn && k < mx);
+      if (dedans) total++;
+      detail += '<p><b>Sur \\([' + xs[j] + '\\,;' + xs[j + 1] + ']\\)</b> : \\(f\\) est continue et strictement ' +
+        (b > a ? 'croissante' : 'décroissante') + ', elle passe de \\(' + a + '\\) à \\(' + b + '.\\) ' +
+        (dedans
+          ? 'Comme \\(' + mn + ' &lt; ' + texNum(k, 2) + ' &lt; ' + mx + ',\\) le corollaire du TVI donne <b>exactement une</b> solution.'
+          : 'La valeur \\(' + texNum(k, 2) + '\\) n\u2019est pas comprise entre \\(' + mn + '\\) et \\(' + mx + '\\) : <b>aucune</b> solution sur ce morceau.') + '</p>';
+    }
+
+    return {
+      nb: total, k: k,
+      enonce: '<p>\\(f\\) est une fonction <b>continue</b> sur \\([' + xs[0] + '\\,;' + xs[p] + ']\\) dont voici le tableau de variations.</p>' + tableau +
+        '<p>Combien l\u2019équation \\(f(x) = ' + texNum(k, 2) + '\\) admet-elle de solutions sur \\([' + xs[0] + '\\,;' + xs[p] + ']\\) ?</p>',
+      inputs: champNum('ex1-rep', 'Nombre de solutions :'),
+      correction: '<p><b>Principe.</b> On applique le corollaire du TVI sur <b>chaque</b> intervalle où \\(f\\) est strictement monotone : sur un tel intervalle, \\(f\\) prend une fois et une seule chaque valeur strictement comprise entre les deux valeurs extrêmes.</p>' +
+        detail +
+        '<p class="ok"><b>Total : ' + total + ' solution' + (total > 1 ? 's' : '') + '.</b></p>' +
+        '<p class="stat">Astuce : trace mentalement la droite horizontale \\(y = ' + texNum(k, 2) + '\\) sur le tableau et compte les flèches qu\u2019elle traverse.</p>'
+    };
+  }, function (e, get) {
+    var v = parseNum(get('rep').value);
+    if (isNaN(v)) return { ok: false, msg: 'Écris un nombre entier de solutions.' };
+    if (Math.abs(v - e.nb) < 1e-9) return { ok: true, msg: 'Exact : il y a ' + e.nb + ' solution' + (e.nb > 1 ? 's' : '') + '.' };
+    if (v > e.nb) return { ok: false, msg: 'Trop. Un morceau ne donne une solution que si \\(' + texNum(e.k, 2) + '\\) est <b>strictement compris</b> entre ses deux valeurs.' };
+    return { ok: false, msg: 'Pas assez. Examine <b>chaque</b> flèche du tableau, une par une.' };
+  });
+
+  /* --- Exercice 2 : unicité et encadrement à 0,1 près --- */
+  function racineCubique(p, q, k) {
+    var f = function (x) { return x * x * x + p * x + q - k; };
+    var lo = -30, hi = 30, m, i;
+    for (i = 0; i < 200; i++) {
+      m = (lo + hi) / 2;
+      if (f(lo) * f(m) <= 0) hi = m; else lo = m;
+    }
+    return (lo + hi) / 2;
+  }
+  wireExercise(2, function () {
+    var p, q, k, al, n, a0, b0, guard = 0;
+    do {
+      p = pick([1, 2, 3, 4, 6]); q = rnd(-9, 9); k = rnd(-4, 4);
+      al = racineCubique(p, q, k);
+      n = Math.floor(al);
+      a0 = Math.floor(al * 10) / 10; b0 = Math.round((a0 + 0.1) * 10) / 10;
+      guard++;
+    } while (guard < 200 && (Math.abs(al) > 3.5 || Math.abs(al - Math.round(al)) < 0.08 ||
+             Math.abs(al * 10 - Math.round(al * 10)) < 0.08));
+
+    var f = function (x) { return x * x * x + p * x + q; };
+    var fn = f(n), fn1 = f(n + 1);
+    var fa = f(a0), fb = f(b0);
+    var tex = cubTex(p, q);
+
+    return {
+      a0: a0, b0: b0, al: al, n: n, k: k,
+      enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + tex + '.\\)</p>' +
+        '<p>On admet que l\u2019équation \\(f(x) = ' + k + '\\) admet une unique solution \\(\\alpha\\) sur \\([' + n + '\\,;' + (n + 1) + ']\\) (tu le démontreras dans la correction).</p>' +
+        '<p>Donne un <b>encadrement de \\(\\alpha\\) d\u2019amplitude \\(0{,}1\\)</b> : \\(a &lt; \\alpha &lt; b.\\)</p>',
+      inputs: champNum('ex2-a', '\\(a = \\)') + ' &nbsp; ' + champNum('ex2-b', '\\(b = \\)'),
+      correction: '<p><b>1. Continuité.</b> \\(f\\) est une fonction polynôme, donc dérivable et <b>continue</b> sur \\([' + n + '\\,;' + (n + 1) + '].\\)</p>' +
+        '<p><b>2. Stricte monotonie.</b> \\(f\'(x) = 3x^2 + ' + p + ' &gt; 0\\) pour tout réel \\(x\\) (somme d\u2019un carré positif et de \\(' + p + '\\)), donc \\(f\\) est <b>strictement croissante</b> sur \\(\\mathbb{R}.\\)</p>' +
+        '<p><b>3. Valeurs aux bornes.</b> \\(f(' + n + ') = ' + fn + '\\) et \\(f(' + (n + 1) + ') = ' + fn1 + ',\\) et \\(' + fn + ' &lt; ' + k + ' &lt; ' + fn1 + '.\\)</p>' +
+        '<p><b>4. Conclusion.</b> D\u2019après le <b>corollaire du théorème des valeurs intermédiaires</b>, l\u2019équation \\(f(x) = ' + k + '\\) admet une <b>unique</b> solution \\(\\alpha\\) dans \\([' + n + '\\,;' + (n + 1) + '].\\)</p>' +
+        '<p><b>5. Encadrement par balayage (pas \\(0{,}1\\)).</b> À la calculatrice : \\(f(' + texNum(a0, 1) + ') = ' + texNum(fa, 3) + ' &lt; ' + k + '\\) et \\(f(' + texNum(b0, 1) + ') = ' + texNum(fb, 3) + ' &gt; ' + k + '.\\)</p>' +
+        '<p>Comme \\(f\\) est croissante, on en déduit :</p><p>\\[' + texNum(a0, 1) + ' &lt; \\alpha &lt; ' + texNum(b0, 1) + '.\\]</p>' +
+        '<p class="ok">Valeur approchée : \\(\\alpha \\approx ' + texNum(al, 4) + '.\\)</p>'
+    };
+  }, function (e, get) {
+    var a = parseNum(get('a').value), b = parseNum(get('b').value);
+    if (isNaN(a) || isNaN(b)) return { ok: false, msg: 'Complète les deux bornes.' };
+    if (a > b) return { ok: false, msg: 'Les bornes sont inversées : il faut écrire \\(a &lt; \\alpha &lt; b.\\)' };
+    var okA = Math.abs(a - e.a0) < 0.002, okB = Math.abs(b - e.b0) < 0.002;
+    if (okA && okB) return { ok: true, msg: 'Parfait : \\(' + texNum(e.a0, 1) + ' &lt; \\alpha &lt; ' + texNum(e.b0, 1) + '\\) (en fait \\(\\alpha \\approx ' + texNum(e.al, 3) + '\\)).' };
+    if (Math.abs((b - a) - 0.1) > 0.002) return { ok: false, msg: 'L\u2019amplitude doit être \\(0{,}1 :\\) prends deux dixièmes consécutifs.' };
+    if (a < e.al && b > e.al) return { ok: false, msg: 'L\u2019encadrement contient bien \\(\\alpha,\\) mais ce ne sont pas deux dixièmes consécutifs.' };
+    return { ok: false, msg: 'Non. Balaie par pas de \\(0{,}1\\) depuis \\(' + e.n + '\\) jusqu\u2019au changement de signe de \\(f(x) - ' + e.k + '.\\)' };
+  });
+
+  /* --- Exercice 3 : dichotomie --- */
+  wireExercise(3, function () {
+    var p, q, al, n, A, B, w, eps, guard = 0, m1, m2;
+    do {
+      p = pick([1, 2, 3]); q = rnd(-7, 7);
+      al = racineCubique(p, q, 0);
+      n = Math.floor(al);
+      w = pick([1, 2]);
+      A = (w === 1) ? n : n - 1;
+      B = A + w;
+      m1 = (A + B) / 2;
+      guard++;
+    } while (guard < 200 && (Math.abs(al) > 3 || Math.abs(al - Math.round(al)) < 0.12 || Math.abs(al - m1) < 0.06));
+    eps = pick([0.1, 0.05, 0.01]);
+
+    var f = function (x) { return x * x * x + p * x + q; };
+    // deux étapes de dichotomie
+    var a = A, b = B, det = [], i, m, fm;
+    for (i = 0; i < 2; i++) {
+      m = (a + b) / 2; fm = f(m);
+      var na, nb;
+      if (f(a) * fm > 0) { na = m; nb = b; } else { na = a; nb = m; }
+      det.push({ a: a, b: b, m: m, fm: fm, na: na, nb: nb });
+      a = na; b = nb;
+    }
+    // nombre d'étapes pour atteindre eps
+    var nEt = 0, amp = B - A;
+    while (amp > eps + 1e-12) { amp = amp / 2; nEt++; }
+
+    var tab = '<div class="tablewrap"><table><tr><th>étape</th><th>\\([a\\,;b]\\)</th><th>\\(m\\)</th><th>\\(f(m)\\)</th><th>nouvel intervalle</th></tr>';
+    det.forEach(function (s, i2) {
+      tab += '<tr><td>' + (i2 + 1) + '</td><td>[' + fmt(s.a, 3) + ' ; ' + fmt(s.b, 3) + ']</td><td>' + fmt(s.m, 3) + '</td>' +
+        '<td style="color:' + (s.fm < 0 ? '#f97362' : '#22a06b') + '">' + fmt(s.fm, 3) + '</td>' +
+        '<td>[' + fmt(s.na, 3) + ' ; ' + fmt(s.nb, 3) + ']</td></tr>';
+    });
+    tab += '</table></div>';
+
+    var expl2 = '';
+    det.forEach(function (s, i2) {
+      expl2 += '<p><b>Étape ' + (i2 + 1) + '.</b> \\(m = \\dfrac{' + texNum(s.a, 3) + ' + ' + texNum(s.b, 3) + '}{2} = ' + texNum(s.m, 3) + '\\) et \\(f(' + texNum(s.m, 3) + ') \\approx ' + texNum(s.fm, 3) + ' ' +
+        (s.fm < 0 ? '&lt; 0' : '&gt; 0') + '.\\) Comme \\(f\\) est croissante, la solution est ' +
+        (s.fm < 0 ? 'à <b>droite</b> de \\(m\\)' : 'à <b>gauche</b> de \\(m\\)') + ' : on garde \\([' + texNum(s.na, 3) + '\\,;' + texNum(s.nb, 3) + '].\\)</p>';
+    });
+
+    var pw = Math.pow(2, nEt), pwm = Math.pow(2, nEt - 1);
+
+    return {
+      a: a, b: b, nEt: nEt, eps: eps, A: A, B: B, al: al,
+      enonce: '<p>Soit \\(f(x) = ' + cubTex(p, q) + '.\\) On montre (comme à l\u2019exercice 2) que l\u2019équation \\(f(x) = 0\\) admet une unique solution \\(\\alpha\\) dans \\([' + A + '\\,;' + B + '].\\) On applique la <b>méthode de dichotomie</b> à partir de cet intervalle.</p>' +
+        '<ol><li>Quel intervalle obtient-on après <b>2 étapes</b> ?</li>' +
+        '<li>Combien d\u2019étapes au minimum faut-il, à partir de \\([' + A + '\\,;' + B + '],\\) pour obtenir un encadrement d\u2019amplitude inférieure ou égale à \\(' + texNum(eps, 3) + '\\) ?</li></ol>',
+      inputs: champNum('ex3-a', 'borne inf. :') + ' &nbsp; ' + champNum('ex3-b', 'borne sup. :') + ' &nbsp; ' + champNum('ex3-n', 'nombre d\u2019étapes :'),
+      correction: '<p><b>1. Les deux étapes.</b> À chaque étape on calcule le milieu \\(m,\\) puis on garde la moitié dans laquelle \\(f\\) change de signe.</p>' +
+        expl2 + tab +
+        '<p class="ok">Après 2 étapes : \\([' + texNum(a, 3) + '\\,;' + texNum(b, 3) + '],\\) d\u2019amplitude \\(' + texNum(b - a, 4) + '.\\) (En réalité \\(\\alpha \\approx ' + texNum(al, 4) + '.\\))</p>' +
+        '<p><b>2. Nombre d\u2019étapes.</b> Après \\(n\\) étapes, l\u2019amplitude vaut \\(\\dfrac{' + (B - A) + '}{2^n}.\\) On cherche le plus petit \\(n\\) tel que</p>' +
+        '<p>\\[\\dfrac{' + (B - A) + '}{2^n} \\leqslant ' + texNum(eps, 3) + ' \\iff 2^n \\geqslant ' + texNum((B - A) / eps, 3) + '.\\]</p>' +
+        '<p>Or \\(2^{' + (nEt - 1) + '} = ' + pwm + ' &lt; ' + texNum((B - A) / eps, 3) + '\\) et \\(2^{' + nEt + '} = ' + pw + ' \\geqslant ' + texNum((B - A) / eps, 3) + '.\\)</p>' +
+        '<p class="ok">Il faut donc <b>' + nEt + ' étapes</b>.</p>'
+    };
+  }, function (e, get) {
+    var a = parseNum(get('a').value), b = parseNum(get('b').value), n = parseNum(get('n').value);
+    if (isNaN(a) || isNaN(b) || isNaN(n)) return { ok: false, msg: 'Complète les trois réponses.' };
+    var okI = Math.abs(a - e.a) < 1e-6 && Math.abs(b - e.b) < 1e-6;
+    var okN = Math.abs(n - e.nEt) < 1e-9;
+    if (okI && okN) return { ok: true, msg: 'Parfait : \\([' + texNum(e.a, 3) + '\\,;' + texNum(e.b, 3) + ']\\) après 2 étapes, et ' + e.nEt + ' étapes pour l\u2019amplitude \\(' + texNum(e.eps, 3) + '.\\)' };
+    if (okI && !okN) return { ok: false, msg: 'Bon intervalle. Pour le nombre d\u2019étapes, résous \\(\\dfrac{' + (e.B - e.A) + '}{2^n} \\leqslant ' + texNum(e.eps, 3) + '.\\)' };
+    if (!okI && okN) return { ok: false, msg: 'Bon nombre d\u2019étapes. Recalcule les deux milieux : \\(m_1 = ' + texNum((e.A + e.B) / 2, 3) + '\\) puis le milieu de la moitié conservée.' };
+    if (Math.abs((b - a) - (e.B - e.A) / 4) > 1e-6) return { ok: false, msg: 'Après 2 étapes, l\u2019amplitude doit être divisée par \\(4 :\\) elle vaut \\(' + texNum((e.B - e.A) / 4, 4) + '.\\)' };
+    return { ok: false, msg: 'Non. Compare le signe de \\(f(m)\\) à celui de \\(f(a)\\) pour savoir quelle moitié garder.' };
+  });
+
+  /* ================= QCM ================= */
   function build(q, options, correctIdx, expl) {
     var idx = shuffle([0, 1, 2, 3]);
     return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
@@ -333,12 +1091,107 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
 
   var qcmBank = [
     function () {
-      var a = rnd(2, 9), b = rnd(2, 9);
-      return build('Exemple : combien vaut \\(' + a + ' \\times ' + b + '\\) ?',
-        [String(a * b), String(a + b), String(a * b + 1), String(a * b - 1)], 0,
-        'Il s\'agit d\'un simple produit.');
+      var a = rnd(1, 5);
+      return build('\\(f\\) est continue en \\(' + a + '\\) signifie :',
+        ['\\(\\lim\\limits_{x \\to ' + a + '} f(x) = f(' + a + ')\\)',
+         '\\(f(' + a + ') = 0\\)',
+         '\\(f\\) est croissante autour de \\(' + a + '\\)',
+         '\\(f\'(' + a + ')\\) existe'], 0,
+        'La continuité, c\u2019est « la limite vaut l\u2019image ». L\u2019existence de \\(f\'\\) est la dérivabilité, qui est plus forte.');
+    },
+    function () {
+      return build('La fonction partie entière \\(E\\) est :',
+        ['discontinue en chaque entier', 'continue sur \\(\\mathbb{R}\\)', 'continue seulement en \\(0\\)', 'dérivable sur \\(\\mathbb{R}\\)'], 0,
+        'En un entier \\(n,\\) la limite à gauche vaut \\(n-1\\) et l\u2019image vaut \\(n :\\) la courbe fait un saut.');
+    },
+    function () {
+      return build('La fonction \\(x \\mapsto |x|\\) en \\(0\\) est :',
+        ['continue mais non dérivable', 'dérivable mais non continue', 'ni continue ni dérivable', 'continue et dérivable'], 0,
+        'Le « V » se trace sans lever le crayon, mais le taux de variation vaut \\(-1\\) à gauche et \\(1\\) à droite : pas de nombre dérivé.');
+    },
+    function () {
+      return build('« Toute fonction continue sur \\(I\\) est dérivable sur \\(I.\\) » Cette affirmation est :',
+        ['fausse : \\(x \\mapsto |x|\\) est un contre-exemple', 'vraie', 'vraie si \\(f\\) est positive', 'vraie si \\(I\\) est fermé'], 0,
+        'C\u2019est l\u2019implication inverse qui est vraie : <b>dérivable \\(\\Rightarrow\\) continue</b>.');
+    },
+    function () {
+      return build('Si \\(f\\) est dérivable sur \\([2\\,;7],\\) on peut affirmer que :',
+        ['\\(f\\) est continue sur \\([2\\,;7]\\)', '\\(f\\) est croissante sur \\([2\\,;7]\\)', '\\(f\\) s\u2019annule sur \\([2\\,;7]\\)', '\\(f\\) est positive sur \\([2\\,;7]\\)'], 0,
+        'Dérivable entraîne continue : c\u2019est l\u2019argument le plus court pour justifier la continuité en devoir.');
+    },
+    function () {
+      var a = pick([2, 3, 5, 7]);
+      return build('Sur quel ensemble la fonction \\(f(x) = \\dfrac{2x+1}{x-' + a + '}\\) est-elle continue ?',
+        ['\\(]-\\infty\\,;' + a + '[\\) et \\(]' + a + '\\,;+\\infty[\\)', '\\(\\mathbb{R}\\)', '\\([' + a + '\\,;+\\infty[\\)', '\\(\\mathbb{R}\\) sauf en \\(0\\)'], 0,
+        'Un quotient est continu partout où le dénominateur ne s\u2019annule pas : ici sur deux intervalles séparés.');
+    },
+    function () {
+      return build('Pour appliquer le théorème des valeurs intermédiaires sur \\([a\\,;b],\\) il faut :',
+        ['\\(f\\) continue sur \\([a\\,;b]\\) et \\(k\\) compris entre \\(f(a)\\) et \\(f(b)\\)',
+         '\\(f\\) dérivable et croissante',
+         '\\(f\\) positive sur \\([a\\,;b]\\)',
+         '\\(f(a)\\) et \\(f(b)\\) de même signe'], 0,
+        'Deux hypothèses seulement : la <b>continuité</b> et la position de \\(k\\) entre les deux images.');
+    },
+    function () {
+      return build('Le TVI seul donne l\u2019existence d\u2019une solution. Que faut-il ajouter pour avoir l\u2019<b>unicité</b> ?',
+        ['la stricte monotonie de \\(f\\) sur l\u2019intervalle', 'la positivité de \\(f\\)', 'la dérivabilité de \\(f\\)', 'que \\(k = 0\\)'], 0,
+        'Strictement monotone \\(\\Rightarrow\\) \\(f\\) ne reprend jamais deux fois la même valeur : au plus une solution.');
+    },
+    function () {
+      var k = rnd(1, 4);
+      return build('\\(f\\) est continue sur \\([0\\,;3]\\) avec \\(f(0) = -2\\) et \\(f(3) = ' + (k + 3) + '.\\) On peut affirmer :',
+        ['l\u2019équation \\(f(x) = 0\\) admet au moins une solution sur \\([0\\,;3]\\)',
+         'l\u2019équation \\(f(x) = 0\\) admet exactement une solution',
+         '\\(f\\) est croissante sur \\([0\\,;3]\\)',
+         'l\u2019équation \\(f(x) = 0\\) n\u2019a pas de solution'], 0,
+        '\\(0\\) est compris entre \\(-2\\) et \\(' + (k + 3) + '\\) : le TVI donne <b>au moins</b> une solution, pas plus.');
+    },
+    function () {
+      return build('\\(f\\) est continue et <b>strictement décroissante</b> sur \\([1\\,;4],\\) \\(f(1) = 6,\\) \\(f(4) = -2.\\) Le nombre de solutions de \\(f(x) = 1\\) est :',
+        ['1', '0', '2', 'on ne peut pas savoir'], 0,
+        '\\(-2 &lt; 1 &lt; 6\\) et \\(f\\) est strictement monotone : le corollaire du TVI donne exactement une solution.');
+    },
+    function () {
+      return build('\\((u_n)\\) vérifie \\(u_{n+1} = f(u_n)\\) avec \\(f\\) continue, et \\((u_n)\\) converge vers \\(L.\\) Alors :',
+        ['\\(L = f(L)\\)', '\\(L = 0\\)', '\\(f\'(L) = 0\\)', '\\(L = u_0\\)'], 0,
+        '\\(u_{n+1}\\) tend vers \\(L\\) et, par continuité, vers \\(f(L)\\) : par unicité de la limite, \\(L = f(L).\\)');
+    },
+    function () {
+      return build('« Comme \\(f(2) &lt; 0 &lt; f(3),\\) l\u2019équation \\(f(x) = 0\\) admet une unique solution sur \\([2\\,;3].\\) » Que manque-t-il ?',
+        ['la continuité et la stricte monotonie de \\(f\\)', 'rien, la rédaction est complète', 'le calcul de \\(f\'(2)\\)', 'la valeur approchée de la solution'], 0,
+        'Sans continuité, aucune solution garantie ; sans stricte monotonie, aucune unicité garantie.');
+    },
+    function () {
+      return build('On part de \\([0\\,;1]\\) et on applique la dichotomie. Combien d\u2019étapes pour une amplitude \\(\\leqslant 0{,}01\\) ?',
+        ['7', '5', '10', '100'], 0,
+        'Il faut \\(\\dfrac{1}{2^n} \\leqslant 0{,}01,\\) soit \\(2^n \\geqslant 100 :\\) \\(2^6 = 64\\) ne suffit pas, \\(2^7 = 128\\) convient.');
+    },
+    function () {
+      return build('\\(f\\) est continue et croissante, \\(f(1{,}3) &lt; 0\\) et \\(f(1{,}4) &gt; 0.\\) La solution \\(\\alpha\\) de \\(f(x) = 0\\) vérifie :',
+        ['\\(1{,}3 &lt; \\alpha &lt; 1{,}4\\)', '\\(\\alpha &lt; 1{,}3\\)', '\\(\\alpha &gt; 1{,}4\\)', '\\(\\alpha = 1{,}35\\)'], 0,
+        'Le changement de signe encadre la solution entre les deux valeurs consécutives du balayage.');
+    },
+    function () {
+      return build('\\(f\\) est continue sur \\([0\\,;1]\\) avec \\(f(0) = f(1) = 1.\\) Que dire de l\u2019équation \\(f(x) = 2\\) ?',
+        ['le TVI ne s\u2019applique pas, on ne peut rien conclure', 'elle n\u2019a aucune solution', 'elle a exactement une solution', 'elle a au moins une solution'], 0,
+        '\\(2\\) n\u2019est pas compris entre \\(f(0)\\) et \\(f(1)\\) : le théorème est muet, mais la fonction peut très bien atteindre \\(2\\) au milieu.');
+    },
+    function () {
+      return build('\\(u_0 = 1\\) et \\(u_{n+1} = \\sqrt{u_n+6}.\\) On admet que \\((u_n)\\) converge. Sa limite est :',
+        ['\\(3\\)', '\\(-2\\)', '\\(6\\)', '\\(2\\)'], 0,
+        '\\(L = \\sqrt{L+6}\\) donne \\(L^2-L-6 = 0,\\) soit \\(L = 3\\) ou \\(L = -2 ;\\) comme \\(u_n \\geqslant 0,\\) on garde \\(3.\\)');
+    },
+    function () {
+      return build('\\(f\\) est continue sur \\([a\\,;b]\\) et \\(f(a) \\times f(b) &lt; 0.\\) Alors :',
+        ['\\(f\\) s\u2019annule au moins une fois sur \\([a\\,;b]\\)', '\\(f\\) s\u2019annule exactement une fois', '\\(f\\) est monotone', '\\(f\\) ne s\u2019annule pas'], 0,
+        'Un produit négatif signifie que \\(f(a)\\) et \\(f(b)\\) sont de signes contraires : \\(0\\) est entre les deux, le TVI s\u2019applique.');
+    },
+    function () {
+      return build('La fonction définie par \\(f(x) = x^2\\) si \\(x &lt; 1\\) et \\(f(x) = x+2\\) si \\(x \\geqslant 1\\) est-elle continue en \\(1\\) ?',
+        ['non : la limite à gauche vaut \\(1\\) et \\(f(1) = 3\\)', 'oui, les deux morceaux sont continus', 'oui, car \\(f(1)\\) existe', 'non, car \\(f\\) n\u2019est pas dérivable en \\(1\\)'], 0,
+        'Au point de raccord il faut comparer limite à gauche, limite à droite et image : ici \\(1 \\neq 3.\\)');
     }
-    // … au moins 10 générateurs ou questions dans une fiche réelle.
   ];
 
   var qcmMap = {}, answered = 0, score = 0;
@@ -350,7 +1203,6 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
     qcmMap = {}; answered = 0; score = 0;
     shuffle(qcmBank).slice(0, 4).forEach(function (gen, i) {
       var item = gen(), guard = 0;
-      // deux options identiques rendraient la question insoluble
       while (guard++ < 30 && new Set(item.options).size < 4) { item = gen(); }
       qcmMap[i] = { correct: item.correct, expl: item.expl, done: false };
       var q = document.createElement('div'); q.className = 'qcm-q';
@@ -397,24 +1249,9 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
     }
   }
   $('qcm-new').addEventListener('click', renderQcm);
-
-  /* ---------- démarrage ---------- */
-  wireExercise(1, function () {
-    var a = rnd(2, 9), b = rnd(2, 9);
-    return {
-      res: a * b,
-      enonce: '<p>Exemple d\'énoncé : calculer \\(' + a + ' \\times ' + b + '\\).</p>',
-      correction: '<p>\\(' + a + ' \\times ' + b + ' = ' + (a * b) + '.\\)</p>'
-    };
-  }, function (e, v) {
-    return Math.abs(v - e.res) < 1e-9
-      ? { ok: true, msg: 'Correct.' }
-      : { ok: false, msg: 'Non, recompte le produit.' };
-  });
-
   renderQcm();
 
-  // Le contenu est injecté avant le chargement de MathJax : on retente au chargement.
+  /* ================= démarrage ================= */
   var tries = 0;
   (function wait() {
     if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
@@ -422,6 +1259,7 @@ p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border
   })();
 })();
 </script>
+
 <button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
 <script>
 (function(){
