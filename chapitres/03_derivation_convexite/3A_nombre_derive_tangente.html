@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nombre dérivé et tangente</title>
+
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+
+<style>
+:root{
+  --bg:#faf8f5; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --blue:#2563eb; --blue-soft:#e8efff;
+  --coral:#f97362; --coral-soft:#fde8e4;
+  --green:#22a06b; --green-soft:#e3f5ec;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.5rem} h3{font-size:1.1rem;color:var(--blue)}
+p{margin:.4em 0 .8em}
+ul,ol{padding-left:1.25rem;margin:.3rem 0 .8rem} li{margin:.3rem 0}
+
+header{padding:2rem 1.1rem 1.2rem;text-align:center;background:linear-gradient(180deg,var(--blue-soft) 0%,var(--bg) 100%)}
+header h1{font-size:1.75rem;opacity:0;transform:translateY(14px);animation:rise .8s ease forwards}
+header .sub{color:var(--muted);opacity:0;animation:rise .8s .3s ease forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.5rem .5rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav a{display:inline-block;min-height:44px;line-height:44px;padding:0 .9rem;margin:0 .15rem;border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.92rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+nav a.active{background:var(--blue);color:#fff}
+
+main{max-width:820px;margin:0 auto;padding:1rem .85rem 3rem}
+section{margin:1.3rem 0 2rem;scroll-margin-top:64px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin:.8rem 0}
+.card.blue{border-left:6px solid var(--blue)}
+.card.green{border-left:6px solid var(--green)}
+.card.coral{border-left:6px solid var(--coral)}
+.card.amber{border-left:6px solid var(--amber)}
+.tag{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);vertical-align:middle;font-family:system-ui,sans-serif;max-width:100%}
+.tag.demo{background:var(--coral-soft);color:#c2410c}
+.tag.deep{background:var(--amber-soft);color:#92400e}
+.key{background:var(--amber-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.warn{background:var(--coral-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.ok{background:var(--green-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+
+button{min-height:44px;padding:.5rem 1rem;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+button.ghost{background:#f3f4f6;color:var(--ink);box-shadow:none}
+button:active{transform:translateY(1px)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type="text"],input[type="number"],select{min-height:44px;font-size:1rem;font-family:inherit;padding:.45rem .6rem;border:1px solid #d1d5db;border-radius:10px;background:#fff;max-width:100%}
+input[type="range"]{width:100%;min-height:36px}
+label{font-size:.92rem;color:var(--muted)}
+
+.feedback{margin:.5rem 0;font-weight:600;min-height:1.4em}
+.feedback.good{color:var(--green)} .feedback.bad{color:#c2410c}
+.correction{display:none;background:#f4f2ee;border-radius:12px;padding:.8rem .9rem;margin-top:.6rem}
+.correction.show{display:block}
+
+.qcm-q{border-top:1px solid var(--line);padding-top:.9rem;margin-top:.9rem}
+.qcm-q:first-child{border-top:0;margin-top:0}
+.choices{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.5rem 0}
+@media (min-width:560px){.choices{grid-template-columns:1fr 1fr}}
+.choice{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font-weight:400;box-shadow:none}
+.choice .letter{display:inline-block;width:1.5em;font-weight:700;color:var(--blue)}
+.choice.correct{background:var(--green-soft);border-color:var(--green)}
+.choice.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.expl{display:none;font-size:.94rem;margin-top:.35rem}
+.expl.show{display:block}
+.score{font-weight:700;margin-top:.8rem}
+
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:1.5rem 1rem 2.5rem}
+
+/* --- Figures. NE JAMAIS écrire une règle « svg { … } » globale :
+   MathJax produit lui aussi des <svg> et ils seraient déformés.
+   Toujours passer par la classe .figure. --- */
+.figure{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:12px;touch-action:pan-y}
+
+/* --- Commandes et lectures de la visualisation --- */
+.ctrl{margin:.6rem 0}
+.ctrl .val{color:var(--blue);font-weight:700}
+.readouts{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.6rem 0}
+@media (min-width:520px){.readouts{grid-template-columns:1fr 1fr}}
+.ro{background:#f7f5f1;border-radius:10px;padding:.5rem .65rem;min-width:0}
+.ro .lbl{display:block;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ro .num{font-size:1.12rem;font-weight:700;font-variant-numeric:tabular-nums;word-break:break-word}
+.ro.sec .num{color:var(--coral)}
+.ro.tan .num{color:var(--blue)}
+.ro.gap .num{color:var(--green)}
+.legend{font-size:.86rem;color:var(--muted);margin:.3rem 0 .1rem}
+.legend span{display:inline-block;margin-right:.8rem;white-space:nowrap}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:.25rem}
+.small{font-size:.88rem;color:var(--muted)}
+.fields{display:flex;flex-wrap:wrap;gap:.5rem}
+.field{display:flex;flex-direction:column;gap:.15rem}
+.field label{font-size:.82rem}
+.field input{width:9.5rem;max-width:100%}
+
+/* ===== Bloc responsive obligatoire — ne pas modifier ===== */
+/* Les formules gardent leur taille normale : c'est le bloc parent qui défile
+   horizontalement quand la formule est plus large que la carte. */
+mjx-container svg{
+  width:auto !important;height:auto !important;max-width:none !important;
+  display:inline !important;background:none !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;
+}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding-bottom:3px}
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml{
+  position:absolute !important;top:0 !important;left:0 !important;
+  width:1px !important;height:1px !important;overflow:hidden !important;
+  clip:rect(1px,1px,1px,1px) !important;padding:0 !important;border:0 !important;white-space:nowrap !important;
+}
+.correction,.corr,.enonce,.feedback,.expl,.stem,.question,
+.correction p,.corr p,.enonce p,.expl p,
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol{
+  max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+}
+p:has(> mjx-container),ul:has(> li > mjx-container), ol:has(> li > mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),dd:has(> mjx-container),summary:has(> mjx-container),
+div:has(> mjx-container){max-width:100%;overflow-x:auto;overflow-y:hidden}
+h1,h2,h3,h4{flex-wrap:wrap}
+div:has(> table){max-width:100%;overflow-x:auto}
+pre{max-width:100%;overflow-x:auto}
+.correction::-webkit-scrollbar,.corr::-webkit-scrollbar,
+p::-webkit-scrollbar,ul::-webkit-scrollbar{height:4px}
+.correction::-webkit-scrollbar-thumb,.corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border-radius:4px}
+/* ===== fin du bloc responsive ===== */
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Nombre dérivé et tangente</h1>
+  <div class="sub">Première · Mathématiques</div>
+</header>
+
+<nav id="nav">
+  <a href="#cours">Cours</a>
+  <a href="#methode">Méthode</a>
+  <a href="#visu">Visualisation</a>
+  <a href="#exos">Exercices</a>
+  <a href="#qcm">QCM</a>
+</nav>
+
+<main>
+
+<section id="cours">
+  <h2>Cours</h2>
+
+  <div class="card blue">
+    <h3>1. Le taux de variation entre \(a\) et \(a+h\)</h3>
+    <p>Soit \(f\) une fonction et \(a\) un nombre de son ensemble de définition. Pour \(h \neq 0\), le <strong>taux de variation</strong> de \(f\) entre \(a\) et \(a+h\) est</p>
+    <p>\[\tau(h) = \frac{f(a+h) - f(a)}{h}.\]</p>
+    <p>C'est la <strong>pente de la sécante</strong> \((AB)\), où \(A\) est le point de coordonnées \((a\,;\,f(a))\) et \(B\) le point de coordonnées \((a+h\,;\,f(a+h)).\)</p>
+    <div class="key">
+      <p><strong>Exemple.</strong> \(f(x) = x^2\), \(a = 2\), \(h = 1\) :</p>
+      <p>\[\tau(1) = \frac{f(3) - f(2)}{1} = \frac{9 - 4}{1} = 5.\]</p>
+      <p>La droite qui passe par \(A(2\,;\,4)\) et \(B(3\,;\,9)\) a donc pour pente \(5.\)</p>
+    </div>
+    <p class="small">Autre écriture, la même chose : entre deux abscisses \(a\) et \(b\), le taux vaut \(\dfrac{f(b)-f(a)}{b-a}\) — il suffit de poser \(h = b - a.\)</p>
+  </div>
+
+  <div class="card blue">
+    <h3>2. Le nombre dérivé \(f'(a)\)</h3>
+    <p>On fait tendre \(h\) vers \(0\) : le point \(B\) glisse sur la courbe et se rapproche de \(A.\) Si le taux de variation \(\tau(h)\) se rapproche d'un nombre réel, on dit que \(f\) est <strong>dérivable en \(a\)</strong> et ce nombre s'appelle le <strong>nombre dérivé de \(f\) en \(a\)</strong>, noté \(f'(a)\) (lire « f prime de a ») :</p>
+    <p>\[f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}.\]</p>
+    <div class="warn">
+      <p>Ne jamais remplacer \(h\) par \(0\) tout de suite : on obtiendrait \(\dfrac{0}{0}\), qui ne veut rien dire. Il faut <strong>d'abord simplifier par \(h\)</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3>3. Le calcul complet sur la fonction carré</h3>
+    <p>Soit \(f(x) = x^2\) et \(a\) un réel quelconque. Pour \(h \neq 0\) :</p>
+    <p>\[\tau(h) = \frac{(a+h)^2 - a^2}{h} = \frac{a^2 + 2ah + h^2 - a^2}{h} = \frac{2ah + h^2}{h}.\]</p>
+    <p>On factorise par \(h\) au numérateur, puis on simplifie (c'est permis, car \(h \neq 0\)) :</p>
+    <p>\[\tau(h) = \frac{h\,(2a + h)}{h} = 2a + h.\]</p>
+    <p>Quand \(h\) tend vers \(0\), la quantité \(2a + h\) tend vers \(2a.\) Donc la fonction carré est dérivable en tout réel \(a\) et</p>
+    <p>\[f'(a) = 2a.\]</p>
+    <div class="ok">
+      <p>Par exemple \(f'(2) = 4\), \(f'(-1) = -2\), \(f'(0) = 0\), \(f'(0{,}5) = 1.\)</p>
+    </div>
+  </div>
+
+  <div class="card blue">
+    <h3>4. La tangente, position limite des sécantes</h3>
+    <p>Quand \(h\) tend vers \(0\), la sécante \((AB)\) pivote autour de \(A\) et vient se coller à la courbe : sa position limite est la <strong>tangente à la courbe au point \(A\)</strong>.</p>
+    <div class="key">
+      <p>La tangente à \(\mathcal{C}_f\) au point d'abscisse \(a\) est la droite qui passe par \(A(a\,;\,f(a))\) et dont le <strong>coefficient directeur (la pente) est \(f'(a)\)</strong>.</p>
+    </div>
+    <p>Exemple : pour \(f(x) = x^2\), la tangente au point \(A(2\,;\,4)\) a pour pente \(f'(2) = 4.\)</p>
+    <p>Cas particulier utile : \(f'(a) = 0\) signifie que la tangente en \(a\) est <strong>horizontale</strong> (parallèle à l'axe des abscisses).</p>
+  </div>
+
+  <div class="card coral">
+    <h3>5. Équation de la tangente <span class="tag demo">à savoir démontrer</span></h3>
+    <p>Si \(f\) est dérivable en \(a\), la tangente \(T\) à \(\mathcal{C}_f\) au point d'abscisse \(a\) a pour équation</p>
+    <p>\[y = f(a) + f'(a)\,(x - a).\]</p>
+    <p><strong>Démonstration (exigible).</strong></p>
+    <ol>
+      <li>\(T\) a pour coefficient directeur \(f'(a)\) : ce n'est pas une droite verticale, elle a donc une équation de la forme \(y = f'(a)\,x + p.\)</li>
+      <li>\(T\) passe par le point \(A(a\,;\,f(a))\), donc les coordonnées de \(A\) vérifient l'équation : \(f(a) = f'(a) \times a + p.\)</li>
+      <li>On en déduit l'ordonnée à l'origine : \(p = f(a) - a\,f'(a).\)</li>
+      <li>En reportant : \(y = f'(a)\,x + f(a) - a\,f'(a) = f(a) + f'(a)\,(x - a).\) <span class="small">CQFD</span></li>
+    </ol>
+    <div class="ok">
+      <p><strong>Exemple.</strong> \(f(x) = x^2\) et \(a = 3.\) On a \(f(3) = 9\) et \(f'(3) = 2 \times 3 = 6\), donc</p>
+      <p>\[y = 9 + 6\,(x - 3) = 6x - 18 + 9 = 6x - 9.\]</p>
+    </div>
+  </div>
+
+  <div class="card amber">
+    <h3>6. Ce que mesure \(f'(a)\) dans la vraie vie</h3>
+    <ul>
+      <li><strong>Vitesse instantanée.</strong> Si \(d(t)\) est la distance parcourue (en m) au bout de \(t\) secondes, le taux de variation entre \(t\) et \(t+h\) est la vitesse <em>moyenne</em> sur cet intervalle, et \(d'(t)\) est la vitesse <em>instantanée</em> (en m·s⁻¹), celle qu'indique le compteur. Avec \(d(t) = 5t^2\), on trouve \(d'(t) = 10t\), donc \(d'(3) = 30\) : à l'instant \(t = 3\) s, le mobile va à \(30\) m·s⁻¹.</li>
+      <li><strong>Coût marginal.</strong> Si \(C(q)\) est le coût de production de \(q\) objets, \(C'(q)\) est le <em>coût marginal</em> : il donne approximativement le coût de l'objet suivant, \(C(q+1) - C(q).\) Si \(C'(50) = 12\), fabriquer le 51ᵉ objet coûte environ \(12\) €.</li>
+      <li><strong>En général.</strong> \(f'(a)\) est la <strong>vitesse de variation</strong> de \(f\) à l'instant (ou au point) \(a\) : grand et positif = ça monte vite, négatif = ça descend, nul = ça stagne.</li>
+    </ul>
+  </div>
+
+  <div class="card blue">
+    <h3>7. Lire un nombre dérivé sur un graphique</h3>
+    <p>Si la tangente au point d'abscisse \(a\) est tracée, il suffit de <strong>compter sa pente</strong> : on choisit deux points de la tangente aux coordonnées lisibles, \(M(x_1\,;\,y_1)\) et \(N(x_2\,;\,y_2)\), et</p>
+    <p>\[f'(a) = \frac{y_2 - y_1}{x_2 - x_1}.\]</p>
+    <div class="key">
+      <p><strong>Astuce du « 1 à droite ».</strong> Je pars du point de contact, j'avance de \(1\) vers la droite : ce que je monte (ou descends, en négatif) <em>est</em> \(f'(a).\)</p>
+    </div>
+    <p>Exemple : la tangente en \(A(1\,;\,2)\) passe aussi par \((3\,;\,5)\), donc \(f'(1) = \dfrac{5-2}{3-1} = \dfrac{3}{2} = 1{,}5.\)</p>
+  </div>
+</section>
+
+<section id="methode">
+  <h2>Méthode</h2>
+
+  <div class="card">
+    <h3>A. Calculer un nombre dérivé à partir de la définition</h3>
+    <ol>
+      <li>Écrire le taux de variation \(\tau(h) = \dfrac{f(a+h) - f(a)}{h}\) en remplaçant \(f(a+h)\) et \(f(a)\) par leurs expressions.</li>
+      <li>Développer et réduire le numérateur : les termes sans \(h\) doivent <strong>tous disparaître</strong> (c'est le contrôle).</li>
+      <li>Factoriser le numérateur par \(h\), puis simplifier par \(h.\)</li>
+      <li>Faire tendre \(h\) vers \(0\) dans l'expression simplifiée : le résultat est \(f'(a).\)</li>
+    </ol>
+    <div class="ok">
+      <p><strong>Exemple rédigé.</strong> \(f(x) = x^2 + 3x\) et \(a = 1.\)</p>
+      <p>\(f(1+h) = (1+h)^2 + 3(1+h) = 1 + 2h + h^2 + 3 + 3h = h^2 + 5h + 4\) et \(f(1) = 4.\)</p>
+      <p>\[\tau(h) = \frac{h^2 + 5h + 4 - 4}{h} = \frac{h(h+5)}{h} = h + 5.\]</p>
+      <p>Quand \(h \to 0\), \(h + 5 \to 5\), donc \(f'(1) = 5.\)</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>B. Déterminer l'équation d'une tangente</h3>
+    <ol>
+      <li>Calculer \(f(a)\) : c'est l'<strong>ordonnée du point de contact</strong>.</li>
+      <li>Calculer \(f'(a)\) : c'est la <strong>pente</strong>.</li>
+      <li>Écrire la formule \(y = f(a) + f'(a)(x - a).\)</li>
+      <li>Développer et réduire pour obtenir la forme \(y = mx + p.\)</li>
+      <li>Vérification : remplacer \(x\) par \(a\) dans le résultat doit redonner \(f(a).\)</li>
+    </ol>
+    <div class="ok">
+      <p><strong>Exemple.</strong> \(f(x) = x^2 - 4x + 1\), \(a = 3.\) Alors \(f(3) = 9 - 12 + 1 = -2\) et \(f'(3) = 2 \times 3 - 4 = 2.\)</p>
+      <p>\[y = -2 + 2(x - 3) = 2x - 8.\]</p>
+      <p>Contrôle : pour \(x = 3\), \(2 \times 3 - 8 = -2 = f(3).\) ✔</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>C. Lire \(f'(a)\) sur un graphique</h3>
+    <ol>
+      <li>Repérer le point de contact de la tangente, d'abscisse \(a.\)</li>
+      <li>Choisir sur la tangente un second point dont les coordonnées « tombent juste » (sur des croisements du quadrillage).</li>
+      <li>Compter le déplacement horizontal \(\Delta x\) et le déplacement vertical \(\Delta y\) entre ces deux points (\(\Delta y\) négatif si on descend).</li>
+      <li>\(f'(a) = \dfrac{\Delta y}{\Delta x}.\) Si on a avancé de \(1\), c'est directement la montée.</li>
+    </ol>
+    <p class="small">Contrôle de bon sens : tangente qui monte \(\Rightarrow f'(a) > 0\) ; qui descend \(\Rightarrow f'(a) < 0\) ; horizontale \(\Rightarrow f'(a) = 0.\)</p>
+  </div>
+
+  <div class="card">
+    <h3>D. Construire la tangente connaissant \(f(a)\) et \(f'(a)\)</h3>
+    <ol>
+      <li>Placer le point de contact \(A(a\,;\,f(a)).\)</li>
+      <li>À partir de \(A\), avancer de \(1\) vers la droite, puis monter de \(f'(a)\) (descendre si \(f'(a)\) est négatif) : on obtient un second point \(A'.\)</li>
+      <li>Tracer la droite \((AA')\) à la règle : c'est la tangente.</li>
+    </ol>
+    <p class="small">Si \(f'(a)\) est petit (par exemple \(0{,}25\)), avancer plutôt de \(4\) et monter de \(1\) : le tracé est plus précis.</p>
+  </div>
+
+  <div class="card coral">
+    <h3>Erreurs fréquentes</h3>
+    <ul>
+      <li><strong>Confondre \(f(a)\) et \(f'(a)\).</strong> \(f(a)\) est une <em>ordonnée</em> (où est la courbe), \(f'(a)\) est une <em>pente</em> (comment elle penche). Dans « la courbe passe par \(A(2\,;\,5)\) avec une tangente de pente \(-3\) », on a \(f(2) = 5\) et \(f'(2) = -3.\)</li>
+      <li><strong>Faire tendre \(h\) vers \(0\) avant de simplifier.</strong> Cela donne \(\dfrac{0}{0}\) : on ne peut rien conclure. On simplifie par \(h\) d'abord, ensuite seulement on remplace.</li>
+      <li><strong>Écrire \(y = f'(a)(x - a)\) en oubliant \(f(a).\)</strong> Cette droite passe par \((a\,;\,0)\) et non par le point de la courbe : la bonne formule est \(y = f(a) + f'(a)(x-a).\)</li>
+      <li><strong>Confondre pente et ordonnée à l'origine.</strong> Dans \(y = mx + p\), \(m = f'(a)\) est la pente, \(p\) est l'ordonnée du point d'abscisse \(0\) — en général \(p \neq f(a)\) (sauf si \(a = 0\)).</li>
+      <li><strong>Oublier que \(h \neq 0.\)</strong> C'est précisément ce qui autorise la simplification par \(h.\)</li>
+    </ul>
+  </div>
+</section>
+
+<section id="visu">
+  <h2>Visualisation</h2>
+  <div class="card">
+    <p>Le point \(A\) a pour abscisse \(a\), le point \(B\) a pour abscisse \(a + h.\) La droite <span style="color:var(--coral);font-weight:700">(AB)</span> est la sécante, sa pente est le taux de variation. La droite <span style="color:var(--blue);font-weight:700">bleue</span> est la tangente en \(A\), sa pente est \(f'(a).\) Diminue \(h\) et regarde les deux droites se confondre.</p>
+
+    <div class="ctrl">
+      <label for="fSel">Fonction</label>
+      <div class="row">
+        <select id="fSel">
+          <option value="carre">f(x) = x²</option>
+          <option value="cube">f(x) = x³</option>
+          <option value="inverse">f(x) = 1/x</option>
+          <option value="racine">f(x) = √x</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="ctrl">
+      <label for="aSl">abscisse du point A : <span class="val" id="aOut">1</span></label>
+      <input type="range" id="aSl" min="-2.2" max="2.2" step="0.05" value="1">
+    </div>
+
+    <div class="ctrl">
+      <label for="hSl">écart h : <span class="val" id="hOut">1</span></label>
+      <input type="range" id="hSl" min="0.02" max="1.5" step="0.01" value="1">
+    </div>
+
+    <div class="row">
+      <button type="button" id="animBtn">Animer h → 0</button>
+      <button type="button" class="ghost" id="resetBtn">Remettre h = 1</button>
+    </div>
+
+    <div class="legend">
+      <span><i style="background:#111827"></i>courbe</span>
+      <span><i style="background:#f97362"></i>sécante (AB)</span>
+      <span><i style="background:#2563eb"></i>tangente en A</span>
+    </div>
+
+    <svg id="fig" class="figure" viewBox="0 0 400 300" role="img" aria-label="Courbe avec sécante et tangente en un point mobile"></svg>
+
+    <div class="readouts">
+      <div class="ro sec">
+        <span class="lbl">Taux de variation (pente de AB)</span>
+        <span class="num" id="roTaux">—</span>
+      </div>
+      <div class="ro tan">
+        <span class="lbl">Nombre dérivé f′(a)</span>
+        <span class="num" id="roDer">—</span>
+      </div>
+      <div class="ro gap">
+        <span class="lbl">Écart entre les deux</span>
+        <span class="num" id="roGap">—</span>
+      </div>
+      <div class="ro">
+        <span class="lbl">Équation de la tangente</span>
+        <span class="num" id="roTan">—</span>
+      </div>
+    </div>
+    <p class="small" id="roDetail"></p>
+    <p class="small">Plus \(h\) est petit, plus le taux de variation colle à \(f'(a)\) : c'est exactement ce que veut dire \(\lim\limits_{h \to 0}.\)</p>
+  </div>
+</section>
+
+<section id="exos">
+  <h2>Exercices</h2>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 <span class="tag">Niveau 1</span></h3>
+    <div id="ex1-enonce"></div>
+    <div class="row">
+      <input type="text" id="ex1-rep" inputmode="decimal" placeholder="taux de variation">
+      <button id="ex1-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" id="ex1-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex1-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex1-correction"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 <span class="tag">Niveau 2</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="row">
+      <input type="text" id="ex2-rep" inputmode="decimal" placeholder="valeur de f′(a)">
+      <button id="ex2-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 <span class="tag">Niveau 3</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="fields">
+      <div class="field">
+        <label for="ex3-rep">coefficient directeur \(m\)</label>
+        <input type="text" id="ex3-rep" inputmode="decimal" placeholder="m">
+      </div>
+      <div class="field">
+        <label for="ex3-rep2">ordonnée à l'origine \(p\)</label>
+        <input type="text" id="ex3-rep2" inputmode="decimal" placeholder="p">
+      </div>
+    </div>
+    <div class="row">
+      <button id="ex3-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div>
+</section>
+
+<section id="qcm">
+  <h2>QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard. Une seule bonne réponse par question.</p>
+    <div id="qcm-container"></div>
+    <div class="score" id="qcm-score"></div>
+    <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function rndNonZero(a, b) { var x = 0; while (x === 0) { x = rnd(a, b); } return x; }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  // Affichage à la française : virgule décimale.
+  function fmt(x, d) {
+    if (!isFinite(x)) return '—';
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return String(Math.round(x * p) / p).replace('.', ',');
+  }
+  // Un nombre négatif s'écrit entre parenthèses dans un produit ou avant un exposant.
+  function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  function parseNum(s) {
+    if (s === null || s === undefined) return NaN;
+    s = String(s).trim().replace(',', '.').replace(/\s/g, '');
+    if (s === '') return NaN;
+    return Number(s);
+  }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'good' : 'bad');
+    el.innerHTML = (ok ? '✓ ' : '✗ ') + msg;
+    typeset(el);
+  }
+  // « + 3 » ou « - 3 » selon le signe, pour recoller un terme constant.
+  function addTerm(v) { return v < 0 ? ' - ' + Math.abs(v) : ' + ' + v; }
+  // Écriture de m x + p
+  function linTex(m, p) {
+    var s;
+    if (m === 0) { return String(p); }
+    s = (m === 1) ? 'x' : (m === -1 ? '-x' : m + 'x');
+    if (p !== 0) { s += addTerm(p); }
+    return s;
+  }
+  // Écriture de al x^2 + be x + ga
+  function quadTex(al, be, ga) {
+    var s = (al === 1) ? 'x^2' : (al === -1 ? '-x^2' : al + 'x^2');
+    if (be !== 0) { s += (be < 0 ? ' - ' : ' + ') + (Math.abs(be) === 1 ? 'x' : Math.abs(be) + 'x'); }
+    if (ga !== 0) { s += addTerm(ga); }
+    return s;
+  }
+
+  /* ---------- navigation sticky ---------- */
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.scrollY + 110, cur = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', updateNav); updateNav();
+
+  /* =========================================================
+     VISUALISATION : sécante, tangente, taux qui converge
+     ========================================================= */
+  var FUNCS = {
+    carre: {
+      tex: 'f(x) = x^2', der: "f'(a) = 2a",
+      f: function (x) { return x * x; },
+      d: function (x) { return 2 * x; },
+      xMin: -3, xMax: 3, yMin: -1.6, yMax: 9.4, gy: 1,
+      aMin: -2.2, aMax: 2.2, a0: 1
+    },
+    cube: {
+      tex: 'f(x) = x^3', der: "f'(a) = 3a^2",
+      f: function (x) { return x * x * x; },
+      d: function (x) { return 3 * x * x; },
+      xMin: -2.2, xMax: 2.2, yMin: -8, yMax: 8, gy: 2,
+      aMin: -1.5, aMax: 1.5, a0: 0.9
+    },
+    inverse: {
+      tex: 'f(x) = \\dfrac{1}{x}', der: "f'(a) = -\\dfrac{1}{a^2}",
+      f: function (x) { return 1 / x; },
+      d: function (x) { return -1 / (x * x); },
+      xMin: 0.15, xMax: 4.2, yMin: -0.4, yMax: 5, gy: 1,
+      aMin: 0.45, aMax: 3, a0: 1
+    },
+    racine: {
+      tex: 'f(x) = \\sqrt{x}', der: "f'(a) = \\dfrac{1}{2\\sqrt{x}}",
+      f: function (x) { return Math.sqrt(x); },
+      d: function (x) { return 1 / (2 * Math.sqrt(x)); },
+      xMin: -0.2, xMax: 4.5, yMin: -0.5, yMax: 2.6, gy: 0.5,
+      aMin: 0.2, aMax: 3.5, a0: 1
+    }
+  };
+
+  var ML = 34, MR = 14, MT = 14, MB = 26, W = 400, H = 300;
+  var curKey = 'carre', A = 1, Hh = 1, animTimer = null;
+
+  function clampA(C, v) { return Math.min(C.aMax, Math.max(C.aMin, v)); }
+  function usableH(C, a, h) {
+    var hmax = Math.min(1.5, C.xMax - 0.12 - a);
+    if (hmax < 0.02) { hmax = 0.02; }
+    return Math.min(h, hmax);
+  }
+
+  function drawFig() {
+    var C = FUNCS[curKey];
+    var a = clampA(C, A);
+    var h = usableH(C, a, Hh);
+    var sx = (W - ML - MR) / (C.xMax - C.xMin);
+    var sy = (H - MT - MB) / (C.yMax - C.yMin);
+    function X(x) { return ML + (x - C.xMin) * sx; }
+    function Y(y) { return H - MB - (y - C.yMin) * sy; }
+
+    var s = '';
+    s += '<defs><clipPath id="clipPlot"><rect x="' + ML + '" y="' + MT + '" width="' + (W - ML - MR) + '" height="' + (H - MT - MB) + '"></rect></clipPath></defs>';
+    s += '<rect x="' + ML + '" y="' + MT + '" width="' + (W - ML - MR) + '" height="' + (H - MT - MB) + '" fill="#fdfdfc" stroke="#e5e7eb"></rect>';
+
+    // quadrillage
+    var i, v;
+    for (i = Math.ceil(C.xMin); i <= Math.floor(C.xMax); i++) {
+      s += '<line x1="' + X(i).toFixed(1) + '" y1="' + MT + '" x2="' + X(i).toFixed(1) + '" y2="' + (H - MB) + '" stroke="#eef0f3"></line>';
+    }
+    for (v = Math.ceil(C.yMin / C.gy) * C.gy; v <= C.yMax; v += C.gy) {
+      s += '<line x1="' + ML + '" y1="' + Y(v).toFixed(1) + '" x2="' + (W - MR) + '" y2="' + Y(v).toFixed(1) + '" stroke="#eef0f3"></line>';
+    }
+
+    // axes
+    var y0 = (C.yMin < 0 && C.yMax > 0) ? Y(0) : (H - MB);
+    var x0 = (C.xMin < 0 && C.xMax > 0) ? X(0) : ML;
+    s += '<line x1="' + ML + '" y1="' + y0.toFixed(1) + '" x2="' + (W - MR) + '" y2="' + y0.toFixed(1) + '" stroke="#9ca3af"></line>';
+    s += '<line x1="' + x0.toFixed(1) + '" y1="' + MT + '" x2="' + x0.toFixed(1) + '" y2="' + (H - MB) + '" stroke="#9ca3af"></line>';
+    for (i = Math.ceil(C.xMin); i <= Math.floor(C.xMax); i++) {
+      if (i === 0) { continue; }
+      s += '<text x="' + X(i).toFixed(1) + '" y="' + Math.min(H - 8, y0 + 13).toFixed(1) + '" font-size="10" fill="#6b7280" text-anchor="middle">' + i + '</text>';
+    }
+    for (v = Math.ceil(C.yMin / C.gy) * C.gy; v <= C.yMax; v += C.gy) {
+      if (Math.abs(v) < 1e-9) { continue; }
+      if (Math.abs(v % (C.gy * (C.gy < 1 ? 2 : 1))) > 1e-9) { continue; }
+      s += '<text x="' + (ML - 4) + '" y="' + (Y(v) + 3.5).toFixed(1) + '" font-size="10" fill="#6b7280" text-anchor="end">' + String(Math.round(v * 100) / 100).replace('.', ',') + '</text>';
+    }
+
+    s += '<g clip-path="url(#clipPlot)">';
+
+    // courbe
+    var dpath = '', started = false, N = 260, x, yv;
+    for (i = 0; i <= N; i++) {
+      x = C.xMin + (C.xMax - C.xMin) * i / N;
+      yv = C.f(x);
+      if (!isFinite(yv) || yv > C.yMax + 40 || yv < C.yMin - 40) { started = false; continue; }
+      dpath += (started ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(yv).toFixed(1) + ' ';
+      started = true;
+    }
+    s += '<path d="' + dpath + '" fill="none" stroke="#111827" stroke-width="2.2"></path>';
+
+    var fa = C.f(a), fb = C.f(a + h), dfa = C.d(a);
+    var taux = (fb - fa) / h;
+
+    // triangle du taux de variation (Δx = h, Δy = f(a+h) - f(a))
+    s += '<path d="M' + X(a).toFixed(1) + ' ' + Y(fa).toFixed(1) +
+         ' L' + X(a + h).toFixed(1) + ' ' + Y(fa).toFixed(1) +
+         ' L' + X(a + h).toFixed(1) + ' ' + Y(fb).toFixed(1) + ' Z" fill="#fde8e4" stroke="#f9a094" stroke-width="1"></path>';
+
+    // sécante puis tangente, tracées d'un bord à l'autre
+    function lineThrough(pente, x0v, y0v, color, width, dash) {
+      var xa = C.xMin, xb = C.xMax;
+      var ya = y0v + pente * (xa - x0v), yb = y0v + pente * (xb - x0v);
+      return '<line x1="' + X(xa).toFixed(1) + '" y1="' + Y(ya).toFixed(1) + '" x2="' + X(xb).toFixed(1) + '" y2="' + Y(yb).toFixed(1) +
+        '" stroke="' + color + '" stroke-width="' + width + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '></line>';
+    }
+    s += lineThrough(taux, a, fa, '#f97362', 2, '');
+    s += lineThrough(dfa, a, fa, '#2563eb', 2, '6 4');
+
+    // points A et B
+    s += '<circle cx="' + X(a).toFixed(1) + '" cy="' + Y(fa).toFixed(1) + '" r="4.5" fill="#2563eb"></circle>';
+    s += '<circle cx="' + X(a + h).toFixed(1) + '" cy="' + Y(fb).toFixed(1) + '" r="4.5" fill="#f97362"></circle>';
+    s += '<text x="' + (X(a) + 7).toFixed(1) + '" y="' + (Y(fa) - 7).toFixed(1) + '" font-size="12" font-weight="700" fill="#2563eb">A</text>';
+    s += '<text x="' + (X(a + h) + 7).toFixed(1) + '" y="' + (Y(fb) - 7).toFixed(1) + '" font-size="12" font-weight="700" fill="#f97362">B</text>';
+    s += '</g>';
+
+    $('fig').innerHTML = s;
+
+    // lectures chiffrées
+    $('roTaux').textContent = fmt(taux, 3);
+    $('roDer').textContent = fmt(dfa, 3);
+    $('roGap').textContent = fmt(Math.abs(taux - dfa), 4);
+    var p = fa - dfa * a;
+    $('roTan').textContent = 'y = ' + fmt(dfa, 3) + ' x ' + (p < 0 ? '− ' : '+ ') + fmt(Math.abs(p), 3);
+    $('roDetail').innerHTML = 'A a pour coordonnées (' + fmt(a, 2) + ' ; ' + fmt(fa, 3) + '), B a pour coordonnées (' +
+      fmt(a + h, 2) + ' ; ' + fmt(fb, 3) + ') — taux = (' + fmt(fb, 3) + ' − ' + fmt(fa, 3) + ') ÷ ' + fmt(h, 3) + ' = ' + fmt(taux, 3) + '.';
+    $('aOut').textContent = fmt(a, 2);
+    $('hOut').textContent = fmt(h, 3);
+  }
+
+  function stopAnim() {
+    if (animTimer) { clearInterval(animTimer); animTimer = null; }
+    $('animBtn').textContent = 'Animer h → 0';
+  }
+
+  function setupFunc(key) {
+    var C = FUNCS[key];
+    curKey = key;
+    var sl = $('aSl');
+    sl.min = C.aMin; sl.max = C.aMax; sl.step = 0.05; sl.value = C.a0;
+    A = C.a0;
+    Hh = 1; $('hSl').value = 1;
+    stopAnim();
+    drawFig();
+  }
+
+  $('fSel').addEventListener('change', function () { setupFunc(this.value); });
+  $('aSl').addEventListener('input', function () { A = parseFloat(this.value); stopAnim(); drawFig(); });
+  $('hSl').addEventListener('input', function () { Hh = parseFloat(this.value); stopAnim(); drawFig(); });
+  $('resetBtn').addEventListener('click', function () { stopAnim(); Hh = 1; $('hSl').value = 1; drawFig(); });
+  $('animBtn').addEventListener('click', function () {
+    if (animTimer) { stopAnim(); return; }
+    Hh = 1.5; $('hSl').value = 1.5; drawFig();
+    this.textContent = 'Arrêter';
+    animTimer = setInterval(function () {
+      Hh = Hh * 0.9;
+      if (Hh <= 0.02) { Hh = 0.02; $('hSl').value = 0.02; drawFig(); stopAnim(); return; }
+      $('hSl').value = Hh;
+      drawFig();
+    }, 70);
+  });
+
+  setupFunc('carre');
+
+  /* =========================================================
+     EXERCICES GÉNÉRATIFS
+     gen()  -> objet décrivant l'exercice, avec .enonce et .correction (HTML)
+     check(e, valeurSaisie | tableau de valeurs) -> {ok: bool, msg: string}
+     ========================================================= */
+  function wireExercise(n, gen, check, fields) {
+    var id = 'ex' + n, cur = null;
+    var suffixes = fields || ['rep'];
+    var inputs = suffixes.map(function (sfx) { return $(id + '-' + sfx); });
+    function render() {
+      cur = gen();
+      $(id + '-enonce').innerHTML = cur.enonce;
+      inputs.forEach(function (inp) { inp.value = ''; });
+      $(id + '-fb').textContent = '';
+      $(id + '-fb').className = 'feedback';
+      $(id + '-correction').classList.remove('show');
+      $(id + '-correction').innerHTML = '';
+      $(id + '-corr').textContent = 'Voir la correction';
+      typeset($(id + '-enonce'));
+    }
+    $(id + '-check').addEventListener('click', function () {
+      var vals = inputs.map(function (inp) { return parseNum(inp.value); });
+      if (vals.some(function (v) { return isNaN(v); })) {
+        setFeedback($(id + '-fb'), false, vals.length > 1 ? 'Remplis les deux cases avec des nombres.' : 'Écris une réponse numérique.');
+        return;
+      }
+      var r = check(cur, vals.length === 1 ? vals[0] : vals);
+      setFeedback($(id + '-fb'), r.ok, r.msg);
+    });
+    inputs.forEach(function (inp) {
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { $(id + '-check').click(); } });
+    });
+    $(id + '-corr').addEventListener('click', function () {
+      var box = $(id + '-correction');
+      if (box.classList.contains('show')) {
+        box.classList.remove('show'); this.textContent = 'Voir la correction';
+      } else {
+        box.innerHTML = cur.correction; box.classList.add('show');
+        this.textContent = 'Masquer la correction'; typeset(box);
+      }
+    });
+    $(id + '-new').addEventListener('click', render);
+    render();
+  }
+
+  /* ---------- Exercice 1 : taux de variation ---------- */
+  wireExercise(1, function () {
+    var type = pick(['affine', 'carre']);
+    var a, b, m, p, res, enonce, correction;
+    if (type === 'affine') {
+      m = rndNonZero(-5, 5); p = rnd(-6, 6);
+      a = rnd(-4, 3); b = a + rnd(1, 5);
+      res = m;
+      enonce = '<p>Soit \\(f\\) la fonction définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + linTex(m, p) + '.\\)</p>' +
+        '<p>Calculer le taux de variation de \\(f\\) entre \\(x = ' + a + '\\) et \\(x = ' + b + '.\\)</p>';
+      correction = '<p>\\(f(' + par(a) + ') = ' + m + ' \\times ' + par(a) + addTerm(p) + ' = ' + (m * a + p) + '\\) et ' +
+        '\\(f(' + par(b) + ') = ' + m + ' \\times ' + par(b) + addTerm(p) + ' = ' + (m * b + p) + '.\\)</p>' +
+        '<p>\\[\\tau = \\frac{f(' + par(b) + ') - f(' + par(a) + ')}{' + par(b) + ' - ' + par(a) + '} = \\frac{' + (m * b + p) + ' - ' + par(m * a + p) + '}{' + (b - a) + '} = \\frac{' + (m * (b - a)) + '}{' + (b - a) + '} = ' + m + '.\\]</p>' +
+        '<p>Pour une fonction <strong>affine</strong>, le taux de variation vaut toujours le coefficient directeur \\(' + m + '\\), quels que soient les deux nombres choisis : la « courbe » est une droite, toutes ses sécantes sont la droite elle-même.</p>';
+    } else {
+      a = rnd(-4, 3); b = a + rnd(1, 5);
+      res = a + b;
+      enonce = '<p>Soit \\(f\\) la fonction carré, définie par \\(f(x) = x^2.\\)</p>' +
+        '<p>Calculer le taux de variation de \\(f\\) entre \\(x = ' + a + '\\) et \\(x = ' + b + '.\\)</p>';
+      correction = '<p>\\(f(' + par(a) + ') = ' + par(a) + '^2 = ' + (a * a) + '\\) et \\(f(' + par(b) + ') = ' + par(b) + '^2 = ' + (b * b) + '.\\)</p>' +
+        '<p>\\[\\tau = \\frac{f(' + par(b) + ') - f(' + par(a) + ')}{' + par(b) + ' - ' + par(a) + '} = \\frac{' + (b * b) + ' - ' + par(a * a) + '}{' + (b - a) + '} = \\frac{' + (b * b - a * a) + '}{' + (b - a) + '} = ' + (a + b) + '.\\]</p>' +
+        '<p>Contrôle malin : \\(\\dfrac{b^2 - a^2}{b - a} = \\dfrac{(b-a)(b+a)}{b-a} = a + b\\), soit ici \\(' + par(a) + ' + ' + par(b) + ' = ' + (a + b) + '.\\)</p>';
+    }
+    return { res: res, enonce: enonce, correction: correction };
+  }, function (e, v) {
+    if (Math.abs(v - e.res) < 1e-6) { return { ok: true, msg: 'Correct : le taux de variation vaut \\(' + e.res + '.\\)' }; }
+    if (Math.abs(v + e.res) < 1e-6) { return { ok: false, msg: 'Signe inversé : attention à l\'ordre, c\'est \\(\\dfrac{f(b)-f(a)}{b-a}.\\)' }; }
+    return { ok: false, msg: 'Non. Calcule \\(f(b)\\) et \\(f(a)\\), soustrais, puis divise par \\(b - a.\\)' };
+  });
+
+  /* ---------- Exercice 2 : nombre dérivé par la définition ---------- */
+  wireExercise(2, function () {
+    var b = rndNonZero(-5, 5), c = rnd(-6, 6), a = rnd(-4, 4);
+    var res = 2 * a + b;
+    var fa = a * a + b * a + c;
+    return {
+      res: res,
+      enonce: '<p>Soit \\(f\\) la fonction définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + quadTex(1, b, c) + '.\\)</p>' +
+        '<p>En utilisant la <strong>définition</strong> du nombre dérivé, calculer \\(f\'(' + par(a) + ').\\)</p>',
+      correction: '<p><strong>1. On écrit \\(f(a+h)\\) avec \\(a = ' + par(a) + '.\\)</strong></p>' +
+        '<p>\\(f(' + par(a) + ' + h) = (' + par(a) + ' + h)^2 ' + (b < 0 ? '- ' + Math.abs(b) : '+ ' + b) + '(' + par(a) + ' + h)' + addTerm(c) + '\\)</p>' +
+        '<p>\\(= ' + (a * a) + ' + ' + (2 * a) + 'h + h^2 ' + addTerm(b * a) + ' + ' + b + 'h' + addTerm(c) + '\\)</p>' +
+        '<p>\\(= h^2 + ' + (2 * a + b) + 'h + ' + fa + '.\\)</p>' +
+        '<p><strong>2. On forme le taux de variation.</strong> Comme \\(f(' + par(a) + ') = ' + fa + '\\) :</p>' +
+        '<p>\\[\\tau(h) = \\frac{h^2 + ' + (2 * a + b) + 'h + ' + fa + ' - ' + par(fa) + '}{h} = \\frac{h^2 + ' + (2 * a + b) + 'h}{h}.\\]</p>' +
+        '<p>Les termes constants se sont bien éliminés : c\'est le signe que le calcul est juste.</p>' +
+        '<p><strong>3. On factorise puis on simplifie par \\(h\\)</strong> (possible car \\(h \\neq 0\\)) :</p>' +
+        '<p>\\[\\tau(h) = \\frac{h\\,(h + ' + (2 * a + b) + ')}{h} = h + ' + (2 * a + b) + '.\\]</p>' +
+        '<p><strong>4. On fait tendre \\(h\\) vers \\(0\\) :</strong> \\(h + ' + (2 * a + b) + '\\) tend vers \\(' + res + '.\\) Donc</p>' +
+        '<p>\\[f\'(' + par(a) + ') = ' + res + '.\\]</p>' +
+        '<p class="small">Contrôle : pour \\(f(x) = x^2 + bx + c\\) on a toujours \\(f\'(a) = 2a + b\\), ici \\(2 \\times ' + par(a) + addTerm(b) + ' = ' + res + '.\\)</p>'
+    };
+  }, function (e, v) {
+    if (Math.abs(v - e.res) < 1e-6) { return { ok: true, msg: 'Correct : \\(f\'(a) = ' + e.res + '.\\)' }; }
+    return { ok: false, msg: 'Non. Développe \\(f(a+h)\\), retranche \\(f(a)\\), factorise par \\(h\\), simplifie, puis fais tendre \\(h\\) vers \\(0.\\)' };
+  });
+
+  /* ---------- Exercice 3 : équation de la tangente ---------- */
+  wireExercise(3, function () {
+    var al = pick([1, 1, 2, -1, -2]);
+    var be = rnd(-5, 5), ga = rnd(-6, 6), a = rndNonZero(-3, 3);
+    var m = 2 * al * a + be;
+    var fa = al * a * a + be * a + ga;
+    var p = fa - m * a;   // = ga - al*a^2
+    return {
+      res: [m, p],
+      enonce: '<p>Soit \\(f\\) la fonction définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + quadTex(al, be, ga) + '\\), et \\(\\mathcal{C}_f\\) sa courbe représentative.</p>' +
+        '<p>Déterminer l\'équation réduite \\(y = mx + p\\) de la tangente à \\(\\mathcal{C}_f\\) au point d\'abscisse \\(a = ' + a + '.\\)</p>' +
+        '<p class="small">On donne : pour cette fonction, \\(f\'(x) = ' + linTex(2 * al, be) + '\\) (résultat obtenu par la définition).</p>',
+      correction: '<p><strong>1. Ordonnée du point de contact.</strong></p>' +
+        '<p>\\(f(' + par(a) + ') = ' + al + ' \\times ' + par(a) + '^2 ' + (be < 0 ? '- ' + Math.abs(be) : '+ ' + be) + ' \\times ' + par(a) + addTerm(ga) + ' = ' + fa + '\\), donc le point de contact est \\(A(' + a + '\\,;\\,' + fa + ').\\)</p>' +
+        '<p><strong>2. Pente.</strong> Le taux de variation en \\(' + par(a) + '\\) donne</p>' +
+        '<p>\\[\\tau(h) = \\frac{' + al + '(' + par(a) + '+h)^2 ' + (be < 0 ? '-' + Math.abs(be) : '+' + be) + '(' + par(a) + '+h) ' + (ga < 0 ? '-' + Math.abs(ga) : '+' + ga) + ' - (' + fa + ')}{h} = ' + al + 'h + ' + m + ',\\]</p>' +
+        '<p>qui tend vers \\(' + m + '\\) quand \\(h \\to 0.\\) Donc \\(f\'(' + par(a) + ') = ' + m + '.\\)</p>' +
+        '<p><strong>3. Formule de la tangente.</strong></p>' +
+        '<p>\\[y = f(a) + f\'(a)(x - a) = ' + fa + ' + ' + par(m) + '(x - ' + par(a) + ').\\]</p>' +
+        '<p><strong>4. On développe.</strong></p>' +
+        '<p>\\[y = ' + fa + ' + ' + par(m) + 'x ' + (m * a > 0 ? '- ' + (m * a) : '+ ' + Math.abs(m * a)) + ' = ' + linTex(m, p) + '.\\]</p>' +
+        '<p>Donc \\(m = ' + m + '\\) et \\(p = ' + p + '.\\)</p>' +
+        '<p class="small">Contrôle : pour \\(x = ' + par(a) + '\\), \\(' + m + ' \\times ' + par(a) + addTerm(p) + ' = ' + fa + ' = f(' + par(a) + ').\\) ✔</p>'
+    };
+  }, function (e, v) {
+    var okM = Math.abs(v[0] - e.res[0]) < 1e-6, okP = Math.abs(v[1] - e.res[1]) < 1e-6;
+    if (okM && okP) { return { ok: true, msg: 'Correct : la tangente a pour équation \\(y = ' + linTex(e.res[0], e.res[1]) + '.\\)' }; }
+    if (okM && !okP) { return { ok: false, msg: 'La pente est bonne, l\'ordonnée à l\'origine non : calcule \\(p = f(a) - a\\,f\'(a).\\)' }; }
+    if (!okM && okP) { return { ok: false, msg: 'L\'ordonnée à l\'origine est bonne, la pente non : la pente est \\(f\'(a)\\), pas \\(f(a).\\)' }; }
+    return { ok: false, msg: 'Non. Calcule d\'abord \\(f(a)\\) et \\(f\'(a)\\), puis développe \\(y = f(a) + f\'(a)(x-a).\\)' };
+  }, ['rep', 'rep2']);
+
+  /* =========================================================
+     QCM
+     Chaque entrée de la banque rend { q, options, correct, expl }.
+     Les réponses vivent dans qcmMap, JAMAIS dans un attribut onclick ou data-.
+     ========================================================= */
+  function build(q, options, correctIdx, expl) {
+    var idx = shuffle([0, 1, 2, 3]);
+    return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
+  }
+
+  var qcmBank = [
+    // 1. taux de variation de la fonction carré
+    function () {
+      var a = rnd(1, 4), b = a + rnd(1, 4);
+      return build('Pour \\(f(x) = x^2\\), que vaut le taux de variation entre \\(' + a + '\\) et \\(' + b + '\\) ?',
+        [String(a + b), String(b - a), String(b * b - a * a), String(a * b)], 0,
+        'Le taux vaut \\(\\dfrac{b^2-a^2}{b-a} = a + b = ' + (a + b) + '.\\)');
+    },
+    // 2. nombre dérivé de la fonction carré
+    function () {
+      var a = pick([3, 4, 5, 6, 7]);
+      return build('La fonction carré \\(f(x) = x^2\\) vérifie \\(f\'(a) = 2a.\\) Que vaut \\(f\'(' + a + ')\\) ?',
+        [String(2 * a), String(a * a), String(a), String(2 * a + 2)], 0,
+        'On applique \\(f\'(a) = 2a\\) : \\(2 \\times ' + a + ' = ' + (2 * a) + '.\\) La valeur \\(' + (a * a) + '\\), c\'est \\(f(' + a + '),\\) pas \\(f\'(' + a + ').\\)');
+    },
+    // 3. formule de la tangente
+    function () {
+      return build('Quelle est l\'équation de la tangente à \\(\\mathcal{C}_f\\) au point d\'abscisse \\(a\\) ?',
+        ['\\(y = f(a) + f\'(a)(x-a)\\)', '\\(y = f\'(a)(x-a)\\)', '\\(y = f\'(a) + f(a)(x-a)\\)', '\\(y = f(a) + f\'(a)\\,x\\)'], 0,
+        'La droite a pour pente \\(f\'(a)\\) et passe par \\((a\\,;\\,f(a)).\\) Oublier \\(f(a)\\) donne une droite qui passe par \\((a\\,;\\,0).\\)');
+    },
+    // 4. lecture graphique de la pente
+    function () {
+      var m = rndNonZero(-3, 4), x1 = rnd(0, 3), y1 = rnd(0, 4), dx = rnd(1, 3);
+      var x2 = x1 + dx, y2 = y1 + m * dx;
+      return build('La tangente à \\(\\mathcal{C}_f\\) au point d\'abscisse \\(' + x1 + '\\) passe par \\((' + x1 + '\\,;\\,' + y1 + ')\\) et \\((' + x2 + '\\,;\\,' + y2 + ').\\) Que vaut \\(f\'(' + x1 + ')\\) ?',
+        [String(m), String(y1), String(y2 - y1), String(-m)], 0,
+        'La pente vaut \\(\\dfrac{' + y2 + ' - ' + par(y1) + '}{' + x2 + ' - ' + x1 + '} = ' + m + '.\\)');
+    },
+    // 5. fonction affine
+    function () {
+      var m = rndNonZero(-6, 6), p = rnd(-5, 5), a = rnd(1, 5);
+      return build('Soit \\(f(x) = ' + linTex(m, p) + '.\\) Que vaut \\(f\'(' + a + ')\\) ?',
+        [String(m), String(m * a + p), String(p), String(a)], 0,
+        'Le taux de variation d\'une fonction affine est constant, égal à son coefficient directeur \\(' + m + '\\) : sa courbe est une droite, qui est sa propre tangente.');
+    },
+    // 6. tangente horizontale
+    function () {
+      var a = rnd(1, 6);
+      return build('On sait que \\(f\'(' + a + ') = 0.\\) Que peut-on dire de la tangente au point d\'abscisse \\(' + a + '\\) ?',
+        ['Elle est horizontale', 'Elle est verticale', 'Elle passe par l\'origine', 'Elle a pour pente \\(' + a + '\\)'], 0,
+        'La pente de la tangente est \\(f\'(' + a + ') = 0\\) : la droite est parallèle à l\'axe des abscisses.');
+    },
+    // 7. expression du taux de variation
+    function () {
+      return build('Quel est le taux de variation de \\(f\\) entre \\(a\\) et \\(a+h\\) ?',
+        ['\\(\\dfrac{f(a+h)-f(a)}{h}\\)', '\\(\\dfrac{f(a+h)-f(a)}{a}\\)', '\\(f(a+h)-f(a)\\)', '\\(\\dfrac{f(a)-f(a+h)}{h}\\)'], 0,
+        'On divise la variation des ordonnées par la variation des abscisses, qui vaut \\((a+h) - a = h.\\)');
+    },
+    // 8. tangente à partir de f(a) et f'(a)
+    function () {
+      var a = rnd(1, 4), fa = rnd(-4, 6), m = rndNonZero(-4, 4);
+      var p = fa - m * a;
+      return build('La courbe de \\(f\\) passe par \\(A(' + a + '\\,;\\,' + fa + ')\\) et \\(f\'(' + a + ') = ' + m + '.\\) Quelle est l\'équation de la tangente en \\(A\\) ?',
+        ['\\(y = ' + linTex(m, p) + '\\)', '\\(y = ' + linTex(m, fa) + '\\)', '\\(y = ' + linTex(fa, m) + '\\)', '\\(y = ' + linTex(m, -p) + '\\)'], 0,
+        '\\(y = ' + fa + ' + ' + par(m) + '(x - ' + a + ') = ' + linTex(m, p) + '.\\)');
+    },
+    // 9. vitesse instantanée
+    function () {
+      var t = rnd(2, 8), v = rnd(4, 20);
+      return build('\\(d(t)\\) est la distance parcourue en mètres au bout de \\(t\\) secondes, et \\(d\'(' + t + ') = ' + v + '.\\) Qu\'est-ce que cela signifie ?',
+        ['La vitesse instantanée à \\(t = ' + t + '\\) s est \\(' + v + '\\) m·s⁻¹',
+         'Le mobile a parcouru \\(' + v + '\\) m en tout',
+         'Le mobile a parcouru \\(' + v + '\\) m pendant les \\(' + t + '\\) premières secondes',
+         'Le mobile s\'arrête à \\(t = ' + v + '\\) s'], 0,
+        'Le nombre dérivé d\'une distance par rapport au temps est une vitesse instantanée. La distance parcourue, c\'est \\(d(' + t + '),\\) pas \\(d\'(' + t + ').\\)');
+    },
+    // 10. coût marginal
+    function () {
+      var q = rnd(20, 80), c = rnd(5, 30);
+      return build('\\(C(q)\\) est le coût de production de \\(q\\) objets, en euros, et \\(C\'(' + q + ') = ' + c + '.\\) Qu\'est-ce que cela signifie ?',
+        ['Produire le \\(' + (q + 1) + '\\)ᵉ objet coûte environ \\(' + c + '\\) €',
+         'Produire \\(' + q + '\\) objets coûte \\(' + c + '\\) €',
+         'Chaque objet coûte \\(' + c + '\\) €',
+         'Le coût total est minimal pour \\(q = ' + c + '\\)'], 0,
+        'Le coût marginal \\(C\'(q)\\) approche \\(C(q+1) - C(q)\\), le coût de l\'objet suivant.');
+    },
+    // 11. confondre f(a) et f'(a)
+    function () {
+      var a = rnd(1, 5), fa = rnd(-5, 8), m = rndNonZero(-5, 5);
+      return build('La courbe de \\(f\\) passe par \\(A(' + a + '\\,;\\,' + fa + ')\\) et la tangente en \\(A\\) a pour pente \\(' + m + '.\\) Que vaut \\(f(' + a + ')\\) ?',
+        [String(fa), String(m), String(a), String(fa + m)], 0,
+        '\\(f(' + a + ')\\) est l\'ordonnée du point de la courbe, soit \\(' + fa + '\\) ; c\'est \\(f\'(' + a + ')\\) qui vaut \\(' + m + '.\\)');
+    },
+    // 12. fonction cube
+    function () {
+      var a = pick([2, 3, 4]);
+      return build('Pour \\(f(x) = x^3\\), la définition donne \\(f\'(a) = 3a^2.\\) Que vaut \\(f\'(' + a + ')\\) ?',
+        [String(3 * a * a), String(a * a * a), String(3 * a), String(2 * a)], 0,
+        '\\(3 \\times ' + a + '^2 = ' + (3 * a * a) + '.\\) La valeur \\(' + (a * a * a) + '\\) serait \\(f(' + a + ').\\)');
+    },
+    // 13. passage du taux au nombre dérivé
+    function () {
+      var a = rnd(2, 7);
+      return build('Pour \\(f(x) = x^2\\) et \\(a = ' + a + '\\), on a trouvé \\(\\tau(h) = ' + (2 * a) + ' + h.\\) Que vaut \\(f\'(' + a + ')\\) ?',
+        [String(2 * a), String(2 * a + 1), '0', 'On ne peut pas conclure'], 0,
+        'Quand \\(h\\) tend vers \\(0\\), \\(' + (2 * a) + ' + h\\) tend vers \\(' + (2 * a) + '.\\)');
+    },
+    // 14. simplification par h
+    function () {
+      return build('Pourquoi a-t-on le droit de simplifier \\(\\dfrac{2ah + h^2}{h}\\) par \\(h\\) ?',
+        ['Parce que \\(h \\neq 0\\) dans le taux de variation',
+         'Parce que \\(h\\) tend vers \\(0\\)',
+         'Parce que \\(h\\) est très petit',
+         'Parce que \\(h^2 = 0\\)'], 0,
+        'Le taux de variation n\'a de sens que pour \\(h \\neq 0\\) : la simplification est donc légitime, et c\'est elle qui lève la forme \\(\\frac{0}{0}.\\)');
+    }
+  ];
+
+  var qcmMap = {}, answered = 0, score = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var box = $('qcm-container');
+    box.innerHTML = ''; $('qcm-score').textContent = '';
+    qcmMap = {}; answered = 0; score = 0;
+    shuffle(qcmBank).slice(0, 4).forEach(function (gen, i) {
+      var item = gen(), guard = 0;
+      // deux options identiques rendraient la question insoluble
+      while (guard++ < 30 && new Set(item.options).size < 4) { item = gen(); }
+      qcmMap[i] = { correct: item.correct, expl: item.expl, done: false };
+      var q = document.createElement('div'); q.className = 'qcm-q';
+      var st = document.createElement('div'); st.className = 'question';
+      st.innerHTML = (i + 1) + '. ' + item.q; q.appendChild(st);
+      var ch = document.createElement('div'); ch.className = 'choices';
+      item.options.forEach(function (opt, j) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice';
+        b.innerHTML = '<span class="letter">' + LETTERS[j] + '</span>' + opt;
+        b.addEventListener('click', function () { answer(i, j, ch); });
+        ch.appendChild(b);
+      });
+      q.appendChild(ch);
+      var ex = document.createElement('div'); ex.className = 'expl'; ex.id = 'qcm-expl-' + i;
+      q.appendChild(ex); box.appendChild(q);
+    });
+    typeset(box);
+  }
+
+  function answer(i, j, choicesEl) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+    var btns = choicesEl.querySelectorAll('button');
+    btns.forEach(function (b, k) {
+      b.disabled = true;
+      if (k === info.correct) b.classList.add('correct');
+      else if (k === j) b.classList.add('wrong');
+    });
+    var ok = (j === info.correct);
+    if (ok) score++;
+    answered++;
+    var ex = $('qcm-expl-' + i);
+    ex.innerHTML = '<b style="color:' + (ok ? 'var(--green)' : 'var(--coral)') + '">' +
+      (ok ? 'Bonne réponse !' : 'Faux. La bonne réponse est ' + LETTERS[info.correct] + '.') + '</b> ' + info.expl;
+    ex.classList.add('show');
+    typeset(ex);
+    if (answered === 4) {
+      var s = $('qcm-score');
+      s.textContent = 'Score : ' + score + ' / 4' +
+        (score === 4 ? ' — parfait !' : (score >= 2 ? ' — relis les explications des erreurs.' : ' — relis le cours puis refais un QCM.'));
+      s.style.color = score >= 3 ? 'var(--green)' : (score === 2 ? 'var(--amber)' : 'var(--coral)');
+    }
+  }
+  $('qcm-new').addEventListener('click', renderQcm);
+
+  renderQcm();
+
+  // Le contenu est injecté avant le chargement de MathJax : on retente au chargement.
+  var tries = 0;
+  (function wait() {
+    if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
+    if (tries++ < 100) setTimeout(wait, 200);
+  })();
+})();
+</script>
+</body>
+</html>

@@ -35,6 +35,18 @@ Un fichier HTML unique, avec dans l'ordre :
 | 2B | Première | Suites arithmétiques et géométriques, sommes, modélisation |
 | 2C | Terminale | Raisonnement par récurrence, limites, gendarmes, convergence |
 
+**Chapitre 3 — Dérivation et convexité**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| 3A | Première | Taux de variation, nombre dérivé, tangente et son équation |
+| 3B | Première | Dérivées de référence, somme, produit, quotient, g(ax+b) |
+| 3C | Première | Signe de la dérivée, variations, extremums, optimisation |
+| 3D | Terminale | Dérivée d'une fonction composée |
+| 3E | Terminale | Dérivée seconde, convexité, point d'inflexion |
+
+Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
+
 ## Le guide de méthode
 
 `strategie/reussir_lannee.html` réunit :

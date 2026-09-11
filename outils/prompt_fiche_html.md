@@ -28,9 +28,22 @@ Une fiche = **un seul fichier `.html`**, autonome, qui s'ouvre hors connexion su
 - Explications en 1 à 2 phrases dans le feedback ; correction complète repliée.
 - Exercices génératifs : nouveaux nombres à chaque génération, valeurs « propres » (résultats entiers ou simples quand c'est possible pour les niveaux 1 et 2).
 
+## Point de départ obligatoire
+
+Partir de `outils/fiche_squelette.html` : le copier dans le dossier du chapitre, puis remplir. Il contient déjà l'en-tête, la navigation, le design, le moteur d'exercices, le moteur de QCM et le bloc responsive, tous testés. Ne pas repartir d'une page vierge.
+
+## Règles techniques intangibles
+
+Ces quatre règles viennent de défauts réellement constatés en production. Les enfreindre casse la fiche sur téléphone.
+
+1. **MathJax en local, jamais par CDN** : `<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>`, avec `svg: { fontCache: 'local' }`. C'est ce qui fait fonctionner la fiche en mode avion.
+2. **Aucune règle CSS globale `svg { … }`.** MathJax produit des balises `<svg>` : une règle globale étire chaque formule à la largeur de la carte et l'encadre. Styler les figures par la classe `.figure` uniquement.
+3. **Conserver le bloc responsive du squelette sans le modifier** (entre les commentaires « Bloc responsive obligatoire » et « fin du bloc responsive »). Il empêche les formules de sortir de leur carte, neutralise la copie MathML qui élargit la page, et laisse les étiquettes passer à la ligne.
+4. **La ponctuation de fin de phrase se place à l'intérieur de la formule** : écrire `\(x = 5.\)` et non `\(x = 5\).`, sinon le point est rejeté seul à la ligne quand la formule dépasse la largeur du bloc.
+
 ## Notation mathématique
 
-- MathJax 3 via CDN : `<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>` avec configuration `tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]}`.
+- MathJax 3 en local, configuration fournie par le squelette : `tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]}`.
 - Toujours `\binom{n}{k}`, jamais `C(n,k)`.
 - Vecteurs : `\vec{u}`, `\vec{AB}` ; norme : `\|\vec u\|` ; produit scalaire : `\vec u\cdot\vec v`.
 - Après avoir injecté du contenu dynamique contenant des formules, appeler `MathJax.typesetPromise([element])` (vérifier que `window.MathJax` existe).
@@ -45,6 +58,6 @@ Une fiche = **un seul fichier `.html`**, autonome, qui s'ouvre hors connexion su
 
 ## Vérification avant livraison
 
-1. Extraire les blocs `<script>` (hors MathJax) et lancer `node --check` sur chacun.
-2. Ouvrir le fichier dans le navigateur : formules rendues, sliders actifs, « Nouvel exercice » change les valeurs, chaque question du QCM répond, score final affiché, « Nouveau QCM » fonctionne.
-3. Tester en largeur 390 px (mode mobile des outils de développement) : pas de défilement horizontal.
+1. `python3 outils/check_fiche.py <fichier>` : structure imposée, absence de `onclick` porteur de données, présence de `qcmMap`, et `node --check` sur chaque script.
+2. Rendu réel avec Playwright, en 390 px et 320 px : aucune erreur JavaScript, aucun élément dépassant la largeur de page, hauteur moyenne des formules entre 12 et 25 px, figures présentes. Le script de contrôle de rendu se trouve dans le dossier de travail temporaire de la session ; sinon le réécrire à partir de ces critères.
+3. Contrôles fonctionnels : « Nouvel exercice » change les valeurs, la bonne réponse est acceptée et une mauvaise refusée, la correction se déplie, chaque question du QCM répond une seule fois, le score final s'affiche, « Nouveau QCM » régénère.

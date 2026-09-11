@@ -138,7 +138,8 @@ mjx-container > mjx-assistive-mml {
 /* Conteneurs connus de cette fiche (fonctionne sur tous les navigateurs) */
 .correction, .corr, .enonce, .feedback, .expl, .stem, .question,
 .correction p, .corr p, .enonce p, .expl p,
-.correction li, .corr li, .enonce li, .expl li {
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
@@ -147,7 +148,7 @@ mjx-container > mjx-assistive-mml {
 
 /* Règle générale : tout élément dont un enfant direct est une formule */
 p:has(> mjx-container),
-li:has(> mjx-container),
+ul:has(> li > mjx-container), ol:has(> li > mjx-container),
 td:has(> mjx-container),
 th:has(> mjx-container),
 dd:has(> mjx-container),
@@ -169,9 +170,9 @@ pre { max-width: 100%; overflow-x: auto; }
 
 /* Barre de défilement discrète mais visible au doigt */
 .correction::-webkit-scrollbar, .corr::-webkit-scrollbar,
-p::-webkit-scrollbar, li::-webkit-scrollbar { height: 4px; }
+p::-webkit-scrollbar, ul::-webkit-scrollbar { height: 4px; }
 .correction::-webkit-scrollbar-thumb, .corr::-webkit-scrollbar-thumb,
-p::-webkit-scrollbar-thumb, li::-webkit-scrollbar-thumb {
+p::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb {
   background: #d7d2ca; border-radius: 4px;
 }
 </style>

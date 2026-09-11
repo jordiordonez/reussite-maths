@@ -13,12 +13,17 @@ Langue de travail : le contenu destiné à l'élève est en **français** (vocab
 ## Structure du dossier
 
 - `programmes/` : programmes officiels (Bulletin officiel) de spécialité maths Première et Terminale, en PDF et en résumés Markdown par chapitre. Toujours vérifier ici qu'une notion est bien au programme et dans quelle classe avant de la traiter.
+- `ordre.md` : plan de l'année. Ordre des chapitres, contenu de Terminale, prérequis de Première à réactiver, dépendances et calendrier indicatif. **À consulter avant de produire un nouveau chapitre**, et à mettre à jour (colonne Statut) après chaque chapitre livré.
 - `chapitres/NN_nom/` : un dossier par chapitre. Chaque chapitre est découpé en **partie Première** (révisable dès maintenant) et **partie Terminale**. Ordre de travail décidé : `01_produit_scalaire`, puis `02_suites`, puis les autres.
 - `strategie/` : document HTML autonome « comment réussir l'année » (méthode d'apprentissage, usage de ChatGPT gratuit, gestion de la frustration).
 - `outils/` : `prompt_fiche_html.md` (spécification des fiches), `prompts_chatgpt_eleve.md` (source des prompts ChatGPT du guide), `check_fiche.py` (vérification automatique d'une fiche).
 - `index.html` : page d'accueil (liens vers le guide et toutes les fiches). Ajouter chaque nouvelle fiche ici et dans le `README.md` de son chapitre.
 - `vendor/mathjax/` : MathJax 3 (build SVG autonome, polices incluses). Les fiches y font référence en chemin relatif `../../vendor/mathjax/tex-mml-svg.js`, jamais par CDN : c'est ce qui rend le hors connexion réel.
 - `prompt_eines_html.docx` : spécification d'origine (en catalan) des fiches HTML interactives, non publiée. Son contenu est repris dans `outils/prompt_fiche_html.md`.
+
+## Produire une nouvelle fiche
+
+Partir de `outils/fiche_squelette.html` : le copier dans le dossier du chapitre et le remplir. Il fournit l'en-tête, la navigation, le design, le moteur d'exercices (`wireExercise`), le moteur de QCM (`qcmMap`, `build`) et le bloc responsive, tous testés. Ne jamais repartir d'une page vierge.
 
 ## Format des fiches HTML (obligatoire)
 
