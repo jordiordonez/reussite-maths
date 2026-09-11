@@ -176,6 +176,44 @@ p::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb {
   background: #d7d2ca; border-radius: 4px;
 }
 </style>
+
+<style>
+/* ===== Navigation compacte (ajout) =====
+   Les cinq onglets tiennent sur un écran de téléphone, sans défilement
+   horizontal, et un bouton ramène à la liste des fiches. */
+.navbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.25rem;
+  padding:.4rem .45rem;background:rgba(250,248,245,.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid #e5e7eb;
+}
+.navbar > nav{
+  position:static;flex:1;min-width:0;display:flex;gap:.25rem;margin:0;padding:0;
+  background:none;border:0;box-shadow:none;overflow:visible;white-space:normal;backdrop-filter:none;
+}
+.navbar nav a{
+  flex:1 1 0;min-width:0;margin:0;padding:0 .3rem;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.nav-home{
+  flex:0 0 42px;display:inline-block;min-height:44px;line-height:44px;text-align:center;
+  border-radius:999px;background:#fff;color:#2563eb;text-decoration:none;font-size:1.1rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.nshort{display:none}
+@media (max-width:600px){
+  .nlong{display:none}
+  .nshort{display:inline}
+  .navbar nav a{font-size:.84rem;padding:0 .2rem}
+}
+/* Bouton de remontée en haut de page */
+.to-top{
+  position:fixed;right:.85rem;bottom:.85rem;width:48px;height:48px;border-radius:50%;border:0;
+  background:#2563eb;color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+.retour-fiches{display:inline-block;margin-top:.6rem;color:#2563eb;text-decoration:none;font-weight:600;min-height:44px;line-height:44px}
+</style>
 </head>
 <body>
 <header class="hero">
@@ -183,13 +221,16 @@ p::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb {
   <div class="sub">Terminale · Mathématiques</div>
   <div class="chap">Chapitre 1 · Produit scalaire — fiche 1D : plans, droites, projetés et distances</div>
 </header>
-<nav class="sticky">
-  <a href="#cours">Cours</a>
-  <a href="#methode">Méthode</a>
-  <a href="#visu">Visualisation</a>
-  <a href="#exos">Exercices</a>
-  <a href="#qcm">QCM</a>
-</nav>
+<div class="navbar">
+  <a class="nav-home" href="../../index.html" title="Toutes les fiches" aria-label="Toutes les fiches">←</a>
+  <nav class="sticky">
+    <a href="#cours">Cours</a>
+    <a href="#methode"><span class="nlong">Méthode</span><span class="nshort">Méth.</span></a>
+    <a href="#visu"><span class="nlong">Visualisation</span><span class="nshort">Visu</span></a>
+    <a href="#exos"><span class="nlong">Exercices</span><span class="nshort">Exos</span></a>
+    <a href="#qcm">QCM</a>
+  </nav>
+</div>
 <main>
 
 <!-- ==================== COURS ==================== -->
@@ -475,6 +516,7 @@ p::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb {
 <footer>
   <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
   <p class="small">Fiche 1D · Terminale spécialité mathématiques · Programme 2019 · Chapitre « Produit scalaire », partie Terminale.</p>
+  <p><a class="retour-fiches" href="../../index.html">← Toutes les fiches</a></p>
 </footer>
 
 <script>
@@ -1319,6 +1361,16 @@ genEx3();
 buildQCM();
 updateNav();
 
+})();
+</script>
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+<script>
+(function(){
+  var b = document.getElementById('toTop');
+  if (!b) return;
+  function maj(){ b.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
 })();
 </script>
 </body>

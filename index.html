@@ -1,50 +1,182 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Maths Terminale — accueil</title>
 <style>
-  body{margin:0;background:#faf8f5;color:#1f2937;font-family:system-ui,-apple-system,sans-serif;line-height:1.5}
-  header{text-align:center;padding:2rem 1rem 1rem}
-  h1{font-family:Georgia,serif;margin:0 0 .3rem;font-size:1.9rem}
-  .sub{color:#6b7280}
-  main{max-width:720px;margin:0 auto;padding:0 1rem 3rem}
-  h2{font-family:Georgia,serif;font-size:1.25rem;margin:1.6rem 0 .6rem}
-  a.card{display:flex;align-items:center;gap:.8rem;background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(31,41,55,.08);padding:.9rem 1rem;margin:.5rem 0;text-decoration:none;color:inherit;min-height:56px}
-  a.card:active{transform:translateY(1px)}
-  .tag{flex:0 0 auto;font-size:.75rem;padding:.15rem .55rem;border-radius:999px;background:#dbeafe;color:#2563eb;font-weight:600}
-  .tag.t{background:#fef3c7;color:#92400e}
-  .tag.s{background:#d9f3e6;color:#22a06b}
-  .t{font-weight:600}.d{font-size:.86rem;color:#6b7280}
-  .todo{opacity:.55}
+:root{
+  --bg:#faf8f5; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --blue:#2563eb; --blue-soft:#e8efff;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --green:#22a06b; --green-soft:#e3f5ec;
+  --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5}
+header{text-align:center;padding:1.8rem 1rem .9rem;background:linear-gradient(180deg,var(--blue-soft) 0%,var(--bg) 100%)}
+h1{font-family:Georgia,"Times New Roman",serif;margin:0 0 .25rem;font-size:1.7rem}
+.sub{color:var(--muted);font-size:.95rem}
+main{max-width:720px;margin:0 auto;padding:0 .9rem 3.5rem}
+
+/* --- carte du guide --- */
+a.guide{display:flex;align-items:center;gap:.8rem;background:var(--green-soft);border:1px solid #bfe6d3;border-radius:14px;padding:.9rem 1rem;margin:1rem 0 1.4rem;text-decoration:none;color:inherit;min-height:56px}
+a.guide .ico{font-size:1.5rem;flex:0 0 auto}
+a.guide .t{font-weight:700;display:block}
+a.guide .d{font-size:.86rem;color:#4b6b5d}
+
+/* --- chapitres repliables --- */
+details.chap{background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin:.6rem 0;overflow:hidden}
+details.chap > summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:.7rem;
+  padding:.85rem 1rem;min-height:60px;font-weight:600;
+}
+details.chap > summary::-webkit-details-marker{display:none}
+.num{flex:0 0 34px;height:34px;border-radius:10px;background:var(--blue-soft);color:var(--blue);
+     display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700}
+.chap.todo .num{background:#f1f0ee;color:var(--muted)}
+.ttl{flex:1;min-width:0}
+.ttl .nm{display:block}
+.ttl .meta{display:block;font-weight:400;font-size:.8rem;color:var(--muted);margin-top:.1rem}
+.chev{flex:0 0 auto;color:var(--muted);transition:transform .2s;font-size:1.1rem}
+details[open] > summary .chev{transform:rotate(90deg)}
+.inner{padding:0 .7rem .7rem}
+
+a.fiche{display:flex;align-items:center;gap:.7rem;background:#fbfaf8;border:1px solid var(--line);border-radius:11px;
+        padding:.65rem .8rem;margin:.4rem 0;text-decoration:none;color:inherit;min-height:52px}
+a.fiche:active{background:#f3f1ed}
+.tag{flex:0 0 auto;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.15rem .5rem;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+.tag.t{background:var(--amber-soft);color:#92400e}
+.fiche .t{font-weight:600;display:block;font-size:.95rem}
+.fiche .d{display:block;font-size:.82rem;color:var(--muted);margin-top:.05rem}
+.soon{padding:.2rem .9rem .8rem;font-size:.88rem;color:var(--muted)}
+.soon li{margin:.25rem 0}
+
+.tools{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.4rem 0 0}
+.tools button{min-height:44px;padding:.5rem .9rem;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font-size:.9rem;font-family:inherit;cursor:pointer}
+footer{text-align:center;color:var(--muted);font-size:.84rem;padding:1.6rem 1rem 2rem}
+footer a{color:var(--blue)}
+
+.to-top{position:fixed;right:.9rem;bottom:.9rem;width:48px;height:48px;border-radius:50%;border:0;
+        background:var(--blue);color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+        opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.to-top.show{opacity:1;pointer-events:auto}
 </style>
 </head>
 <body>
-<header><h1>Maths · Terminale spé</h1><div class="sub">Fiches interactives et méthode · programme officiel 2019</div></header>
+
+<header>
+  <h1>Maths · Terminale spé</h1>
+  <div class="sub">Fiches interactives et méthode · programme officiel 2019</div>
+</header>
+
 <main>
-  <h2>Commencer ici</h2>
-  <a class="card" href="strategie/reussir_lannee.html"><span class="tag s">Guide</span><span><span class="t">Réussir l'année</span><br><span class="d">Méthode, science de l'apprentissage, ChatGPT, carnet de suivi</span></span></a>
 
-  <h2>Chapitre 1 · Produit scalaire</h2>
-  <a class="card" href="chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html"><span class="tag">1re</span><span><span class="t">1A · Définitions du produit scalaire</span><br><span class="d">Projection, cosinus, coordonnées, norme, orthogonalité</span></span></a>
-  <a class="card" href="chapitres/01_produit_scalaire/1B_produit_scalaire_applications.html"><span class="tag">1re</span><span><span class="t">1B · Applications</span><br><span class="d">Al-Kashi, normes, cercle de diamètre [AB], angles et longueurs</span></span></a>
-  <a class="card" href="chapitres/01_produit_scalaire/1C_geometrie_reperee.html"><span class="tag">1re</span><span><span class="t">1C · Géométrie repérée</span><br><span class="d">Vecteur normal, équation de droite, projeté, cercle</span></span></a>
-  <a class="card" href="chapitres/01_produit_scalaire/1D_espace_orthogonalite_distances.html"><span class="tag t">Term</span><span><span class="t">1D · Espace : orthogonalité et distances</span><br><span class="d">Produit scalaire dans l'espace, plans, droites, distances</span></span></a>
+  <a class="guide" href="strategie/reussir_lannee.html">
+    <span class="ico">🧭</span>
+    <span><span class="t">Réussir l'année</span><span class="d">Méthode de travail, prompts ChatGPT, carnet de suivi</span></span>
+  </a>
 
-  <h2>Chapitre 2 · Suites</h2>
-  <a class="card" href="chapitres/02_suites/2A_suites_generation_variations.html"><span class="tag">1re</span><span><span class="t">2A · Génération et variations</span><br><span class="d">Explicite, récurrence, algorithme, sens de variation</span></span></a>
-  <a class="card" href="chapitres/02_suites/2B_suites_arithmetiques_geometriques.html"><span class="tag">1re</span><span><span class="t">2B · Suites arithmétiques et géométriques</span><br><span class="d">Terme général, sommes, modélisation à taux constant</span></span></a>
-  <a class="card" href="chapitres/02_suites/2C_recurrence_limites.html"><span class="tag t">Term</span><span><span class="t">2C · Récurrence et limites</span><br><span class="d">Raisonnement par récurrence, limites, gendarmes, convergence</span></span></a>
+  <details class="chap" id="ch1">
+    <summary><span class="num">1</span><span class="ttl"><span class="nm">Produit scalaire et géométrie</span><span class="meta">3 fiches Première · 1 fiche Terminale</span></span><span class="chev">›</span></summary>
+    <div class="inner">
+      <a class="fiche" href="chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html"><span class="tag">1re</span><span><span class="t">1A · Définitions du produit scalaire</span><span class="d">Projection, cosinus, coordonnées, norme, orthogonalité</span></span></a>
+      <a class="fiche" href="chapitres/01_produit_scalaire/1B_produit_scalaire_applications.html"><span class="tag">1re</span><span><span class="t">1B · Applications</span><span class="d">Al-Kashi, normes, cercle de diamètre [AB], angles</span></span></a>
+      <a class="fiche" href="chapitres/01_produit_scalaire/1C_geometrie_reperee.html"><span class="tag">1re</span><span><span class="t">1C · Géométrie repérée</span><span class="d">Vecteur normal, équation de droite, projeté, cercle</span></span></a>
+      <a class="fiche" href="chapitres/01_produit_scalaire/1D_espace_orthogonalite_distances.html"><span class="tag t">Term</span><span><span class="t">1D · Espace : orthogonalité et distances</span><span class="d">Produit scalaire dans l'espace, plans, droites, distances</span></span></a>
+    </div>
+  </details>
 
-  <h2>Chapitre 3 · Dérivation et convexité</h2>
-  <a class="card" href="chapitres/03_derivation_convexite/3A_nombre_derive_tangente.html"><span class="tag">1re</span><span><span class="t">3A · Nombre dérivé et tangente</span><br><span class="d">Taux de variation, sécantes, nombre dérivé, équation de la tangente</span></span></a>
-  <a class="card" href="chapitres/03_derivation_convexite/3B_calcul_de_derivees.html"><span class="tag">1re</span><span><span class="t">3B · Calculer une dérivée</span><br><span class="d">Dérivées de référence, somme, produit, quotient, g(ax+b)</span></span></a>
-  <a class="card" href="chapitres/03_derivation_convexite/3C_variations_extremums.html"><span class="tag">1re</span><span><span class="t">3C · Variations et extremums</span><br><span class="d">Signe de la dérivée, tableau de variations, optimisation</span></span></a>
-  <a class="card" href="chapitres/03_derivation_convexite/3D_derivee_composee.html"><span class="tag t">Term</span><span><span class="t">3D · Dérivée d'une composée</span><br><span class="d">Composition, formule de la dérivée, cas usuels</span></span></a>
-  <a class="card" href="chapitres/03_derivation_convexite/3E_convexite.html"><span class="tag t">Term</span><span><span class="t">3E · Convexité</span><br><span class="d">Dérivée seconde, convexe ou concave, point d'inflexion</span></span></a>
+  <details class="chap" id="ch2">
+    <summary><span class="num">2</span><span class="ttl"><span class="nm">Suites</span><span class="meta">2 fiches Première · 1 fiche Terminale</span></span><span class="chev">›</span></summary>
+    <div class="inner">
+      <a class="fiche" href="chapitres/02_suites/2A_suites_generation_variations.html"><span class="tag">1re</span><span><span class="t">2A · Génération et variations</span><span class="d">Explicite, récurrence, algorithme, sens de variation</span></span></a>
+      <a class="fiche" href="chapitres/02_suites/2B_suites_arithmetiques_geometriques.html"><span class="tag">1re</span><span><span class="t">2B · Arithmétiques et géométriques</span><span class="d">Terme général, sommes, modélisation à taux constant</span></span></a>
+      <a class="fiche" href="chapitres/02_suites/2C_recurrence_limites.html"><span class="tag t">Term</span><span><span class="t">2C · Récurrence et limites</span><span class="d">Raisonnement par récurrence, limites, gendarmes</span></span></a>
+    </div>
+  </details>
 
-  <h2>À venir</h2>
-  <div class="card todo" style="display:flex;gap:.8rem;background:#fff;border-radius:14px;padding:.9rem 1rem"><span class="tag">…</span><span class="d">Limites et continuité, exponentielle et logarithme, géométrie dans l'espace, probabilités, dénombrement, loi binomiale, trigonométrie, primitives, intégrales. L'ordre complet de l'année est décrit dans le fichier ordre.md du dépôt.</span></div>
+  <details class="chap" id="ch3">
+    <summary><span class="num">3</span><span class="ttl"><span class="nm">Dérivation et convexité</span><span class="meta">3 fiches Première · 2 fiches Terminale</span></span><span class="chev">›</span></summary>
+    <div class="inner">
+      <a class="fiche" href="chapitres/03_derivation_convexite/3A_nombre_derive_tangente.html"><span class="tag">1re</span><span><span class="t">3A · Nombre dérivé et tangente</span><span class="d">Taux de variation, sécantes, équation de la tangente</span></span></a>
+      <a class="fiche" href="chapitres/03_derivation_convexite/3B_calcul_de_derivees.html"><span class="tag">1re</span><span><span class="t">3B · Calculer une dérivée</span><span class="d">Dérivées de référence, somme, produit, quotient, g(ax+b)</span></span></a>
+      <a class="fiche" href="chapitres/03_derivation_convexite/3C_variations_extremums.html"><span class="tag">1re</span><span><span class="t">3C · Variations et extremums</span><span class="d">Signe de la dérivée, tableau, optimisation</span></span></a>
+      <a class="fiche" href="chapitres/03_derivation_convexite/3D_derivee_composee.html"><span class="tag t">Term</span><span><span class="t">3D · Dérivée d'une composée</span><span class="d">Composition, formule de la dérivée, cas usuels</span></span></a>
+      <a class="fiche" href="chapitres/03_derivation_convexite/3E_convexite.html"><span class="tag t">Term</span><span><span class="t">3E · Convexité</span><span class="d">Dérivée seconde, convexe ou concave, point d'inflexion</span></span></a>
+    </div>
+  </details>
+
+  <details class="chap" id="ch4">
+    <summary><span class="num">4</span><span class="ttl"><span class="nm">Limites et continuité</span><span class="meta">1 fiche Première · 2 fiches Terminale</span></span><span class="chev">›</span></summary>
+    <div class="inner">
+      <a class="fiche" href="chapitres/04_limites_continuite/4A_fonctions_de_reference.html"><span class="tag">1re</span><span><span class="t">4A · Fonctions de référence</span><span class="d">Courbes, variations, lecture graphique, définition</span></span></a>
+      <a class="fiche" href="chapitres/04_limites_continuite/4B_limites_de_fonctions.html"><span class="tag t">Term</span><span><span class="t">4B · Limites de fonctions</span><span class="d">Asymptotes, formes indéterminées, croissances comparées</span></span></a>
+      <a class="fiche" href="chapitres/04_limites_continuite/4C_continuite_tvi.html"><span class="tag t">Term</span><span><span class="t">4C · Continuité et valeurs intermédiaires</span><span class="d">Continuité, théorème des valeurs intermédiaires, dichotomie</span></span></a>
+    </div>
+  </details>
+
+  <details class="chap todo" id="chSuite">
+    <summary><span class="num">…</span><span class="ttl"><span class="nm">Chapitres à venir</span><span class="meta">Dix chapitres, dans l'ordre prévu</span></span><span class="chev">›</span></summary>
+    <ol class="soon">
+      <li>Exponentielle et logarithme</li>
+      <li>Géométrie dans l'espace</li>
+      <li>Probabilités conditionnelles et variables aléatoires</li>
+      <li>Combinatoire et dénombrement</li>
+      <li>Loi binomiale</li>
+      <li>Fonctions trigonométriques</li>
+      <li>Primitives et équations différentielles</li>
+      <li>Calcul intégral</li>
+      <li>Sommes de variables aléatoires et loi des grands nombres</li>
+      <li>Algorithmique et programmation</li>
+    </ol>
+  </details>
+
+  <div class="tools">
+    <button id="openAll" type="button">Tout déplier</button>
+    <button id="closeAll" type="button">Tout replier</button>
+  </div>
+
 </main>
+
+<footer>
+  Fonctionne hors connexion. Le plan complet de l'année est décrit dans le fichier <b>ordre.md</b> du dépôt.
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'accueil_chapitres_ouverts';
+  var details = [].slice.call(document.querySelectorAll('details.chap'));
+
+  function lire() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+  function ecrire(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} }
+
+  // Au premier passage, tout est replié. Ensuite on retrouve ce qui était ouvert.
+  var ouverts = lire();
+  details.forEach(function (d) { d.open = ouverts.indexOf(d.id) !== -1; });
+
+  function memoriser() {
+    ecrire(details.filter(function (d) { return d.open; }).map(function (d) { return d.id; }));
+  }
+  details.forEach(function (d) { d.addEventListener('toggle', memoriser); });
+
+  document.getElementById('openAll').addEventListener('click', function () {
+    details.forEach(function (d) { d.open = true; }); memoriser();
+  });
+  document.getElementById('closeAll').addEventListener('click', function () {
+    details.forEach(function (d) { d.open = false; }); memoriser();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  var bt = document.getElementById('toTop');
+  function maj() { bt.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  bt.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+})();
+</script>
 </body>
 </html>

@@ -45,6 +45,14 @@ Un fichier HTML unique, avec dans l'ordre :
 | 3D | Terminale | Dérivée d'une fonction composée |
 | 3E | Terminale | Dérivée seconde, convexité, point d'inflexion |
 
+**Chapitre 4 — Limites de fonctions et continuité**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| 4A | Première | Fonctions de référence : courbes, variations, lecture graphique |
+| 4B | Terminale | Limites, asymptotes, formes indéterminées, croissances comparées |
+| 4C | Terminale | Continuité, théorème des valeurs intermédiaires, dichotomie |
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
