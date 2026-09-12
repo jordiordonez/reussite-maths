@@ -8,7 +8,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 |---|---|---|---|
 | 1A | Définitions du produit scalaire | ✅ | 3 (notation dans du texte généré) |
 | 1B | Applications du produit scalaire | ✅ | 9 (dont 2 tolérances qui acceptaient une réponse fausse) |
-| 1C | Géométrie repérée | ⬜ | |
+| 1C | Géométrie repérée | ✅ | 7 (dont 2 tolérances qui acceptaient une réponse fausse) |
 | 1D | Espace : orthogonalité et distances | ⬜ | |
 | 2A | Suites : génération et variations | ⬜ | |
 | 2B | Suites arithmétiques et géométriques | ⬜ | |

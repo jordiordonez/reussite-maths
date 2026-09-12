@@ -682,6 +682,24 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
   }
   // TeX d'un signe pour "s = ..."
   function texSigned(v) { return v < 0 ? '(' + tx(v) + ')' : tx(v); }
+  // « v + coef·s » en TeX : pas de coefficient 1 écrit, pas de terme nul écrit
+  function affS(v, coef) {
+    if (Math.abs(coef) < 1e-12) return tx(v);
+    const part = (Math.abs(Math.abs(coef) - 1) < 1e-12 ? 's' : tx(Math.abs(coef)) + 's');
+    if (Math.abs(v) < 1e-12) return (coef < 0 ? '-' : '') + part;
+    return tx(v) + (coef < 0 ? ' - ' : ' + ') + part;
+  }
+  // somme de termes [signe, texte] assemblée avec les bons « + » et « - »
+  function sumTex(parts) {
+    let out = '';
+    parts.forEach(function (p, i) {
+      if (i === 0) out = (p[0] < 0 ? '-' : '') + p[1];
+      else out += (p[0] < 0 ? ' - ' : ' + ') + p[1];
+    });
+    return out === '' ? '0' : out;
+  }
+  // facteur multiplicatif en valeur absolue : chaîne vide si c'est 1
+  function facTex(c) { return Math.abs(Math.abs(c) - 1) < 1e-12 ? '' : tx(Math.abs(c)); }
 
   /* ---------- Navigation active ---------- */
   const navLinks = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
@@ -915,13 +933,17 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       '<p>Déterminer une équation cartésienne \\(ax+by+c=0\\) de la droite \\(d\\) passant par \\(A\\) ' +
       'et de vecteur normal \\(\\vec n,\\) puis recopier ci-dessous les trois coefficients.</p>' +
       '<p class="hint">Toute équation proportionnelle est acceptée (par exemple en multipliant tout par \\(-1\\) ou par \\(2\\)).</p>';
+    // développement terme à terme (avant regroupement), puis forme réduite
+    const pDev = [];
+    if (a !== 0) { pDev.push([a, facTex(a) + 'x']); if (a * xa !== 0) pDev.push([-a * xa, tx(Math.abs(a * xa))]); }
+    if (b !== 0) { pDev.push([b, facTex(b) + 'y']); if (b * ya !== 0) pDev.push([-b * ya, tx(Math.abs(b * ya))]); }
+    const dev = sumTex(pDev), red = linExpr([[a, 'x'], [b, 'y'], [c, '']], true);
     $('ex1-corr').innerHTML =
       '<p><b>1.</b> \\(M(x;y)\\in d\\iff\\overrightarrow{AM}\\cdot\\vec n=0,\\) avec ' +
       '\\(\\overrightarrow{AM}(x-(' + tx(xa) + ')\\,;\\,y-(' + tx(ya) + ')).\\)</p>' +
       '<p><b>2.</b> Produit scalaire : \\(' + tx(a) + '\\,(x-(' + tx(xa) + '))+' + texSigned(b) + '\\,(y-(' + tx(ya) + '))=0.\\)</p>' +
-      '<p><b>3.</b> On développe : \\(' + linExpr([[a, 'x'], [b, 'y'], [0, '']], true) +
-      ' ' + (c < 0 ? '-' : '+') + ' ' + tx(Math.abs(c)) + '=0,\\) c’est-à-dire ' +
-      '\\(\\;' + linExpr([[a, 'x'], [b, 'y'], [c, '']], true) + '=0\\;\\) ' +
+      '<p><b>3.</b> On développe : \\(' + dev + '=0' +
+      (dev === red ? '' : ',\\) c’est-à-dire \\(\\;' + red + '=0\\;') + '\\) ' +
       '(on a bien \\(c=-a\\,x_A-b\\,y_A=' + tx(c) + '\\)).</p>' +
       '<p><b>4.</b> Contrôle : en remplaçant \\(x\\) par \\(' + tx(xa) + '\\) et \\(y\\) par \\(' + tx(ya) + ',\\) ' +
       'on obtient \\(' + tx(a * xa) + '+' + texSigned(b * ya) + '+' + texSigned(c) + '=0\\) ✓, ' +
@@ -946,8 +968,19 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
     const ok = Math.abs(k) > 1e-9 &&
       near(ub, k * e1.b, tol) && near(ua, k * e1.a, tol) && near(uc, k * e1.c, tol);
     if (ok) {
-      setFb('ex1', 'ok', 'Bravo ! \\(' + linExpr([[ua, 'x'], [ub, 'y'], [uc, '']], true) + '=0\\) convient' +
-        (Math.abs(k - 1) > 1e-9 ? ' (c’est \\(' + tx(k) + '\\) fois l’équation \\(' + linExpr([[e1.a, 'x'], [e1.b, 'y'], [e1.c, '']], true) + '=0\\)).' : '.'));
+      const ref = linExpr([[e1.a, 'x'], [e1.b, 'y'], [e1.c, '']], true);
+      // le rapport n'est réécrit que s'il s'affiche exactement au centième :
+      // sinon « c'est 0,33 fois l'équation » serait faux (le rapport vaut 1/3)
+      const kNet = Math.abs(k - Math.round(k * 100) / 100) < 1e-9;
+      if (Math.abs(k - 1) < 1e-9) {
+        setFb('ex1', 'ok', 'Bravo ! \\(' + ref + '=0\\) convient.');
+      } else if (kNet) {
+        setFb('ex1', 'ok', 'Bravo ! \\(' + linExpr([[ua, 'x'], [ub, 'y'], [uc, '']], true) +
+          '=0\\) convient : c’est \\(' + tx(k) + '\\) fois l’équation \\(' + ref + '=0.\\)');
+      } else {
+        setFb('ex1', 'ok', 'Bravo ! Ton équation est proportionnelle à \\(' + ref +
+          '=0\\) : elle décrit bien la même droite.');
+      }
     } else if (near(ua, e1.a, 0.011) && near(ub, e1.b, 0.011)) {
       setFb('ex1', 'ko', 'Les coefficients \\(a\\) et \\(b\\) sont bons, mais pas \\(c\\) : ' +
         'ici \\(c=-a\\,x_A-b\\,y_A.\\) Revois la correction.');
@@ -977,21 +1010,43 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       'et le point \\(M(' + tx(mx) + ';' + tx(my) + ').\\)</p>' +
       '<p>Déterminer les coordonnées du projeté orthogonal \\(H\\) de \\(M\\) sur \\(d,\\) ' +
       'puis la distance \\(MH\\) (valeur exacte ou arrondie à \\(0{,}01\\)).</p>';
+    const val = a * mx + b * my + c;   // valeur de ax+by+c en M
+    const sc = -val / n2;              // le paramètre s de la correction
+    // étape 2 : report de H dans l'équation, termes nuls omis, coefficient 1 non écrit
+    const p2 = [];
+    if (a !== 0) p2.push([a, facTex(a) + '(' + affS(mx, a) + ')']);
+    if (b !== 0) p2.push([b, facTex(b) + '(' + affS(my, b) + ')']);
+    if (c !== 0) p2.push([c, tx(Math.abs(c))]);
+    // étape 3 : n2·s + val = 0
+    const p3 = [[1, (n2 === 1 ? 's' : tx(n2) + 's')]];
+    if (val !== 0) p3.push([val, tx(Math.abs(val))]);
+    // contrôle : a·x_H + b·y_H + c = 0
+    const pC = [];
+    if (a !== 0) pC.push([a, (facTex(a) ? facTex(a) + '\\times' : '') + texSigned(hx)]);
+    if (b !== 0) pC.push([b, (facTex(b) ? facTex(b) + '\\times' : '') + texSigned(hy)]);
+    if (c !== 0) pC.push([c, tx(Math.abs(c))]);
+    // étape 5 : MH = |s|·‖n‖, exact seulement si n2 est un carré parfait
+    const exactN = Math.abs(Math.sqrt(n2) - Math.round(Math.sqrt(n2))) < 1e-9;
+    const nTex = radTex(n2);
+    const prodTex = (nTex === '1') ? tx(Math.abs(s))
+      : (Math.abs(Math.abs(s) - 1) < 1e-12) ? nTex
+        : tx(Math.abs(s)) + '\\times' + nTex;
+    // si le produit est déjà le résultat (\(1\times3\) réduit à \(3\)), on ne le réécrit pas
+    const dTail = (prodTex === tx(dist)) ? '' : (exactN ? '=' : '\\approx') + tx(dist);
     $('ex2-corr').innerHTML =
       '<p><b>1.</b> Un vecteur normal de \\(d\\) est \\(\\vec n(' + tx(a) + ';' + tx(b) + ').\\) ' +
       'La perpendiculaire à \\(d\\) passant par \\(M\\) est dirigée par \\(\\vec n,\\) donc ' +
-      '\\(H(' + tx(mx) + '+' + texSigned(a) + 's\\;;\\;' + tx(my) + '+' + texSigned(b) + 's).\\)</p>' +
-      '<p><b>2.</b> \\(H\\in d\\) : \\(' + texSigned(a) + '(' + tx(mx) + '+' + texSigned(a) + 's)+' +
-      texSigned(b) + '(' + tx(my) + '+' + texSigned(b) + 's)+' + texSigned(c) + '=0.\\)</p>' +
-      '<p><b>3.</b> On regroupe : \\(' + tx(n2) + 's+' + texSigned(a * mx + b * my + c) + '=0,\\) donc ' +
-      '\\(s=\\dfrac{' + tx(-(a * mx + b * my + c)) + '}{' + tx(n2) + '}=' + tx(-s) + '.\\)</p>' +
-      '<p><b>4.</b> D’où \\(H(' + tx(mx) + '+(' + tx(-s) + ')\\times' + tx(a) + '\\;;\\;' +
-      tx(my) + '+(' + tx(-s) + ')\\times' + tx(b) + ')=H(' + tx(hx) + ';' + tx(hy) + ').\\)</p>' +
-      '<p><b>5.</b> \\(MH=|s|\\,\\|\\vec n\\|=' + tx(Math.abs(s)) + '\\times' + radTex(n2) +
-      '=' + tx(dist) + '\\) (à \\(0{,}01\\) près).</p>' +
-      '<p><b>Contrôle :</b> \\(' + texSigned(a) + '\\times' + texSigned(hx) + '+' + texSigned(b) + '\\times' +
-      texSigned(hy) + '+' + texSigned(c) + '=0\\) ✓ : \\(H\\) est bien sur \\(d.\\)</p>' +
-      '<p><b>Réponse :</b> \\(H(' + tx(hx) + ';' + tx(hy) + ')\\) et \\(MH=' + tx(dist) + '.\\)</p>';
+      '\\(H(' + affS(mx, a) + '\\;;\\;' + affS(my, b) + ').\\)</p>' +
+      '<p><b>2.</b> \\(H\\in d\\) : \\(' + sumTex(p2) + '=0.\\)</p>' +
+      '<p><b>3.</b> On regroupe : \\(' + sumTex(p3) + '=0,\\) donc ' +
+      (n2 === 1 ? '\\(s=' + tx(sc) + '.\\)'
+        : '\\(s=\\dfrac{' + tx(-val) + '}{' + tx(n2) + '}=' + tx(sc) + '.\\)') + '</p>' +
+      '<p><b>4.</b> D’où \\(H(' + tx(mx) + '+' + texSigned(sc) + '\\times' + texSigned(a) + '\\;;\\;' +
+      tx(my) + '+' + texSigned(sc) + '\\times' + texSigned(b) + ')=H(' + tx(hx) + ';' + tx(hy) + ').\\)</p>' +
+      '<p><b>5.</b> \\(MH=|s|\\,\\|\\vec n\\|=' + prodTex + dTail + '\\)' +
+      (exactN ? '.' : ' (à \\(0{,}01\\) près).') + '</p>' +
+      '<p><b>Contrôle :</b> \\(' + sumTex(pC) + '=0\\) ✓ : \\(H\\) est bien sur \\(d.\\)</p>' +
+      '<p><b>Réponse :</b> \\(H(' + tx(hx) + ';' + tx(hy) + ')\\) et \\(MH' + (exactN ? '=' : '\\approx') + tx(dist) + '.\\)</p>';
     resetEx('ex2', ['ex2-x', 'ex2-y', 'ex2-d']);
     typeset($('ex2-enonce'));
   }
@@ -1002,7 +1057,10 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       return;
     }
     const okH = near(ux, e2.hx, 0.011) && near(uy, e2.hy, 0.011);
-    const okD = near(ud, e2.dist, 0.02);
+    // L'énoncé demande la valeur exacte ou l'arrondi à 0,01 : on accepte le bon
+    // arrondi au centième, ou une valeur à moins d'un demi-centième de la valeur
+    // exacte (valeur non arrondie, écriture avec un radical). Pas le centième voisin.
+    const okD = Math.round(ud * 100) === Math.round(e2.dist * 100) || Math.abs(ud - e2.dist) <= 0.005;
     if (okH && okD) {
       setFb('ex2', 'ok', 'Parfait : \\(H(' + tx(e2.hx) + ';' + tx(e2.hy) + ')\\) et \\(MH=' + tx(e2.dist) + '.\\)');
     } else if (okH) {
@@ -1046,20 +1104,34 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       '<p style="text-align:center">\\[' + devEq(k, al, be, ga) + '\\]</p>' +
       '<p>Montrer que \\(\\mathcal C\\) est un cercle, puis donner les coordonnées de son centre \\(\\Omega\\) et son rayon \\(r.\\)</p>' +
       (k === 1 ? '' : '<p class="hint">Commence par diviser toute l’équation par \\(' + k + '.\\)</p>');
+    // r^2 est-il un carré parfait ? (sinon le rayon n'a qu'une valeur approchée)
+    const carre = Math.abs(Math.sqrt(r2) - Math.round(Math.sqrt(r2))) < 1e-9;
+    // étape 2 : on ne « complète » que les carrés qui ont un terme du premier degré
+    const cx2 = '\\(x^2' + tterm(al, 'x') + '=' + sq('x', p, true) + tterm(-p * p, '') + '\\)';
+    const cy2 = '\\(y^2' + tterm(be, 'y') + '=' + sq('y', q, true) + tterm(-q * q, '') + '\\)';
+    const etape2 = (al !== 0 && be !== 0)
+      ? 'On complète les carrés : ' + cx2 + ' et ' + cy2 + '.'
+      : (al !== 0)
+        ? 'On complète le carré en \\(x\\) : ' + cx2 + '. Il n’y a rien à compléter en \\(y\\) : ' +
+          'l’équation ne contient pas de terme en \\(y,\\) donc \\(y^2\\) est déjà un carré.'
+        : (be !== 0)
+          ? 'On complète le carré en \\(y\\) : ' + cy2 + '. Il n’y a rien à compléter en \\(x\\) : ' +
+            'l’équation ne contient pas de terme en \\(x,\\) donc \\(x^2\\) est déjà un carré.'
+          : 'Il n’y a rien à compléter : l’équation ne contient ni terme en \\(x\\) ni terme en \\(y,\\) ' +
+            'donc \\(x^2\\) et \\(y^2\\) sont déjà des carrés.';
     const divis = (k === 1) ? '' :
       '<p><b>0.</b> Les coefficients de \\(x^2\\) et \\(y^2\\) sont égaux à \\(' + k + '\\) : on divise toute l’équation par \\(' + k + ',\\) ' +
       'ce qui donne \\(' + devEq(1, al, be, ga) + '.\\)</p>';
     $('ex3-corr').innerHTML = divis +
       '<p><b>1.</b> On regroupe : \\((x^2' + tterm(al, 'x') + ')+(y^2' + tterm(be, 'y') + ')' +
       tterm(ga, '') + '=0.\\)</p>' +
-      '<p><b>2.</b> On complète les carrés : \\(x^2' + tterm(al, 'x') + '=' +
-      sq('x', p, true) + tterm(-p * p, '') + '\\) et \\(y^2' + tterm(be, 'y') + '=' +
-      sq('y', q, true) + tterm(-q * q, '') + '.\\)</p>' +
+      '<p><b>2.</b> ' + etape2 + '</p>' +
       '<p><b>3.</b> L’équation devient \\(' + sq('x', p, true) + '+' + sq('y', q, true) +
       tterm(-p * p, '') + tterm(-q * q, '') + tterm(ga, '') + '=0,\\) soit ' +
       '\\(' + sq('x', p, true) + '+' + sq('y', q, true) + '=' + tx(r2) + '.\\)</p>' +
       '<p><b>4.</b> Comme \\(' + tx(r2) + '>0,\\) c’est bien un cercle : centre ' +
-      '\\(\\Omega(' + tx(p) + ';' + tx(q) + ')\\) et rayon \\(r=' + radTex(r2) + '\\approx' + tx(Math.sqrt(r2)) + '.\\)</p>' +
+      '\\(\\Omega(' + tx(p) + ';' + tx(q) + ')\\) et rayon \\(r=' + radTex(r2) +
+      (carre ? '' : '\\approx' + tx(Math.sqrt(r2))) + '.\\)</p>' +
       '<p class="hint">Retiens : \\(r^2=' + tx(r2) + ',\\) donc \\(r=' + radTex(r2) + '\\) — ne confonds pas \\(r\\) et \\(r^2.\\)</p>';
     resetEx('ex3', ['ex3-x', 'ex3-y', 'ex3-r']);
     typeset($('ex3-enonce'));
@@ -1072,7 +1144,10 @@ Centre \((1;3)\) = milieu de \([AB]\) ✓, rayon \(\sqrt5\) et \(AB=\sqrt{16+4}=
       return;
     }
     const okC = near(ux, e3.p, 0.011) && near(uy, e3.q, 0.011);
-    const okR = near(ur, Math.sqrt(e3.r2), 0.02);
+    // Rayon : valeur exacte (\sqrt{r^2}, saisie « √5 » ou « 2,24 ») ou bon arrondi
+    // au centième. Le centième voisin, lui, est une réponse fausse.
+    const rExact = Math.sqrt(e3.r2);
+    const okR = Math.round(ur * 100) === Math.round(rExact * 100) || Math.abs(ur - rExact) <= 0.005;
     if (okC && okR) {
       setFb('ex3', 'ok', 'Excellent : \\(\\Omega(' + tx(e3.p) + ';' + tx(e3.q) + ')\\) et \\(r=' + radTex(e3.r2) + '.\\)');
     } else if (okC && near(ur, e3.r2, 0.02)) {
