@@ -741,6 +741,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   }
   function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
   function deg(r) { return r * 180 / Math.PI; }
+  // Un facteur négatif qui suit un « × » doit être entre parenthèses.
+  function parTex(t) { return String(t).charAt(0) === '-' ? '\\left(' + t + '\\right)' : String(t); }
+  // Idem en texte brut (lectures de la visualisation) : « − (−25) » et non « − -25 ».
+  function fmtPar(x, d) {
+    var s = fmt(x, d);
+    return (x < 0) ? '(' + s.replace('-', '−') + ')' : s;
+  }
 
   /* ---------- 1. Navigation sticky ---------- */
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
@@ -915,7 +922,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var terme = 2 * b * c * cosA;
     var right = b * b + c * c - terme;
     $('ak_left').textContent = fmt(a * a, 2);
-    $('ak_terms').textContent = fmt(b * b, 2) + ' + ' + fmt(c * c, 2) + ' − ' + fmt(terme, 2);
+    $('ak_terms').textContent = fmt(b * b, 2) + ' + ' + fmt(c * c, 2) + ' − ' + fmtPar(terme, 2);
     $('ak_right').textContent = fmt(right, 2);
     var note;
     if (isNaN(Ar)) {
@@ -956,26 +963,55 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     });
   });
 
+  // Longueur maximale du trajet A + t·(ux,uy) qui reste dans la zone de dessin.
+  // Sans elle, le point C était « rogné » par clamp() et l'angle promis par les
+  // boutons n'était pas celui obtenu (un clic sur « Rendre Â droit » pouvait
+  // donner 49°).
+  function rayMax(ax, ay, ux, uy) {
+    var t = Infinity;
+    if (ux > 1e-9) t = Math.min(t, (380 - ax) / ux);
+    else if (ux < -1e-9) t = Math.min(t, (20 - ax) / ux);
+    if (uy > 1e-9) t = Math.min(t, (300 - ay) / uy);
+    else if (uy < -1e-9) t = Math.min(t, (20 - ay) / uy);
+    return isFinite(t) ? Math.max(0, t) : 0;
+  }
+  // Place C à l'angle voulu en A. Les deux rotations d'angle ±theta de (AB)
+  // donnent le même angle géométrique : on garde celle qui laisse le plus de
+  // place dans le cadre. Si aucune ne suffit, on repart de la figure par défaut.
+  function placeC(thetaDeg, Lvoulue) {
+    var th = thetaDeg * Math.PI / 180, co = Math.cos(th), si = Math.sin(th);
+    for (var essai = 0; essai < 2; essai++) {
+      var dx = T.Bx - T.Ax, dy = T.By - T.Ay, n = Math.sqrt(dx * dx + dy * dy);
+      if (n > 1e-6) {
+        var ux = dx / n, uy = dy / n;
+        var cands = [
+          { x: ux * co - uy * si, y: ux * si + uy * co },     // rotation de +theta
+          { x: ux * co + uy * si, y: -ux * si + uy * co }      // rotation de -theta
+        ];
+        var best = null;
+        for (var i = 0; i < 2; i++) {
+          var t = rayMax(T.Ax, T.Ay, cands[i].x, cands[i].y) - 2;
+          if (!best || t > best.t) best = { t: t, d: cands[i] };
+        }
+        if (best.t >= 40) {
+          var L = Math.min(Lvoulue, best.t);
+          T.Cx = T.Ax + best.d.x * L;
+          T.Cy = T.Ay + best.d.y * L;
+          drawTri();
+          return;
+        }
+      }
+      T.Ax = DEF.Ax; T.Ay = DEF.Ay; T.Bx = DEF.Bx; T.By = DEF.By;   // pas la place : on repart de la figure par défaut
+    }
+    drawTri();
+  }
   $('btnRight').addEventListener('click', function () {
     // On garde A et B ; on place C tel que l'angle en A vaille 90°.
-    var dx = T.Bx - T.Ax, dy = T.By - T.Ay, n = Math.sqrt(dx * dx + dy * dy) || 1;
-    var px = dy / n, py = -dx / n;                  // perpendiculaire « vers le haut »
-    var L = Math.min(150, Math.max(70, Math.sqrt(Math.pow(T.Cx - T.Ax, 2) + Math.pow(T.Cy - T.Ay, 2))));
-    T.Cx = clamp(T.Ax + px * L, 20, 380);
-    T.Cy = clamp(T.Ay + py * L, 20, 300);
-    drawTri();
+    var Lprec = Math.sqrt(Math.pow(T.Cx - T.Ax, 2) + Math.pow(T.Cy - T.Ay, 2));
+    placeC(90, Math.min(150, Math.max(70, Lprec)));
   });
   $('btnObtus').addEventListener('click', function () {
-    // Angle en A de 120° (obtus)
-    var dx = T.Bx - T.Ax, dy = T.By - T.Ay, n = Math.sqrt(dx * dx + dy * dy) || 1;
-    var ux = dx / n, uy = dy / n;
-    var th = -120 * Math.PI / 180;
-    var vx = ux * Math.cos(th) - uy * Math.sin(th);
-    var vy = ux * Math.sin(th) + uy * Math.cos(th);
-    var L = 120;
-    T.Cx = clamp(T.Ax + vx * L, 20, 380);
-    T.Cy = clamp(T.Ay + vy * L, 20, 300);
-    drawTri();
+    placeC(120, 120);   // angle en A de 120° (obtus)
   });
   $('btnReset').addEventListener('click', function () {
     T.Ax = DEF.Ax; T.Ay = DEF.Ay; T.Bx = DEF.Bx; T.By = DEF.By; T.Cx = DEF.Cx; T.Cy = DEF.Cy;
@@ -1021,7 +1057,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     // code couleur
     var st = $('cirStatus'), tol = 0.25;
-    if (Math.abs(prod) <= tol) {
+    if (mA < 0.1 || mB < 0.1) {
+      // M confondu avec A ou B : MA·MB = 0 et M est bien sur le cercle, mais il
+      // n'y a plus de triangle — le cours précise « si M ≠ A, B ».
+      st.className = 'status on';
+      st.textContent = 'M est confondu avec ' + (mA < mB ? 'A' : 'B') + ' : MA·MB = 0 et M appartient bien au cercle, '
+        + 'mais le triangle AMB est aplati — l’angle en M n’est pas défini.';
+    } else if (Math.abs(prod) <= tol) {
       st.className = 'status on';
       st.textContent = 'MA·MB ≈ 0 → M est sur le cercle de diamètre [AB] : le triangle AMB est rectangle en M (angle ≈ 90°).';
     } else if (prod < 0) {
@@ -1075,10 +1117,17 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     drawCir();
   });
   $('btnOutside').addEventListener('click', function () {
-    var th = Math.random() * 2 * Math.PI, r = R * (1.15 + 0.25 * Math.random());
-    M.x = clamp(PI.x + r * Math.cos(th), 12, 388);
-    M.y = clamp(PI.y + r * Math.sin(th) * 0.9, 12, 308);
-    if (Math.abs(dist(M, PI) - R) < 6) { M.y = clamp(M.y - 25, 12, 308); }
+    var th = Math.random() * 2 * Math.PI, r = R * (1.2 + 0.25 * Math.random());
+    M.x = PI.x + r * Math.cos(th);
+    M.y = PI.y + r * Math.sin(th) * 0.85;      // aplati pour rester dans le cadre
+    // M doit rester franchement HORS du cercle : on l'écarte radialement, jamais
+    // vers le bas (un décalage vertical pouvait le ramener à l'intérieur).
+    var d = dist(M, PI);
+    if (d < 1.12 * R) {
+      var k = 1.18 * R / (d || 1);
+      M.x = PI.x + (M.x - PI.x) * k;
+      M.y = PI.y + (M.y - PI.y) * k;
+    }
     drawCir();
   });
 
@@ -1127,7 +1176,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       '<p><b>1.</b> Formule avec les normes et l\u2019angle : \\(\\vec u\\cdot\\vec v=\\|\\vec u\\|\\,\\|\\vec v\\|\\cos(\\vec u,\\vec v).\\)</p>' +
       '<p><b>2.</b> On remplace : \\(\\vec u\\cdot\\vec v=' + nu + '\\times' + nv + '\\times\\cos ' + ag.d + '^\\circ.\\)</p>' +
       '<p><b>3.</b> Valeur exacte du cosinus : \\(\\cos ' + ag.d + '^\\circ=' + ag.tex + ',\\) donc ' +
-      '\\(\\vec u\\cdot\\vec v=' + nu * nv + '\\times' + ag.tex + '\\approx ' + fmt(ex1.ans, 2).replace(',', '{,}') + '.\\)</p>' +
+      '\\(\\vec u\\cdot\\vec v=' + nu * nv + '\\times' + parTex(ag.tex) + '\\approx ' + fmt(ex1.ans, 2).replace(',', '{,}') + '.\\)</p>' +
       '<p><b>Signe :</b> ' + (ag.d < 90 ? 'angle aigu, le produit scalaire est positif.'
         : (ag.d === 90 ? 'angle droit : les vecteurs sont orthogonaux, le produit scalaire est nul.'
         : 'angle obtus, \\(\\cos\\) est négatif donc le produit scalaire est négatif.')) + '</p>';
@@ -1167,7 +1216,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('ex2_correction').innerHTML =
       '<p><b>1.</b> Le côté cherché \\(' + cfg.opp + '\\) est <b>opposé</b> au sommet \\(' + cfg.v + '\\) : c\u2019est bien lui qui est seul à gauche.</p>' +
       '<p><b>2.</b> Al-Kashi : \\(' + cfg.opp + '^2=' + cfg.s1 + '^2+' + cfg.s2 + '^2-2\\times ' + cfg.s1 + '\\times ' + cfg.s2 + '\\times\\cos\\widehat{' + cfg.v + '}.\\)</p>' +
-      '<p><b>3.</b> On remplace : \\(' + cfg.opp + '^2=' + x * x + '+' + y * y + '-2\\times' + x + '\\times' + y + '\\times' + ag.tex + '.\\)</p>' +
+      '<p><b>3.</b> On remplace : \\(' + cfg.opp + '^2=' + x * x + '+' + y * y + '-2\\times' + x + '\\times' + y + '\\times' + parTex(ag.tex) + '.\\)</p>' +
       '<p><b>4.</b> Le terme \\(2\\times' + x + '\\times' + y + '\\times\\cos ' + ag.d + '^\\circ\\approx ' + fmt(2 * x * y * ag.c, 2).replace(',', '{,}') + '\\)' +
       (ag.c < 0 ? ' est <b>négatif</b> : on le soustrait, donc on <b>ajoute</b> sa valeur absolue.' : '.') + '</p>' +
       '<p><b>5.</b> \\(' + cfg.opp + '^2\\approx ' + fmt(carre, 2).replace(',', '{,}') + ',\\) donc \\(' + cfg.opp + '\\approx\\sqrt{' + fmt(carre, 2).replace(',', '{,}') + '}\\approx ' + fmt(ex2.ans, 1).replace(',', '{,}') + '.\\)</p>' +
@@ -1179,7 +1228,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   $('ex2_check').addEventListener('click', function () {
     var v = parseNum($('ex2_in').value);
     if (isNaN(v)) { setFeedback($('ex2_fb'), false, 'Écris une valeur décimale, par exemple 11,4.'); return; }
-    if (Math.abs(v - ex2.ans) <= 0.08) {
+    // On accepte l'arrondi au dixième demandé, ou une valeur non arrondie très proche
+    // de la valeur exacte — mais pas le dixième voisin, qui est une réponse fausse.
+    var bonDixieme = (Math.round(v * 10) === Math.round(ex2.ans * 10));
+    if (bonDixieme || Math.abs(v - ex2.ans) <= 0.05) {
       setFeedback($('ex2_fb'), true, 'Correct ! ' + ex2.cfg.opp + ' ≈ ' + fmt(ex2.ans, 1) + '.');
     } else if (Math.abs(v - ex2.carre) <= 0.5) {
       setFeedback($('ex2_fb'), false, 'Tu as trouvé ' + ex2.cfg.opp + '², pas ' + ex2.cfg.opp + ' : il reste à prendre la racine carrée.');
@@ -1236,7 +1288,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   $('ex3_check').addEventListener('click', function () {
     var v = parseNum($('ex3_in').value);
     if (isNaN(v)) { setFeedback($('ex3_fb'), false, 'Écris une valeur en degrés, par exemple 87.'); return; }
-    if (Math.abs(v - ex3.ans) <= 1.0) {
+    // On accepte l'arrondi au degré demandé, ou une valeur non arrondie proche de la
+    // valeur exacte — mais pas le degré voisin, qui n'est pas l'arrondi demandé.
+    var bonDegre = (Math.round(v) === Math.round(ex3.ans));
+    if (bonDegre || Math.abs(v - ex3.ans) <= 0.5) {
       setFeedback($('ex3_fb'), true, 'Correct ! L\u2019angle vaut environ ' + fmt(ex3.ans, 1) + '° (soit ' + Math.round(ex3.ans) + '°).');
     } else if (Math.abs(v - Math.abs(ex3.cosv)) <= 0.02 || Math.abs(v - ex3.cosv) <= 0.02) {
       setFeedback($('ex3_fb'), false, 'Tu as donné le cosinus, pas l\u2019angle : applique la touche cos⁻¹.');
@@ -1319,7 +1374,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     {
       q: 'Si l\u2019angle \\(\\widehat A\\) est obtus, alors :',
       choices: [
-        '\\(a^2<b^2+c^2\\)',
+        '\\(a^2&lt;b^2+c^2\\)',
         '\\(a^2=b^2+c^2\\)',
         '\\(a^2>b^2+c^2\\)',
         'on ne peut pas conclure'
