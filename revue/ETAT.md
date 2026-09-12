@@ -12,7 +12,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 1D | Espace : orthogonalité et distances | ✅ | 6 (dont 1 tolérance et 1 vérification trop permissive) |
 | 2A | Suites : génération et variations | ✅ | 12 (dont 1 tolérance sur 3 exercices et 1 correction cassée) |
 | 2B | Suites arithmétiques et géométriques | ✅ | 5 (dont 1 tolérance sur 3 exercices) |
-| 2C | Récurrence et limites | ⬜ | |
+| 2C | Récurrence et limites | ✅ | 13 (dont 2 générateurs produisant des énoncés faux) |
 | 3A | Nombre dérivé et tangente | ⬜ | |
 | 3B | Calculer une dérivée | ⬜ | |
 | 3C | Variations et extremums | ⬜ | |
