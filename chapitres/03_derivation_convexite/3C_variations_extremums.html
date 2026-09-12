@@ -356,8 +356,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     Le minimum est \(f(1) = 2,\) d'où \(x + \dfrac{1}{x} \ge 2\) pour tout \(x > 0.\)</p>
     <p><strong>Comparer deux courbes</strong> \(\mathcal{C}_f\) et \(\mathcal{C}_g\) : on étudie le signe de \(d(x) = f(x) - g(x).\)
     Là où \(d(x) > 0,\) \(\mathcal{C}_f\) est au-dessus de \(\mathcal{C}_g\) ; là où \(d(x) < 0,\) elle est en dessous ; \(d(x) = 0\) donne les points d'intersection.</p>
-    <p>Exemple : \(f(x) = x^3\) et \(g(x) = x^2\) donnent \(d(x) = x^3 - x^2 = x^2(x-1),\) du signe de \(x - 1.\)
-    Donc \(\mathcal{C}_f\) est en dessous de \(\mathcal{C}_g\) sur \(]-\infty\,;1[,\) au-dessus sur \(]1\,;+\infty[,\) et les courbes se coupent en \(x = 0\) et \(x = 1.\)</p>
+    <p>Exemple : \(f(x) = x^3\) et \(g(x) = x^2\) donnent \(d(x) = x^3 - x^2 = x^2(x-1).\) Le facteur \(x^2\) est positif et ne s'annule qu'en \(0,\)
+    donc \(d\) est du signe de \(x - 1,\) sauf en \(0\) où \(d\) s'annule sans changer de signe.
+    Donc \(\mathcal{C}_f\) est strictement en dessous de \(\mathcal{C}_g\) sur \(]-\infty\,;0[\) et sur \(]0\,;1[,\) au-dessus sur \(]1\,;+\infty[,\)
+    et les deux courbes se coupent en \(x = 0\) (où elles se touchent sans se traverser) et en \(x = 1.\)</p>
   </div>
 </section>
 
@@ -632,15 +634,27 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   }
   function facteur(r) { return '(x' + (r === 0 ? '' : signed(-r)) + ')'; }
   function coefTex(k) { return k === 1 ? '' : (k === -1 ? '-' : texNum(k)); }
+  // Produit k(x-r1)(x-r2) : une racine nulle donne le facteur « x », jamais « (x) » ni « (x + 0) ».
+  function prodTex(k, r1, r2) {
+    if (r1 === 0) return coefTex(k) + 'x' + facteur(r2);
+    if (r2 === 0) return coefTex(k) + 'x' + facteur(r1);
+    return coefTex(k) + facteur(r1) + facteur(r2);
+  }
   function nearlyEq(a, b) { return Math.abs(a - b) < 1e-6; }
+  // « = » si l'écriture décimale affichée est exacte, « ≈ » sinon (jamais d'égalité fausse)
+  function exactAt(v, d) { var q = Math.pow(10, d); return Math.abs(v * q - Math.round(v * q)) < 1e-9; }
+  function eqTex(v, d) { return (exactAt(v, d) ? ' = ' : ' \\approx ') + texNum(v, d); }
 
   /* ---------- tableau de variations en HTML ---------- */
   // xLab[i] : valeur de x au noeud i ; yLab[i] : valeur de f ; signs[i] : signe de f' sur l'intervalle i
-  function tvTable(xLab, yLab, signs) {
+  // ends (facultatif) : contenu de la ligne de \(f'\) aux deux bornes, quand \(f'\) s'y annule
+  function tvTable(xLab, yLab, signs, ends) {
     var r1 = '<tr><th>\\(x\\)</th>', r2 = '<tr><th>\\(f\'(x)\\)</th>', r3 = '<tr><th>\\(f(x)\\)</th>';
     for (var i = 0; i < xLab.length; i++) {
       r1 += '<th>' + xLab[i] + '</th>';
-      r2 += '<td>' + (i === 0 || i === xLab.length - 1 ? '' : '0') + '</td>';
+      var cell = (i === 0) ? (ends && ends[0] ? ends[0] : '')
+               : (i === xLab.length - 1 ? (ends && ends[1] ? ends[1] : '') : '0');
+      r2 += '<td>' + cell + '</td>';
       r3 += '<td>' + (yLab[i] === undefined ? '' : yLab[i]) + '</td>';
       if (i < signs.length) {
         r1 += '<th></th>';
@@ -782,13 +796,23 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var fpTex = polyTex([3 * a, 2 * b, c], ['x^2', 'x', '']);
     var txt = '<p>\\(f(x) = ' + polyTex([a, b, c, d], ['x^3', 'x^2', 'x', '']) + '\\) et \\(f\'(x) = ' + fpTex + '.\\)</p>';
     if (roots.length === 0) {
-      txt += '<p>\\(f\'\\) ne s\'annule pas sur \\([-4\\,;4]\\) : \\(f\\) y est ' +
-        (fp(0) > 0 ? 'croissante' : (fp(0) < 0 ? 'décroissante' : 'constante')) + '.</p>';
+      // f' peut être identiquement nulle, ou s'annuler exactement sur un bord de la fenêtre
+      var nulle = Math.abs(a) < 1e-12 && Math.abs(b) < 1e-12 && Math.abs(c) < 1e-12;
+      var bords = [XMIN, XMAX].filter(function (t) { return Math.abs(fp(t)) < 1e-9; });
+      if (nulle) {
+        txt += '<p>\\(f\'\\) est nulle sur tout \\([-4\\,;4]\\) : \\(f\\) y est <b>constante</b>.</p>';
+      } else {
+        txt += '<p>\\(f\'\\) ' + (bords.length === 0 ? 'ne s\'annule pas sur \\([-4\\,;4]\\)' :
+            's\'annule seulement en ' + bords.map(function (t) { return '\\(x = ' + t + '\\)'; }).join(' et ') +
+            ' (bord' + (bords.length > 1 ? 's' : '') + ' de la fenêtre) et garde un signe constant ailleurs') +
+          ' : \\(f\\) y est ' + (fp(0) > 0 ? 'croissante' : 'décroissante') + '.</p>';
+      }
     } else {
-      txt += '<p><b>Racines de \\(f\'\\)</b> : ' + roots.map(function (r) { return '\\(x = ' + texNum(r, 3) + '\\)'; }).join(' et ') + '.</p>';
+      txt += '<p><b>Racines de \\(f\'\\)</b> : ' + roots.map(function (r) { return '\\(x' + eqTex(r, 3) + '\\)'; }).join(' et ') + '.</p>';
       txt += '<p>' + nature.map(function (n) {
-        if (n.type === 'plat') return 'En \\(x = ' + texNum(n.x, 3) + '\\), \\(f\'\\) s\'annule <b>sans changer de signe</b> : pas d\'extremum.';
-        return (n.type === 'max' ? 'Maximum local' : 'Minimum local') + ' en \\(x = ' + texNum(n.x, 3) + '\\), valant \\(' + texNum(n.y, 2) + '.\\)';
+        if (n.type === 'plat') return 'En \\(x' + eqTex(n.x, 3) + '\\), \\(f\'\\) s\'annule <b>sans changer de signe</b> : pas d\'extremum.';
+        return (n.type === 'max' ? 'Maximum local' : 'Minimum local') + ' en \\(x' + eqTex(n.x, 3) + '\\), valant ' +
+          (exactAt(n.y, 2) ? '' : 'environ ') + '\\(' + texNum(n.y, 2) + '.\\)';
       }).join('<br>') + '</p>';
     }
     $('cub-read').innerHTML = txt;
@@ -802,8 +826,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var sm = fp((nodes[i] + nodes[i + 1]) / 2);
       signs.push(Math.abs(sm) < 1e-9 ? 0 : (sm > 0 ? 1 : -1));
     }
+    var bordsFen = [XMIN, XMAX].map(function (t) { return Math.abs(fp(t)) < 1e-9 ? '0' : ''; });
     $('cub-tv').innerHTML = '<p style="font-size:.9rem;color:#6b7280;margin:.2rem 0">Tableau de variations sur la fenêtre \\([-4\\,;4]\\) :</p>' +
-      tvTable(xLab, yLab, signs);
+      tvTable(xLab, yLab, signs, bordsFen);
     typeset($('cub-read')); typeset($('cub-tv'));
   }
 
@@ -872,10 +897,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     $('box-read').innerHTML =
       '<p>\\(V(x) = x(' + fmt(L, 0) + ' - 2x)(' + fmt(l, 0) + ' - 2x)\\) sur \\(]0\\,;' + texNum(xlim, 1) + '[.\\)</p>' +
-      '<p>Découpe actuelle : \\(x = ' + texNum(x, 1) + '\\) donne \\(V = ' + texNum(V(x), 1) + '\\) cm³ — boîte \\(' +
+      '<p>Découpe actuelle : \\(x = ' + texNum(x, 1) + '\\) donne \\(V' + eqTex(V(x), 1) + '\\) cm³ — boîte \\(' +
       texNum(L - 2 * x, 1) + ' \\times ' + texNum(l - 2 * x, 1) + ' \\times ' + texNum(x, 1) + '.\\)</p>' +
-      '<p><b>Optimum</b> : \\(V\'(x) = 12x^2 - ' + texNum(4 * s, 0) + 'x + ' + texNum(L * l, 0) + '\\) s\'annule en \\(x \\approx ' +
-      texNum(xstar, 2) + '\\), pour un volume maximal \\(V \\approx ' + texNum(vstar, 1) + '\\) cm³.</p>';
+      '<p><b>Optimum</b> : \\(V\'(x) = 12x^2 - ' + texNum(4 * s, 0) + 'x + ' + texNum(L * l, 0) + '\\) s\'annule en \\(x' +
+      eqTex(xstar, 2) + '\\), pour un volume maximal \\(V' + eqTex(vstar, 1) + '\\) cm³.</p>';
     typeset($('box-read'));
   }
 
@@ -935,7 +960,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     s = String(s === null || s === undefined ? '' : s).trim().toLowerCase();
     if (s === '') return null;
     if (s.indexOf('aucun') === 0 || s === '-' || s === 'non') return [];
-    return s.split(/[;\s]+/).map(parseNum).filter(function (v) { return !isNaN(v); }).sort(function (p, q) { return p - q; });
+    var lst = s.split(/[;\s]+/).map(parseNum).filter(function (v) { return !isNaN(v); }).sort(function (p, q) { return p - q; });
+    // aucune valeur lisible (« je ne sais pas », « x = 2 ») : on redemande au lieu de compter « aucun »
+    return lst.length ? lst : null;
   }
   function sameSet(a, b) {
     if (a === null || a.length !== b.length) return false;
@@ -955,7 +982,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     } else {
       var k = pick([1, -1, 2, -2]);
       var r1 = rnd(-4, 0), r2 = r1 + rnd(2, 4);
-      fpTex = coefTex(k) + facteur(r1) + facteur(r2);
+      fpTex = prodTex(k, r1, r2);
       roots = [r1, r2];
       fp = function (t) { return k * (t - r1) * (t - r2); };
     }
@@ -984,9 +1011,19 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var nodes = [A].concat(inside).concat([B]);
     var sg = [];
     for (var i = 0; i < nodes.length - 1; i++) { var v = fp((nodes[i] + nodes[i + 1]) / 2); sg.push(v > 0 ? 1 : -1); }
-    corr += tvTable(nodes.map(function (v) { return '\\(' + texNum(v, 1) + '\\)'; }), nodes.map(function () { return ''; }), sg);
+    // une borne de l'intervalle peut être une racine de f' : on l'écrit dans le tableau et on le dit
+    var bordsNuls = roots.filter(function (r) { return nearlyEq(r, A) || nearlyEq(r, B); }).sort(function (p, q) { return p - q; });
+    var ends = [bordsNuls.some(function (r) { return nearlyEq(r, A); }) ? '0' : '',
+                bordsNuls.some(function (r) { return nearlyEq(r, B); }) ? '0' : ''];
+    corr += tvTable(nodes.map(function (v) { return '\\(' + texNum(v, 1) + '\\)'; }), nodes.map(function () { return ''; }), sg, ends);
     if (inside.length === 0) {
-      corr += '<p><b>Conclusion.</b> \\(f\'\\) garde le signe « ' + (sm > 0 ? '+' : '−') + ' » sur tout l\'intervalle : \\(f\\) est <b>' +
+      var sgTxt = (sm > 0 ? '+' : '−');
+      var debut = bordsNuls.length === 0
+        ? '\\(f\'\\) garde le signe « ' + sgTxt + ' » sur tout l\'intervalle'
+        : '\\(f\'\\) ne s\'annule qu\'en ' + bordsNuls.map(function (r) { return '\\(x = ' + texNum(r, 1) + '\\)'; }).join(' et ') +
+          ' (borne' + (bordsNuls.length > 1 ? 's' : '') + ' de l\'intervalle) et garde le signe « ' + sgTxt +
+          (bordsNuls.length > 1 ? ' » entre les deux' : ' » sur tout le reste de l\'intervalle');
+      corr += '<p><b>Conclusion.</b> ' + debut + ' : \\(f\\) est <b>' +
         mots[sens] + '</b> sur ' + interval(A, B) + ', et elle n\'a aucun extremum à l\'intérieur.</p>';
     } else {
       corr += '<p><b>Conclusion.</b> \\(f\'\\) change de signe en \\(x = ' + texNum(inside[0], 1) + '\\) : \\(f\\) n\'est donc ni croissante ni décroissante sur ' +
@@ -1020,7 +1057,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var f = function (t) { return ((a * t + b) * t + c) * t + d; };
     var xmax = a > 0 ? r1 : r2, xmin = a > 0 ? r2 : r1;
     var fpTex = polyTex([3 * a, 2 * b, c], ['x^2', 'x', '']);
-    var facTex = coefTex(3 * a) + facteur(r1) + facteur(r2);
+    var facTex = prodTex(3 * a, r1, r2);
     var sg = a > 0 ? [1, -1, 1] : [-1, 1, -1];
     var tab = tvTable(
       ['\\(-\\infty\\)', '\\(' + r1 + '\\)', '\\(' + r2 + '\\)', '\\(+\\infty\\)'],
@@ -1187,7 +1224,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     function () {
       var r1 = rnd(-2, 1), r2 = r1 + rnd(2, 4);
-      return build('\\(f\'(x) = (x' + signed(-r1) + ')(x' + signed(-r2) + ').\\) Sur quels intervalles \\(f\\) est-elle croissante ?',
+      return build('\\(f\'(x) = ' + prodTex(1, r1, r2) + '.\\) Sur quels intervalles \\(f\\) est-elle croissante ?',
         ['\\(]-\\infty\\,;' + r1 + ']\\) et \\([' + r2 + '\\,;+\\infty[\\)', '\\([' + r1 + '\\,;' + r2 + ']\\) seulement',
          '\\(\\mathbb{R}\\) tout entier', 'aucun : \\(f\\) est décroissante'], 0,
         'Un produit de deux facteurs du premier degré est positif à l\'extérieur de ses racines.');
@@ -1206,14 +1243,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     function () {
       var k = rnd(1, 6);
-      return build('Soit \\(f(x) = x^3 + ' + (k) + 'x.\\) Que peut-on dire de \\(f\\) sur \\(\\mathbb{R}\\) ?',
+      return build('Soit \\(f(x) = ' + polyTex([1, k], ['x^3', 'x']) + '.\\) Que peut-on dire de \\(f\\) sur \\(\\mathbb{R}\\) ?',
         ['\\(f\\) est strictement croissante', '\\(f\\) admet un maximum', '\\(f\\) est décroissante puis croissante', '\\(f\\) est constante'], 0,
         '\\(f\'(x) = 3x^2 + ' + k + ' > 0\\) pour tout \\(x\\) : la dérivée ne s\'annule jamais.');
     },
     function () {
-      var a = rnd(1, 4), v = rnd(-4, 5);
+      var a = rnd(1, 4), v = rndNonZero(-4, 5);
       return build('\\(f\\) admet un minimum local en \\(x = ' + a + '\\), avec \\(f(' + a + ') = ' + v + '.\\) Quelle est l\'équation de la tangente en ce point ?',
-        ['\\(y = ' + v + '\\)', '\\(x = ' + a + '\\)', '\\(y = ' + a + 'x + ' + v + '\\)', '\\(y = 0\\)'], 0,
+        ['\\(y = ' + v + '\\)', '\\(x = ' + a + '\\)', '\\(y = ' + coefTex(a) + 'x' + signed(v) + '\\)', '\\(y = 0\\)'], 0,
         'En un extremum, \\(f\'(' + a + ') = 0\\) : la tangente est horizontale, d\'équation \\(y = f(' + a + ').\\)');
     },
     function () {

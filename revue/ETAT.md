@@ -15,7 +15,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 2C | Récurrence et limites | ✅ | 13 (dont 2 générateurs produisant des énoncés faux) |
 | 3A | Nombre dérivé et tangente | ✅ | 17 (dont 1 question de QCM insoluble) |
 | 3B | Calculer une dérivée | ⬜ | |
-| 3C | Variations et extremums | ⬜ | |
+| 3C | Variations et extremums | ✅ | 10 (dont 1 correction fautive sur la moitié des tirages) |
 | 3D | Dérivée d'une composée | ⬜ | |
 | 3E | Convexité | ⬜ | |
 | 4A | Fonctions de référence | ⬜ | |
