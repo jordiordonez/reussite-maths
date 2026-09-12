@@ -13,7 +13,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 2A | Suites : génération et variations | ✅ | 12 (dont 1 tolérance sur 3 exercices et 1 correction cassée) |
 | 2B | Suites arithmétiques et géométriques | ✅ | 5 (dont 1 tolérance sur 3 exercices) |
 | 2C | Récurrence et limites | ✅ | 13 (dont 2 générateurs produisant des énoncés faux) |
-| 3A | Nombre dérivé et tangente | ⬜ | |
+| 3A | Nombre dérivé et tangente | ✅ | 17 (dont 1 question de QCM insoluble) |
 | 3B | Calculer une dérivée | ⬜ | |
 | 3C | Variations et extremums | ⬜ | |
 | 3D | Dérivée d'une composée | ⬜ | |

@@ -413,7 +413,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <li><strong>Confondre \(f(a)\) et \(f'(a)\).</strong> \(f(a)\) est une <em>ordonnée</em> (où est la courbe), \(f'(a)\) est une <em>pente</em> (comment elle penche). Dans « la courbe passe par \(A(2\,;\,5)\) avec une tangente de pente \(-3\) », on a \(f(2) = 5\) et \(f'(2) = -3.\)</li>
       <li><strong>Faire tendre \(h\) vers \(0\) avant de simplifier.</strong> Cela donne \(\dfrac{0}{0}\) : on ne peut rien conclure. On simplifie par \(h\) d'abord, ensuite seulement on remplace.</li>
       <li><strong>Écrire \(y = f'(a)(x - a)\) en oubliant \(f(a).\)</strong> Cette droite passe par \((a\,;\,0)\) et non par le point de la courbe : la bonne formule est \(y = f(a) + f'(a)(x-a).\)</li>
-      <li><strong>Confondre pente et ordonnée à l'origine.</strong> Dans \(y = mx + p\), \(m = f'(a)\) est la pente, \(p\) est l'ordonnée du point d'abscisse \(0\) — en général \(p \neq f(a)\) (sauf si \(a = 0\)).</li>
+      <li><strong>Confondre pente et ordonnée à l'origine.</strong> Dans \(y = mx + p\), \(m = f'(a)\) est la pente, \(p\) est l'ordonnée du point d'abscisse \(0\) — en général \(p \neq f(a)\) (ils ne coïncident que si \(a = 0\) ou \(f'(a) = 0\)).</li>
       <li><strong>Oublier que \(h \neq 0.\)</strong> C'est précisément ce qui autorise la simplification par \(h.\)</li>
     </ul>
   </div>
@@ -608,12 +608,42 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (p !== 0) { s += addTerm(p); }
     return s;
   }
+  // Comme addTerm, mais un terme nul ne s'écrit pas.
+  function addTerm0(v) { return v === 0 ? '' : addTerm(v); }
   // Écriture de al x^2 + be x + ga
   function quadTex(al, be, ga) {
     var s = (al === 1) ? 'x^2' : (al === -1 ? '-x^2' : al + 'x^2');
     if (be !== 0) { s += (be < 0 ? ' - ' : ' + ') + (Math.abs(be) === 1 ? 'x' : Math.abs(be) + 'x'); }
     if (ga !== 0) { s += addTerm(ga); }
     return s;
+  }
+  // Somme de termes [coefficient, symbole, signeMultiplié] : pas de « + -5 », pas de « 1x », pas de terme nul.
+  function sumTex(terms) {
+    var out = '', started = false;
+    terms.forEach(function (t) {
+      var c = t[0], s = t[1] || '';
+      if (c === 0) { return; }
+      var abs = Math.abs(c);
+      var body = (s === '') ? String(abs) : ((abs === 1) ? s : (t[2] ? abs + ' \\times ' + s : abs + s));
+      if (!started) { out = (c < 0 ? '-' : '') + body; started = true; }
+      else { out += (c < 0 ? ' - ' : ' + ') + body; }
+    });
+    return started ? out : '0';
+  }
+  // Produit c × s, sans « 1 × » ni « -1 × ».
+  function mulTex(c, s) {
+    if (c === 0) { return '0'; }
+    if (c === 1) { return s; }
+    if (c === -1) { return '-' + s; }
+    return c + ' \\times ' + s;
+  }
+  // Fraction, sauf si le dénominateur vaut 1.
+  function fracTex(n, d) { return d === 1 ? n : '\\frac{' + n + '}{' + d + '}'; }
+  // Chaîne d'égalités sans étape répétée.
+  function chainTex(parts) {
+    var out = [];
+    parts.forEach(function (p) { if (out.length === 0 || out[out.length - 1] !== p) { out.push(p); } });
+    return out.join(' = ');
   }
 
   /* ---------- navigation sticky ---------- */
@@ -652,7 +682,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       aMin: 0.45, aMax: 3, a0: 1
     },
     racine: {
-      tex: 'f(x) = \\sqrt{x}', der: "f'(a) = \\dfrac{1}{2\\sqrt{x}}",
+      tex: 'f(x) = \\sqrt{x}', der: "f'(a) = \\dfrac{1}{2\\sqrt{a}}",
       f: function (x) { return Math.sqrt(x); },
       d: function (x) { return 1 / (2 * Math.sqrt(x)); },
       xMin: -0.2, xMax: 4.5, yMin: -0.5, yMax: 2.6, gy: 0.5,
@@ -753,8 +783,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('roGap').textContent = fmt(Math.abs(taux - dfa), 4);
     var p = fa - dfa * a;
     $('roTan').textContent = 'y = ' + fmt(dfa, 3) + ' x ' + (p < 0 ? '− ' : '+ ') + fmt(Math.abs(p), 3);
-    $('roDetail').innerHTML = 'A a pour coordonnées (' + fmt(a, 2) + ' ; ' + fmt(fa, 3) + '), B a pour coordonnées (' +
-      fmt(a + h, 2) + ' ; ' + fmt(fb, 3) + ') — taux = (' + fmt(fb, 3) + ' − ' + fmt(fa, 3) + ') ÷ ' + fmt(h, 3) + ' = ' + fmt(taux, 3) + '.';
+    // Les nombres affichés sont arrondis : le calcul refait sur ces arrondis ne tombe
+    // pas exactement sur le taux, d'où le « ≈ » (et non un « = » qui serait faux).
+    $('roDetail').innerHTML = 'A a pour coordonnées (' + fmt(a, 3) + ' ; ' + fmt(fa, 4) + '), B a pour coordonnées (' +
+      fmt(a + h, 3) + ' ; ' + fmt(fb, 4) + ') — taux = (' + fmt(fb, 4) + ' − ' + fmt(fa, 4) + ') ÷ ' + fmt(h, 4) + ' ≈ ' + fmt(taux, 3) + ' (valeurs arrondies).';
     $('aOut').textContent = fmt(a, 2);
     $('hOut').textContent = fmt(h, 3);
   }
@@ -848,17 +880,27 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       res = m;
       enonce = '<p>Soit \\(f\\) la fonction définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + linTex(m, p) + '.\\)</p>' +
         '<p>Calculer le taux de variation de \\(f\\) entre \\(x = ' + a + '\\) et \\(x = ' + b + '.\\)</p>';
-      correction = '<p>\\(f(' + par(a) + ') = ' + m + ' \\times ' + par(a) + addTerm(p) + ' = ' + (m * a + p) + '\\) et ' +
-        '\\(f(' + par(b) + ') = ' + m + ' \\times ' + par(b) + addTerm(p) + ' = ' + (m * b + p) + '.\\)</p>' +
-        '<p>\\[\\tau = \\frac{f(' + par(b) + ') - f(' + par(a) + ')}{' + par(b) + ' - ' + par(a) + '} = \\frac{' + (m * b + p) + ' - ' + par(m * a + p) + '}{' + (b - a) + '} = \\frac{' + (m * (b - a)) + '}{' + (b - a) + '} = ' + m + '.\\]</p>' +
+      correction = '<p>\\(f(' + a + ') = ' + mulTex(m, par(a)) + addTerm0(p) + ' = ' + (m * a + p) + '\\) et ' +
+        '\\(f(' + b + ') = ' + mulTex(m, par(b)) + addTerm0(p) + ' = ' + (m * b + p) + '.\\)</p>' +
+        '<p>\\[\\tau = ' + chainTex([
+          '\\frac{f(' + b + ') - f(' + a + ')}{' + par(b) + ' - ' + par(a) + '}',
+          fracTex((m * b + p) + ' - ' + par(m * a + p), b - a),
+          fracTex(String(m * (b - a)), b - a),
+          String(m)
+        ]) + '.\\]</p>' +
         '<p>Pour une fonction <strong>affine</strong>, le taux de variation vaut toujours le coefficient directeur \\(' + m + '\\), quels que soient les deux nombres choisis : la « courbe » est une droite, toutes ses sécantes sont la droite elle-même.</p>';
     } else {
       a = rnd(-4, 3); b = a + rnd(1, 5);
       res = a + b;
       enonce = '<p>Soit \\(f\\) la fonction carré, définie par \\(f(x) = x^2.\\)</p>' +
         '<p>Calculer le taux de variation de \\(f\\) entre \\(x = ' + a + '\\) et \\(x = ' + b + '.\\)</p>';
-      correction = '<p>\\(f(' + par(a) + ') = ' + par(a) + '^2 = ' + (a * a) + '\\) et \\(f(' + par(b) + ') = ' + par(b) + '^2 = ' + (b * b) + '.\\)</p>' +
-        '<p>\\[\\tau = \\frac{f(' + par(b) + ') - f(' + par(a) + ')}{' + par(b) + ' - ' + par(a) + '} = \\frac{' + (b * b) + ' - ' + par(a * a) + '}{' + (b - a) + '} = \\frac{' + (b * b - a * a) + '}{' + (b - a) + '} = ' + (a + b) + '.\\]</p>' +
+      correction = '<p>\\(f(' + a + ') = ' + par(a) + '^2 = ' + (a * a) + '\\) et \\(f(' + b + ') = ' + par(b) + '^2 = ' + (b * b) + '.\\)</p>' +
+        '<p>\\[\\tau = ' + chainTex([
+          '\\frac{f(' + b + ') - f(' + a + ')}{' + par(b) + ' - ' + par(a) + '}',
+          fracTex((b * b) + ' - ' + par(a * a), b - a),
+          fracTex(String(b * b - a * a), b - a),
+          String(a + b)
+        ]) + '.\\]</p>' +
         '<p>Contrôle malin : \\(\\dfrac{b^2 - a^2}{b - a} = \\dfrac{(b-a)(b+a)}{b-a} = a + b\\), soit ici \\(' + par(a) + ' + ' + par(b) + ' = ' + (a + b) + '.\\)</p>';
     }
     return { res: res, enonce: enonce, correction: correction };
@@ -873,21 +915,29 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var b = rndNonZero(-5, 5), c = rnd(-6, 6), a = rnd(-4, 4);
     var res = 2 * a + b;
     var fa = a * a + b * a + c;
+    var ah = '(' + par(a) + ' + h)';
+    var devel = sumTex([[1, 'h^2'], [res, 'h'], [fa, '']]);
+    var sansConst = sumTex([[1, 'h^2'], [res, 'h']]);
+    var apresH = sumTex([[1, 'h'], [res, '']]);
     return {
       res: res,
       enonce: '<p>Soit \\(f\\) la fonction définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + quadTex(1, b, c) + '.\\)</p>' +
-        '<p>En utilisant la <strong>définition</strong> du nombre dérivé, calculer \\(f\'(' + par(a) + ').\\)</p>',
-      correction: '<p><strong>1. On écrit \\(f(a+h)\\) avec \\(a = ' + par(a) + '.\\)</strong></p>' +
-        '<p>\\(f(' + par(a) + ' + h) = (' + par(a) + ' + h)^2 ' + (b < 0 ? '- ' + Math.abs(b) : '+ ' + b) + '(' + par(a) + ' + h)' + addTerm(c) + '\\)</p>' +
-        '<p>\\(= ' + (a * a) + ' + ' + (2 * a) + 'h + h^2 ' + addTerm(b * a) + ' + ' + b + 'h' + addTerm(c) + '\\)</p>' +
-        '<p>\\(= h^2 + ' + (2 * a + b) + 'h + ' + fa + '.\\)</p>' +
-        '<p><strong>2. On forme le taux de variation.</strong> Comme \\(f(' + par(a) + ') = ' + fa + '\\) :</p>' +
-        '<p>\\[\\tau(h) = \\frac{h^2 + ' + (2 * a + b) + 'h + ' + fa + ' - ' + par(fa) + '}{h} = \\frac{h^2 + ' + (2 * a + b) + 'h}{h}.\\]</p>' +
-        '<p>Les termes constants se sont bien éliminés : c\'est le signe que le calcul est juste.</p>' +
+        '<p>En utilisant la <strong>définition</strong> du nombre dérivé, calculer \\(f\'(' + a + ').\\)</p>',
+      correction: '<p><strong>1. On écrit \\(f(a+h)\\) avec \\(a = ' + a + '.\\)</strong></p>' +
+        '<p>\\(f(' + a + ' + h) = ' + sumTex([[1, ah + '^2'], [b, ah], [c, '']]) + '\\)</p>' +
+        '<p>\\(= ' + sumTex([[a * a, ''], [2 * a, 'h'], [1, 'h^2'], [b * a, ''], [b, 'h'], [c, '']]) + '\\)</p>' +
+        '<p>\\(= ' + devel + '.\\)</p>' +
+        '<p><strong>2. On forme le taux de variation.</strong> Comme \\(f(' + a + ') = ' + fa + '\\) :</p>' +
+        '<p>\\[\\tau(h) = ' + chainTex([
+          '\\frac{' + devel + (fa === 0 ? '' : ' - ' + par(fa)) + '}{h}',
+          '\\frac{' + sansConst + '}{h}'
+        ]) + '.\\]</p>' +
+        '<p>' + (fa === 0 ? 'Il n\'y avait pas de terme constant à éliminer ici, car \\(f(' + a + ') = 0.\\)'
+                          : 'Les termes constants se sont bien éliminés : c\'est le signe que le calcul est juste.') + '</p>' +
         '<p><strong>3. On factorise puis on simplifie par \\(h\\)</strong> (possible car \\(h \\neq 0\\)) :</p>' +
-        '<p>\\[\\tau(h) = \\frac{h\\,(h + ' + (2 * a + b) + ')}{h} = h + ' + (2 * a + b) + '.\\]</p>' +
-        '<p><strong>4. On fait tendre \\(h\\) vers \\(0\\) :</strong> \\(h + ' + (2 * a + b) + '\\) tend vers \\(' + res + '.\\) Donc</p>' +
-        '<p>\\[f\'(' + par(a) + ') = ' + res + '.\\]</p>' +
+        '<p>\\[\\tau(h) = \\frac{h\\,\\left(' + apresH + '\\right)}{h} = ' + apresH + '.\\]</p>' +
+        '<p><strong>4. On fait tendre \\(h\\) vers \\(0\\) :</strong> \\(' + apresH + '\\) tend vers \\(' + res + '.\\) Donc</p>' +
+        '<p>\\[f\'(' + a + ') = ' + res + '.\\]</p>' +
         '<p class="small">Contrôle : pour \\(f(x) = x^2 + bx + c\\) on a toujours \\(f\'(a) = 2a + b\\), ici \\(2 \\times ' + par(a) + addTerm(b) + ' = ' + res + '.\\)</p>'
     };
   }, function (e, v) {
@@ -902,22 +952,27 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var m = 2 * al * a + be;
     var fa = al * a * a + be * a + ga;
     var p = fa - m * a;   // = ga - al*a^2
+    var ah = '(' + par(a) + ' + h)';
     return {
       res: [m, p],
       enonce: '<p>Soit \\(f\\) la fonction définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + quadTex(al, be, ga) + '\\), et \\(\\mathcal{C}_f\\) sa courbe représentative.</p>' +
         '<p>Déterminer l\'équation réduite \\(y = mx + p\\) de la tangente à \\(\\mathcal{C}_f\\) au point d\'abscisse \\(a = ' + a + '.\\)</p>' +
         '<p class="small">On donne : pour cette fonction, \\(f\'(x) = ' + linTex(2 * al, be) + '\\) (résultat obtenu par la définition).</p>',
       correction: '<p><strong>1. Ordonnée du point de contact.</strong></p>' +
-        '<p>\\(f(' + par(a) + ') = ' + al + ' \\times ' + par(a) + '^2 ' + (be < 0 ? '- ' + Math.abs(be) : '+ ' + be) + ' \\times ' + par(a) + addTerm(ga) + ' = ' + fa + '\\), donc le point de contact est \\(A(' + a + '\\,;\\,' + fa + ').\\)</p>' +
-        '<p><strong>2. Pente.</strong> Le taux de variation en \\(' + par(a) + '\\) donne</p>' +
-        '<p>\\[\\tau(h) = \\frac{' + al + '(' + par(a) + '+h)^2 ' + (be < 0 ? '-' + Math.abs(be) : '+' + be) + '(' + par(a) + '+h) ' + (ga < 0 ? '-' + Math.abs(ga) : '+' + ga) + ' - (' + fa + ')}{h} = ' + al + 'h + ' + m + ',\\]</p>' +
-        '<p>qui tend vers \\(' + m + '\\) quand \\(h \\to 0.\\) Donc \\(f\'(' + par(a) + ') = ' + m + '.\\)</p>' +
+        '<p>\\(f(' + a + ') = ' + sumTex([[al, par(a) + '^2', true], [be, par(a), true], [ga, '']]) + ' = ' + fa + '\\), donc le point de contact est \\(A(' + a + '\\,;\\,' + fa + ').\\)</p>' +
+        '<p><strong>2. Pente.</strong> Le taux de variation en \\(' + a + '\\) donne</p>' +
+        '<p>\\[\\tau(h) = \\frac{' + sumTex([[al, ah + '^2'], [be, ah], [ga, '']]) + (fa === 0 ? '' : ' - ' + par(fa)) + '}{h} = ' + sumTex([[al, 'h'], [m, '']]) + ',\\]</p>' +
+        '<p>qui tend vers \\(' + m + '\\) quand \\(h \\to 0.\\) Donc \\(f\'(' + a + ') = ' + m + '.\\)</p>' +
         '<p><strong>3. Formule de la tangente.</strong></p>' +
-        '<p>\\[y = f(a) + f\'(a)(x - a) = ' + fa + ' + ' + par(m) + '(x - ' + par(a) + ').\\]</p>' +
+        '<p>\\[y = f(a) + f\'(a)(x - a) = ' + sumTex([[fa, ''], [m, '(x - ' + par(a) + ')']]) + '.\\]</p>' +
         '<p><strong>4. On développe.</strong></p>' +
-        '<p>\\[y = ' + fa + ' + ' + par(m) + 'x ' + (m * a > 0 ? '- ' + (m * a) : '+ ' + Math.abs(m * a)) + ' = ' + linTex(m, p) + '.\\]</p>' +
+        '<p>\\[y = ' + chainTex([
+          sumTex([[fa, ''], [m, '(x - ' + par(a) + ')']]),
+          sumTex([[fa, ''], [m, 'x'], [-m * a, '']]),
+          linTex(m, p)
+        ]) + '.\\]</p>' +
         '<p>Donc \\(m = ' + m + '\\) et \\(p = ' + p + '.\\)</p>' +
-        '<p class="small">Contrôle : pour \\(x = ' + par(a) + '\\), \\(' + m + ' \\times ' + par(a) + addTerm(p) + ' = ' + fa + ' = f(' + par(a) + ').\\) ✔</p>'
+        '<p class="small">Contrôle : pour \\(x = ' + par(a) + '\\), \\(' + mulTex(m, par(a)) + addTerm0(p) + ' = ' + fa + ' = f(' + a + ').\\) ✔</p>'
     };
   }, function (e, v) {
     var okM = Math.abs(v[0] - e.res[0]) < 1e-6, okP = Math.abs(v[1] - e.res[1]) < 1e-6;
@@ -992,7 +1047,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var p = fa - m * a;
       return build('La courbe de \\(f\\) passe par \\(A(' + a + '\\,;\\,' + fa + ')\\) et \\(f\'(' + a + ') = ' + m + '.\\) Quelle est l\'équation de la tangente en \\(A\\) ?',
         ['\\(y = ' + linTex(m, p) + '\\)', '\\(y = ' + linTex(m, fa) + '\\)', '\\(y = ' + linTex(fa, m) + '\\)', '\\(y = ' + linTex(m, -p) + '\\)'], 0,
-        '\\(y = ' + fa + ' + ' + par(m) + '(x - ' + a + ') = ' + linTex(m, p) + '.\\)');
+        '\\(y = ' + chainTex([sumTex([[fa, ''], [m, '(x - ' + a + ')']]), linTex(m, p)]) + '.\\)');
     },
     // 9. vitesse instantanée
     function () {
@@ -1023,7 +1078,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     // 12. fonction cube
     function () {
-      var a = pick([2, 3, 4]);
+      var a = pick([2, 4, 5]);   // 3 est exclu : 3a^2 et a^3 vaudraient tous deux 27
       return build('Pour \\(f(x) = x^3\\), la définition donne \\(f\'(a) = 3a^2.\\) Que vaut \\(f\'(' + a + ')\\) ?',
         [String(3 * a * a), String(a * a * a), String(3 * a), String(2 * a)], 0,
         '\\(3 \\times ' + a + '^2 = ' + (3 * a * a) + '.\\) La valeur \\(' + (a * a * a) + '\\) serait \\(f(' + a + ').\\)');
