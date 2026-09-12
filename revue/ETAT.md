@@ -23,7 +23,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 4C | Continuité et valeurs intermédiaires | ✅ | 4 (dont 1 affirmation fausse du cours) |
 | 5A | Fonction exponentielle | ✅ | 16 (dont 1 tolérance relative acceptant ±117) |
 | 5B | Fonctions avec exponentielle | ⬜ | |
-| 5C | Logarithme népérien | ⬜ | |
+| 5C | Logarithme népérien | ✅ | 17 (dont 600 000 égalités fausses affichées) |
 | 6A | Calcul vectoriel dans le plan | ✅ | 8 (dont 1 égalité fausse dans 57 % des configurations) |
 | 6B | Vecteurs de l'espace | ⬜ | |
 | 6C | Droites et plans de l'espace | ⬜ | |

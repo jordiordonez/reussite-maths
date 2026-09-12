@@ -451,7 +451,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <p>\(u_0=20\,000\), \(q=1{,}02\) (hausse de \(2\,\%\) par an), seuil \(S=30\,000.\) En 2B, on remplissait ce tableau jusqu'à trouver \(u_{20}\approx 29\,719\) puis \(u_{21}\approx 30\,313\), et on concluait \(n=21.\) Avec le logarithme :</p>
       <p>\(20\,000\times 1{,}02^{\,n} &gt; 30\,000\iff 1{,}02^{\,n} &gt; 1{,}5\iff n\ln 1{,}02 &gt; \ln 1{,}5.\)</p>
       <p>Comme \(1{,}02 &gt; 1\), \(\ln 1{,}02\approx 0{,}0198 &gt; 0\) : le sens est <strong>conservé</strong>, donc</p>
-      \[n &gt; \frac{\ln 1{,}5}{\ln 1{,}02}\approx \frac{0{,}4055}{0{,}0198}\approx 20{,}47.\]
+      \[n &gt; \frac{\ln 1{,}5}{\ln 1{,}02}\approx 20{,}47.\]
       <p>Le plus petit entier qui convient est \(n=21\) : <strong>la même réponse que le tableau, sans tableau</strong>. On peut encore vérifier avec les deux termes qui encadrent le seuil, c'est toujours une bonne habitude.</p>
     </div>
     <div class="warn"><strong>Cas décroissant.</strong> Si \(0 &lt; q &lt; 1\) (par exemple une décroissance radioactive), \(\ln q &lt; 0\) et la division <strong>renverse l'inégalité</strong> : \(q^{\,n} &lt; \dfrac{S}{u_0}\iff n &gt; \dfrac{\ln(S/u_0)}{\ln q}.\) On arrondit toujours à l'entier supérieur.</div>
@@ -662,6 +662,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\\,');
     return (neg ? '-' : '') + (p.length > 1 ? p[0] + '{,}' + p[1] : p[0]);
   }
+  /* l'écriture décimale à d décimales est-elle exacte ? */
+  function exact(x, d) {
+    d = (d === undefined) ? 0 : d;
+    return isFinite(x) && Math.abs(parseFloat(Math.abs(x).toFixed(d)) - Math.abs(x)) < 1e-12;
+  }
+  /* « = » si l'écriture est exacte, « ≈ » sinon */
+  function eqTex(x, d) { return (exact(x, d) ? ' = ' : ' \\approx ') + tex(x, d); }
+  /* préfixe « ≈ » dans une cellule de tableau quand l'écriture est arrondie */
+  function cellTex(x, d) { return (exact(x, d) ? '' : '≈\u00a0') + nf(x, d); }
   function parseNum(s) {
     if (s === null || s === undefined) return NaN;
     s = String(s).trim().replace(/\s+/g, '').replace(',', '.').replace(/−/g, '-');
@@ -766,11 +775,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     txt(s, ax + 8, ay + 4, 'A', { 'font-size': 12, fill: '#15803d', 'font-weight': '700' });
     txt(s, bx + 8, by - 3, 'A′', { 'font-size': 12, fill: '#15803d', 'font-weight': '700' });
 
+    var exLa = exact(la, 3);
     $('rVals').innerHTML =
-      'Sur la courbe de \\(\\ln\\) : \\(A\\left(' + tex(a, 2) + '\\,;\\,' + tex(la, 3) + '\\right).\\)<br>' +
-      'Sur la courbe de \\(\\exp\\) : \\(A\\,′\\left(' + tex(la, 3) + '\\,;\\,' + tex(a, 2) + '\\right).\\)';
+      'Sur la courbe de \\(\\ln\\) : \\(A\\left(' + tex(a, 2) + '\\,;\\,' + tex(la, 3) + '\\right)\\)<br>' +
+      'Sur la courbe de \\(\\exp\\) : \\(A\\,′\\left(' + tex(la, 3) + '\\,;\\,' + tex(a, 2) + '\\right)\\)' +
+      (exLa ? '.' : ' <span class="small">(ordonnée de \\(A\\) arrondie au millième)</span>');
     $('rConc').innerHTML =
-      '\\(\\ln(' + tex(a, 2) + ')=' + tex(la, 3) + '\\) et \\(\\mathrm e^{' + tex(la, 3) + '}=' + tex(Math.exp(la), 2) + '.\\) ' +
+      '\\(\\ln(' + tex(a, 2) + ')' + eqTex(la, 3) + '\\) et \\(\\mathrm e^{' + tex(la, 3) + '}' + (exLa ? ' = ' : ' \\approx ') + tex(a, 2) + '.\\) ' +
       'Les deux coordonnées sont <strong>échangées</strong> : \\(A\\) et \\(A\\,′\\) sont symétriques par rapport à la droite \\(y=x.\\)';
     typeset($('rVals')); typeset($('rConc'));
   }
@@ -822,12 +833,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     txt(s, cx + cw / 2, PY(-2) + 25, 'ln a + ln b', { 'text-anchor': 'middle', 'font-size': 9, fill: '#374151' });
 
     $('pEq').innerHTML =
-      '\\(\\ln a=\\ln ' + tex(a, 1) + '=' + tex(la, 3) + '\\) et \\(\\ln b=\\ln ' + tex(b, 1) + '=' + tex(lb, 3) + '\\), donc \\(\\ln a+\\ln b=' + tex(lsum, 3) + '.\\)<br>' +
-      '\\(\\ln(ab)=\\ln ' + tex(a * b, 2) + '=' + tex(lab, 3) + '.\\) Les deux nombres sont <strong>égaux</strong> : \\(\\ln(ab)=\\ln a+\\ln b.\\)';
+      '\\(\\ln a=\\ln ' + tex(a, 1) + eqTex(la, 3) + '\\) et \\(\\ln b=\\ln ' + tex(b, 1) + eqTex(lb, 3) + '\\), donc \\(\\ln a+\\ln b' + eqTex(lsum, 3) + '.\\)<br>' +
+      '\\(\\ln(ab)=\\ln ' + tex(a * b, 2) + eqTex(lab, 3) + '.\\) Les deux nombres sont <strong>égaux</strong> : \\(\\ln(ab)=\\ln a+\\ln b.\\)';
     var ecart = Math.abs(lplus - lsum);
-    $('pBad').innerHTML = ecart < 0.005
-      ? '\\(\\ln(a+b)=\\ln ' + tex(a + b, 1) + '=' + tex(lplus, 3) + '\\) : ici \\(a+b=ab\\), les deux coïncident <strong>par hasard</strong>. Bouge un curseur, l\'égalité disparaît aussitôt.'
-      : '\\(\\ln(a+b)=\\ln ' + tex(a + b, 1) + '=' + tex(lplus, 3) + '\\), alors que \\(\\ln a+\\ln b=' + tex(lsum, 3) + '.\\) Écart : \\(' + tex(ecart, 3) + '.\\) Il n\'existe <strong>aucune formule</strong> pour \\(\\ln(a+b).\\)';
+    $('pBad').innerHTML = Math.abs((a + b) - a * b) < 1e-9
+      ? '\\(\\ln(a+b)=\\ln ' + tex(a + b, 1) + eqTex(lplus, 3) + '\\) : ici \\(a+b=ab\\), les deux coïncident <strong>par hasard</strong>. Bouge un curseur, l\'égalité disparaît aussitôt.'
+      : '\\(\\ln(a+b)=\\ln ' + tex(a + b, 1) + eqTex(lplus, 3) + '\\), alors que \\(\\ln a+\\ln b' + eqTex(lsum, 3) + '.\\) Écart : \\(' + tex(ecart, 3) + '.\\) Il n\'existe <strong>aucune formule</strong> pour \\(\\ln(a+b).\\)';
     typeset($('pEq')); typeset($('pBad'));
   }
   $('pA').addEventListener('input', drawP);
@@ -844,11 +855,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var croiss = q > 1, n = null, deja = false, impossible = false;
     if (Math.abs(q - 1) < 1e-9) { impossible = true; }
-    else if (croiss && S <= u0) { deja = true; n = 0; }
-    else if (!croiss && S >= u0) { deja = true; n = 0; }
+    else if (croiss && S < u0) { deja = true; n = 0; }
+    else if (!croiss && S > u0) { deja = true; n = 0; }
     else {
       var u = u0, k = 0;
-      while (k < 5000 && (croiss ? u <= S : u >= S)) { u = u * q; k++; }
+      while (k < 5000 && (croiss ? u <= S * (1 + 1e-12) : u >= S * (1 - 1e-12))) { u = u * q; k++; }
       n = k;
     }
 
@@ -895,6 +906,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     var sens = croiss ? '>' : '<';
     var r = S / u0;
+    /* S/u0 n'est pas toujours décimal à 4 chiffres : on écrit alors la fraction exacte */
+    var rd = 0; while (rd < 4 && !exact(r, rd)) { rd++; }
+    var rTex = exact(r, rd) ? tex(r, rd) : '\\dfrac{' + tex(S) + '}{' + tex(u0) + '}';
+    var rLn = exact(r, rd) ? ' ' + tex(r, rd) : '\\!\\left(' + rTex + '\\right)';
     if (deja) {
       h = 'Ici \\(u_0=' + tex(u0) + '\\) franchit déjà le seuil \\(S=' + tex(S) + '\\) : la réponse est \\(n=0\\), sans calcul.';
       $('sSteps').innerHTML = h;
@@ -902,13 +917,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     } else {
       var quot = Math.log(r) / Math.log(q);
       h = '<strong>1.</strong> \\(u_n=u_0\\,q^{\\,n}=' + tex(u0) + '\\times ' + tex(q, 2) + '^{\\,n}.\\)<br>' +
-        '<strong>2.</strong> \\(' + tex(u0) + '\\times ' + tex(q, 2) + '^{\\,n} ' + sens + ' ' + tex(S) + '\\iff ' + tex(q, 2) + '^{\\,n} ' + sens + ' ' + tex(r, 4) + '\\) (on divise par \\(u_0>0\\)).<br>' +
-        '<strong>3.</strong> On applique \\(\\ln\\) (les deux membres sont \\(>0\\)) : \\(n\\ln ' + tex(q, 2) + ' ' + sens + ' \\ln ' + tex(r, 4) + '.\\)<br>' +
-        '<strong>4.</strong> \\(\\ln ' + tex(q, 2) + ' = ' + tex(Math.log(q), 4) + '\\) est ' +
+        '<strong>2.</strong> \\(' + tex(u0) + '\\times ' + tex(q, 2) + '^{\\,n} ' + sens + ' ' + tex(S) + '\\iff ' + tex(q, 2) + '^{\\,n} ' + sens + ' ' + rTex + '\\) (on divise par \\(u_0>0\\)).<br>' +
+        '<strong>3.</strong> On applique \\(\\ln\\) (les deux membres sont \\(>0\\)) : \\(n\\ln ' + tex(q, 2) + ' ' + sens + ' \\ln' + rLn + '.\\)<br>' +
+        '<strong>4.</strong> \\(\\ln ' + tex(q, 2) + eqTex(Math.log(q), 4) + '\\) est ' +
         (croiss ? '<strong>positif</strong> : le sens est conservé' : '<strong>négatif</strong> : le sens <strong>change</strong>') + ', donc ' +
-        '\\(n > \\dfrac{\\ln ' + tex(r, 4) + '}{\\ln ' + tex(q, 2) + '} \\approx ' + tex(quot, 2) + '.\\)';
+        '\\(n > \\dfrac{\\ln' + rLn + '}{\\ln ' + tex(q, 2) + '} \\approx ' + tex(quot, 2) + '.\\)';
       $('sSteps').innerHTML = h;
-      $('sConc').innerHTML = 'On arrondit à l\'entier supérieur : <strong>\\(n=' + n + '\\)</strong>. Vérification : \\(u_{' + (n - 1) + '}\\approx ' + tex(u0 * Math.pow(q, n - 1), 1) + '\\) et \\(u_{' + n + '}\\approx ' + tex(u0 * Math.pow(q, n), 1) + '.\\)';
+      $('sConc').innerHTML = 'Le plus petit entier <strong>strictement supérieur</strong> à ce quotient est <strong>\\(n=' + n + '\\)</strong>. Vérification : \\(u_{' + (n - 1) + '}' + eqTex(u0 * Math.pow(q, n - 1), 1) + '\\) et \\(u_{' + n + '}' + eqTex(u0 * Math.pow(q, n), 1) + '.\\)';
     }
     var t = '<div class="tablewrap"><table><tr><th>\\(n\\)</th>';
     var deb = Math.max(0, n - 2), fin = n + 1, j;
@@ -917,7 +932,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     for (j = deb; j <= fin; j++) {
       var vj = u0 * Math.pow(q, j);
       var hit = (croiss ? vj > S : vj < S);
-      t += '<td' + (hit ? ' style="background:#e3f5ec;font-weight:700"' : '') + '>' + nf(vj, 1) + '</td>';
+      t += '<td' + (hit ? ' style="background:#e3f5ec;font-weight:700"' : '') + '>' + cellTex(vj, 1) + '</td>';
     }
     t += '</tr></table></div><p class="small">C\'est le tableau de la fiche 2B : il ne sert plus qu\'à <strong>vérifier</strong> le résultat obtenu par le logarithme.</p>';
     $('sTable').innerHTML = t;
@@ -1023,7 +1038,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       a = rnd(2, 5); b = rnd(1, 9); p = rnd(1, 2);
       alpha = (Math.exp(p) - b) / a;
       return {
-        form: 'point', alpha: alpha,
+        form: 'point', alpha: alpha, tol: 0.005 + 1e-9, arrondi: true,
         enonce: '<p>Résoudre dans \\(\\mathbb R\\) l\'équation \\(\\ln(' + a + 'x+' + b + ') = ' + p + '.\\)</p>' +
           '<p class="small">Donne la forme de \\(S\\), puis \\(\\alpha\\) arrondi au centième.</p>',
         correction:
@@ -1094,14 +1109,17 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     m = rnd(1, 6); k = rnd(2, 3);
     var sol = m / (1 - k);
+    /* sol vaut -m ou -m/2 : l'écriture décimale est exacte, on écrit « = » */
+    var solTex = tex(sol, exact(sol, 0) ? 0 : 1);
+    var solDec = (frac(m, 1 - k) === solTex) ? '' : ' = ' + solTex;
     return {
       form: 'vide', alpha: null,
       enonce: '<p>Résoudre dans \\(\\mathbb R\\) l\'équation \\(\\ln(x-' + m + ') = \\ln(' + k + 'x).\\)</p>' +
         '<p class="small">Donne la forme de \\(S\\) (le champ \\(\\alpha\\) peut rester vide si \\(S\\) n\'a pas de borne).</p>',
       correction:
         '<p><strong>1. Ensemble de définition.</strong> Il faut <em>les deux</em> conditions : \\(x-' + m + ' > 0\\) et \\(' + k + 'x > 0\\), donc \\(x > ' + m + '\\) et \\(x > 0\\) : \\(D=\\left]' + m + '\\,;+\\infty\\right[.\\)</p>' +
-        '<p><strong>2. Stricte croissance.</strong> \\(x-' + m + ' = ' + k + 'x\\), donc \\(' + (1 - k) + 'x = ' + m + '\\), d\'où \\(x = ' + frac(m, 1 - k) + ' \\approx ' + tex(sol, 2) + '.\\)</p>' +
-        '<p><strong>3. Vérification — l\'étape décisive.</strong> \\(' + tex(sol, 2) + ' < 0\\), donc \\(x\\notin D\\) : cette valeur est <strong>rejetée</strong>. On ne peut pas calculer \\(\\ln(' + tex(sol, 2) + '-' + m + ').\\)</p>' +
+        '<p><strong>2. Stricte croissance.</strong> \\(x-' + m + ' = ' + k + 'x\\), donc \\(' + (1 - k) + 'x = ' + m + '\\), d\'où \\(x = ' + frac(m, 1 - k) + solDec + '.\\)</p>' +
+        '<p><strong>3. Vérification — l\'étape décisive.</strong> \\(' + solTex + ' < 0\\), donc \\(x\\notin D\\) : cette valeur est <strong>rejetée</strong>. On ne peut pas calculer \\(\\ln(' + solTex + '-' + m + ').\\)</p>' +
         '<div class="box green"><span class="lbl">Conclusion</span>\\(S=\\varnothing\\) : l\'équation n\'a aucune solution.</div>' +
         '<p class="small">Sans l\'étape 1, on aurait répondu \\(x=' + frac(m, 1 - k) + '\\), une solution qui n\'existe pas.</p>'
     };
@@ -1129,7 +1147,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (ex2cur.form === 'vide') { setFeedback(fb, true, 'Exact : la valeur trouvée n\'appartient pas à \\(D\\), elle est rejetée.'); return; }
     var v = parseNum($('ex2-rep').value);
     if (isNaN(v)) { setFeedback(fb, false, 'La forme est bonne. Écris maintenant la valeur de \\(\\alpha.\\)'); return; }
-    if (Math.abs(v - ex2cur.alpha) <= 0.011) { setFeedback(fb, true, 'Parfait : \\(' + FORMES[ex2cur.form].replace('\\alpha', tex(ex2cur.alpha, Math.abs(ex2cur.alpha - Math.round(ex2cur.alpha)) < 1e-9 ? 0 : 2)) + '.\\)'); return; }
+    if (Math.abs(v - ex2cur.alpha) <= (ex2cur.tol || 1e-9)) {
+      var aTex = tex(ex2cur.alpha, exact(ex2cur.alpha, 0) ? 0 : 2);
+      setFeedback(fb, true, ex2cur.arrondi
+        ? 'Parfait : \\(' + FORMES[ex2cur.form].replace('\\alpha', '\\alpha') + '\\) avec \\(\\alpha\\approx ' + aTex + '.\\)'
+        : 'Parfait : \\(' + FORMES[ex2cur.form].replace('\\alpha', aTex) + '.\\)');
+      return;
+    }
     setFeedback(fb, false, 'La forme est bonne, mais pas la valeur de \\(\\alpha.\\) Refais le calcul de la borne.');
   });
   $('ex2-rep').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('ex2-check').click(); });
@@ -1164,6 +1188,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var u = u0, n = 0;
     while (n < 3000 && (up ? u <= S : u >= S)) { u = u * q; n++; }
     var r = S / u0, lq = Math.log(q), quot = Math.log(r) / lq;
+    /* S/u0 n'est pas toujours décimal : sinon on écrit la fraction exacte */
+    var rd = 0; while (rd < 4 && !exact(r, rd)) { rd++; }
+    var rTex = exact(r, rd) ? tex(r, rd) : '\\dfrac{' + tex(S) + '}{' + tex(u0) + '}';
+    var rLn = exact(r, rd) ? ' ' + tex(r, rd) : '\\!\\left(' + rTex + '\\right)';
     var uav = u0 * Math.pow(q, n - 1), uap = u0 * Math.pow(q, n);
     var sens = up ? '>' : '<';
     var enonceTxt = ctx.d.replace('U0', nf(u0)).replace('T', fmt(t, 1));
@@ -1175,16 +1203,16 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '<p><strong>Étape 1 — modéliser.</strong> On note \\(u_n\\) la valeur après \\(n\\) ' + (ctx.pas === 'mois' ? 'mois' : ctx.pas + 's') + '. Chaque étape multiplie par \\(q = ' + (up ? '1+\\dfrac{' + fmt(t, 1) + '}{100}' : '1-\\dfrac{' + fmt(t, 1) + '}{100}') + ' = ' + tex(q, 3) + '\\) : la suite est <strong>géométrique</strong> de raison \\(q\\) et de premier terme \\(u_0 = ' + tex(u0) + '.\\)</p>' +
         '<p>Donc \\(u_n = ' + tex(u0) + '\\times ' + tex(q, 3) + '^{\\,n}.\\)</p>' +
         '<p><strong>Étape 2 — traduire le seuil.</strong> On cherche le plus petit entier \\(n\\) tel que \\(u_n ' + sens + ' ' + tex(S) + '\\) :</p>' +
-        '<p>\\(' + tex(u0) + '\\times ' + tex(q, 3) + '^{\\,n} ' + sens + ' ' + tex(S) + '\\iff ' + tex(q, 3) + '^{\\,n} ' + sens + ' ' + tex(r, 4) + '\\) (on divise par \\(u_0 > 0\\)).</p>' +
+        '<p>\\(' + tex(u0) + '\\times ' + tex(q, 3) + '^{\\,n} ' + sens + ' ' + tex(S) + '\\iff ' + tex(q, 3) + '^{\\,n} ' + sens + ' ' + rTex + '\\) (on divise par \\(u_0 > 0\\)).</p>' +
         '<p><strong>Étape 3 — passer au logarithme.</strong> Les deux membres sont strictement positifs et \\(\\ln\\) est strictement croissante :</p>' +
-        '<p>\\(n\\ln ' + tex(q, 3) + ' ' + sens + ' \\ln ' + tex(r, 4) + '.\\)</p>' +
-        '<p><strong>Étape 4 — diviser en surveillant le signe.</strong> \\(\\ln ' + tex(q, 3) + ' = ' + tex(lq, 4) + '\\) est ' +
+        '<p>\\(n\\ln ' + tex(q, 3) + ' ' + sens + ' \\ln' + rLn + '.\\)</p>' +
+        '<p><strong>Étape 4 — diviser en surveillant le signe.</strong> \\(\\ln ' + tex(q, 3) + eqTex(lq, 4) + '\\) est ' +
         (up ? '<strong>positif</strong> (car \\(q>1\\)) : le sens est conservé' : '<strong>négatif</strong> (car \\(0<q<1\\)) : <strong>le sens change</strong>') + ', donc</p>' +
-        '<p>\\(n > \\dfrac{\\ln ' + tex(r, 4) + '}{\\ln ' + tex(q, 3) + '} \\approx ' + tex(quot, 3) + '.\\)</p>' +
+        '<p>\\(n > \\dfrac{\\ln' + rLn + '}{\\ln ' + tex(q, 3) + '} \\approx ' + tex(quot, 3) + '.\\)</p>' +
         '<p><strong>Étape 5 — arrondir à l\'entier supérieur.</strong> Le plus petit entier strictement supérieur à \\(' + tex(quot, 3) + '\\) est \\(n = ' + n + '.\\)</p>' +
         '<div class="tablewrap"><table><tr><th>\\(n\\)</th><th>' + (n - 1) + '</th><th>' + n + '</th></tr>' +
-        '<tr><td class="lab">\\(u_n\\)</td><td>' + nf(uav, 1) + '</td><td style="background:#e3f5ec;font-weight:700">' + nf(uap, 1) + '</td></tr></table></div>' +
-        '<div class="box green"><span class="lbl">Conclusion</span>\\(u_{' + (n - 1) + '}\\approx ' + tex(uav, 1) + '\\) et \\(u_{' + n + '}\\approx ' + tex(uap, 1) + '\\) : la réponse est <strong>' + n + '</strong> ' + (ctx.pas === 'mois' ? 'mois' : ctx.pas + 's') + '.</div>' +
+        '<tr><td class="lab">\\(u_n\\)</td><td>' + cellTex(uav, 1) + '</td><td style="background:#e3f5ec;font-weight:700">' + cellTex(uap, 1) + '</td></tr></table></div>' +
+        '<div class="box green"><span class="lbl">Conclusion</span>\\(u_{' + (n - 1) + '}' + eqTex(uav, 1) + '\\) et \\(u_{' + n + '}' + eqTex(uap, 1) + '\\) : la réponse est <strong>' + n + '</strong> ' + (ctx.pas === 'mois' ? 'mois' : ctx.pas + 's') + '.</div>' +
         '<p class="small"><strong>Le lien avec la fiche 2B.</strong> Là-bas, sans logarithme, il fallait remplir le tableau \\(u_0, u_1, u_2, \\dots\\) (ou lancer une boucle <code>while</code>) jusqu\'à franchir le seuil — ' + n + ' calculs successifs. Ici, une seule division suffit ; le tableau ne sert plus qu\'à vérifier.</p>'
     };
   }, function (e, v) {
@@ -1264,9 +1292,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     function () {
       var n = rnd(1, 3);
-      return build('Que vaut \\(\\displaystyle\\lim_{x\\to+\\infty}\\frac{\\ln x}{x^{' + n + '}}\\) ?',
+      var xn = (n === 1) ? 'x' : 'x^{' + n + '}';
+      return build('Que vaut \\(\\displaystyle\\lim_{x\\to+\\infty}\\frac{\\ln x}{' + xn + '}\\) ?',
         ['\\(0\\)', '\\(+\\infty\\)', '\\(1\\)', 'il n\'y a pas de limite'], 0,
-        'Croissance comparée : \\(x^{' + n + '}\\) l\'emporte largement sur \\(\\ln x\\) en \\(+\\infty.\\)');
+        'Croissance comparée : \\(' + xn + '\\) l\'emporte largement sur \\(\\ln x\\) en \\(+\\infty.\\)');
     },
     function () {
       return build('Que vaut \\(\\displaystyle\\lim_{x\\to 0^{+}}x\\ln x\\) ?',
@@ -1286,7 +1315,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'Comme \\(' + k + '>0\\), on applique \\(\\ln\\) : \\(x=\\ln ' + k + '.\\)');
     },
     function () {
-      var p = rnd(3, 6);
+      /* p = 4 est exclu : 2\\ln 4 = 4\\ln 2, le distracteur serait une bonne réponse */
+      var p = pick([3, 5, 6]);
       return build('\\(\\ln\\!\\left(2^{' + p + '}\\right)\\) est égal à :',
         ['\\(' + p + '\\ln 2\\)', '\\((\\ln 2)^{' + p + '}\\)', '\\(\\ln ' + p + '\\times\\ln 2\\)', '\\(2\\ln ' + p + '\\)'], 0,
         '\\(\\ln(a^{n})=n\\ln a\\) : l\'exposant descend en facteur.');
