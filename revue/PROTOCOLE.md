@@ -56,3 +56,10 @@ Si tu ne trouves aucune anomalie, dis-le explicitement : c'est un résultat, pas
 Relance `python3 outils/check_fiche.py <fiche>` puis `python3 outils/check_site.py`. Si tu as modifié la fiche, vérifie aussi son rendu avec Playwright en 390 px : aucune erreur JavaScript, aucun débordement, aucune macro LaTeX non reconnue.
 
 Ne touche à aucun autre fichier que la fiche relue et son rapport.
+
+## Travail en parallèle avec un autre outil
+
+Un autre assistant peut produire de nouveaux chapitres pendant que la relecture avance. Deux règles pour ne rien casser :
+
+1. **Ne modifie que la fiche relue et son rapport.** Jamais `index.html`, `chapitres.html`, `ordre.md`, les sources de `outils/`, ni une autre fiche. Si une correction semble devoir toucher un fichier partagé, signale-la dans le rapport au lieu de l'appliquer.
+2. **Ne committe pas toi-même.** La session principale committe, avec `outils/commit_revue.sh`, qui n'indexe que les trois fichiers de la relecture et refuse de partir si autre chose s'est glissé dans l'index. Le travail en cours d'un autre outil reste ainsi sur le disque, non committé, jusqu'à ce que son auteur le termine.
