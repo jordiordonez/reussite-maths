@@ -340,7 +340,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       \[\frac{u(a+h)v(a+h)-u(a)v(a+h)+u(a)v(a+h)-u(a)v(a)}{h}.\]
       <p>On regroupe en deux morceaux :</p>
       \[v(a+h)\times\frac{u(a+h)-u(a)}{h}+u(a)\times\frac{v(a+h)-v(a)}{h}.\]
-      <p>Quand \(h\) tend vers \(0\) : le premier taux tend vers \(u'(a)\), le second vers \(v'(a)\), et \(v(a+h)\) tend vers \(v(a)\) car \(v\), étant dérivable, est continue en \(a\). Donc le taux de variation de \(f\) tend vers</p>
+      <p>Quand \(h\) tend vers \(0\) : le premier taux tend vers \(u'(a)\) et le second vers \(v'(a)\). Reste \(v(a+h)\) : en écrivant</p>
+      \[v(a+h)=v(a)+h\times\frac{v(a+h)-v(a)}{h},\]
+      <p>on voit que le second terme est le produit de \(h\) (qui tend vers \(0\)) par un taux qui tend vers \(v'(a)\) : il tend vers \(0\), donc \(v(a+h)\) tend vers \(v(a)\). Donc le taux de variation de \(f\) tend vers</p>
       \[u'(a)v(a)+u(a)v'(a),\]
       <p>ce qui prouve que \(uv\) est dérivable en \(a\) et que \((uv)'=u'v+uv'.\)</p>
     </details>
@@ -348,7 +350,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   </div>
 
   <div class="card">
-    <h3><span class="num">5</span>Dérivée d'un inverse et d'un quotient</h3>
+    <h3><span class="num">5</span>Dérivée d'un inverse et d'un quotient <span class="tag demo">à savoir démontrer</span></h3>
     <div class="key">
       <p>Si \(v\) est dérivable et <b>ne s'annule pas</b> sur \(I\) :</p>
       \[\left(\frac{1}{v}\right)'=-\frac{v'}{v^2} \qquad\text{et}\qquad \left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}.\]
@@ -359,6 +361,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p><b>Exemple 2 (quotient).</b> \(f(x)=\dfrac{2x+3}{x-1}\) : \(u=2x+3,\) \(u'=2,\) \(v=x-1,\) \(v'=1,\) donc</p>
     \[f'(x)=\frac{2(x-1)-(2x+3)\times 1}{(x-1)^2}=\frac{2x-2-2x-3}{(x-1)^2}=\frac{-5}{(x-1)^2}.\]
     <p>\(f\) est dérivable sur \(]-\infty\,;1[\cup\,]1\,;+\infty[\), c'est-à-dire sur \(\mathbb{R}\setminus\{1\}.\)</p>
+    <details class="demo">
+      <summary>Démonstration : la dérivée de la fonction inverse</summary>
+      <p>Soit \(f(x)=\dfrac1x\) et \(a\neq0.\) Pour \(h\neq0\) assez petit pour que \(a+h\neq0\) :</p>
+      \[\tau(h)=\frac{1}{h}\left(\frac{1}{a+h}-\frac1a\right)=\frac{1}{h}\times\frac{a-(a+h)}{a(a+h)}=\frac{1}{h}\times\frac{-h}{a(a+h)}.\]
+      <p>On simplifie par \(h\) (c'est permis, car \(h\neq0\)) :</p>
+      \[\tau(h)=\frac{-1}{a(a+h)}\xrightarrow[h\to 0]{}\frac{-1}{a^{2}}.\]
+      <p>Donc la fonction inverse est dérivable en tout réel \(a\neq0\) et \(f'(x)=-\dfrac{1}{x^{2}}.\) La formule \(\left(\frac1v\right)'=-\frac{v'}{v^{2}}\) s'en déduit avec le point 6 quand \(v(x)=ax+b\), et s'obtient en général avec la formule du quotient appliquée à \(u=1.\)</p>
+    </details>
     <div class="warn"><p><b>Deux pièges.</b> Le numérateur est \(u'v-uv'\) : le \(u'\) vient <b>en premier</b> et le signe est un <b>moins</b> (contrairement au produit). Et il faut <b>exclure les valeurs interdites</b> : là où \(v\) s'annule, \(f\) n'est ni définie ni dérivable.</p></div>
   </div>
 
@@ -390,7 +400,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p><b>La fonction valeur absolue</b> \(f(x)=|x|\) (courbe en « V »). Son taux de variation en \(0\) vaut</p>
     \[\frac{|0+h|-|0|}{h}=\frac{|h|}{h}=\begin{cases}1 &\text{si } h&gt;0,\\ -1 &\text{si } h&lt;0.\end{cases}\]
     <p>Les valeurs à droite et à gauche ne se rapprochent pas du même nombre : il n'y a pas de nombre dérivé en \(0.\) La courbe présente un <b>point anguleux</b>. En revanche \(f\) est dérivable sur \(]-\infty\,;0[\) (où \(f'=-1\)) et sur \(]0\,;+\infty[\) (où \(f'=1\)).</p>
-    <div class="ok"><p><b>À retenir :</b> une fonction peut être définie et continue en un point sans y être dérivable. « Pas dérivable » se voit sur la courbe : tangente verticale, ou angle.</p></div>
+    <div class="ok"><p><b>À retenir :</b> une fonction peut être définie en un point, et sa courbe y être tracée d'un seul trait, sans y être dérivable. « Pas dérivable » se voit sur la courbe : tangente verticale, ou angle.</p></div>
   </div>
 </section>
 
@@ -646,6 +656,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     else if (b < 0) s += ' - ' + (-b);
     return s;
   }
+  // Fraction signée : le signe sort du numérateur, jamais « -\dfrac{-3}{...} ».
+  function sfracTex(n, den) {
+    return (n < 0 ? '-' : '') + '\\dfrac{' + Math.abs(n) + '}{' + den + '}';
+  }
+  // « x » et non « x^{1} ».
+  function xpow(n) { return n === 1 ? 'x' : 'x^{' + n + '}'; }
+  // Coefficient écrit devant un bloc : ni « 1(...) », ni « -1(...) ».
+  function coefTex(k) { return k === 1 ? '' : (k === -1 ? '-' : String(k)); }
+  // Écriture décimale d'une réponse déjà donnée sous forme exacte : « \approx » seulement
+  // si l'arrondi n'est pas exact, et rien du tout si elle répète l'écriture exacte.
+  function approxTex(x, val) {
+    var d = fmt(x, 3).replace(',', '{,}');
+    if (d === String(val)) return '';
+    return (Math.abs(Number(d.replace('{,}', '.')) - x) < 1e-12 ? ' = ' : ' \\approx ') + d;
+  }
   // Fraction réduite en TeX, à partir de deux entiers.
   function fracTex(n, d) {
     if (d < 0) { n = -n; d = -d; }
@@ -723,6 +748,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   function linF(a, b) { return polyTex([{ c: a, t: 'x' }, { c: b, t: '' }]); }
   // Affichage à l'écran : virgule décimale et vrai signe moins.
   function fr(x) { return fmt(x, 2).replace('-', '−'); }
+  // Lecture d'une ordonnée ou d'une pente : « = » si l'affichage est exact, « ≈ » sinon.
+  // Deux décimales afficheraient « 0,00 » pour une pente de 0,004, en contradiction
+  // avec le message « la tangente monte » écrit juste à côté.
+  function frEq(x) {
+    var r = Math.round(x * 1000) / 1000;
+    return (Math.abs(r - x) < 1e-12 ? '= ' : '≈ ') + fmt(r, 3).replace('-', '−');
+  }
 
   var FAM = {
     quad: {
@@ -746,27 +778,47 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       f: function (p, x) { var q = p.c * x + p.d; return q === 0 ? NaN : (p.a * x + p.b) / q; },
       df: function (p, x) { var q = p.c * x + p.d; return q === 0 ? NaN : (p.a * p.d - p.b * p.c) / (q * q); },
       pole: function (p) { return p.c === 0 ? null : -p.d / p.c; },
-      texF: function (p) { return 'f(x) = \\dfrac{' + linF(p.a, p.b) + '}{' + linF(p.c, p.d) + '}.'; },
+      texF: function (p) {
+        // c = 0 : le dénominateur est la constante d — pas de division par 1 écrite.
+        if (p.c === 0) {
+          if (p.d === 1) return 'f(x) = ' + linF(p.a, p.b) + '.';
+          if (p.d === -1) return 'f(x) = -\\left(' + linF(p.a, p.b) + '\\right).';
+          return 'f(x) = \\dfrac{' + linF(p.a, p.b) + '}{' + tnum(p.d) + '}.';
+        }
+        return 'f(x) = \\dfrac{' + linF(p.a, p.b) + '}{' + linF(p.c, p.d) + '}.';
+      },
       texD: function (p) {
         var k = p.a * p.d - p.b * p.c;
         if (Math.abs(k) < 1e-12) return "f'(x) = 0\\ \\text{ (f est constante).}";
-        return "f'(x) = \\dfrac{" + tnum(k) + '}{\\left(' + linF(p.c, p.d) + '\\right)^{2}}.';
+        // c = 0 : f est affine, sa dérivée est le réel a/d, écrit sous forme exacte.
+        if (p.c === 0) return "f'(x) = " + fracTex(4 * p.a, 4 * p.d) + '.';
+        // k est un multiple de 0,125 : deux décimales l'arrondiraient (4,125 affiché « 4,13 »).
+        return "f'(x) = \\dfrac{" + tnum(k, 3) + '}{\\left(' + linF(p.c, p.d) + '\\right)^{2}}.';
       },
       dom: function (p) {
         if (p.c === 0) return 'f est dérivable sur \\(\\mathbb{R}\\) (le dénominateur ne s\u2019annule jamais).';
-        return 'Valeur interdite : \\(x = ' + tnum(-p.d / p.c) + '\\) ; f est dérivable ailleurs.';
+        // La valeur interdite est un rationnel exact : -d/c = (-2d)/(2c).
+        return 'Valeur interdite : \\(x = ' + fracTex(-2 * p.d, 2 * p.c) + '\\) ; f est dérivable ailleurs.';
       }
     },
     rac: {
       uses: { a: 1, b: 1, c: 0, d: 0 }, xmin: 0, xmax: 6,
       f: function (p, x) { return x < 0 ? NaN : p.a * Math.sqrt(x) + p.b; },
-      df: function (p, x) { return x <= 0 ? NaN : p.a / (2 * Math.sqrt(x)); },
+      // a = 0 : f est la constante b, dérivable en 0 comme partout ailleurs.
+      df: function (p, x) {
+        if (x < 0) return NaN;
+        if (Math.abs(p.a) < 1e-12) return 0;
+        return x <= 0 ? NaN : p.a / (2 * Math.sqrt(x));
+      },
       texF: function (p) { return 'f(x) = ' + polyTex([{ c: p.a, t: '\\sqrt{x}' }, { c: p.b, t: '' }]) + '.'; },
       texD: function (p) {
         if (Math.abs(p.a) < 1e-12) return "f'(x) = 0.";
         return "f'(x) = " + (p.a < 0 ? '-' : '') + '\\dfrac{' + tnum(Math.abs(p.a)) + '}{2\\sqrt{x}}.';
       },
-      dom: 'f est définie sur \\([0\\,;+\\infty[\\) mais dérivable seulement sur \\(]0\\,;+\\infty[.\\)'
+      dom: function (p) {
+        if (Math.abs(p.a) < 1e-12) return 'Ici \\(a = 0\\) : f est constante, donc dérivable sur \\([0\\,;+\\infty[\\) tout entier.';
+        return 'f est définie sur \\([0\\,;+\\infty[\\) mais dérivable seulement sur \\(]0\\,;+\\infty[.\\)';
+      }
     }
   };
 
@@ -876,8 +928,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var etat = m > 1e-9 ? 'good' : (m < -1e-9 ? 'bad' : 'flat');
       var mot = m > 1e-9 ? 'la tangente monte, f est croissante ici'
         : (m < -1e-9 ? 'la tangente descend, f est décroissante ici' : 'la tangente est horizontale');
-      readout = { cls: etat, html: '<b>x₀ = ' + fr(x0) + '</b> · f(x₀) = ' + fr(y0) +
-        ' · <b style="color:#c2410c">f ′(x₀) = ' + fr(m) + '</b> — ' + mot + '.' };
+      readout = { cls: etat, html: '<b>x₀ = ' + fr(x0) + '</b> · f(x₀) ' + frEq(y0) +
+        ' · <b style="color:#c2410c">f ′(x₀) ' + frEq(m) + '</b> — ' + mot + '.' };
     } else {
       readout = { cls: 'flat', html: '<b>x₀ = ' + fr(x0) + '</b> — f n’est pas définie ou pas dérivable en ce point.' };
     }
@@ -919,6 +971,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   syncSliders(); refreshOutputs(); drawViz();
 
   /* ================= EXERCICE 1 : dériver un polynôme de degré 3 ================= */
+  // « (3x^3)' = 3 × 3x^2 = 9x^2 », mais « (x^3)' = 3x^2 » : aucun facteur 1 écrit.
+  function ligneDeriv(k, tex, n, texD, res) {
+    var terme = polyTex([{ c: k, t: tex }]);
+    if (Math.abs(k) === 1) {
+      return '<li>\\(\\left(' + terme + '\\right)\u2032 = ' + polyTex([{ c: res, t: texD }]) + '\\)</li>';
+    }
+    return '<li>\\(\\left(' + terme + '\\right)\u2032 = ' + par(k) + '\\times ' + n + texD +
+      ' = ' + polyTex([{ c: res, t: texD }]) + '\\)</li>';
+  }
   wireExercise(1, function () {
     var a = rndNonZero(-4, 4), b = rnd(-6, 6), c = rnd(-8, 8), d = rnd(-9, 9);
     var A = 3 * a, B = 2 * b, C = c;
@@ -930,10 +991,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '<p>Sa dérivée s\u2019écrit \\(f\u2032(x) = \\alpha x^{2} + \\beta x + \\gamma.\\) Donne les trois coefficients (un entier par champ, \\(0\\) si le terme est absent).</p>',
       correction: '<p><b>1. Structure.</b> C\u2019est une <b>somme</b> de quatre termes : on dérive chaque terme séparément, et chaque coefficient sort par \\((ku)\u2032 = ku\u2032.\\)</p>' +
         '<p><b>2. Terme par terme</b>, avec \\((x^{n})\u2032 = nx^{n-1}\\) :</p><ul>' +
-        '<li>\\(\\left(' + polyTex([{ c: a, t: 'x^{3}' }]) + '\\right)\u2032 = ' + par(a) + '\\times 3x^{2} = ' + A + 'x^{2}\\)</li>' +
-        '<li>\\(\\left(' + polyTex([{ c: b, t: 'x^{2}' }]) + '\\right)\u2032 = ' + par(b) + '\\times 2x = ' + B + 'x\\)</li>' +
-        '<li>\\(\\left(' + polyTex([{ c: c, t: 'x' }]) + '\\right)\u2032 = ' + c + '\\)</li>' +
-        '<li>la constante \\(' + par(d) + '\\) a pour dérivée \\(0.\\)</li></ul>' +
+        ligneDeriv(a, 'x^{3}', 3, 'x^{2}', A) +
+        (b === 0 ? '<li>il n\u2019y a pas de terme en \\(x^{2}\\), donc \\(\\beta = 0\\)</li>'
+                 : ligneDeriv(b, 'x^{2}', 2, 'x', B)) +
+        (c === 0 ? '<li>il n\u2019y a pas de terme en \\(x\\), donc \\(\\gamma = 0\\)</li>'
+                 : '<li>\\(\\left(' + polyTex([{ c: c, t: 'x' }]) + '\\right)\u2032 = ' + c + '\\)</li>') +
+        (d === 0 ? '<li>il n\u2019y a pas de terme constant</li>'
+                 : '<li>la constante \\(' + par(d) + '\\) a pour dérivée \\(0.\\)</li>') + '</ul>' +
         '<p><b>3. Conclusion.</b> \\(f\\) est dérivable sur \\(\\mathbb{R}\\) et</p>\\[f\u2032(x) = ' + dx + '.\\]' +
         '<p><b>Contrôle :</b> \\(f\\) est de degré \\(3\\), donc \\(f\u2032\\) est bien de degré \\(2\\), et la constante a disparu.</p>'
     };
@@ -942,7 +1006,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var att = [e.A, e.B, e.C], faux = [];
     for (var i = 0; i < 3; i++) { if (Math.abs(v[i] - att[i]) > 1e-9) faux.push(noms[i]); }
     if (!faux.length) return { ok: true, msg: 'Parfait : \\(f\u2032(x) = ' + polyTex([{ c: e.A, t: 'x^{2}' }, { c: e.B, t: 'x' }, { c: e.C, t: '' }]) + '.\\)' };
-    if (Math.abs(v[0] - e.A / 3) < 1e-9 || Math.abs(v[1] - e.B / 2) < 1e-9) {
+    // « coefficients recopiés » : seulement si la valeur saisie est bien fausse.
+    // Quand \u03b2 = 0, la bonne réponse 0 vaut aussi B/2 : ce n'est pas une recopie.
+    var recopie = (Math.abs(v[0] - e.A / 3) < 1e-9 && Math.abs(v[0] - e.A) > 1e-9) ||
+                  (Math.abs(v[1] - e.B / 2) < 1e-9 && Math.abs(v[1] - e.B) > 1e-9);
+    if (recopie) {
       return { ok: false, msg: 'Tu as recopié les coefficients de \\(f\\) : il faut multiplier par l\u2019exposant avant de le baisser de 1.' };
     }
     return { ok: false, msg: 'Il reste une erreur sur ' + faux.join(' et ') + '.' };
@@ -952,20 +1020,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   var ARRONDI = '<p class="caption">Réponse en un nombre : entier, décimal (virgule ou point) ou fraction du type <code>-7/4</code>. Arrondis au centième si tu préfères le décimal.</p>';
 
   wireExercise(2, function () {
-    var type = pick(['prod', 'quot', 'rac']), a, b, c, d, k, x0, r, res, trap1, trap2, fx, dtex, etapes, val;
+    var type = pick(['prod', 'quot', 'rac']), a, b, c, d, k, x0, r, res, trap1, trap2, fx, etapes, val;
 
     if (type === 'prod') {
       a = rndNonZero(-3, 3); b = rnd(-5, 5); c = rnd(-5, 5); x0 = rnd(-3, 3);
       res = a * (x0 * x0 + c) + (a * x0 + b) * 2 * x0;
       trap1 = a * 2 * x0;
-      fx = '\\left(' + linTex(a, b) + '\\right)\\left(x^{2}' + (c >= 0 ? ' + ' + c : ' - ' + (-c)) + '\\right)';
-      dtex = '\\left(' + linTex(a, b) + '\\right)';
-      etapes = '<p><b>1. Structure :</b> c\u2019est un <b>produit</b>. On pose \\(u(x) = ' + linTex(a, b) + '\\) et \\(v(x) = x^{2}' + (c >= 0 ? ' + ' + c : ' - ' + (-c)) + '.\\)</p>' +
+      // Le second facteur passe par polyTex : quand c = 0 il s'écrit « x^{2} », jamais « x^{2} + 0 ».
+      var vt = polyTex([{ c: 1, t: 'x^{2}' }, { c: c, t: '' }]);
+      fx = '\\left(' + linTex(a, b) + '\\right)\\left(' + vt + '\\right)';
+      etapes = '<p><b>1. Structure :</b> c\u2019est un <b>produit</b>. On pose \\(u(x) = ' + linTex(a, b) + '\\) et \\(v(x) = ' + vt + '.\\)</p>' +
         '<p><b>2. Dérivées :</b> \\(u\u2032(x) = ' + a + '\\) et \\(v\u2032(x) = 2x.\\)</p>' +
         '<p><b>3. Formule \\((uv)\u2032 = u\u2032v + uv\u2032\\) :</b></p>' +
-        '\\[f\u2032(x) = ' + a + '\\left(x^{2}' + (c >= 0 ? ' + ' + c : ' - ' + (-c)) + '\\right) + \\left(' + linTex(a, b) + '\\right)\\times 2x.\\]' +
+        '\\[f\u2032(x) = ' + coefTex(a) + '\\left(' + vt + '\\right) + \\left(' + linTex(a, b) + '\\right)\\times 2x.\\]' +
         '<p><b>4. On remplace \\(x\\) par \\(' + par(x0) + '\\)</b> (on remplace seulement <b>à la fin</b>) :</p>' +
-        '\\[f\u2032(' + par(x0) + ') = ' + a + '\\times ' + par(x0 * x0 + c) + ' + ' + par(a * x0 + b) + '\\times ' + par(2 * x0) + ' = ' + (a * (x0 * x0 + c)) + ' + ' + par((a * x0 + b) * 2 * x0) + ' = ' + res + '.\\]';
+        '\\[f\u2032(' + x0 + ') = ' + a + '\\times ' + par(x0 * x0 + c) + ' + ' + par(a * x0 + b) + '\\times ' + par(2 * x0) + ' = ' + (a * (x0 * x0 + c)) + ' + ' + par((a * x0 + b) * 2 * x0) + ' = ' + res + '.\\]';
       val = String(res);
     } else if (type === 'quot') {
       a = rndNonZero(-3, 3); b = rnd(-5, 5); c = pick([1, 2, 3, -1, -2]);
@@ -980,11 +1049,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       etapes = '<p><b>1. Valeur interdite :</b> \\(' + linTex(c, d) + ' = 0\\) pour \\(x = ' + fracTex(-d, c) + '\\) ; on écarte ce réel.</p>' +
         '<p><b>2. Structure :</b> <b>quotient</b>. \\(u(x) = ' + linTex(a, b) + '\\), \\(u\u2032(x) = ' + a + '\\) ; \\(v(x) = ' + linTex(c, d) + '\\), \\(v\u2032(x) = ' + c + '.\\)</p>' +
         '<p><b>3. Formule \\(\\left(\\frac{u}{v}\\right)\u2032 = \\frac{u\u2032v - uv\u2032}{v^{2}}\\)</b> — le \\(u\u2032v\\) <b>en premier</b> :</p>' +
-        '\\[f\u2032(x) = \\dfrac{' + a + '\\left(' + linTex(c, d) + '\\right) - \\left(' + linTex(a, b) + '\\right)\\times ' + par(c) + '}{\\left(' + linTex(c, d) + '\\right)^{2}}.\\]' +
-        '<p><b>4. Le numérateur se simplifie</b> : les termes en \\(x\\) se compensent toujours, il reste la constante \\(' + a + '\\times' + par(d) + ' - ' + par(b) + '\\times' + par(c) + ' = ' + num + '\\) :</p>' +
+        '\\[f\u2032(x) = \\dfrac{' + coefTex(a) + '\\left(' + linTex(c, d) + '\\right) - \\left(' + linTex(a, b) + '\\right)\\times ' + par(c) + '}{\\left(' + linTex(c, d) + '\\right)^{2}}.\\]' +
+        '<p><b>4. Le numérateur se simplifie</b> : les termes en \\(x\\) se compensent toujours, il reste la constante \\(u\u2032v - uv\u2032 = ' + a + '\\times' + par(d) + ' - ' + par(b) + '\\times' + par(c) + ' = ' + num + '\\) :</p>' +
         '\\[f\u2032(x) = \\dfrac{' + num + '}{\\left(' + linTex(c, d) + '\\right)^{2}}.\\]' +
         '<p><b>5. En \\(x = ' + par(x0) + '\\) :</b> \\(' + linTex(c, d) + '\\) vaut \\(' + k + '\\), donc</p>' +
-        '\\[f\u2032(' + par(x0) + ') = \\dfrac{' + num + '}{' + par(k) + '^{2}} = \\dfrac{' + num + '}{' + (k * k) + '} = ' + fracTex(num, k * k) + '.\\]';
+        // Quand k = ±1, le dénominateur vaut 1 : on ne l'écrit pas.
+        '\\[f\u2032(' + x0 + ') = \\dfrac{' + num + '}{' + par(k) + '^{2}} = ' +
+        (k * k === 1 ? String(num) : '\\dfrac{' + num + '}{' + (k * k) + '} = ' + fracTex(num, k * k)) + '.\\]';
       val = fracTex(num, k * k);
     } else {
       a = rndNonZero(-3, 3); b = rnd(-6, 6); x0 = pick([1, 4, 9]); r = Math.sqrt(x0);
@@ -994,20 +1065,25 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       etapes = '<p><b>1. Structure :</b> <b>produit</b> de \\(u(x) = ' + linTex(a, b) + '\\) et de \\(v(x) = \\sqrt{x}.\\)</p>' +
         '<p><b>2. Dérivées :</b> \\(u\u2032(x) = ' + a + '\\) et \\(v\u2032(x) = \\dfrac{1}{2\\sqrt{x}}\\) (valable pour \\(x > 0\\)).</p>' +
         '<p><b>3. Formule du produit :</b></p>' +
-        '\\[f\u2032(x) = ' + a + '\\sqrt{x} + \\dfrac{' + linTex(a, b) + '}{2\\sqrt{x}}.\\]' +
+        '\\[f\u2032(x) = ' + coefTex(a) + '\\sqrt{x} + \\dfrac{' + linTex(a, b) + '}{2\\sqrt{x}}.\\]' +
         '<p><b>4. En \\(x = ' + x0 + '\\), \\(\\sqrt{' + x0 + '} = ' + r + '\\) :</b></p>' +
-        '\\[f\u2032(' + x0 + ') = ' + a + '\\times ' + r + ' + \\dfrac{' + (a * x0 + b) + '}{' + (2 * r) + '} = ' + fracTex(2 * a * r * r + a * x0 + b, 2 * r) + '.\\]';
+        '\\[f\u2032(' + x0 + ') = ' + (r === 1 ? String(a) : a + '\\times ' + r) +
+        (a * x0 + b === 0 ? '' : ' + \\dfrac{' + (a * x0 + b) + '}{' + (2 * r) + '}') +
+        ' = ' + fracTex(2 * a * r * r + a * x0 + b, 2 * r) + '.\\]';
       val = fracTex(2 * a * r * r + a * x0 + b, 2 * r);
     }
 
     return {
       res: res, trap1: trap1, trap2: trap2, type: type,
       enonce: '<p>Soit \\(f\\) définie par</p>\\[f(x) = ' + fx + '.\\]' +
-        '<p>Calcule \\(f\u2032(x)\\), puis donne la valeur de \\(f\u2032(' + par(x0) + ').\\)</p>' + ARRONDI,
-      correction: etapes + '<p><b>Réponse :</b> \\(f\u2032(' + par(x0) + ') = ' + val + ' \\approx ' + fmt(res, 3) + '.\\)</p>'
+        '<p>Calcule \\(f\u2032(x)\\), puis donne la valeur de \\(f\u2032(' + x0 + ').\\)</p>' + ARRONDI,
+      correction: etapes + '<p><b>Réponse :</b> \\(f\u2032(' + x0 + ') = ' + val + approxTex(res, val) + '.\\)</p>'
     };
   }, function (e, v) {
-    var tol = 5e-3 * Math.max(1, Math.abs(e.res));
+    // L'énoncé autorise l'arrondi au centième : on accepte au plus un demi-rang
+    // d'écart (0,005), jamais davantage — une tolérance relative féliciterait une
+    // réponse fausse dès que |f'(x0)| dépasse 1.
+    var tol = 5e-3 + 1e-9;
     if (Math.abs(v - e.res) <= tol) return { ok: true, msg: 'Correct : \\(f\u2032 = ' + fmt(e.res, 3) + '\\) en ce point.' };
     if (isFinite(e.trap1) && Math.abs(v - e.trap1) <= tol) {
       return { ok: false, msg: e.type === 'quot'
@@ -1033,7 +1109,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '\\[f\u2032(x) = ' + a + '\\times 3\\left(' + linTex(a, b) + '\\right)^{2} = ' + (3 * a) + '\\left(' + linTex(a, b) + '\\right)^{2}.\\]' +
         '<p><b>3. Le facteur \\(a = ' + a + '\\) est indispensable</b> : sans lui on trouverait ' + (3 * t * t) + ' au lieu de ' + res + '.</p>' +
         '<p><b>4. En \\(x = ' + par(x0) + '\\) :</b> \\(' + linTex(a, b) + '\\) vaut \\(' + t + '\\), donc</p>' +
-        '\\[f\u2032(' + par(x0) + ') = ' + (3 * a) + '\\times ' + par(t) + '^{2} = ' + (3 * a) + '\\times ' + (t * t) + ' = ' + res + '.\\]';
+        '\\[f\u2032(' + x0 + ') = ' + (3 * a) + '\\times ' + par(t) + '^{2} = ' +
+        (t * t === 1 ? String(res) : (3 * a) + '\\times ' + (t * t) + ' = ' + res) + '.\\]';
       val = String(res);
     } else if (type === 'sqrt') {
       a = pick([2, 3, -2, -3, 4, 5]); t = pick([1, 4, 9, 16]); x0 = rnd(-3, 4); b = t - a * x0;
@@ -1045,7 +1122,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '<p>Cette écriture n\u2019est valable que là où \\(' + linTex(a, b) + ' > 0.\\)</p>' +
         '<p><b>3. Le facteur \\(a = ' + a + '\\) ne s\u2019oublie pas</b> : la dérivée de \\(\\sqrt{' + linTex(a, b) + '}\\) n\u2019est pas \\(\\dfrac{1}{2\\sqrt{' + linTex(a, b) + '}}.\\)</p>' +
         '<p><b>4. En \\(x = ' + par(x0) + '\\) :</b> \\(' + linTex(a, b) + '\\) vaut \\(' + t + '\\), et \\(\\sqrt{' + t + '} = ' + Math.sqrt(t) + '\\), donc</p>' +
-        '\\[f\u2032(' + par(x0) + ') = \\dfrac{' + a + '}{2\\times ' + Math.sqrt(t) + '} = ' + fracTex(a, 2 * Math.sqrt(t)) + '.\\]';
+        '\\[f\u2032(' + x0 + ') = ' + sfracTex(a, Math.sqrt(t) === 1 ? '2' : '2\\times ' + Math.sqrt(t)) +
+        (Math.sqrt(t) === 1 ? '' : ' = ' + fracTex(a, 2 * Math.sqrt(t))) + '.\\]';
       val = fracTex(a, 2 * Math.sqrt(t));
     } else {
       a = pick([2, 3, -2, -3, 4, -4, 5]); t = pick([1, -1, 2, -2, 3, -3]); x0 = rnd(-3, 3); b = t - a * x0;
@@ -1053,21 +1131,25 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       fx = '\\dfrac{1}{' + linTex(a, b) + '}';
       etapes = '<p><b>1. Structure :</b> \\(g(ax+b)\\) avec \\(g(t) = \\dfrac{1}{t}\\), \\(a = ' + a + '\\) et \\(b = ' + b + '.\\) (On peut aussi voir un <b>inverse</b> et utiliser \\(\\left(\\frac1v\\right)\u2032 = -\\frac{v\u2032}{v^{2}}\\) : même résultat.)</p>' +
         '<p><b>2. Formule :</b> \\(g\u2032(t) = -\\dfrac{1}{t^{2}}\\), donc</p>' +
-        '\\[f\u2032(x) = ' + a + '\\times\\left(-\\dfrac{1}{\\left(' + linTex(a, b) + '\\right)^{2}}\\right) = -\\dfrac{' + a + '}{\\left(' + linTex(a, b) + '\\right)^{2}}.\\]' +
+        '\\[f\u2032(x) = ' + a + '\\times\\left(-\\dfrac{1}{\\left(' + linTex(a, b) + '\\right)^{2}}\\right) = ' + sfracTex(-a, '\\left(' + linTex(a, b) + '\\right)^{2}') + '.\\]' +
         '<p><b>3. Deux pièges ici :</b> le <b>signe moins</b> et le <b>facteur \\(' + a + '\\)</b>. Le dénominateur, lui, reste au carré (donc toujours positif).</p>' +
         '<p><b>4. En \\(x = ' + par(x0) + '\\) :</b> \\(' + linTex(a, b) + '\\) vaut \\(' + t + '\\), donc</p>' +
-        '\\[f\u2032(' + par(x0) + ') = -\\dfrac{' + a + '}{' + par(t) + '^{2}} = -\\dfrac{' + a + '}{' + (t * t) + '} = ' + fracTex(-a, t * t) + '.\\]';
+        '\\[f\u2032(' + x0 + ') = ' + sfracTex(-a, par(t) + '^{2}') + ' = ' +
+        (t * t === 1 ? fracTex(-a, 1) : sfracTex(-a, String(t * t)) + ' = ' + fracTex(-a, t * t)) + '.\\]';
       val = fracTex(-a, t * t);
     }
 
     return {
       res: res, trap1: trap1, trap2: trap2,
       enonce: '<p>Soit \\(f\\) définie par</p>\\[f(x) = ' + fx + '.\\]' +
-        '<p>Reconnais la forme \\(g(ax+b)\\), calcule \\(f\u2032(x)\\), puis donne \\(f\u2032(' + par(x0) + ').\\)</p>' + ARRONDI,
-      correction: etapes + '<p><b>Réponse :</b> \\(f\u2032(' + par(x0) + ') = ' + val + ' \\approx ' + fmt(res, 3) + '.\\)</p>'
+        '<p>Reconnais la forme \\(g(ax+b)\\), calcule \\(f\u2032(x)\\), puis donne \\(f\u2032(' + x0 + ').\\)</p>' + ARRONDI,
+      correction: etapes + '<p><b>Réponse :</b> \\(f\u2032(' + x0 + ') = ' + val + approxTex(res, val) + '.\\)</p>'
     };
   }, function (e, v) {
-    var tol = 5e-3 * Math.max(1, Math.abs(e.res));
+    // L'énoncé autorise l'arrondi au centième : on accepte au plus un demi-rang
+    // d'écart (0,005), jamais davantage — une tolérance relative féliciterait une
+    // réponse fausse dès que |f'(x0)| dépasse 1.
+    var tol = 5e-3 + 1e-9;
     if (Math.abs(v - e.res) <= tol) return { ok: true, msg: 'Correct — et le facteur \\(a\\) est bien là.' };
     if (Math.abs(v - e.trap1) <= tol) return { ok: false, msg: 'Tu as <b>oublié le facteur \\(a\\)</b> : \\(\\big(g(ax+b)\\big)\u2032 = a\\,g\u2032(ax+b).\\)' };
     if (Math.abs(v - e.trap2) <= tol) return { ok: false, msg: 'Presque : vérifie le signe et la puissance du dénominateur.' };
@@ -1097,7 +1179,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     function () {
       var n = rnd(2, 5);
       return build('Quelle est la dérivée de \\(f(x) = \\dfrac{1}{x^{' + n + '}}\\) sur \\(\\mathbb{R}^{*}\\) ?',
-        ['\\(-\\dfrac{' + n + '}{x^{' + (n + 1) + '}}\\)', '\\(\\dfrac{' + n + '}{x^{' + (n + 1) + '}}\\)', '\\(-\\dfrac{1}{' + n + 'x^{' + (n - 1) + '}}\\)', '\\(-\\dfrac{' + n + '}{x^{' + (n - 1) + '}}\\)'], 0,
+        ['\\(-\\dfrac{' + n + '}{x^{' + (n + 1) + '}}\\)', '\\(\\dfrac{' + n + '}{x^{' + (n + 1) + '}}\\)', '\\(-\\dfrac{1}{' + n + xpow(n - 1) + '}\\)', '\\(-\\dfrac{' + n + '}{' + xpow(n - 1) + '}\\)'], 0,
         'On écrit \\(x^{-' + n + '}\\) puis \\((x^{n})\u2032 = nx^{n-1}\\) : \\(-' + n + 'x^{-' + (n + 1) + '}.\\)');
     },
     // 3. inverse
@@ -1114,7 +1196,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     // 5. piège du produit
     function () {
-      var a = rndNonZero(-4, 4), b = rnd(-5, 5), c = rnd(-6, 6);
+      // c non nul : sinon le terme constant a*c disparaît et deux options deviennent identiques,
+      // la quatrième (3ax^2 + 2bx - ac) devenant elle aussi une réponse correcte.
+      var a = rndNonZero(-4, 4), b = rnd(-5, 5), c = rndNonZero(-6, 6);
       var v = 'x^{2}' + (c >= 0 ? ' + ' + c : ' - ' + (-c));
       return build('Soit \\(f(x) = \\left(' + linTex(a, b) + '\\right)\\left(' + v + '\\right).\\) Que vaut \\(f\u2032(x)\\) ?',
         ['\\(' + polyTex([{ c: 3 * a, t: 'x^{2}' }, { c: 2 * b, t: 'x' }, { c: a * c, t: '' }]) + '\\)',
@@ -1131,7 +1215,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var den = '\\left(' + linTex(c, d) + '\\right)^{2}';
       return build('Soit \\(f(x) = \\dfrac{' + linTex(a, b) + '}{' + linTex(c, d) + '}.\\) Que vaut \\(f\u2032(x)\\) ?',
         ['\\(\\dfrac{' + num + '}{' + den + '}\\)', '\\(\\dfrac{' + (-num) + '}{' + den + '}\\)',
-          '\\(\\dfrac{' + num + '}{' + linTex(c, d) + '}\\)', '\\(\\dfrac{' + a + '}{' + c + '}\\)'], 0,
+          '\\(\\dfrac{' + num + '}{' + linTex(c, d) + '}\\)', '\\(' + fracTex(a, c) + '\\)'], 0,
         'Le numérateur est \\(u\u2032v - uv\u2032\\) (dans cet ordre) et le dénominateur est \\(v^{2}.\\)');
     },
     // 7. facteur a, puissance
@@ -1147,7 +1231,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var a = pick([2, 3, 5, -2, -3]), b = rndNonZero(-6, 6);
       var r = '\\sqrt{' + linTex(a, b) + '}';
       return build('Soit \\(f(x) = ' + r + '.\\) Que vaut \\(f\u2032(x)\\) là où c\u2019est défini ?',
-        ['\\(\\dfrac{' + a + '}{2' + r + '}\\)', '\\(\\dfrac{1}{2' + r + '}\\)', '\\(\\dfrac{' + a + '}{' + r + '}\\)', '\\(2' + a + r + '\\)'], 0,
+        ['\\(' + sfracTex(a, '2' + r) + '\\)', '\\(\\dfrac{1}{2' + r + '}\\)', '\\(' + sfracTex(a, r) + '\\)', '\\(' + (2 * a) + r + '\\)'], 0,
         'On multiplie la dérivée de \\(\\sqrt{\\ }\\) par le facteur \\(a = ' + a + '.\\)');
     },
     // 9. facteur a, inverse
@@ -1155,14 +1239,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var a = pick([2, 3, 4, -2, -3]), b = rndNonZero(-5, 5);
       var den = '\\left(' + linTex(a, b) + '\\right)^{2}';
       return build('Soit \\(f(x) = \\dfrac{1}{' + linTex(a, b) + '}.\\) Que vaut \\(f\u2032(x)\\) ?',
-        ['\\(-\\dfrac{' + a + '}{' + den + '}\\)', '\\(\\dfrac{' + a + '}{' + den + '}\\)', '\\(-\\dfrac{1}{' + den + '}\\)', '\\(-\\dfrac{' + a + '}{' + linTex(a, b) + '}\\)'], 0,
+        ['\\(' + sfracTex(-a, den) + '\\)', '\\(' + sfracTex(a, den) + '\\)', '\\(-\\dfrac{1}{' + den + '}\\)', '\\(' + sfracTex(-a, linTex(a, b)) + '\\)'], 0,
         '\\(\\left(\\frac1v\\right)\u2032 = -\\frac{v\u2032}{v^{2}}\\) avec \\(v\u2032 = ' + a + '\\) : le signe moins <b>et</b> le facteur \\(a.\\)');
     },
     // 10. multiple par un réel
     function () {
       var k = pick([2, 3, 5, 7, -4, -6]), n = rnd(2, 4);
       return build('Quelle est la dérivée de \\(f(x) = ' + k + 'x^{' + n + '}\\) ?',
-        ['\\(' + (k * n) + 'x^{' + (n - 1) + '}\\)', '\\(' + k + 'x^{' + (n - 1) + '}\\)', '\\(' + n + 'x^{' + (n - 1) + '}\\)', '\\(' + (k * n) + 'x^{' + n + '}\\)'], 0,
+        ['\\(' + (k * n) + xpow(n - 1) + '\\)', '\\(' + k + xpow(n - 1) + '\\)', '\\(' + n + xpow(n - 1) + '\\)', '\\(' + (k * n) + 'x^{' + n + '}\\)'], 0,
         '\\((ku)\u2032 = ku\u2032\\) : la constante reste, et l\u2019exposant descend en facteur.');
     },
     // 11. valeur absolue en 0

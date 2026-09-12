@@ -14,7 +14,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 2B | Suites arithmétiques et géométriques | ✅ | 5 (dont 1 tolérance sur 3 exercices) |
 | 2C | Récurrence et limites | ✅ | 13 (dont 2 générateurs produisant des énoncés faux) |
 | 3A | Nombre dérivé et tangente | ✅ | 17 (dont 1 question de QCM insoluble) |
-| 3B | Calculer une dérivée | ⬜ | |
+| 3B | Calculer une dérivée | ✅ | 20 (dont 1 formule de dérivée fausse affichée en direct) |
 | 3C | Variations et extremums | ✅ | 10 (dont 1 correction fautive sur la moitié des tirages) |
 | 3D | Dérivée d'une composée | ⬜ | |
 | 3E | Convexité | ⬜ | |
