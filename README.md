@@ -189,6 +189,10 @@ Les tests découvrent les fiches présentes et couvrent le rendu des formules, l
 la reprise, l’export/import, la migration du carnet, les onglets et le mobile.
 Les captures de contrôle sont écrites dans `/tmp/reussite-maths-qa`.
 
+## Où va le projet
+
+Les objectifs pour la suite, page d'entrée pour un nouvel élève, partage des fiches, diffusion et mesure, sont décrits dans [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md).
+
 ## Licence
 
 Contenu pédagogique sous [licence CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.fr) : réutilisation libre, y compris modifiée, à condition de citer la source et de partager aux mêmes conditions.
