@@ -861,6 +861,32 @@ function affTex(c0, coef, varname){
   if(c0 === 0) return (coef<0 ? '-' : '') + body;
   return s + (coef<0 ? ' - ' : ' + ') + body;
 }
+/* assemble une somme : chaque terme est {s:'texte', neg:booléen}.
+   Le premier terme ne porte pas de « + », un terme négatif donne « − ». */
+function sumTex(terms){
+  var out = '', i;
+  for(i=0;i<terms.length;i++){
+    if(out==='') out += (terms[i].neg ? '-' : '') + terms[i].s;
+    else out += (terms[i].neg ? ' - ' : ' + ') + terms[i].s;
+  }
+  return out==='' ? '0' : out;
+}
+/* substitution dans ax+by+cz+d : « (-3)×(2 + 3t) + (1)×(-2) + (-7) ».
+   Un coefficient nul n'apparaît pas : le terme correspondant est absent de
+   l'équation du plan, l'écrire reviendrait à multiplier par 0 pour rien. */
+function subsTex(coefs, exprs, cst){
+  var out = '', i;
+  for(i=0;i<coefs.length;i++){
+    if(coefs[i] === 0) continue;
+    out += (out==='' ? '' : ' + ') + '(' + coefs[i] + ')\\times(' + exprs[i] + ')';
+  }
+  if(cst !== 0) out += (out==='' ? '' : ' + ') + '(' + cst + ')';
+  return out==='' ? '0' : out;
+}
+/* coefficient de t écrit sans « 1t » ni « -1t » */
+function coefT(k){
+  return (Math.abs(k)===1 ? (k<0?'-':'') : String(k)) + 't';
+}
 function ptTex(name,v){
   return name+'('+fr(v[0])+'\\,;\\,'+fr(v[1])+'\\,;\\,'+fr(v[2])+')';
 }
@@ -923,7 +949,19 @@ function drawV1(){
       var pstr = poly.map(function(p){ var q = proj(p,az,el,scale); return q.x.toFixed(1)+','+q.y.toFixed(1); }).join(' ');
       svg += '<polygon points="'+pstr+'" fill="rgba(37,99,235,.22)" stroke="#2563eb" stroke-width="2" stroke-linejoin="round"/>';
     } else {
-      svg += '<text x="'+CX+'" y="30" text-anchor="middle" fill="#f97362" font-size="14">le plan ne coupe pas le pavé [0 ; 4]³</text>';
+      /* section vide a l'ecran : soit le plan evite vraiment le pave, soit il n'en
+         touche qu'un sommet ou une arete — deux messages distincts, pour ne pas
+         annoncer « ne coupe pas » un plan qui touche le pave. */
+      var fmin = Infinity, fmax = -Infinity, iv;
+      for(iv=0; iv<CUBE_V.length; iv++){
+        var fv = a*CUBE_V[iv][0] + b*CUBE_V[iv][1] + c*CUBE_V[iv][2] + d;
+        if(fv < fmin) fmin = fv;
+        if(fv > fmax) fmax = fv;
+      }
+      var effleure = (fmin <= 1e-9 && fmax >= -1e-9);
+      svg += '<text x="'+CX+'" y="30" text-anchor="middle" fill="#f97362" font-size="14">'+
+             (effleure ? 'le plan ne touche le pavé [0 ; 4]³ qu’en un sommet ou le long d’une arête'
+                       : 'le plan ne coupe pas le pavé [0 ; 4]³')+'</text>';
     }
     var pM = proj(M,az,el,scale), pH = proj(H,az,el,scale);
     var tip = proj([H[0]+1.6*a/nn, H[1]+1.6*b/nn, H[2]+1.6*c/nn], az, el, scale);
@@ -1000,7 +1038,7 @@ function drawV2(){
     var colin = (Math.abs(m1)<1e-9 && Math.abs(m2)<1e-9 && Math.abs(m3)<1e-9);
     var ps = a*u[0]+b*u[1]+c*u[2];
     if(colin) msg = 'Oui : u est colinéaire à n(' + a + ' ; ' + b + ' ; ' + c + ')';
-    else if(Math.abs(ps) < 1e-9) msg = 'Non : u·n = 0, la droite est parallèle au plan';
+    else if(Math.abs(ps) < 1e-9) msg = 'Non : u·n = 0, la droite est parallèle au plan (ou contenue dedans)';
     else msg = 'Non : u·n = ' + fr(ps) + ' (droite sécante au plan)';
   }
   $('v2orth').textContent = msg;
@@ -1078,8 +1116,10 @@ function checkEx1(){
   var k = u[i0]/ref[i0];
   var ok = Math.abs(k) > 1e-9;
   if(ok){
+    /* on compare les rapports u[i]/u[i0] et ref[i]/ref[i0] : le critere ne depend
+       pas de l'echelle choisie par l'eleve, donc la tolerance ne grandit pas avec k */
     for(i=0;i<4;i++){
-      if(Math.abs(u[i] - k*ref[i]) > 1e-3*(1+Math.abs(k*ref[i]))) { ok = false; break; }
+      if(Math.abs(u[i]/u[i0] - ref[i]/ref[i0]) > 1e-6*(1+Math.abs(ref[i]/ref[i0]))) { ok = false; break; }
     }
   }
   if(ok){
@@ -1090,14 +1130,14 @@ function checkEx1(){
 }
 function solEx1(){
   var a=E1.a, b=E1.b, c=E1.c, d=E1.d, A=E1.A;
+  var sc = a*A[0]+b*A[1]+c*A[2];
   return '<p><b>1. Coefficients.</b> Le vecteur normal donne directement les coefficients de \\(x,y,z\\) : ' +
-    'l\u2019équation est de la forme \\((' + a + ')x + (' + b + ')y + (' + c + ')z + d = 0,\\) c\u2019est-à-dire \\(' +
-    planeTex(a,b,c,0).replace(' = 0','') + ' + d = 0.\\)</p>' +
+    '\\(a = ' + a + ',\\ b = ' + b + ',\\ c = ' + c + '.\\) ' +
+    'L\u2019équation est donc de la forme \\(' + planeTex(a,b,c,0).replace(' = 0','') + ' + d = 0.\\)</p>' +
     '<p><b>2. Calcul de \\(d.\\)</b> \\(A\\in\\mathcal P\\) donc \\(a x_A + b y_A + c z_A + d = 0\\) :<br>' +
-    '\\((' + a + ')\\times(' + A[0] + ') + (' + b + ')\\times(' + A[1] + ') + (' + c + ')\\times(' + A[2] + ') + d = ' +
-    (a*A[0]+b*A[1]+c*A[2]) + ' + d = 0,\\) donc \\(d = ' + d + '.\\)</p>' +
+    '\\(' + subsTex([a,b,c],[A[0],A[1],A[2]],0) + ' + d = ' + sc + ' + d = 0,\\) donc \\(d = ' + d + '.\\)</p>' +
     '<p><b>3. Conclusion.</b> \\(\\mathcal P : ' + planeTex(a,b,c,d) + '.\\)</p>' +
-    '<p><b>4. Vérification.</b> On remplace \\(A\\) : \\(' + (a*A[0]+b*A[1]+c*A[2]) + ' + (' + d + ') = 0\\) ✓.</p>' +
+    '<p><b>4. Vérification.</b> On remplace \\(A\\) : \\(' + sc + ' + (' + d + ') = 0\\) ✓.</p>' +
     '<p class="small">Toute équation obtenue en multipliant celle-ci par un réel non nul convient aussi.</p>';
 }
 
@@ -1151,17 +1191,17 @@ function solEx2(){
     '(' + u[0] + ')\\times(' + a + ') + (' + u[1] + ')\\times(' + b + ') + (' + u[2] + ')\\times(' + c + ') = ' + E2.ps + '\\neq 0\\) : ' +
     'la droite coupe le plan en un unique point.</p>' +
     '<p><b>2. Substitution.</b> On remplace \\(x,y,z\\) par leurs expressions en \\(t\\) dans \\(' + planeTex(a,b,c,d) + '\\) :<br>' +
-    '\\((' + a + ')\\times(' + affTex(A[0],u[0],'t') + ') + (' + b + ')\\times(' + affTex(A[1],u[1],'t') + ') + (' + c + ')\\times(' +
-    affTex(A[2],u[2],'t') + ') + (' + d + ') = 0.\\)</p>' +
-    '<p><b>3. On regroupe.</b> \\(' + (Math.abs(E2.ps)===1 ? (E2.ps<0?'-':'') : String(E2.ps)) +
-    't + (' + cst + ') = 0,\\) donc \\(t = ' + t0 + '.\\)</p>' +
+    '\\(' + subsTex([a,b,c],[affTex(A[0],u[0],'t'),affTex(A[1],u[1],'t'),affTex(A[2],u[2],'t')],d) + ' = 0.\\)</p>' +
+    '<p><b>3. On regroupe.</b> \\(' +
+    sumTex([{s:coefT(E2.ps),neg:false},{s:String(Math.abs(cst)),neg:cst<0}]) + ' = 0,\\) ' +
+    (Math.abs(E2.ps)===1 ? '' : 'soit \\(' + E2.ps + 't = ' + (-cst) + ',\\) ') +
+    'donc \\(t = ' + t0 + '.\\)</p>' +
     '<p><b>4. Coordonnées de \\(I.\\)</b> On reporte \\(t = ' + t0 + '\\) :<br>' +
     '\\(x = ' + A[0] + ' + (' + t0 + ')\\times(' + u[0] + ') = ' + I[0] + ',\\) ' +
     '\\(y = ' + A[1] + ' + (' + t0 + ')\\times(' + u[1] + ') = ' + I[1] + ',\\) ' +
     '\\(z = ' + A[2] + ' + (' + t0 + ')\\times(' + u[2] + ') = ' + I[2] + '.\\)<br>' +
     'Donc \\(' + ptTex('I',I) + '.\\)</p>' +
-    '<p><b>5. Vérification.</b> \\((' + a + ')\\times(' + I[0] + ') + (' + b + ')\\times(' + I[1] + ') + (' + c + ')\\times(' + I[2] +
-    ') + (' + d + ') = 0\\) ✓</p>';
+    '<p><b>5. Vérification.</b> \\(' + subsTex([a,b,c],[I[0],I[1],I[2]],d) + ' = 0\\) ✓</p>';
 }
 
 /* ============================================================
@@ -1199,7 +1239,8 @@ function checkEx3(){
   if(r.some(isNaN) || isNaN(dd)){ setFb('ex3fb', false, 'Remplis les coordonnées de \\(H\\) et la distance \\(MH.\\)'); return; }
   var okH = true, i;
   for(i=0;i<3;i++) if(Math.abs(r[i]-E3.H[i]) > 1e-3) okH = false;
-  var okD = Math.abs(dd - E3.MH) <= 1e-2;
+  /* MH = |t0|*||n|| est un entier par construction : on n'accepte pas le centieme voisin */
+  var okD = Math.abs(dd - E3.MH) <= 1e-3;
   if(okH && okD){
     setFb('ex3fb', true, 'Correct ! \\(' + ptTex('H',E3.H) + '\\) et \\(MH = |t|\\times\\|\\vec{n}\\| = ' +
       Math.abs(E3.t0) + '\\times' + E3.N + ' = ' + E3.MH + '.\\)');
@@ -1219,11 +1260,15 @@ function solEx3(){
     ',\\) avec \\(\\|\\vec{n}\\| = \\sqrt{' + (n[0]*n[0]) + '+' + (n[1]*n[1]) + '+' + (n[2]*n[2]) + '} = \\sqrt{' + n2 + '} = ' + N + '.\\)</p>' +
     '<p><b>2. Droite passant par \\(M\\) et dirigée par \\(\\vec{n}.\\)</b> ' +
     '\\(H(' + affTex(M[0],n[0],'t') + '\\,;\\,' + affTex(M[1],n[1],'t') + '\\,;\\,' + affTex(M[2],n[2],'t') + ').\\)</p>' +
-    '<p><b>3. On écrit \\(H\\in\\mathcal P.\\)</b> En remplaçant dans l\u2019équation du plan :<br>' +
-    '\\(\\vec{n}\\cdot\\vec{OM} + t\\,\\|\\vec{n}\\|^2 + d = ' + scal + ' + ' + n2 + 't + (' + d + ') = 0,\\) ' +
-    'donc \\(t = ' + t0 + '.\\)</p>' +
+    '<p><b>3. On écrit \\(H\\in\\mathcal P.\\)</b> En remplaçant dans l\u2019équation du plan, ' +
+    '\\(\\vec{n}\\cdot\\vec{OM} + t\\,\\|\\vec{n}\\|^2 + d = 0\\) :<br>' +
+    '\\(' + sumTex(
+        (scal===0 ? [] : [{s:String(Math.abs(scal)),neg:scal<0}])
+        .concat([{s:n2+'t',neg:false}])
+        .concat(d===0 ? [] : [{s:String(Math.abs(d)),neg:d<0}])
+      ) + ' = 0,\\) soit \\(' + n2 + 't = ' + (-(scal+d)) + ',\\) donc \\(t = ' + t0 + '.\\)</p>' +
     '<p><b>4. Coordonnées de \\(H.\\)</b> \\(' + ptTex('H',H) + '.\\) ' +
-    'Vérification : \\(' + (n[0]*H[0]+n[1]*H[1]+n[2]*H[2]) + ' + (' + d + ') = 0\\) ✓</p>' +
+    'Vérification : \\(' + subsTex(n,[H[0],H[1],H[2]],d) + ' = 0\\) ✓</p>' +
     '<p><b>5. Distance.</b> \\(\\vec{MH} = t\\,\\vec{n}\\) donc \\(MH = |t|\\,\\|\\vec{n}\\| = ' +
     Math.abs(t0) + '\\times' + N + ' = ' + E3.MH + '.\\) Ainsi \\(d(M,\\mathcal P) = ' + E3.MH + '.\\)</p>' +
     '<p class="small">Vérification facultative avec la formule d\u2019approfondissement : \\(\\dfrac{|' + (scal+d) + '|}{' + N + '} = ' + E3.MH + '.\\)</p>';
