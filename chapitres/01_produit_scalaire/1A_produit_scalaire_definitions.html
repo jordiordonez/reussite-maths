@@ -885,8 +885,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       '<p><strong>Étape 5 : angle.</strong> \\(\\widehat{BAC} = \\arccos(' + fmt(cosv, 4) + ') \\approx ' + fmt(ang, 1) + '^\\circ,\\) soit environ \\(' + angR + '^\\circ\\)' + (dot < 0 ? ' (produit scalaire négatif : angle obtus, cohérent).' : (dot === 0 ? ' : angle droit.' : ' (produit scalaire positif : angle aigu, cohérent).')) + '</p>';
     return { ang: ang, angR: angR, dot: dot, enonce: enonce, correction: correction };
   }, function (e, val) {
-    if (Math.abs(val - e.ang) <= 1.01) return { ok: true, msg: 'Correct ! L\'angle vaut environ ' + e.angR + '°.' };
-    if (Math.abs((180 - val) - e.ang) <= 1.01) return { ok: false, msg: 'Tu as trouvé l\'angle supplémentaire : vérifie le signe du produit scalaire (' + e.dot + ').' };
+    if (val === e.angR || Math.abs(val - e.ang) <= 0.5) return { ok: true, msg: 'Correct ! L\'angle vaut environ ' + e.angR + '°.' };
+    if ((180 - val) === e.angR || Math.abs((180 - val) - e.ang) <= 0.5) return { ok: false, msg: 'Tu as trouvé l\'angle supplémentaire : vérifie le signe du produit scalaire (' + e.dot + ').' };
     return { ok: false, msg: 'Non. Calcule AB · AC, puis AB et AC, puis cos = (AB · AC)/(AB × AC) et arccos en degrés.' };
   });
 

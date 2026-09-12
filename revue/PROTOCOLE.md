@@ -20,6 +20,7 @@ Même chose pour les corrections : applique chaque correction dans la fiche dès
 ## Ce que tu corriges, ce que tu signales
 
 - **Tu corriges directement** : erreur de calcul, notation fautive, explication fausse, réponse de QCM mal marquée, générateur qui accepte une mauvaise réponse.
+- **Cas particulier à toujours corriger : les tolérances trop larges.** Si l'énoncé demande une valeur « au degré près » ou « au dixième », la vérification ne doit accepter que le bon arrondi, ou au plus un demi-rang d'écart avec la valeur exacte. Une tolérance d'un rang entier félicite l'élève pour une réponse fausse : c'est le pire défaut possible dans une fiche d'entraînement. Vérifie chaque exercice sur ce point.
 - **Tu signales sans corriger** : choix pédagogique discutable, formulation lourde, manque jugé gênant. Ce n'est pas l'objet de cette passe.
 
 ## Format du rapport `revue/<CODE>.md`
