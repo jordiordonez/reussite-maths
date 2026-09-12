@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6C · Droites et plans de l’espace</title>
+
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+
+<style>
+:root{
+  --bg:#faf8f5; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --blue:#2563eb; --blue-soft:#e8efff;
+  --coral:#f97362; --coral-soft:#fde8e4;
+  --green:#22a06b; --green-soft:#e3f5ec;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.5rem} h3{font-size:1.1rem;color:var(--blue)}
+p{margin:.4em 0 .8em}
+ul,ol{padding-left:1.25rem;margin:.3rem 0 .8rem} li{margin:.3rem 0}
+
+header{padding:2rem 1.1rem 1.2rem;text-align:center;background:linear-gradient(180deg,var(--blue-soft) 0%,var(--bg) 100%)}
+header h1{font-size:1.75rem;opacity:0;transform:translateY(14px);animation:rise .8s ease forwards}
+header .sub{color:var(--muted);opacity:0;animation:rise .8s .3s ease forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.5rem .5rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav a{display:inline-block;min-height:44px;line-height:44px;padding:0 .9rem;margin:0 .15rem;border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.92rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+nav a.active{background:var(--blue);color:#fff}
+
+main{max-width:820px;margin:0 auto;padding:1rem .85rem 3rem}
+section{margin:1.3rem 0 2rem;scroll-margin-top:64px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin:.8rem 0}
+.card.blue{border-left:6px solid var(--blue)}
+.card.green{border-left:6px solid var(--green)}
+.card.coral{border-left:6px solid var(--coral)}
+.card.amber{border-left:6px solid var(--amber)}
+.tag{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);vertical-align:middle;font-family:system-ui,sans-serif;max-width:100%}
+.tag.demo{background:var(--coral-soft);color:#c2410c}
+.tag.deep{background:var(--amber-soft);color:#92400e}
+.key{background:var(--amber-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.warn{background:var(--coral-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.ok{background:var(--green-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+
+button{min-height:44px;padding:.5rem 1rem;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+button.ghost{background:#f3f4f6;color:var(--ink);box-shadow:none}
+button:active{transform:translateY(1px)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type="text"],input[type="number"],select{min-height:44px;font-size:1rem;font-family:inherit;padding:.45rem .6rem;border:1px solid #d1d5db;border-radius:10px;background:#fff;max-width:100%}
+input[type="range"]{width:100%;min-height:36px}
+label{font-size:.92rem;color:var(--muted)}
+
+.feedback{margin:.5rem 0;font-weight:600;min-height:1.4em}
+.feedback.good{color:var(--green)} .feedback.bad{color:#c2410c}
+.correction{display:none;background:#f4f2ee;border-radius:12px;padding:.8rem .9rem;margin-top:.6rem}
+.correction.show{display:block}
+
+.qcm-q{border-top:1px solid var(--line);padding-top:.9rem;margin-top:.9rem}
+.qcm-q:first-child{border-top:0;margin-top:0}
+.choices{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.5rem 0}
+@media (min-width:560px){.choices{grid-template-columns:1fr 1fr}}
+.choice{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font-weight:400;box-shadow:none}
+.choice .letter{display:inline-block;width:1.5em;font-weight:700;color:var(--blue)}
+.choice.correct{background:var(--green-soft);border-color:var(--green)}
+.choice.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.expl{display:none;font-size:.94rem;margin-top:.35rem}
+.expl.show{display:block}
+.score{font-weight:700;margin-top:.8rem}
+
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:1.5rem 1rem 2.5rem}
+
+/* --- Figures. NE JAMAIS écrire une règle « svg { … } » globale :
+   MathJax produit lui aussi des <svg> et ils seraient déformés.
+   Toujours passer par la classe .figure. --- */
+.figure{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:12px;touch-action:pan-y}
+
+/* ===== Bloc responsive obligatoire — ne pas modifier ===== */
+/* Les formules gardent leur taille normale : c'est le bloc parent qui défile
+   horizontalement quand la formule est plus large que la carte. */
+mjx-container svg{
+  width:auto !important;height:auto !important;max-width:none !important;
+  display:inline !important;background:none !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;
+}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding-bottom:3px}
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml{
+  position:absolute !important;top:0 !important;left:0 !important;
+  width:1px !important;height:1px !important;overflow:hidden !important;
+  clip:rect(1px,1px,1px,1px) !important;padding:0 !important;border:0 !important;white-space:nowrap !important;
+}
+.correction,.corr,.enonce,.feedback,.expl,.stem,.question,
+.correction p,.corr p,.enonce p,.expl p,
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol{
+  max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+}
+p:has(> mjx-container),ul:has(> li > mjx-container), ol:has(> li > mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),dd:has(> mjx-container),summary:has(> mjx-container),
+div:has(> mjx-container){max-width:100%;overflow-x:auto;overflow-y:hidden}
+h1,h2,h3,h4{flex-wrap:wrap}
+div:has(> table){max-width:100%;overflow-x:auto}
+pre{max-width:100%;overflow-x:auto}
+.correction::-webkit-scrollbar,.corr::-webkit-scrollbar,
+p::-webkit-scrollbar,ul::-webkit-scrollbar{height:4px}
+.correction::-webkit-scrollbar-thumb,.corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border-radius:4px}
+/* ===== fin du bloc responsive ===== */
+</style>
+
+<style>
+/* ===== Navigation compacte (ajout) =====
+   Les cinq onglets tiennent sur un écran de téléphone, sans défilement
+   horizontal, et un bouton ramène à la liste des fiches. */
+.navbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.25rem;
+  padding:.4rem .45rem;background:rgba(250,248,245,.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid #e5e7eb;
+}
+.navbar > nav{
+  position:static;flex:1;min-width:0;display:flex;gap:.25rem;margin:0;padding:0;
+  background:none;border:0;box-shadow:none;overflow:visible;white-space:normal;backdrop-filter:none;
+}
+.navbar nav a{
+  flex:1 1 0;min-width:0;margin:0;padding:0 .3rem;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.nav-home{
+  flex:0 0 42px;display:inline-block;min-height:44px;line-height:44px;text-align:center;
+  border-radius:999px;background:#fff;color:#2563eb;text-decoration:none;font-size:1.1rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.nshort{display:none}
+@media (max-width:600px){
+  .nlong{display:none}
+  .nshort{display:inline}
+  .navbar nav a{font-size:.84rem;padding:0 .2rem}
+}
+/* Bouton de remontée en haut de page */
+.to-top{
+  position:fixed;right:.85rem;bottom:.85rem;width:48px;height:48px;border-radius:50%;border:0;
+  background:#2563eb;color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+.retour-fiches{display:inline-block;margin-top:.6rem;color:#2563eb;text-decoration:none;font-weight:600;min-height:44px;line-height:44px}
+</style>
+<style>
+/* ===== Ajouts propres à la fiche 6C ===== */
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-family:system-ui,sans-serif;font-weight:700;margin-right:8px;font-size:.9rem;vertical-align:middle}
+.box{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.box .lbl{display:block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--blue);margin-bottom:.15rem}
+.box.green{background:var(--green-soft);border-left-color:var(--green)}
+.box.green .lbl{color:var(--green)}
+.box.coral{background:var(--coral-soft);border-left-color:var(--coral)}
+.box.coral .lbl{color:#c2410c}
+.box.amber{background:var(--amber-soft);border-left-color:var(--amber)}
+.box.amber .lbl{color:#92400e}
+
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+th{background:var(--blue-soft);text-align:center}
+td.lab{background:#f6f5f2;font-weight:600;white-space:nowrap}
+.tablewrap{overflow-x:auto;margin:.6rem 0}
+
+.tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.7rem}
+.tabs button{flex:1 1 30%;background:#fff;color:var(--blue);border:2px solid var(--blue);font-size:.82rem;padding:.4rem .3rem;box-shadow:none;min-width:0}
+.tabs button.active{background:var(--blue);color:#fff}
+
+.slider{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;margin:.45rem 0}
+.slider label{font-weight:600;min-width:62px;color:var(--ink);font-size:.9rem}
+.slider output{min-width:52px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--blue);font-size:.92rem}
+
+.ctl{margin:.6rem 0 .2rem;font-weight:700;font-size:.88rem;color:var(--ink)}
+.ctl em{font-style:normal;color:var(--muted);font-weight:400;font-size:.84rem}
+.triple{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;margin:.2rem 0 .5rem}
+.triple .cell{display:flex;flex-direction:column;gap:1px;min-width:0}
+.triple .cell span{font-size:.76rem;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.triple input[type="range"]{min-height:30px;width:100%}
+
+.stat{font-size:.94rem;padding:.5rem .7rem;border-radius:10px;background:var(--blue-soft);margin:.5rem 0}
+.stat.good{background:var(--green-soft)}
+.stat.bad{background:var(--coral-soft)}
+.stat.warn{background:var(--amber-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;font-size:.83rem;margin:.4rem 0;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:15px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle;background:var(--c)}
+.small{font-size:.9rem;color:var(--muted)}
+.ref{display:inline-block;font-size:.84rem;color:var(--blue);font-weight:600}
+.field{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.45rem 0}
+.field .lab{min-width:34px;font-weight:600;font-size:.95rem}
+.field select{max-width:100%;flex:1 1 200px}
+.coord{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin:.5rem 0}
+.coord .cell{display:flex;flex-direction:column;gap:2px;min-width:0}
+.coord .cell span{font-size:.82rem;color:var(--muted)}
+.coord input{width:100%;min-width:0}
+ol.steps{counter-reset:none}
+ol.steps li{margin:.4rem 0}
+.cases{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.5rem 0}
+@media (min-width:520px){.cases{grid-template-columns:1fr 1fr}}
+.case{border:1px solid var(--line);border-radius:10px;padding:.45rem .6rem;background:#fdfcfa}
+.case b{display:block;font-size:.92rem}
+.case span{font-size:.86rem;color:var(--muted)}
+.case.nc{border-color:var(--coral);background:var(--coral-soft)}
+.case.nc span{color:#9a3412}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>6C · Droites et plans de l’espace</h1>
+  <div class="sub">Terminale · Mathématiques</div>
+</header>
+
+<div class="navbar">
+  <a class="nav-home" href="../../index.html" title="Toutes les fiches" aria-label="Toutes les fiches">←</a>
+  <nav id="nav">
+    <a href="#cours">Cours</a>
+    <a href="#methode"><span class="nlong">Méthode</span><span class="nshort">Méth.</span></a>
+    <a href="#visu"><span class="nlong">Visualisation</span><span class="nshort">Visu</span></a>
+    <a href="#exos"><span class="nlong">Exercices</span><span class="nshort">Exos</span></a>
+    <a href="#qcm">QCM</a>
+  </nav>
+</div>
+
+<main>
+
+<section id="cours">
+  <h2>Cours</h2>
+
+  <p class="small">Toute cette fiche se passe de repère : on raisonne avec des <b>vecteurs</b>. La version « avec coordonnées » (représentation paramétrique d'une droite, équation cartésienne d'un plan) est traitée dans la fiche <a class="ref" href="../01_produit_scalaire/1D_espace_orthogonalite_distances.html">1D · plans, droites, projetés et distances</a>. Le cube \(ABCDEFGH\) et le tétraèdre servent de terrain d'exercice permanent.</p>
+
+  <div class="card blue">
+    <h3><span class="num">1</span>Une droite : un point et une direction</h3>
+    <p>Une droite de l'espace est entièrement déterminée par la donnée d'un point \(A\) et d'un vecteur <b>non nul</b> \(\vec u,\) appelé <b>vecteur directeur</b>.</p>
+    <div class="box"><span class="lbl">À retenir</span>
+      <p>\(M \in \mathcal D(A,\vec u)\) si et seulement si \(\overrightarrow{AM}\) et \(\vec u\) sont colinéaires, c'est-à-dire s'il existe un réel \(t\) tel que \(\overrightarrow{AM} = t\,\vec u.\)</p>
+    </div>
+    <ul>
+      <li>Une droite a une <b>infinité</b> de vecteurs directeurs : tous les vecteurs non nuls colinéaires à \(\vec u.\) Ainsi \(\vec u,\) \(-\vec u,\) \(3\vec u\) dirigent la même droite.</li>
+      <li>Deux points distincts \(A\) et \(B\) déterminent la droite \((AB),\) de vecteur directeur \(\overrightarrow{AB}.\)</li>
+      <li>Deux droites sont <b>parallèles</b> lorsque leurs vecteurs directeurs sont colinéaires (elles sont alors confondues ou strictement parallèles).</li>
+    </ul>
+    <div class="box green"><span class="lbl">Sur le cube</span>
+      <p>Dans \(ABCDEFGH,\) la droite \((AB)\) admet pour vecteurs directeurs \(\overrightarrow{AB},\) \(\overrightarrow{DC},\) \(\overrightarrow{EF},\) \(\overrightarrow{HG}\) : ces quatre vecteurs sont <b>égaux</b>. Le point \(M\) tel que \(\overrightarrow{AM} = 2\,\overrightarrow{AB}\) est sur \((AB),\) au-delà de \(B.\)</p>
+    </div>
+  </div>
+
+  <div class="card blue">
+    <h3><span class="num">2</span>Un plan : un point et deux directions</h3>
+    <p>La <b>direction</b> d'un plan \(\mathcal P\) est l'ensemble des vecteurs \(\overrightarrow{MN}\) obtenus quand \(M\) et \(N\) décrivent \(\mathcal P.\) Cette direction est décrite par <b>deux</b> vecteurs non colinéaires : c'est une base du plan vectoriel associé (fiche 6B).</p>
+    <div class="box"><span class="lbl">À retenir</span>
+      <p>On suppose \(\vec u\) et \(\vec v\) non colinéaires. Alors \(M \in \mathcal P(A,\vec u,\vec v)\) si et seulement s'il existe deux réels \(s\) et \(t\) tels que \(\overrightarrow{AM} = s\,\vec u + t\,\vec v.\) Autrement dit : \(\overrightarrow{AM},\) \(\vec u\) et \(\vec v\) sont <b>coplanaires</b>.</p>
+    </div>
+    <ul>
+      <li>Trois points <b>non alignés</b> \(A,\) \(B,\) \(C\) déterminent le plan \((ABC),\) dirigé par le couple \((\overrightarrow{AB}\,;\overrightarrow{AC}).\)</li>
+      <li>Le couple de vecteurs directeurs n'est pas unique : \((\overrightarrow{AB}\,;\overrightarrow{AC})\) et \((\overrightarrow{AB}\,;\overrightarrow{BC})\) dirigent le même plan.</li>
+      <li>Deux plans ont la <b>même direction</b> si et seulement s'ils sont parallèles.</li>
+    </ul>
+    <div class="box green"><span class="lbl">Sur le cube</span>
+      <p>Le plan \((ABC)\) est celui de la face \(ABCD\) ; il est dirigé par \((\overrightarrow{AB}\,;\overrightarrow{AD}).\) Le plan \((ABG)\) contient aussi \(H,\) car \(\overrightarrow{AH} = \overrightarrow{AG} - \overrightarrow{AB}\) : c'est le plan diagonal \(ABGH.\)</p>
+    </div>
+    <div class="box amber"><span class="lbl">Tétraèdre</span>
+      <p>Dans le tétraèdre \(ABCD,\) les quatre faces sont les plans \((ABC),\) \((ABD),\) \((ACD),\) \((BCD).\) Comme \(A,\) \(B,\) \(C,\) \(D\) ne sont pas coplanaires, \((\overrightarrow{AB}\,;\overrightarrow{AC}\,;\overrightarrow{AD})\) est une base de l'espace.</p>
+    </div>
+  </div>
+
+  <div class="card coral">
+    <h3><span class="num">3</span>Deux droites : quatre cas, dont un nouveau</h3>
+    <p>Dans le plan, deux droites sont parallèles ou sécantes. Dans l'espace, il y a un <b>cas supplémentaire</b> : deux droites peuvent n'avoir aucun point commun <b>sans</b> être parallèles.</p>
+    <div class="cases">
+      <div class="case"><b>Confondues</b><span>Coplanaires. Vecteurs directeurs colinéaires, un point commun. Une infinité de points communs.</span></div>
+      <div class="case"><b>Strictement parallèles</b><span>Coplanaires. Vecteurs directeurs colinéaires, aucun point commun.</span></div>
+      <div class="case"><b>Sécantes</b><span>Coplanaires. Vecteurs directeurs non colinéaires. Exactement un point commun.</span></div>
+      <div class="case nc"><b>Non coplanaires</b><span>Aucun plan ne les contient toutes les deux. Vecteurs directeurs non colinéaires, aucun point commun. <b>Ce cas n'existe pas dans le plan.</b></span></div>
+    </div>
+    <div class="box"><span class="lbl">Critère</span>
+      <p>Si \(\vec u\) et \(\vec v\) sont colinéaires, les droites sont parallèles (confondues ou non). Sinon, elles sont sécantes <b>si et seulement si</b> \(\overrightarrow{AB},\) \(\vec u\) et \(\vec v\) sont coplanaires ; dans le cas contraire, elles ne sont pas coplanaires.</p>
+    </div>
+    <div class="box green"><span class="lbl">Sur le cube</span>
+      <ul>
+        <li>\((AB)\) et \((HG)\) : \(\overrightarrow{AB} = \overrightarrow{HG},\) et \(H \notin (AB)\) : <b>strictement parallèles</b>.</li>
+        <li>\((AB)\) et \((BC)\) : <b>sécantes</b> en \(B.\)</li>
+        <li>\((AB)\) et \((CG)\) : \(\overrightarrow{AB}\) et \(\overrightarrow{CG}\) ne sont pas colinéaires, et aucun plan ne contient \(A,\) \(B,\) \(C\) et \(G\) — le plan \((ABC)\) est celui de la face du bas et \(G\) n'y est pas : <b>non coplanaires</b>.</li>
+        <li>\((AE)\) et \((BC)\) : <b>non coplanaires</b> également.</li>
+      </ul>
+    </div>
+    <div class="warn"><b>Piège classique.</b> « Elles ne sont pas parallèles, donc elles se coupent » est <b>faux</b> dans l'espace. Il faut encore prouver la coplanarité.</div>
+  </div>
+
+  <div class="card blue">
+    <h3><span class="num">4</span>Une droite et un plan : trois cas</h3>
+    <div class="cases">
+      <div class="case"><b>\(\mathcal D \subset \mathcal P\)</b><span>La droite est incluse dans le plan : une infinité de points communs.</span></div>
+      <div class="case"><b>\(\mathcal D \parallel \mathcal P\) strictement</b><span>Aucun point commun.</span></div>
+      <div class="case"><b>Sécants</b><span>Exactement un point commun, noté \(I.\)</span></div>
+    </div>
+    <div class="box"><span class="lbl">Critère vectoriel</span>
+      <p>Soit \(\vec u\) un vecteur directeur de \(\mathcal D\) et \((\vec{u_P}\,;\vec{v_P})\) un couple dirigeant \(\mathcal P.\) Si \(\vec u\) est une combinaison linéaire de \(\vec{u_P}\) et \(\vec{v_P},\) alors \(\mathcal D\) est parallèle à \(\mathcal P\) : incluse si un point de \(\mathcal D\) appartient à \(\mathcal P,\) strictement parallèle sinon. Si \(\vec u\) n'est pas une telle combinaison, \(\mathcal D\) et \(\mathcal P\) sont sécants en un unique point.</p>
+    </div>
+    <p>Conséquence : une droite et un plan ont \(0,\) \(1\) ou une infinité de points communs — <b>jamais exactement deux</b> (deux points communs entraînent l'inclusion).</p>
+    <div class="box green"><span class="lbl">Sur le cube</span>
+      <ul>
+        <li>\((EF)\) et le plan \((ABC)\) : \(\overrightarrow{EF} = \overrightarrow{AB}\) dirige \((ABC),\) et \(E \notin (ABC)\) : <b>strictement parallèles</b>.</li>
+        <li>\((AB)\) et le plan \((ABF)\) : la droite est <b>incluse</b> dans le plan.</li>
+        <li>\((AG)\) et le plan \((EFG)\) : \(\overrightarrow{AG}\) « monte » alors que \((EFG)\) est horizontal : <b>sécants</b>, en \(G.\)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card blue">
+    <h3><span class="num">5</span>Deux plans : trois cas</h3>
+    <div class="cases">
+      <div class="case"><b>Confondus</b><span>Même direction et un point commun.</span></div>
+      <div class="case"><b>Strictement parallèles</b><span>Même direction, aucun point commun.</span></div>
+      <div class="case"><b>Sécants</b><span>Directions différentes : l'intersection est une <b>droite</b>.</span></div>
+    </div>
+    <div class="key"><b>Deux plans distincts ne peuvent pas avoir un seul point commun.</b> Dès qu'ils ont un point commun, ils ont toute une droite en commun.</div>
+    <div class="box green"><span class="lbl">Sur le cube</span>
+      <ul>
+        <li>\((ABC)\) et \((EFG)\) : les deux faces horizontales, <b>strictement parallèles</b>.</li>
+        <li>\((ABF)\) et \((BCG)\) : deux faces voisines, <b>sécantes</b> selon la droite \((BF).\)</li>
+        <li>\((ABG)\) et \((CDE)\) : les deux plans diagonaux, <b>sécants</b> selon la droite qui joint les centres des faces \(ABFE\) et \(DCGH.\)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card amber">
+    <h3><span class="num">6</span>Trois théorèmes de parallélisme</h3>
+    <p>Ces trois énoncés permettent de conclure <b>sans aucun calcul</b>. Ils sont au cœur des exercices de construction.</p>
+    <div class="box"><span class="lbl">Théorème 1</span>
+      <p>Si une droite \(\mathcal D\) est parallèle à une droite \(\mathcal D'\) <b>contenue dans</b> un plan \(\mathcal P,\) alors \(\mathcal D\) est parallèle à \(\mathcal P.\)</p>
+      <p class="small">C'est l'outil n°1 pour montrer qu'une droite est parallèle à un plan : on cherche dans le plan une droite parallèle à la nôtre, souvent grâce à un parallélogramme ou à une droite des milieux.</p>
+    </div>
+    <div class="box"><span class="lbl">Théorème 2 — « théorème du toit »</span>
+      <p>Si \(\mathcal D \parallel \mathcal D',\) si \(\mathcal D \subset \mathcal P,\) \(\mathcal D' \subset \mathcal P',\) et si \(\mathcal P\) et \(\mathcal P'\) sont sécants selon une droite \(\Delta,\) alors \(\Delta\) est parallèle à \(\mathcal D\) et à \(\mathcal D'.\)</p>
+      <p class="small">L'image : deux pans de toit se rejoignent selon une arête parallèle aux gouttières.</p>
+    </div>
+    <div class="box"><span class="lbl">Théorème 3 — plans parallèles coupés par un troisième</span>
+      <p>Si \(\mathcal P \parallel \mathcal P'\) et si un plan \(\mathcal Q\) coupe \(\mathcal P\) selon une droite \(d\) et \(\mathcal P'\) selon une droite \(d',\) alors \(d \parallel d'.\)</p>
+      <p class="small">C'est la clé de la construction des sections de cube : deux faces opposées étant parallèles, le plan de coupe y laisse deux traces parallèles.</p>
+    </div>
+    <div class="box green"><span class="lbl">Sur le cube</span>
+      <p>Le plan \((ABG)\) coupe la face \(ABFE\) selon \((AB)\) et la face \(DCGH\) selon \((HG).\) Ces deux faces sont parallèles, et l'on retrouve bien \((AB) \parallel (HG).\)</p>
+    </div>
+  </div>
+
+  <div class="card blue">
+    <h3><span class="num">7</span>Tout se ramène à un système linéaire</h3>
+    <p>Alignement, colinéarité, coplanarité, intersection : chaque question se traduit par un <b>système d'équations linéaires</b> dont les inconnues sont les paramètres.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>Question</th><th>Système</th><th>Inconnues</th></tr>
+        <tr><td class="lab">\(\mathcal D\) et \(\mathcal D'\) sécantes ?</td><td>\(\overrightarrow{AB} = t\,\vec u - s\,\vec v\)</td><td>\(t,\) \(s\) — 3 équations</td></tr>
+        <tr><td class="lab">\(\mathcal D\) et \(\mathcal P\) sécants ?</td><td>\(\overrightarrow{AB} = t\,\vec u - s\,\vec{u_P} - r\,\vec{v_P}\)</td><td>\(t,\) \(s,\) \(r\) — 3 équations</td></tr>
+        <tr><td class="lab">\(M \in \mathcal P\) ?</td><td>\(\overrightarrow{AM} = s\,\vec u + t\,\vec v\)</td><td>\(s,\) \(t\) — 3 équations</td></tr>
+      </table>
+    </div>
+    <div class="box"><span class="lbl">Interprétation du nombre de solutions</span>
+      <ul>
+        <li><b>Aucune solution</b> : aucun point commun. Deux droites : strictement parallèles (si \(\vec u\) et \(\vec v\) colinéaires) ou <b>non coplanaires</b> (sinon). Droite et plan : strictement parallèles.</li>
+        <li><b>Une solution unique</b> : un unique point commun, obtenu en remplaçant le paramètre trouvé.</li>
+        <li><b>Une infinité de solutions</b> : droites confondues, ou droite incluse dans le plan.</li>
+      </ul>
+    </div>
+    <div class="box amber"><span class="lbl">Exemple complet</span>
+      <p>\(\mathcal D\) passe par \(A(1\,;0\,;2)\) et a pour vecteur directeur \(\vec u(1\,;2\,;-1)\) ; \(\mathcal D'\) passe par \(B(3\,;4\,;1)\) et a pour vecteur directeur \(\vec v(2\,;1\,;1).\) Comme \(1 \times 1 - 2 \times 2 = -3 \neq 0,\) les vecteurs ne sont pas colinéaires. On cherche \(t\) et \(s\) tels que \(A + t\,\vec u = B + s\,\vec v\) :</p>
+      <p>\[\left\{\begin{array}{l} 1 + t = 3 + 2s \\ 0 + 2t = 4 + s \\ 2 - t = 1 + s \end{array}\right.\]</p>
+      <p>La deuxième équation donne \(s = 2t - 4.\) En reportant dans la première : \(1 + t = 3 + 4t - 8,\) donc \(3t = 6\) et \(t = 2,\) puis \(s = 0.\) On teste la troisième : \(2 - 2 = 0\) tandis que \(1 + 0 = 1.\) Elle n'est pas vérifiée : le système n'a <b>aucune solution</b>. Les vecteurs directeurs n'étant pas colinéaires, les droites sont <b>non coplanaires</b>.</p>
+    </div>
+    <p class="small">En repère orthonormé, ces systèmes prennent la forme des représentations paramétriques et des équations cartésiennes : voir la fiche <a class="ref" href="../01_produit_scalaire/1D_espace_orthogonalite_distances.html">1D</a>.</p>
+  </div>
+</section>
+
+<section id="methode">
+  <h2>Méthode</h2>
+
+  <div class="card green">
+    <h3>A. Déterminer la position relative de deux droites</h3>
+    <p>\(\mathcal D\) passe par \(A,\) de vecteur directeur \(\vec u\) ; \(\mathcal D'\) passe par \(B,\) de vecteur directeur \(\vec v.\) Quatre étapes, toujours dans cet ordre.</p>
+    <ol class="steps">
+      <li><b>Les vecteurs directeurs sont-ils colinéaires ?</b> On cherche \(k\) tel que \(\vec v = k\,\vec u\) (comparer les trois coordonnées, ou vérifier que les « produits en croix » sont nuls).</li>
+      <li><b>S'ils sont colinéaires</b> : tester si \(B \in \mathcal D,\) c'est-à-dire si \(\overrightarrow{AB}\) est colinéaire à \(\vec u.\) Si oui, droites <b>confondues</b> ; si non, <b>strictement parallèles</b>. C'est terminé.</li>
+      <li><b>S'ils ne sont pas colinéaires</b> : résoudre le système \(A + t\,\vec u = B + s\,\vec v\) (trois équations, deux inconnues). On utilise deux équations pour trouver \(t\) et \(s,\) puis on <b>teste la troisième</b>.</li>
+      <li><b>Conclure</b> : si la troisième équation est vérifiée, les droites sont <b>sécantes</b> et le point d'intersection s'obtient en remplaçant \(t\) dans \(A + t\,\vec u\) ; sinon elles sont <b>non coplanaires</b>.</li>
+    </ol>
+    <div class="warn">L'étape 4 est celle que l'on oublie. Trouver \(t\) et \(s\) avec deux équations ne prouve rien tant que la troisième n'a pas été testée.</div>
+  </div>
+
+  <div class="card green">
+    <h3>B. Montrer qu'une droite est parallèle à un plan</h3>
+    <p>Deux rédactions possibles ; la première est presque toujours la plus rapide au bac.</p>
+    <ol class="steps">
+      <li><b>Voie « théorème 1 »</b> : trouver dans le plan \(\mathcal P\) une droite \(\mathcal D'\) parallèle à \(\mathcal D.\) Sur un cube ou un tétraèdre, on l'obtient en montrant un <b>parallélogramme</b> (\(\overrightarrow{IJ} = \overrightarrow{KL}\)) ou en utilisant la <b>droite des milieux</b> d'un triangle. Conclure : \(\mathcal D \parallel \mathcal D'\) et \(\mathcal D' \subset \mathcal P,\) donc \(\mathcal D \parallel \mathcal P.\)</li>
+      <li><b>Voie vectorielle</b> : décomposer \(\vec u = a\,\vec{u_P} + b\,\vec{v_P}.\) Cela donne trois équations et deux inconnues \(a\) et \(b\) ; si le système a une solution, \(\vec u\) appartient à la direction de \(\mathcal P,\) donc \(\mathcal D \parallel \mathcal P.\)</li>
+      <li><b>Préciser « strictement »</b> : vérifier qu'un point de \(\mathcal D\) <b>n'appartient pas</b> à \(\mathcal P.\) Sans cette vérification, la droite pourrait être incluse dans le plan.</li>
+    </ol>
+  </div>
+
+  <div class="card green">
+    <h3>C. Déterminer l'intersection d'une droite et d'un plan</h3>
+    <ol class="steps">
+      <li><b>Écarter le parallélisme</b> : montrer que \(\vec u\) n'est <b>pas</b> combinaison linéaire de \(\vec{u_P}\) et \(\vec{v_P}.\) On sait alors qu'il existe un unique point d'intersection.</li>
+      <li><b>Paramétrer</b> : un point de \(\mathcal D\) s'écrit \(M = A + t\,\vec u\) ; appartenir à \(\mathcal P\) s'écrit \(\overrightarrow{BM} = s\,\vec{u_P} + r\,\vec{v_P}.\)</li>
+      <li><b>Résoudre</b> le système de trois équations à trois inconnues \(t,\) \(s,\) \(r.\)</li>
+      <li><b>Conclure</b> : remplacer \(t\) dans \(A + t\,\vec u\) pour obtenir \(I,\) puis <b>vérifier</b> que \(I\) satisfait bien les deux descriptions.</li>
+    </ol>
+    <p class="small">En repère, la méthode est la même en plus court : on substitue la représentation paramétrique de la droite dans l'équation cartésienne du plan, ce qui donne une seule équation en \(t\) (fiche <a class="ref" href="../01_produit_scalaire/1D_espace_orthogonalite_distances.html">1D</a>).</p>
+  </div>
+
+  <div class="card green">
+    <h3>D. Construire la section d'un cube par un plan <span class="tag">très demandée au bac</span></h3>
+    <p>Le plan de coupe est donné par trois points, souvent placés sur des arêtes. Le but est de tracer le polygone d'intersection avec la surface du cube. On avance <b>face par face</b>.</p>
+    <ol class="steps">
+      <li><b>Repérer les points donnés</b> et noter, pour chacun, la ou les faces qui le contiennent.</li>
+      <li><b>Deux points dans une même face</b> : on trace le segment qui les joint. C'est un côté de la section, car l'intersection de deux plans est une droite.</li>
+      <li><b>Une face ne contenant qu'un seul point</b> : utiliser le <b>théorème 3</b>. La face opposée est parallèle ; si la section y a déjà un côté \(d,\) alors sur la face étudiée on trace la <b>parallèle à \(d\)</b> passant par le point.</li>
+      <li><b>Si aucun parallélisme n'est disponible</b> : prolonger deux côtés déjà tracés, ou un côté et une arête, jusqu'à obtenir un <b>point auxiliaire</b> hors du cube. Ce point appartient au plan de coupe et au plan d'une face voisine : il donne la direction du côté manquant.</li>
+      <li><b>Fermer le polygone</b> et vérifier : chaque côté est tracé dans une face, et deux côtés portés par des faces <b>opposées</b> doivent être <b>parallèles</b>.</li>
+    </ol>
+    <div class="key">Une section de cube a <b>3, 4, 5 ou 6 côtés</b> : le cube a six faces, et le plan coupe chaque face selon au plus un segment. Un côté par face coupée.</div>
+    <p class="small">Le troisième onglet de la visualisation fait cette construction en direct : déplace les trois points et observe comment le polygone change de forme et quels côtés restent parallèles.</p>
+  </div>
+
+  <div class="card green">
+    <h3>E. Traduire une configuration par un système et interpréter</h3>
+    <ol class="steps">
+      <li><b>Choisir un repère ou une base</b> adaptée à la figure : sur un cube \(ABCDEFGH,\) on prend presque toujours \((A\,;\overrightarrow{AB},\overrightarrow{AD},\overrightarrow{AE}).\) Les huit sommets ont alors des coordonnées valant \(0\) ou \(1.\)</li>
+      <li><b>Traduire l'énoncé</b> : « \(M,\) \(N,\) \(P\) alignés » devient « \(\overrightarrow{MN}\) et \(\overrightarrow{MP}\) colinéaires » ; « \(M,\) \(N,\) \(P,\) \(Q\) coplanaires » devient « \(\overrightarrow{MQ} = s\,\overrightarrow{MN} + t\,\overrightarrow{MP}\) » ; « les droites se coupent » devient un système en \(t\) et \(s.\)</li>
+      <li><b>Résoudre</b> proprement, en gardant toutes les équations.</li>
+      <li><b>Interpréter</b> : pas de solution, une solution, une infinité — et traduire en langage géométrique (voir le point 7 du cours).</li>
+    </ol>
+  </div>
+
+  <div class="card coral">
+    <h3>Erreurs fréquentes</h3>
+    <ul>
+      <li><b>Croire que deux droites non parallèles sont forcément sécantes.</b> Dans l'espace, elles sont souvent <b>non coplanaires</b>. Il faut prouver la coplanarité avant de parler de point d'intersection.</li>
+      <li><b>Oublier de vérifier la coplanarité.</b> Résoudre deux équations sur trois et conclure « sécantes » est une faute : la troisième équation peut être fausse.</li>
+      <li><b>Confondre « parallèle à un plan » et « incluse dans un plan ».</b> Pour dire <b>strictement</b> parallèle, il faut vérifier qu'un point de la droite n'est pas dans le plan.</li>
+      <li><b>Conclure sur une intersection sans résoudre le système.</b> « Les droites semblent se couper sur la figure » n'est pas une démonstration ; une figure en perspective ment.</li>
+      <li><b>Prendre deux vecteurs colinéaires pour diriger un plan.</b> Deux vecteurs colinéaires ne dirigent qu'une droite : la caractérisation exige des vecteurs <b>non colinéaires</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="visu">
+  <h2>Visualisation</h2>
+  <div class="card">
+    <div class="tabs">
+      <button type="button" id="tab1" class="active">Deux droites</button>
+      <button type="button" id="tab2">Droite et plan</button>
+      <button type="button" id="tab3">Section du cube</button>
+    </div>
+
+    <div id="panel1">
+      <p>Chaque droite est donnée par un point et un vecteur directeur. Le pavé sert de repère visuel : ses arêtes valent \(4\) unités. Le verdict est recalculé à chaque mouvement.</p>
+      <div class="slider"><label for="v1az">Azimut</label><input type="range" id="v1az" min="0" max="360" step="1" value="28"><output id="v1azO">28°</output></div>
+      <div class="slider"><label for="v1el">Élévation</label><input type="range" id="v1el" min="-80" max="80" step="1" value="22"><output id="v1elO">22°</output></div>
+      <div class="ctl">Droite \(\mathcal D\) : point \(A\) <em>(bleu)</em></div>
+      <div class="triple">
+        <div class="cell"><span id="v1AxO">x = 0</span><input type="range" id="v1Ax" min="0" max="4" step="1" value="0"></div>
+        <div class="cell"><span id="v1AyO">y = 0</span><input type="range" id="v1Ay" min="0" max="4" step="1" value="0"></div>
+        <div class="cell"><span id="v1AzO">z = 0</span><input type="range" id="v1Az" min="0" max="4" step="1" value="0"></div>
+      </div>
+      <div class="ctl">Vecteur directeur \(\vec u\)</div>
+      <div class="triple">
+        <div class="cell"><span id="v1uxO">α = 1</span><input type="range" id="v1ux" min="-2" max="2" step="1" value="1"></div>
+        <div class="cell"><span id="v1uyO">β = 0</span><input type="range" id="v1uy" min="-2" max="2" step="1" value="0"></div>
+        <div class="cell"><span id="v1uzO">γ = 0</span><input type="range" id="v1uz" min="-2" max="2" step="1" value="0"></div>
+      </div>
+      <div class="ctl">Droite \(\mathcal D'\) : point \(B\) <em>(corail)</em></div>
+      <div class="triple">
+        <div class="cell"><span id="v1BxO">x = 4</span><input type="range" id="v1Bx" min="0" max="4" step="1" value="4"></div>
+        <div class="cell"><span id="v1ByO">y = 4</span><input type="range" id="v1By" min="0" max="4" step="1" value="4"></div>
+        <div class="cell"><span id="v1BzO">z = 0</span><input type="range" id="v1Bz" min="0" max="4" step="1" value="0"></div>
+      </div>
+      <div class="ctl">Vecteur directeur \(\vec v\)</div>
+      <div class="triple">
+        <div class="cell"><span id="v1vxO">α′ = 0</span><input type="range" id="v1vx" min="-2" max="2" step="1" value="0"></div>
+        <div class="cell"><span id="v1vyO">β′ = 0</span><input type="range" id="v1vy" min="-2" max="2" step="1" value="0"></div>
+        <div class="cell"><span id="v1vzO">γ′ = 1</span><input type="range" id="v1vz" min="-2" max="2" step="1" value="1"></div>
+      </div>
+      <svg id="fig1" class="figure" viewBox="0 0 440 350" role="img" aria-label="Deux droites de l'espace dans un pavé de référence"></svg>
+      <div class="legend"><span style="--c:#2563eb">droite D</span><span style="--c:#f97362">droite D′</span><span style="--c:#22a06b">point d'intersection</span></div>
+      <div class="stat" id="v1verdict"></div>
+      <div class="stat" id="v1detail"></div>
+    </div>
+
+    <div id="panel2" hidden>
+      <p>Une droite \(\mathcal D(A\,;\vec u)\) et un plan \(\mathcal P\) passant par \(C\) et dirigé par \((\vec{w_1}\,;\vec{w_2}).\) Le morceau visible du plan est sa trace dans le pavé.</p>
+      <div class="slider"><label for="v2az">Azimut</label><input type="range" id="v2az" min="0" max="360" step="1" value="28"><output id="v2azO">28°</output></div>
+      <div class="slider"><label for="v2el">Élévation</label><input type="range" id="v2el" min="-80" max="80" step="1" value="22"><output id="v2elO">22°</output></div>
+      <div class="ctl">Droite : point \(A\) <em>(bleu)</em></div>
+      <div class="triple">
+        <div class="cell"><span id="v2AxO">x = 0</span><input type="range" id="v2Ax" min="0" max="4" step="1" value="0"></div>
+        <div class="cell"><span id="v2AyO">y = 0</span><input type="range" id="v2Ay" min="0" max="4" step="1" value="0"></div>
+        <div class="cell"><span id="v2AzO">z = 0</span><input type="range" id="v2Az" min="0" max="4" step="1" value="0"></div>
+      </div>
+      <div class="ctl">Vecteur directeur \(\vec u\)</div>
+      <div class="triple">
+        <div class="cell"><span id="v2uxO">α = 1</span><input type="range" id="v2ux" min="-2" max="2" step="1" value="1"></div>
+        <div class="cell"><span id="v2uyO">β = 1</span><input type="range" id="v2uy" min="-2" max="2" step="1" value="1"></div>
+        <div class="cell"><span id="v2uzO">γ = 1</span><input type="range" id="v2uz" min="-2" max="2" step="1" value="1"></div>
+      </div>
+      <div class="ctl">Plan : point \(C\) <em>(violet)</em></div>
+      <div class="triple">
+        <div class="cell"><span id="v2CxO">x = 4</span><input type="range" id="v2Cx" min="0" max="4" step="1" value="4"></div>
+        <div class="cell"><span id="v2CyO">y = 0</span><input type="range" id="v2Cy" min="0" max="4" step="1" value="0"></div>
+        <div class="cell"><span id="v2CzO">z = 0</span><input type="range" id="v2Cz" min="0" max="4" step="1" value="0"></div>
+      </div>
+      <div class="ctl">Vecteur \(\vec{w_1}\)</div>
+      <div class="triple">
+        <div class="cell"><span id="v2w1xO">0</span><input type="range" id="v2w1x" min="-2" max="2" step="1" value="0"></div>
+        <div class="cell"><span id="v2w1yO">1</span><input type="range" id="v2w1y" min="-2" max="2" step="1" value="1"></div>
+        <div class="cell"><span id="v2w1zO">0</span><input type="range" id="v2w1z" min="-2" max="2" step="1" value="0"></div>
+      </div>
+      <div class="ctl">Vecteur \(\vec{w_2}\)</div>
+      <div class="triple">
+        <div class="cell"><span id="v2w2xO">0</span><input type="range" id="v2w2x" min="-2" max="2" step="1" value="0"></div>
+        <div class="cell"><span id="v2w2yO">0</span><input type="range" id="v2w2y" min="-2" max="2" step="1" value="0"></div>
+        <div class="cell"><span id="v2w2zO">1</span><input type="range" id="v2w2z" min="-2" max="2" step="1" value="1"></div>
+      </div>
+      <svg id="fig2" class="figure" viewBox="0 0 440 350" role="img" aria-label="Une droite et un plan de l'espace, avec leur point d'intersection"></svg>
+      <div class="legend"><span style="--c:#2563eb">droite</span><span style="--c:#7c3aed">plan</span><span style="--c:#22a06b">point d'intersection I</span></div>
+      <div class="stat" id="v2verdict"></div>
+      <div class="stat" id="v2detail"></div>
+    </div>
+
+    <div id="panel3" hidden>
+      <p>Le plan de coupe est le plan \((PQR),\) où \(P\) glisse sur l'arête \([AE],\) \(Q\) sur \([BC]\) et \(R\) sur \([GH].\) Les côtés de <b>même couleur</b> sont portés par deux faces opposées, donc parallèles : c'est le théorème 3 à l'œuvre.</p>
+      <div class="slider"><label for="v3az">Azimut</label><input type="range" id="v3az" min="0" max="360" step="1" value="28"><output id="v3azO">28°</output></div>
+      <div class="slider"><label for="v3el">Élévation</label><input type="range" id="v3el" min="-80" max="80" step="1" value="22"><output id="v3elO">22°</output></div>
+      <div class="slider"><label for="v3p">P sur [AE]</label><input type="range" id="v3p" min="0" max="100" step="5" value="75"><output id="v3pO">0,75</output></div>
+      <div class="slider"><label for="v3q">Q sur [BC]</label><input type="range" id="v3q" min="0" max="100" step="5" value="50"><output id="v3qO">0,50</output></div>
+      <div class="slider"><label for="v3r">R sur [GH]</label><input type="range" id="v3r" min="0" max="100" step="5" value="50"><output id="v3rO">0,50</output></div>
+      <svg id="fig3" class="figure" viewBox="0 0 440 350" role="img" aria-label="Section d'un cube par un plan, avec le polygone d'intersection"></svg>
+      <div class="legend"><span style="--c:#2563eb">faces x = 0 et x = 4</span><span style="--c:#d97706">faces y = 0 et y = 4</span><span style="--c:#22a06b">faces z = 0 et z = 4</span></div>
+      <div class="stat good" id="v3verdict"></div>
+      <div class="stat" id="v3detail"></div>
+    </div>
+  </div>
+</section>
+
+<section id="exos">
+  <h2>Exercices</h2>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 — Position relative de deux droites <span class="tag">Niveau 1</span></h3>
+    <div id="ex1-enonce"></div>
+    <div class="field"><span class="lab">Réponse</span>
+      <select id="ex1-rep">
+        <option value="">— choisir —</option>
+        <option value="confondues">confondues</option>
+        <option value="paralleles">strictement parallèles</option>
+        <option value="secantes">sécantes</option>
+        <option value="noncoplanaires">non coplanaires</option>
+      </select>
+    </div>
+    <div class="row"><button id="ex1-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex1-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex1-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex1-correction"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 — Intersection d'une droite et d'un plan <span class="tag">Niveau 2</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="coord">
+      <div class="cell"><span>x<sub>I</sub></span><input type="text" id="ex2-x" inputmode="decimal" placeholder="x"></div>
+      <div class="cell"><span>y<sub>I</sub></span><input type="text" id="ex2-y" inputmode="decimal" placeholder="y"></div>
+      <div class="cell"><span>z<sub>I</sub></span><input type="text" id="ex2-z" inputmode="decimal" placeholder="z"></div>
+    </div>
+    <div class="row"><button id="ex2-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 — Deux droites d'un cube <span class="tag">Niveau 3</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="field"><span class="lab">Réponse</span>
+      <select id="ex3-rep">
+        <option value="">— choisir —</option>
+        <option value="paralleles">parallèles</option>
+        <option value="secantes">sécantes</option>
+        <option value="noncoplanaires">non coplanaires</option>
+      </select>
+    </div>
+    <div class="row"><button id="ex3-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div>
+</section>
+
+<section id="qcm">
+  <h2>QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard dans une banque de quinze. Une seule bonne réponse par question.</p>
+    <div id="qcm-container"></div>
+    <div class="score" id="qcm-score"></div>
+    <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+  <p><a class="retour-fiches" href="../../index.html">← Toutes les fiches</a></p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function fmt(x, d) {
+    if (!isFinite(x)) return '—';
+    var p = Math.pow(10, d === undefined ? 2 : d);
+    return String(Math.round(x * p) / p).replace('.', ',');
+  }
+  function parseNum(s) {
+    if (s === null || s === undefined) return NaN;
+    s = String(s).trim().replace(',', '.').replace(/\s/g, '');
+    if (s === '') return NaN;
+    return Number(s);
+  }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'good' : 'bad');
+    el.innerHTML = (ok ? '✓ ' : '✗ ') + msg;
+    typeset(el);
+  }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  /* ---------- calcul vectoriel ---------- */
+  function sub(p, q) { return [p[0] - q[0], p[1] - q[1], p[2] - q[2]]; }
+  function add(p, q) { return [p[0] + q[0], p[1] + q[1], p[2] + q[2]]; }
+  function mul(u, k) { return [u[0] * k, u[1] * k, u[2] * k]; }
+  function dot(u, v) { return u[0] * v[0] + u[1] * v[1] + u[2] * v[2]; }
+  function cross(u, v) {
+    return [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+  }
+  function n2(u) { return dot(u, u); }
+  function isZero(u) { return n2(u) < 1e-12; }
+  function colin(u, v) { return isZero(cross(u, v)); }
+  function det3(a, b, c) { return dot(a, cross(b, c)); }
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+  function reduceVec(u) {
+    var g = gcd(gcd(u[0], u[1]), u[2]);
+    if (!g) return u.slice();
+    var r = [u[0] / g, u[1] / g, u[2] / g];
+    var first = r[0] || r[1] || r[2];
+    if (first < 0) r = [-r[0], -r[1], -r[2]];
+    return r;
+  }
+
+  /* ---------- écriture mathématique ---------- */
+  function nb(x) { return String(Math.round(x * 1000) / 1000).replace('.', ','); }
+  function co(u) { return '(' + nb(u[0]) + '\\,;' + nb(u[1]) + '\\,;' + nb(u[2]) + ')'; }
+  function pt(name, P) { return name + co(P); }
+  function vecTeX(name, u) { return '\\vec{' + name + '}\\,' + co(u); }
+  function fracTeX(n, d) {
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d); n = n / g; d = d / g;
+    if (d === 1) return String(n);
+    return (n < 0 ? '-' : '') + '\\dfrac{' + Math.abs(n) + '}{' + d + '}';
+  }
+  // terme « coefficient × lettre » lisible : 3t, -t, t …
+  function coefT(c, letter) {
+    if (c === 0) return '0';
+    if (c === 1) return letter;
+    if (c === -1) return '-' + letter;
+    return c + letter;
+  }
+  function signed(c, letter) {
+    if (c === 0) return '';
+    var s = c > 0 ? ' + ' : ' - ';
+    var a = Math.abs(c);
+    return s + (a === 1 && letter !== '' ? letter : a + letter);
+  }
+  // un nombre negatif s'ecrit entre parentheses dans un produit
+  function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  // preuve chiffree de la non-colinearite : un produit en croix non nul
+  function croixTeX(u, v, na, nb2) {
+    var pairs = [[0, 1], [0, 2], [1, 2]], i, j, m, p;
+    na = na || 'u'; nb2 = nb2 || 'v';
+    for (p = 0; p < 3; p++) {
+      i = pairs[p][0]; j = pairs[p][1];
+      m = u[i] * v[j] - u[j] * v[i];
+      if (Math.abs(m) > 1e-9) {
+        return na + '_' + (i + 1) + nb2 + '_' + (j + 1) + ' - ' + na + '_' + (j + 1) + nb2 + '_' + (i + 1) + ' = ' +
+          par(u[i]) + ' \\times ' + par(v[j]) + ' - ' + par(u[j]) + ' \\times ' + par(v[i]) + ' = ' + m;
+      }
+    }
+    return null;
+  }
+  // equation cartesienne ax + by + cz + d = 0
+  function planEqTeX(n, dd) {
+    var names = ['x', 'y', 'z'], s = '', i, a;
+    for (i = 0; i < 3; i++) {
+      if (n[i] === 0) continue;
+      a = Math.abs(n[i]);
+      if (s === '') s += (n[i] < 0 ? '-' : '') + (a === 1 ? '' : a) + names[i];
+      else s += (n[i] > 0 ? ' + ' : ' - ') + (a === 1 ? '' : a) + names[i];
+    }
+    if (s === '') s = '0';
+    if (dd !== 0) s += (dd > 0 ? ' + ' + dd : ' - ' + Math.abs(dd));
+    return s + ' = 0';
+  }
+
+  /* ---------- navigation sticky ---------- */
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.scrollY + 110, cur = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', updateNav); updateNav();
+
+  /* ============================================================
+     MOTEUR 3D MAISON — projection orthographique, sans bibliothèque
+     ============================================================ */
+  var LO = 0, HI = 4, CENTER = [2, 2, 2];
+  var CX = 220, CY = 176, BASE = 36, MAXR = 148;
+
+  function proj(p, az, el, sc) {
+    var A = az * Math.PI / 180, E = el * Math.PI / 180;
+    var ca = Math.cos(A), sa = Math.sin(A), ce = Math.cos(E), se = Math.sin(E);
+    var dx = p[0] - CENTER[0], dy = p[1] - CENTER[1], dz = p[2] - CENTER[2];
+    var rx = -sa * dx + ca * dy;
+    var ry = -ca * se * dx - sa * se * dy + ce * dz;
+    var dp = ca * ce * dx + sa * ce * dy + se * dz;
+    return { x: CX + sc * rx, y: CY - sc * ry, d: dp };
+  }
+  function fitScale(pts) {
+    var R = 0.001, i, d, r;
+    for (i = 0; i < pts.length; i++) {
+      d = sub(pts[i], CENTER);
+      r = Math.sqrt(n2(d));
+      if (r > R) R = r;
+    }
+    return Math.min(BASE, MAXR / R);
+  }
+
+  var VNAMES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  var VERT = [[0, 0, 0], [4, 0, 0], [4, 4, 0], [0, 4, 0], [0, 0, 4], [4, 0, 4], [4, 4, 4], [0, 4, 4]];
+  var EDGES = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+
+  function svgLine(p, q, color, w, dash) {
+    return '<line x1="' + p.x.toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + q.x.toFixed(1) +
+      '" y2="' + q.y.toFixed(1) + '" stroke="' + color + '" stroke-width="' + w + '" stroke-linecap="round"' +
+      (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>';
+  }
+  function svgDot(p, color, r) {
+    return '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + r +
+      '" fill="' + color + '" stroke="#fff" stroke-width="1.8"/>';
+  }
+  function svgText(p, txt, color, dx, dy, size) {
+    return '<text x="' + (p.x + (dx === undefined ? 9 : dx)).toFixed(1) + '" y="' + (p.y + (dy === undefined ? -8 : dy)).toFixed(1) +
+      '" fill="' + color + '" font-size="' + (size || 14) + '" font-weight="700" font-family="Georgia,serif">' + esc(txt) + '</text>';
+  }
+  function svgArrow(p, q, color, w) {
+    var dx = q.x - p.x, dy = q.y - p.y, L = Math.sqrt(dx * dx + dy * dy);
+    if (L < 1) return '';
+    var ux = dx / L, uy = dy / L;
+    var h = Math.min(12, L * 0.4), hw = h * 0.45;
+    var bx = q.x - ux * h, by = q.y - uy * h;
+    var nx = -uy, ny = ux;
+    return '<line x1="' + p.x.toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) +
+      '" stroke="' + color + '" stroke-width="' + (w || 2.4) + '" stroke-linecap="round"/>' +
+      '<polygon points="' + q.x.toFixed(1) + ',' + q.y.toFixed(1) + ' ' +
+      (bx + nx * hw).toFixed(1) + ',' + (by + ny * hw).toFixed(1) + ' ' +
+      (bx - nx * hw).toFixed(1) + ',' + (by - ny * hw).toFixed(1) + '" fill="' + color + '"/>';
+  }
+  function cubeSVG(az, el, sc, labels) {
+    var P = VERT.map(function (v) { return proj(v, az, el, sc); });
+    var es = EDGES.map(function (e) { return { p: P[e[0]], q: P[e[1]], d: (P[e[0]].d + P[e[1]].d) / 2 }; });
+    es.sort(function (a, b) { return a.d - b.d; });
+    var out = '', i;
+    for (i = 0; i < es.length; i++) {
+      var back = i < es.length / 2;
+      out += svgLine(es[i].p, es[i].q, back ? '#ded8cd' : '#9aa3af', back ? 1.3 : 1.9, back ? '5 4' : null);
+    }
+    if (labels) {
+      for (i = 0; i < 8; i++) {
+        var dx = P[i].x - CX, dy = P[i].y - CY, L = Math.sqrt(dx * dx + dy * dy) || 1;
+        out += '<circle cx="' + P[i].x.toFixed(1) + '" cy="' + P[i].y.toFixed(1) + '" r="2.6" fill="#6b7280"/>';
+        out += svgText(P[i], VNAMES[i], '#4b5563', dx / L * 13 - 4, dy / L * 13 + 5, 13);
+      }
+    }
+    return out;
+  }
+  function axesSVG(az, el, sc) {
+    var O = proj([LO, LO, LO], az, el, sc);
+    var ax = [[HI + 0.9, LO, LO], [LO, HI + 0.9, LO], [LO, LO, HI + 0.9]];
+    var names = ['x', 'y', 'z'], out = '', i, P;
+    for (i = 0; i < 3; i++) {
+      P = proj(ax[i], az, el, sc);
+      out += svgArrow(O, P, '#c3bbae', 1.5);
+      out += '<text x="' + (P.x + 5).toFixed(1) + '" y="' + (P.y + 5).toFixed(1) +
+        '" fill="#8a8377" font-size="13" font-style="italic" font-family="Georgia,serif">' + names[i] + '</text>';
+    }
+    return out;
+  }
+  /* intervalle de t tel que A + t·u reste dans le pavé, ou null */
+  function clipLine(A, u) {
+    var t0 = -1e9, t1 = 1e9, k, ta, tb, tmp;
+    for (k = 0; k < 3; k++) {
+      if (Math.abs(u[k]) < 1e-9) {
+        if (A[k] < LO - 1e-9 || A[k] > HI + 1e-9) return null;
+      } else {
+        ta = (LO - A[k]) / u[k]; tb = (HI - A[k]) / u[k];
+        if (ta > tb) { tmp = ta; ta = tb; tb = tmp; }
+        if (ta > t0) t0 = ta;
+        if (tb < t1) t1 = tb;
+      }
+    }
+    return (t0 > t1) ? null : [t0, t1];
+  }
+  /* segment 3D représentant la droite (A ; u) */
+  function lineSeg(A, u) {
+    if (isZero(u)) return null;
+    var L = Math.sqrt(n2(u)), c = clipLine(A, u), t0, t1;
+    if (c) { t0 = c[0] - 0.45 / L; t1 = c[1] + 0.45 / L; }
+    else { t0 = -2.6 / L; t1 = 2.6 / L; }
+    return [add(A, mul(u, t0)), add(A, mul(u, t1))];
+  }
+  /* section du pavé par le plan n·X + d = 0 : polygone convexe ordonné */
+  function planePolygon(n, d) {
+    if (isZero(n)) return [];
+    var f = function (p) { return dot(n, p) + d; };
+    var pts = [];
+    function addP(p) {
+      for (var i = 0; i < pts.length; i++) {
+        if (Math.abs(pts[i][0] - p[0]) < 1e-7 && Math.abs(pts[i][1] - p[1]) < 1e-7 && Math.abs(pts[i][2] - p[2]) < 1e-7) return;
+      }
+      pts.push(p);
+    }
+    EDGES.forEach(function (e) {
+      var P = VERT[e[0]], Q = VERT[e[1]], fp = f(P), fq = f(Q), s;
+      if (Math.abs(fp) < 1e-9) addP(P.slice());
+      if (Math.abs(fq) < 1e-9) addP(Q.slice());
+      if (fp * fq < 0) {
+        s = fp / (fp - fq);
+        addP([P[0] + s * (Q[0] - P[0]), P[1] + s * (Q[1] - P[1]), P[2] + s * (Q[2] - P[2])]);
+      }
+    });
+    if (pts.length < 3) return [];
+    var G = [0, 0, 0];
+    pts.forEach(function (p) { G = add(G, p); });
+    G = mul(G, 1 / pts.length);
+    var e1 = null, e2 = null, i, v, w;
+    for (i = 0; i < pts.length && !e1; i++) { v = sub(pts[i], G); if (n2(v) > 1e-12) e1 = mul(v, 1 / Math.sqrt(n2(v))); }
+    if (!e1) return [];
+    for (i = 0; i < pts.length && !e2; i++) {
+      v = sub(pts[i], G);
+      w = sub(v, mul(e1, dot(v, e1)));
+      if (n2(w) > 1e-12) e2 = mul(w, 1 / Math.sqrt(n2(w)));
+    }
+    if (!e2) return [];
+    pts.sort(function (p, q) {
+      return Math.atan2(dot(sub(p, G), e2), dot(sub(p, G), e1)) - Math.atan2(dot(sub(q, G), e2), dot(sub(q, G), e1));
+    });
+    return pts;
+  }
+  function polySVG(poly, az, el, sc, fill, stroke) {
+    if (!poly.length) return '';
+    var s = poly.map(function (p) { var q = proj(p, az, el, sc); return q.x.toFixed(1) + ',' + q.y.toFixed(1); }).join(' ');
+    return '<polygon points="' + s + '" fill="' + fill + '" stroke="' + (stroke || 'none') + '" stroke-width="1.6"/>';
+  }
+
+  /* ---------- positions relatives ---------- */
+  function relLines(A, u, B, v) {
+    if (isZero(u) || isZero(v)) return { code: 'deg' };
+    var AB = sub(B, A);
+    if (colin(u, v)) {
+      return colin(AB, u) ? { code: 'confondues' } : { code: 'paralleles' };
+    }
+    if (Math.abs(det3(AB, u, v)) > 1e-9) return { code: 'noncoplanaires' };
+    var c = cross(u, v), k = n2(c);
+    var t = dot(cross(AB, v), c) / k;
+    var s = dot(cross(AB, u), c) / k;
+    return { code: 'secantes', t: t, s: s, I: add(A, mul(u, t)) };
+  }
+  function relLinePlane(A, u, C, w1, w2) {
+    if (isZero(u)) return { code: 'deg' };
+    var n = cross(w1, w2);
+    if (isZero(n)) return { code: 'plandeg' };
+    var den = dot(n, u);
+    if (Math.abs(den) < 1e-9) {
+      return Math.abs(dot(n, sub(A, C))) < 1e-9 ? { code: 'incluse', n: n } : { code: 'paralleles', n: n };
+    }
+    var t = dot(n, sub(C, A)) / den;
+    return { code: 'secants', t: t, I: add(A, mul(u, t)), n: n };
+  }
+
+  /* ============================================================
+     VISUALISATION — trois onglets
+     ============================================================ */
+  function val(id) { return parseFloat($(id).value); }
+  function vec3(p) { return [val(p + 'x'), val(p + 'y'), val(p + 'z')]; }
+  function pt3(p) { return [val(p + 'x'), val(p + 'y'), val(p + 'z')]; }
+  function plain(P) { return '(' + fmt(P[0]) + ' ; ' + fmt(P[1]) + ' ; ' + fmt(P[2]) + ')'; }
+
+  /* --- onglet 1 : deux droites --- */
+  function draw1() {
+    var az = val('v1az'), el = val('v1el');
+    var A = [val('v1Ax'), val('v1Ay'), val('v1Az')];
+    var u = [val('v1ux'), val('v1uy'), val('v1uz')];
+    var B = [val('v1Bx'), val('v1By'), val('v1Bz')];
+    var v = [val('v1vx'), val('v1vy'), val('v1vz')];
+    $('v1azO').textContent = az + '°';
+    $('v1elO').textContent = el + '°';
+    $('v1AxO').textContent = 'x = ' + A[0]; $('v1AyO').textContent = 'y = ' + A[1]; $('v1AzO').textContent = 'z = ' + A[2];
+    $('v1uxO').textContent = 'α = ' + u[0]; $('v1uyO').textContent = 'β = ' + u[1]; $('v1uzO').textContent = 'γ = ' + u[2];
+    $('v1BxO').textContent = 'x = ' + B[0]; $('v1ByO').textContent = 'y = ' + B[1]; $('v1BzO').textContent = 'z = ' + B[2];
+    $('v1vxO').textContent = 'α′ = ' + v[0]; $('v1vyO').textContent = 'β′ = ' + v[1]; $('v1vzO').textContent = 'γ′ = ' + v[2];
+
+    var r = relLines(A, u, B, v);
+    var s1 = lineSeg(A, u), s2 = lineSeg(B, v);
+    var pts = VERT.slice();
+    if (s1) { pts.push(s1[0]); pts.push(s1[1]); }
+    if (s2) { pts.push(s2[0]); pts.push(s2[1]); }
+    if (r.code === 'secantes') pts.push(r.I);
+    var sc = fitScale(pts);
+
+    var out = cubeSVG(az, el, sc, false) + axesSVG(az, el, sc);
+    if (s1) out += svgLine(proj(s1[0], az, el, sc), proj(s1[1], az, el, sc), '#2563eb', 2.8);
+    if (s2) out += svgLine(proj(s2[0], az, el, sc), proj(s2[1], az, el, sc), '#f97362', 2.8);
+    if (!isZero(u)) out += svgArrow(proj(A, az, el, sc), proj(add(A, u), az, el, sc), '#1d4ed8', 2.2);
+    if (!isZero(v)) out += svgArrow(proj(B, az, el, sc), proj(add(B, v), az, el, sc), '#dc2626', 2.2);
+    var pA = proj(A, az, el, sc), pB = proj(B, az, el, sc);
+    out += svgDot(pA, '#2563eb', 4.5) + svgText(pA, 'A', '#2563eb');
+    out += svgDot(pB, '#f97362', 4.5) + svgText(pB, 'B', '#c2410c');
+    if (r.code === 'secantes') {
+      var pI = proj(r.I, az, el, sc);
+      out += svgDot(pI, '#22a06b', 5.5) + svgText(pI, 'I', '#15803d', 10, 16);
+    }
+    $('fig1').innerHTML = out;
+
+    var vb = $('v1verdict'), db = $('v1detail');
+    if (r.code === 'deg') {
+      vb.className = 'stat warn'; vb.innerHTML = '<b>Vecteur nul.</b> Un vecteur directeur doit être non nul : règle les curseurs.';
+      db.className = 'stat'; db.textContent = '';
+    } else if (r.code === 'confondues') {
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droites confondues.</b> Une infinité de points communs.';
+      db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs sont colinéaires, et le point B appartient à la droite D : les deux droites sont la même.';
+    } else if (r.code === 'paralleles') {
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droites strictement parallèles.</b> Aucun point commun.';
+      db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs sont colinéaires, mais B n\u2019appartient pas à D. Les droites sont coplanaires.';
+    } else if (r.code === 'secantes') {
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droites sécantes</b> en I ' + plain(r.I) + '.';
+      db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs ne sont pas colinéaires, et le système A + t·u = B + s·v a une solution : t = ' +
+        fmt(r.t) + ' et s = ' + fmt(r.s) + '. Les droites sont coplanaires.';
+    } else {
+      vb.className = 'stat bad'; vb.innerHTML = '<b>Droites non coplanaires.</b> Aucun point commun, et pourtant elles ne sont pas parallèles.';
+      db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs ne sont pas colinéaires et les vecteurs AB, u, v ne sont pas coplanaires : aucun plan ne contient les deux droites. C\u2019est le cas qui n\u2019existe pas dans le plan.';
+    }
+  }
+
+  /* --- onglet 2 : droite et plan --- */
+  function draw2() {
+    var az = val('v2az'), el = val('v2el');
+    var A = [val('v2Ax'), val('v2Ay'), val('v2Az')];
+    var u = [val('v2ux'), val('v2uy'), val('v2uz')];
+    var C = [val('v2Cx'), val('v2Cy'), val('v2Cz')];
+    var w1 = [val('v2w1x'), val('v2w1y'), val('v2w1z')];
+    var w2 = [val('v2w2x'), val('v2w2y'), val('v2w2z')];
+    $('v2azO').textContent = az + '°';
+    $('v2elO').textContent = el + '°';
+    $('v2AxO').textContent = 'x = ' + A[0]; $('v2AyO').textContent = 'y = ' + A[1]; $('v2AzO').textContent = 'z = ' + A[2];
+    $('v2uxO').textContent = 'α = ' + u[0]; $('v2uyO').textContent = 'β = ' + u[1]; $('v2uzO').textContent = 'γ = ' + u[2];
+    $('v2CxO').textContent = 'x = ' + C[0]; $('v2CyO').textContent = 'y = ' + C[1]; $('v2CzO').textContent = 'z = ' + C[2];
+    $('v2w1xO').textContent = w1[0]; $('v2w1yO').textContent = w1[1]; $('v2w1zO').textContent = w1[2];
+    $('v2w2xO').textContent = w2[0]; $('v2w2yO').textContent = w2[1]; $('v2w2zO').textContent = w2[2];
+
+    var r = relLinePlane(A, u, C, w1, w2);
+    var poly = (r.n && !isZero(r.n)) ? planePolygon(r.n, -dot(r.n, C)) : [];
+    var s1 = lineSeg(A, u);
+    var pts = VERT.slice();
+    if (s1) { pts.push(s1[0]); pts.push(s1[1]); }
+    if (r.code === 'secants') pts.push(r.I);
+    var sc = fitScale(pts);
+
+    var out = cubeSVG(az, el, sc, false) + axesSVG(az, el, sc);
+    if (poly.length) out += polySVG(poly, az, el, sc, 'rgba(124,58,237,.22)', '#7c3aed');
+    if (s1) out += svgLine(proj(s1[0], az, el, sc), proj(s1[1], az, el, sc), '#2563eb', 2.8);
+    if (!isZero(u)) out += svgArrow(proj(A, az, el, sc), proj(add(A, u), az, el, sc), '#1d4ed8', 2.2);
+    if (!isZero(w1)) out += svgArrow(proj(C, az, el, sc), proj(add(C, w1), az, el, sc), '#7c3aed', 2.2);
+    if (!isZero(w2)) out += svgArrow(proj(C, az, el, sc), proj(add(C, w2), az, el, sc), '#a855f7', 2.2);
+    var pA = proj(A, az, el, sc), pC = proj(C, az, el, sc);
+    out += svgDot(pA, '#2563eb', 4.5) + svgText(pA, 'A', '#2563eb');
+    out += svgDot(pC, '#7c3aed', 4.5) + svgText(pC, 'C', '#6d28d9');
+    if (r.code === 'secants') {
+      var pI = proj(r.I, az, el, sc);
+      out += svgDot(pI, '#22a06b', 5.5) + svgText(pI, 'I', '#15803d', 10, 16);
+    }
+    $('fig2').innerHTML = out;
+
+    var vb = $('v2verdict'), db = $('v2detail');
+    if (r.code === 'deg') {
+      vb.className = 'stat warn'; vb.innerHTML = '<b>Vecteur directeur nul.</b> Choisis un vecteur non nul pour la droite.';
+      db.className = 'stat'; db.textContent = '';
+    } else if (r.code === 'plandeg') {
+      vb.className = 'stat warn'; vb.innerHTML = '<b>Ce n\u2019est pas un plan.</b> Les vecteurs w₁ et w₂ sont colinéaires (ou nuls) : ils ne dirigent qu\u2019une droite.';
+      db.className = 'stat'; db.innerHTML = 'La caractérisation d\u2019un plan exige deux vecteurs NON colinéaires.';
+    } else if (r.code === 'incluse') {
+      vb.className = 'stat good'; vb.innerHTML = '<b>La droite est incluse dans le plan.</b> Une infinité de points communs.';
+      db.className = 'stat'; db.innerHTML = 'Le vecteur u est combinaison linéaire de w₁ et w₂, et le point A appartient au plan.';
+    } else if (r.code === 'paralleles') {
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droite strictement parallèle au plan.</b> Aucun point commun.';
+      db.className = 'stat'; db.innerHTML = 'Le vecteur u appartient à la direction du plan (il est combinaison de w₁ et w₂), mais A n\u2019est pas dans le plan.';
+    } else {
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droite et plan sécants</b> en I ' + plain(r.I) + '.';
+      db.className = 'stat'; db.innerHTML = 'Le vecteur u n\u2019est pas combinaison linéaire de w₁ et w₂ : il existe un unique point commun, obtenu pour t = ' + fmt(r.t) + '.';
+    }
+  }
+
+  /* --- onglet 3 : section d'un cube --- */
+  function vertName(p) {
+    for (var i = 0; i < 8; i++) {
+      if (Math.abs(VERT[i][0] - p[0]) < 1e-6 && Math.abs(VERT[i][1] - p[1]) < 1e-6 && Math.abs(VERT[i][2] - p[2]) < 1e-6) return VNAMES[i];
+    }
+    return null;
+  }
+  function edgeName(p) {
+    var v = vertName(p);
+    if (v) return 'le sommet ' + v;
+    var fixed = [], k;
+    for (k = 0; k < 3; k++) {
+      if (Math.abs(p[k] - LO) < 1e-6 || Math.abs(p[k] - HI) < 1e-6) fixed.push(k);
+    }
+    if (fixed.length !== 2) return null;
+    var free = 3 - fixed[0] - fixed[1];
+    var a = p.slice(), b = p.slice();
+    a[free] = LO; b[free] = HI;
+    var na = vertName(a), nb2 = vertName(b);
+    return (na && nb2) ? '[' + na + nb2 + ']' : null;
+  }
+  var FACECOL = ['#2563eb', '#d97706', '#22a06b'];
+  function sideAxis(p, q) {
+    for (var k = 0; k < 3; k++) {
+      if (Math.abs(p[k] - q[k]) < 1e-6 && (Math.abs(p[k] - LO) < 1e-6 || Math.abs(p[k] - HI) < 1e-6)) return k;
+    }
+    return -1;
+  }
+  var POLYNAME = { 3: 'un triangle', 4: 'un quadrilatère', 5: 'un pentagone', 6: 'un hexagone' };
+  function draw3() {
+    var az = val('v3az'), el = val('v3el');
+    var p = val('v3p') / 100, q = val('v3q') / 100, r = val('v3r') / 100;
+    $('v3azO').textContent = az + '°';
+    $('v3elO').textContent = el + '°';
+    $('v3pO').textContent = fmt(p); $('v3qO').textContent = fmt(q); $('v3rO').textContent = fmt(r);
+
+    var P = [0, 0, 4 * p], Q = [4, 4 * q, 0], R = [4 - 4 * r, 4, 4];
+    var n = cross(sub(Q, P), sub(R, P));
+    var poly = isZero(n) ? [] : planePolygon(n, -dot(n, P));
+    var sc = fitScale(VERT);
+
+    var out = cubeSVG(az, el, sc, true);
+    if (poly.length) {
+      out += polySVG(poly, az, el, sc, 'rgba(37,99,235,.14)', 'none');
+      for (var i = 0; i < poly.length; i++) {
+        var a = poly[i], b = poly[(i + 1) % poly.length];
+        var k = sideAxis(a, b);
+        out += svgLine(proj(a, az, el, sc), proj(b, az, el, sc), k >= 0 ? FACECOL[k] : '#6b7280', 3.2);
+      }
+      poly.forEach(function (s) { out += svgDot(proj(s, az, el, sc), '#111827', 3.4); });
+    }
+    [[P, 'P'], [Q, 'Q'], [R, 'R']].forEach(function (e) {
+      var pp = proj(e[0], az, el, sc);
+      out += svgDot(pp, '#f97362', 5) + svgText(pp, e[1], '#c2410c', 9, -9, 15);
+    });
+    $('fig3').innerHTML = out;
+
+    var vb = $('v3verdict'), db = $('v3detail');
+    if (!poly.length) {
+      vb.className = 'stat warn'; vb.innerHTML = '<b>Les trois points sont alignés :</b> ils ne définissent pas un plan.';
+      db.textContent = '';
+      return;
+    }
+    vb.className = 'stat good';
+    vb.innerHTML = '<b>La section est ' + (POLYNAME[poly.length] || 'un polygone à ' + poly.length + ' côtés') + '</b> (' + poly.length + ' côtés, donc ' + poly.length + ' faces coupées).';
+    var noms = poly.map(function (s) { return edgeName(s) || 'une arête'; });
+    var pairs = {}, kk;
+    for (var j = 0; j < poly.length; j++) {
+      kk = sideAxis(poly[j], poly[(j + 1) % poly.length]);
+      if (kk >= 0) pairs[kk] = (pairs[kk] || 0) + 1;
+    }
+    var par = [];
+    ['x', 'y', 'z'].forEach(function (ax, idx) {
+      if (pairs[idx] === 2) par.push('les deux côtés portés par les faces ' + ax + ' = 0 et ' + ax + ' = 4 sont parallèles');
+    });
+    db.className = 'stat';
+    db.innerHTML = 'Sommets de la section, dans l\u2019ordre : ' + noms.join(', ') + '. ' +
+      (par.length ? par.join(' ; ') + ' — c\u2019est le théorème 3.' : 'Aucune paire de faces opposées n\u2019est coupée deux fois ici.');
+  }
+
+  /* --- onglets --- */
+  var TABS = [['tab1', 'panel1', draw1], ['tab2', 'panel2', draw2], ['tab3', 'panel3', draw3]];
+  TABS.forEach(function (t) {
+    $(t[0]).addEventListener('click', function () {
+      TABS.forEach(function (o) {
+        $(o[0]).classList.toggle('active', o[0] === t[0]);
+        $(o[1]).hidden = (o[1] !== t[1]);
+      });
+      t[2]();
+    });
+  });
+  ['v1az', 'v1el', 'v1Ax', 'v1Ay', 'v1Az', 'v1ux', 'v1uy', 'v1uz', 'v1Bx', 'v1By', 'v1Bz', 'v1vx', 'v1vy', 'v1vz']
+    .forEach(function (id) { $(id).addEventListener('input', draw1); });
+  ['v2az', 'v2el', 'v2Ax', 'v2Ay', 'v2Az', 'v2ux', 'v2uy', 'v2uz', 'v2Cx', 'v2Cy', 'v2Cz', 'v2w1x', 'v2w1y', 'v2w1z', 'v2w2x', 'v2w2y', 'v2w2z']
+    .forEach(function (id) { $(id).addEventListener('input', draw2); });
+  ['v3az', 'v3el', 'v3p', 'v3q', 'v3r'].forEach(function (id) { $(id).addEventListener('input', draw3); });
+
+  /* ============================================================
+     EXERCICES
+     ============================================================ */
+  function wireExercise(n, gen, check) {
+    var id = 'ex' + n, card = $(id), cur = null;
+    function render() {
+      cur = gen();
+      $(id + '-enonce').innerHTML = cur.enonce;
+      [].forEach.call(card.querySelectorAll('input[type="text"]'), function (i) { i.value = ''; });
+      [].forEach.call(card.querySelectorAll('select'), function (s) { s.selectedIndex = 0; });
+      $(id + '-fb').textContent = '';
+      $(id + '-fb').className = 'feedback';
+      $(id + '-correction').classList.remove('show');
+      $(id + '-correction').innerHTML = '';
+      $(id + '-corr').textContent = 'Voir la correction';
+      typeset($(id + '-enonce'));
+    }
+    $(id + '-check').addEventListener('click', function () {
+      var r = check(cur);
+      setFeedback($(id + '-fb'), r.ok, r.msg);
+    });
+    [].forEach.call(card.querySelectorAll('input[type="text"]'), function (i) {
+      i.addEventListener('keydown', function (e) { if (e.key === 'Enter') $(id + '-check').click(); });
+    });
+    $(id + '-corr').addEventListener('click', function () {
+      var box = $(id + '-correction');
+      if (box.classList.contains('show')) {
+        box.classList.remove('show'); this.textContent = 'Voir la correction';
+      } else {
+        box.innerHTML = cur.correction; box.classList.add('show');
+        this.textContent = 'Masquer la correction'; typeset(box);
+      }
+    });
+    $(id + '-new').addEventListener('click', render);
+    render();
+  }
+
+  function randVec(m) {
+    var u;
+    do { u = [rnd(-m, m), rnd(-m, m), rnd(-m, m)]; } while (isZero(u));
+    return u;
+  }
+  var NOMCAS = {
+    confondues: 'confondues',
+    paralleles: 'strictement parallèles',
+    secantes: 'sécantes',
+    noncoplanaires: 'non coplanaires'
+  };
+
+  /* --- Exercice 1 : position relative de deux droites --- */
+  // système : t·u − s·v = AB ; on résout avec deux lignes, on teste la troisième
+  function solve2of3(u, v, AB) {
+    var i, j, det;
+    for (i = 0; i < 3; i++) {
+      for (j = i + 1; j < 3; j++) {
+        det = -u[i] * v[j] + v[i] * u[j];
+        if (Math.abs(det) > 1e-9) {
+          var tn = AB[i] * (-v[j]) - (-v[i]) * AB[j];
+          var sn = u[i] * AB[j] - AB[i] * u[j];
+          var k = 3 - i - j;
+          return { i: i, j: j, k: k, det: det, tn: tn, sn: sn, t: tn / det, s: sn / det };
+        }
+      }
+    }
+    return null;
+  }
+  var AXE = ['première', 'deuxième', 'troisième'];
+
+  function eqLine(A, u, B, v, i) {
+    var g = A[i] + ' ' + (u[i] === 0 ? '' : signed(u[i], 't')) + ' = ' + B[i] + (v[i] === 0 ? '' : signed(v[i], 's'));
+    return g.replace(/\s+/g, ' ');
+  }
+
+  wireExercise(1, function () {
+    var cas = pick(['confondues', 'paralleles', 'secantes', 'noncoplanaires']);
+    var A, u, B, v, guard = 0, r;
+    do {
+      guard++;
+      A = [rnd(0, 3), rnd(0, 3), rnd(0, 3)];
+      u = randVec(2);
+      if (cas === 'confondues') {
+        v = mul(u, pick([-2, -1, 1, 2]));
+        B = add(A, mul(u, pick([-2, -1, 1, 2, 3])));
+      } else if (cas === 'paralleles') {
+        v = mul(u, pick([-2, -1, 1, 2]));
+        var w = randVec(2);
+        while (colin(w, u)) { w = randVec(2); }
+        B = add(A, w);
+      } else if (cas === 'secantes') {
+        v = randVec(2);
+        while (colin(u, v)) { v = randVec(2); }
+        var t0 = pick([-2, -1, 1, 2, 3]), s0 = pick([-2, -1, 1, 2]);
+        B = sub(add(A, mul(u, t0)), mul(v, s0));
+      } else {
+        v = randVec(2);
+        while (colin(u, v)) { v = randVec(2); }
+        var w2 = randVec(2);
+        while (Math.abs(det3(w2, u, v)) < 1e-9) { w2 = randVec(2); }
+        B = add(A, w2);
+      }
+      r = relLines(A, u, B, v);
+    } while (r.code !== cas && guard < 60);
+
+    var AB = sub(B, A);
+    var corr;
+    if (r.code === 'confondues' || r.code === 'paralleles') {
+      var k = 0, idx;
+      for (idx = 0; idx < 3; idx++) { if (u[idx] !== 0) { k = v[idx] / u[idx]; break; } }
+      corr = '<p><b>Étape 1 — vecteurs directeurs.</b> On a \\(' + vecTeX('v', v) + ' = ' + nb(k) + '\\,' + vecTeX('u', u) + '\\) : les vecteurs sont colinéaires, donc les droites sont parallèles.</p>' +
+        '<p><b>Étape 2 — le point \\(B\\) est-il sur \\(\\mathcal D\\) ?</b> On calcule \\(\\overrightarrow{AB}' + co(AB) + '.\\) ';
+      if (r.code === 'confondues') {
+        var kk = 0;
+        for (idx = 0; idx < 3; idx++) { if (u[idx] !== 0) { kk = AB[idx] / u[idx]; break; } }
+        corr += 'Or \\(\\overrightarrow{AB} = ' + nb(kk) + '\\,\\vec u,\\) donc \\(\\overrightarrow{AB}\\) est colinéaire à \\(\\vec u\\) et \\(B \\in \\mathcal D.\\)</p>' +
+          '<p><b>Conclusion.</b> Les droites sont <b>confondues</b> : elles ont une infinité de points communs.</p>';
+      } else {
+        corr += 'Ce vecteur n\u2019est pas colinéaire à \\(\\vec u\\) : \\(' + croixTeX(AB, u, 'a', 'u') + ' \\neq 0\\) (en notant \\(a_i\\) les coordonnées de \\(\\overrightarrow{AB}\\)). Donc \\(B \\notin \\mathcal D.\\)</p>' +
+          '<p><b>Conclusion.</b> Les droites sont <b>strictement parallèles</b> : coplanaires, sans aucun point commun.</p>';
+      }
+    } else {
+      var so = solve2of3(u, v, AB);
+      corr = '<p><b>Étape 1 — vecteurs directeurs.</b> Les produits en croix ne sont pas tous nuls : \\(' + croixTeX(u, v) + ' \\neq 0.\\) Les vecteurs \\(\\vec u\\) et \\(\\vec v\\) ne sont donc pas colinéaires, et les droites ne sont pas parallèles.</p>' +
+        '<p><b>Étape 2 — le système.</b> On cherche \\(t\\) et \\(s\\) tels que \\(A + t\\,\\vec u = B + s\\,\\vec v\\) :</p>' +
+        '<p>\\[\\left\\{\\begin{array}{l} ' + eqLine(A, u, B, v, 0) + ' \\\\ ' + eqLine(A, u, B, v, 1) + ' \\\\ ' + eqLine(A, u, B, v, 2) + ' \\end{array}\\right.\\]</p>';
+      if (so) {
+        corr += '<p><b>Étape 3 — résolution avec deux équations.</b> Les équations ' + AXE[so.i] + ' et ' + AXE[so.j] +
+          ' donnent \\(t = ' + fracTeX(so.tn, so.det) + '\\) et \\(s = ' + fracTeX(so.sn, so.det) + '.\\)</p>' +
+          '<p><b>Étape 4 — test de la ' + AXE[so.k] + ' équation.</b> Avec ces valeurs, le membre de gauche vaut \\(' + nb(A[so.k] + u[so.k] * so.t) + '\\) et le membre de droite \\(' + nb(B[so.k] + v[so.k] * so.s) + '.\\) ';
+        if (r.code === 'secantes') {
+          corr += 'Les deux sont égaux : le système a une solution.</p>' +
+            '<p><b>Conclusion.</b> Les droites sont <b>sécantes</b>. En remplaçant \\(t = ' + nb(r.t) + '\\) dans \\(A + t\\,\\vec u,\\) le point d\u2019intersection est \\(' + pt('I', r.I) + '.\\)</p>';
+        } else {
+          corr += 'Ils sont <b>différents</b> : le système n\u2019a pas de solution.</p>' +
+            '<p><b>Conclusion.</b> Les vecteurs directeurs ne sont pas colinéaires et les droites n\u2019ont aucun point commun : elles sont <b>non coplanaires</b>. Aucun plan ne les contient toutes les deux.</p>';
+        }
+      }
+    }
+    return {
+      code: r.code,
+      enonce: '<p>Dans un repère de l\u2019espace, \\(\\mathcal D\\) passe par \\(' + pt('A', A) + '\\) et a pour vecteur directeur \\(' + vecTeX('u', u) + '.\\) ' +
+        'La droite \\(\\mathcal D\'\\) passe par \\(' + pt('B', B) + '\\) et a pour vecteur directeur \\(' + vecTeX('v', v) + '.\\)</p>' +
+        '<p>Quelle est la position relative de \\(\\mathcal D\\) et \\(\\mathcal D\'\\) ?</p>',
+      correction: corr
+    };
+  }, function (e) {
+    var rep = $('ex1-rep').value;
+    if (!rep) return { ok: false, msg: 'Choisis une réponse dans la liste.' };
+    if (rep === e.code) return { ok: true, msg: 'Les droites sont bien ' + NOMCAS[e.code] + '.' };
+    if (rep === 'secantes' && e.code === 'noncoplanaires') {
+      return { ok: false, msg: 'Non : elles ne sont pas parallèles, mais le système n\u2019a pas de solution. Elles sont non coplanaires.' };
+    }
+    if (rep === 'noncoplanaires' && e.code === 'secantes') {
+      return { ok: false, msg: 'Non : le système admet bien une solution, les droites sont sécantes.' };
+    }
+    return { ok: false, msg: 'Non. Reprends l\u2019étape 1 : les vecteurs directeurs sont-ils colinéaires ?' };
+  });
+
+  /* --- Exercice 2 : intersection d'une droite et d'un plan --- */
+  wireExercise(2, function () {
+    var w1, w2, u, n, guard = 0;
+    do {
+      guard++;
+      w1 = randVec(2); w2 = randVec(2);
+      n = cross(w1, w2);
+      u = randVec(2);
+    } while ((isZero(n) || Math.abs(dot(n, u)) < 1e-9) && guard < 400);
+    if (isZero(n) || Math.abs(dot(n, u)) < 1e-9) { w1 = [1, 0, 0]; w2 = [0, 1, 0]; u = [1, 1, 1]; n = cross(w1, w2); }
+    n = reduceVec(n);
+    var I = [rnd(-1, 4), rnd(-1, 4), rnd(-1, 4)];
+    var t0 = pick([-2, -1, 1, 2, 3]);
+    var s0 = pick([-2, -1, 1, 2]), r0 = pick([-2, -1, 1, 2]);
+    var A = sub(I, mul(u, t0));
+    var C = sub(I, add(mul(w1, s0), mul(w2, r0)));
+    var dd = -dot(n, C);
+    var den = dot(n, u);
+    var num = -(dot(n, A) + dd);
+
+    var eqPlan = planEqTeX(n, dd);
+
+    var param = 'x = ' + A[0] + signed(u[0], 't') + ',\\quad y = ' + A[1] + signed(u[1], 't') + ',\\quad z = ' + A[2] + signed(u[2], 't');
+
+    var corr = '<p><b>Étape 1 — la droite n\u2019est pas parallèle au plan.</b> Un vecteur normal au plan est \\(' + vecTeX('n', n) + '\\) : on vérifie \\(\\vec n\\cdot\\vec{w_1} = ' + dot(n, w1) + '\\) et \\(\\vec n\\cdot\\vec{w_2} = ' + dot(n, w2) + '.\\) Or \\(\\vec n\\cdot\\vec u = ' + den + ' \\neq 0,\\) donc \\(\\vec u\\) n\u2019appartient pas à la direction du plan : il y a un unique point d\u2019intersection.</p>' +
+      '<p><b>Étape 2 — équation du plan.</b> Le plan passe par \\(' + pt('C', C) + '\\) et a pour vecteur normal \\(\\vec n,\\) donc son équation est \\(' + eqPlan + '.\\)</p>' +
+      '<p><b>Étape 3 — représentation paramétrique de la droite.</b> \\[' + param + '\\]</p>' +
+      '<p><b>Étape 4 — substitution.</b> En remplaçant dans l\u2019équation du plan, on obtient \\(' + den + 't = ' + num + ',\\) donc \\(t = ' + fracTeX(num, den) + '.\\)</p>' +
+      '<p><b>Conclusion.</b> Le point d\u2019intersection est \\(' + pt('I', I) + '.\\)</p>' +
+      '<p><b>Vérification vectorielle.</b> \\(\\overrightarrow{CI}' + co(sub(I, C)) + ' = ' + s0 + '\\,\\vec{w_1} ' + (r0 < 0 ? '- ' + Math.abs(r0) : '+ ' + r0) + '\\,\\vec{w_2},\\) donc \\(I\\) est bien dans le plan ; et \\(\\overrightarrow{AI} = ' + t0 + '\\,\\vec u,\\) donc \\(I\\) est bien sur la droite.</p>';
+
+    return {
+      I: I,
+      enonce: '<p>La droite \\(\\mathcal D\\) passe par \\(' + pt('A', A) + '\\) et a pour vecteur directeur \\(' + vecTeX('u', u) + '.\\)</p>' +
+        '<p>Le plan \\(\\mathcal P\\) passe par \\(' + pt('C', C) + '\\) et est dirigé par \\(' + vecTeX('w_1', w1) + '\\) et \\(' + vecTeX('w_2', w2) + '.\\)</p>' +
+        '<p>Déterminer les coordonnées du point d\u2019intersection \\(I\\) de \\(\\mathcal D\\) et de \\(\\mathcal P.\\)</p>',
+      correction: corr
+    };
+  }, function (e) {
+    var x = parseNum($('ex2-x').value), y = parseNum($('ex2-y').value), z = parseNum($('ex2-z').value);
+    if (isNaN(x) || isNaN(y) || isNaN(z)) return { ok: false, msg: 'Complète les trois coordonnées.' };
+    var ok = Math.abs(x - e.I[0]) < 1e-6 && Math.abs(y - e.I[1]) < 1e-6 && Math.abs(z - e.I[2]) < 1e-6;
+    if (ok) return { ok: true, msg: 'Exact : \\(' + pt('I', e.I) + '.\\)' };
+    var nb2 = (Math.abs(x - e.I[0]) < 1e-6 ? 1 : 0) + (Math.abs(y - e.I[1]) < 1e-6 ? 1 : 0) + (Math.abs(z - e.I[2]) < 1e-6 ? 1 : 0);
+    if (nb2 === 2) return { ok: false, msg: 'Presque : une seule coordonnée est fausse. Vérifie la substitution.' };
+    return { ok: false, msg: 'Non. Cherche d\u2019abord le paramètre \\(t,\\) puis remplace-le dans \\(A + t\\,\\vec u.\\)' };
+  });
+
+  /* --- Exercice 3 : deux droites d'un cube --- */
+  var CUBE1 = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
+  var NOMS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+  wireExercise(3, function () {
+    var cible = pick(['paralleles', 'secantes', 'noncoplanaires']);
+    var P1, P2, P3, P4, r, guard = 0;
+    do {
+      guard++;
+      var s = shuffle(NOMS);
+      P1 = s[0]; P2 = s[1]; P3 = s[2]; P4 = s[3];
+      if (Math.random() < 0.4) { P3 = s[0]; P4 = s[2]; }
+      r = relLines(CUBE1[P1], sub(CUBE1[P2], CUBE1[P1]), CUBE1[P3], sub(CUBE1[P4], CUBE1[P3]));
+    } while ((r.code !== cible || (P1 === P3 && P2 === P4)) && guard < 500);
+
+    var A = CUBE1[P1], u = sub(CUBE1[P2], CUBE1[P1]);
+    var B = CUBE1[P3], v = sub(CUBE1[P4], CUBE1[P3]);
+    var AB = sub(B, A);
+    var d1 = '(' + P1 + P2 + ')', d2 = '(' + P3 + P4 + ')';
+
+    var corr = '<p><b>Repère.</b> On se place dans le repère \\((A\\,;\\overrightarrow{AB},\\overrightarrow{AD},\\overrightarrow{AE}).\\) Les sommets ont alors pour coordonnées \\(A(0\\,;0\\,;0),\\) \\(B(1\\,;0\\,;0),\\) \\(C(1\\,;1\\,;0),\\) \\(D(0\\,;1\\,;0),\\) \\(E(0\\,;0\\,;1),\\) \\(F(1\\,;0\\,;1),\\) \\(G(1\\,;1\\,;1),\\) \\(H(0\\,;1\\,;1).\\)</p>' +
+      '<p><b>Vecteurs directeurs.</b> \\(\\overrightarrow{' + P1 + P2 + '}' + co(u) + '\\) dirige ' + d1 + ', et \\(\\overrightarrow{' + P3 + P4 + '}' + co(v) + '\\) dirige ' + d2 + '.</p>';
+
+    if (r.code === 'paralleles') {
+      var k = 0, i;
+      for (i = 0; i < 3; i++) { if (u[i] !== 0) { k = v[i] / u[i]; break; } }
+      corr += '<p><b>Colinéarité.</b> On a \\(\\overrightarrow{' + P3 + P4 + '} = ' + nb(k) + '\\,\\overrightarrow{' + P1 + P2 + '}\\) : les vecteurs directeurs sont colinéaires, donc les droites sont parallèles.</p>' +
+        '<p><b>Sont-elles confondues ?</b> \\(\\overrightarrow{' + P1 + P3 + '}' + co(AB) + '\\) n\u2019est pas colinéaire à \\(\\overrightarrow{' + P1 + P2 + '},\\) donc \\(' + P3 + ' \\notin ' + d1 + '.\\)</p>' +
+        '<p><b>Conclusion.</b> ' + d1 + ' et ' + d2 + ' sont <b>strictement parallèles</b> : elles sont coplanaires et n\u2019ont aucun point commun.</p>';
+    } else {
+      var so = solve2of3(u, v, AB);
+      corr += '<p><b>Colinéarité.</b> Les produits en croix ne sont pas tous nuls : \\(' + croixTeX(u, v, 'a', 'b') + ' \\neq 0,\\) en notant \\(a_i\\) et \\(b_i\\) les coordonnées des deux vecteurs directeurs. Ils ne sont donc <b>pas</b> colinéaires : les droites ne sont pas parallèles.</p>' +
+        '<p><b>Système.</b> On cherche \\(t\\) et \\(s\\) tels que \\(' + P1 + ' + t\\,\\overrightarrow{' + P1 + P2 + '} = ' + P3 + ' + s\\,\\overrightarrow{' + P3 + P4 + '}\\) :</p>' +
+        '<p>\\[\\left\\{\\begin{array}{l} ' + eqLine(A, u, B, v, 0) + ' \\\\ ' + eqLine(A, u, B, v, 1) + ' \\\\ ' + eqLine(A, u, B, v, 2) + ' \\end{array}\\right.\\]</p>';
+      if (so) {
+        corr += '<p><b>Résolution.</b> Les équations ' + AXE[so.i] + ' et ' + AXE[so.j] + ' donnent \\(t = ' + fracTeX(so.tn, so.det) + '\\) et \\(s = ' + fracTeX(so.sn, so.det) + '.\\) On reporte dans la ' + AXE[so.k] + ' équation : à gauche \\(' + nb(A[so.k] + u[so.k] * so.t) + ',\\) à droite \\(' + nb(B[so.k] + v[so.k] * so.s) + '.\\)</p>';
+      }
+      if (r.code === 'secantes') {
+        corr += '<p><b>Conclusion.</b> L\u2019égalité est vérifiée : le système a une solution, donc les droites sont <b>sécantes</b>, au point de coordonnées \\(' + co(r.I) + '.\\) Elles sont coplanaires.</p>';
+      } else {
+        corr += '<p><b>Conclusion.</b> L\u2019égalité est fausse : le système n\u2019a pas de solution. Les vecteurs directeurs n\u2019étant pas colinéaires, les droites ' + d1 + ' et ' + d2 + ' sont <b>non coplanaires</b> : aucun plan ne contient à la fois ' + P1 + ', ' + P2 + ', ' + P3 + ' et ' + P4 + '.</p>' +
+          '<p><em>Autre rédaction :</em> si les droites étaient coplanaires, \\(\\overrightarrow{' + P1 + P3 + '}\\) s\u2019écrirait comme combinaison linéaire de \\(\\overrightarrow{' + P1 + P2 + '}\\) et \\(\\overrightarrow{' + P3 + P4 + '}\\) — c\u2019est exactement le système ci-dessus, et il est impossible.</p>';
+      }
+    }
+
+    return {
+      code: r.code,
+      enonce: '<p>\\(ABCDEFGH\\) est un cube : \\(ABCD\\) est la face du bas, \\(EFGH\\) celle du haut, avec \\(E\\) au-dessus de \\(A,\\) \\(F\\) au-dessus de \\(B,\\) \\(G\\) au-dessus de \\(C\\) et \\(H\\) au-dessus de \\(D.\\)</p>' +
+        '<p>Quelle est la position relative des droites \\(' + d1 + '\\) et \\(' + d2 + '\\) ?</p>',
+      correction: corr
+    };
+  }, function (e) {
+    var rep = $('ex3-rep').value;
+    if (!rep) return { ok: false, msg: 'Choisis une réponse dans la liste.' };
+    if (rep === e.code) {
+      if (e.code === 'paralleles') return { ok: true, msg: 'Oui : les vecteurs directeurs sont colinéaires.' };
+      if (e.code === 'secantes') return { ok: true, msg: 'Oui : le système admet une solution, les droites se coupent.' };
+      return { ok: true, msg: 'Oui : aucun plan ne contient les quatre points.' };
+    }
+    if (rep === 'secantes' && e.code === 'noncoplanaires') {
+      return { ok: false, msg: 'Non : sur la figure elles semblent se croiser, mais le système est incompatible.' };
+    }
+    return { ok: false, msg: 'Non. Calcule les vecteurs directeurs, puis teste la coplanarité.' };
+  });
+
+  /* ============================================================
+     QCM — banque de quinze questions
+     ============================================================ */
+  function build(q, options, correctIdx, expl) {
+    var idx = shuffle([0, 1, 2, 3]);
+    return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
+  }
+
+  var qcmBank = [
+    function () {
+      return build('Dans l\u2019espace, deux droites qui ne sont pas parallèles :',
+        ['peuvent être non coplanaires', 'sont forcément sécantes', 'sont forcément confondues', 'sont forcément orthogonales'], 0,
+        'C\u2019est la nouveauté de l\u2019espace : sans point commun et sans être parallèles, elles sont non coplanaires.');
+    },
+    function () {
+      return build('\\(\\mathcal D\\) est la droite passant par \\(A\\) de vecteur directeur \\(\\vec u.\\) Alors \\(M \\in \\mathcal D\\) si et seulement si :',
+        ['\\(\\overrightarrow{AM}\\) et \\(\\vec u\\) sont colinéaires', '\\(\\overrightarrow{AM}\\) et \\(\\vec u\\) sont orthogonaux',
+          '\\(\\overrightarrow{AM} = \\vec u\\)', '\\(\\|\\overrightarrow{AM}\\| = \\|\\vec u\\|\\)'], 0,
+        'La droite est l\u2019ensemble des points \\(M\\) tels que \\(\\overrightarrow{AM} = t\\,\\vec u.\\)');
+    },
+    function () {
+      return build('\\(\\mathcal P\\) est le plan passant par \\(A\\) dirigé par \\(\\vec u\\) et \\(\\vec v\\) non colinéaires. Alors \\(M \\in \\mathcal P\\) si et seulement si :',
+        ['il existe \\(s\\) et \\(t\\) tels que \\(\\overrightarrow{AM} = s\\,\\vec u + t\\,\\vec v\\)',
+          'il existe \\(t\\) tel que \\(\\overrightarrow{AM} = t\\,\\vec u\\)',
+          '\\(\\overrightarrow{AM}\\) est orthogonal à \\(\\vec u\\)',
+          '\\(\\overrightarrow{AM} = \\vec u + \\vec v\\)'], 0,
+        'Appartenir au plan, c\u2019est être coplanaire avec \\(\\vec u\\) et \\(\\vec v.\\)');
+    },
+    function () {
+      return build('Deux plans distincts de l\u2019espace qui ont un point commun :',
+        ['ont toute une droite en commun', 'n\u2019ont que ce point en commun', 'sont parallèles', 'sont confondus'], 0,
+        'Deux plans sécants se coupent toujours selon une droite : jamais en un seul point.');
+    },
+    function () {
+      var paires = [['AB', 'CG', 'non coplanaires'], ['AE', 'BC', 'non coplanaires'], ['AB', 'HG', 'parallèles'],
+        ['AD', 'FG', 'parallèles'], ['AB', 'BC', 'sécantes'], ['AC', 'BD', 'sécantes'], ['AF', 'DG', 'parallèles'],
+        ['AB', 'DH', 'non coplanaires'], ['EG', 'FH', 'sécantes']];
+      var p = pick(paires);
+      var bonnes = ['non coplanaires', 'parallèles', 'sécantes'];
+      var autres = bonnes.filter(function (b) { return b !== p[2]; });
+      return build('Dans le cube \\(ABCDEFGH,\\) les droites \\((' + p[0] + ')\\) et \\((' + p[1] + ')\\) sont :',
+        [p[2], autres[0], autres[1], 'confondues'], 0,
+        'Il faut comparer les vecteurs directeurs, puis chercher un plan contenant les quatre points.');
+    },
+    function () {
+      return build('Si une droite \\(\\mathcal D\\) est parallèle à une droite \\(\\mathcal D\'\\) contenue dans un plan \\(\\mathcal P\\) (avec \\(\\mathcal D \\neq \\mathcal D\'\\)), alors :',
+        ['\\(\\mathcal D\\) est parallèle à \\(\\mathcal P\\)', '\\(\\mathcal D\\) est incluse dans \\(\\mathcal P\\)',
+          '\\(\\mathcal D\\) coupe \\(\\mathcal P\\)', 'on ne peut rien dire'], 0,
+        'C\u2019est le premier théorème de parallélisme. « Parallèle » inclut le cas où la droite est dans le plan.');
+    },
+    function () {
+      return build('Théorème du toit : \\(\\mathcal D \\parallel \\mathcal D\',\\) \\(\\mathcal D \\subset \\mathcal P,\\) \\(\\mathcal D\' \\subset \\mathcal P\',\\) et \\(\\mathcal P \\cap \\mathcal P\' = \\Delta.\\) Alors :',
+        ['\\(\\Delta\\) est parallèle à \\(\\mathcal D\\)', '\\(\\Delta\\) est orthogonale à \\(\\mathcal D\\)',
+          '\\(\\Delta = \\mathcal D\\)', '\\(\\Delta\\) coupe \\(\\mathcal D\\)'], 0,
+        'L\u2019arête du toit est parallèle aux deux gouttières.');
+    },
+    function () {
+      return build('Deux plans parallèles \\(\\mathcal P\\) et \\(\\mathcal P\'\\) sont coupés par un plan \\(\\mathcal Q\\) selon \\(d\\) et \\(d\'.\\) Alors :',
+        ['\\(d\\) et \\(d\'\\) sont parallèles', '\\(d\\) et \\(d\'\\) sont sécantes',
+          '\\(d\\) et \\(d\'\\) sont non coplanaires', '\\(d = d\'\\)'], 0,
+        'C\u2019est le théorème utilisé pour construire les sections de cube.');
+    },
+    function () {
+      return build('\\(\\vec u\\) et \\(\\vec v\\) ne sont pas colinéaires et le système \\(A + t\\,\\vec u = B + s\\,\\vec v\\) n\u2019a aucune solution. Les droites sont :',
+        ['non coplanaires', 'strictement parallèles', 'confondues', 'sécantes'], 0,
+        'Pas de solution et pas de parallélisme : il n\u2019existe aucun plan contenant les deux droites.');
+    },
+    function () {
+      return build('Le système traduisant « \\(\\mathcal D\\) coupe \\(\\mathcal P\\) » a une infinité de solutions. Cela signifie que :',
+        ['\\(\\mathcal D\\) est incluse dans \\(\\mathcal P\\)', '\\(\\mathcal D\\) est strictement parallèle à \\(\\mathcal P\\)',
+          '\\(\\mathcal D\\) coupe \\(\\mathcal P\\) en un point', 'le système est mal posé'], 0,
+        'Une infinité de points communs entre une droite et un plan signifie que la droite est dans le plan.');
+    },
+    function () {
+      return build('Un couple \\((\\vec u\\,;\\vec v)\\) dirige un plan à condition que :',
+        ['\\(\\vec u\\) et \\(\\vec v\\) ne soient pas colinéaires', '\\(\\vec u\\) et \\(\\vec v\\) soient colinéaires',
+          '\\(\\vec u\\) et \\(\\vec v\\) soient orthogonaux', '\\(\\vec u\\) et \\(\\vec v\\) soient unitaires'], 0,
+        'Deux vecteurs colinéaires ne dirigent qu\u2019une droite ; l\u2019orthogonalité n\u2019est pas exigée.');
+    },
+    function () {
+      return build('Une droite et un plan de l\u2019espace peuvent avoir :',
+        ['\\(0,\\) \\(1\\) ou une infinité de points communs', 'exactement \\(2\\) points communs',
+          'au plus \\(1\\) point commun', 'toujours au moins \\(1\\) point commun'], 0,
+        'Deux points communs entraînent que la droite est incluse dans le plan, donc une infinité.');
+    },
+    function () {
+      return build('Le nombre de vecteurs directeurs d\u2019une droite donnée est :',
+        ['infini : tous les vecteurs non nuls colinéaires entre eux', 'égal à \\(1\\)', 'égal à \\(2\\)', 'égal à \\(3\\)'], 0,
+        'Si \\(\\vec u\\) dirige la droite, \\(k\\,\\vec u\\) la dirige aussi pour tout \\(k \\neq 0.\\)');
+    },
+    function () {
+      var u = randVec(3), k = pick([-3, -2, 2, 3]);
+      var v = mul(u, k);
+      var w = randVec(3);
+      while (colin(w, u)) { w = randVec(3); }
+      return build('\\(\\mathcal D\\) a pour vecteur directeur \\(' + vecTeX('u', u) + '\\) et \\(\\mathcal D\'\\) a pour vecteur directeur \\(' + vecTeX('v', v) + '.\\) Ces deux droites sont :',
+        ['parallèles (confondues ou strictement)', 'forcément sécantes', 'forcément non coplanaires', 'forcément confondues'], 0,
+        'On a \\(\\vec v = ' + k + '\\,\\vec u\\) : les vecteurs sont colinéaires, donc les droites sont parallèles. Pour trancher entre confondues et strictement parallèles, il faut un point.');
+    },
+    function () {
+      return build('Une section d\u2019un cube par un plan peut avoir :',
+        ['de \\(3\\) à \\(6\\) côtés', 'exactement \\(4\\) côtés', 'de \\(3\\) à \\(8\\) côtés', 'au plus \\(5\\) côtés'], 0,
+        'Le cube a six faces et le plan coupe chaque face selon au plus un segment.');
+    }
+  ];
+
+  var qcmMap = {}, answered = 0, score = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var box = $('qcm-container');
+    box.innerHTML = ''; $('qcm-score').textContent = ''; $('qcm-score').style.color = '';
+    qcmMap = {}; answered = 0; score = 0;
+    shuffle(qcmBank).slice(0, 4).forEach(function (gen, i) {
+      var item = gen(), guard = 0;
+      while (guard++ < 30 && new Set(item.options).size < 4) { item = gen(); }
+      qcmMap[i] = { correct: item.correct, expl: item.expl, done: false };
+      var q = document.createElement('div'); q.className = 'qcm-q';
+      var st = document.createElement('div'); st.className = 'question';
+      st.innerHTML = (i + 1) + '. ' + item.q; q.appendChild(st);
+      var ch = document.createElement('div'); ch.className = 'choices';
+      item.options.forEach(function (opt, j) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice';
+        b.innerHTML = '<span class="letter">' + LETTERS[j] + '</span>' + opt;
+        b.addEventListener('click', function () { answer(i, j, ch); });
+        ch.appendChild(b);
+      });
+      q.appendChild(ch);
+      var ex = document.createElement('div'); ex.className = 'expl'; ex.id = 'qcm-expl-' + i;
+      q.appendChild(ex); box.appendChild(q);
+    });
+    typeset(box);
+  }
+
+  function answer(i, j, choicesEl) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+    var btns = choicesEl.querySelectorAll('button');
+    btns.forEach(function (b, k) {
+      b.disabled = true;
+      if (k === info.correct) b.classList.add('correct');
+      else if (k === j) b.classList.add('wrong');
+    });
+    var ok = (j === info.correct);
+    if (ok) score++;
+    answered++;
+    var ex = $('qcm-expl-' + i);
+    ex.innerHTML = '<b style="color:' + (ok ? 'var(--green)' : 'var(--coral)') + '">' +
+      (ok ? 'Bonne réponse !' : 'Faux. La bonne réponse est ' + LETTERS[info.correct] + '.') + '</b> ' + info.expl;
+    ex.classList.add('show');
+    typeset(ex);
+    if (answered === 4) {
+      var s = $('qcm-score');
+      s.textContent = 'Score : ' + score + ' / 4' +
+        (score === 4 ? ' — parfait !' : (score >= 2 ? ' — relis les explications des erreurs.' : ' — relis le cours puis refais un QCM.'));
+      s.style.color = score >= 3 ? 'var(--green)' : (score === 2 ? 'var(--amber)' : 'var(--coral)');
+    }
+  }
+  $('qcm-new').addEventListener('click', renderQcm);
+
+  /* ---------- démarrage ---------- */
+  draw1(); draw2(); draw3();
+  renderQcm();
+
+  var tries = 0;
+  (function wait() {
+    if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
+    if (tries++ < 100) setTimeout(wait, 200);
+  })();
+})();
+</script>
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+<script>
+(function(){
+  var b = document.getElementById('toTop');
+  if (!b) return;
+  function maj(){ b.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+</body>
+</html>
