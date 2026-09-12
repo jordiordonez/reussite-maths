@@ -127,6 +127,15 @@ Le [dossier du chapitre 9](chapitres/09_loi_binomiale/README.md) décrit les dé
 
 Le [dossier du chapitre 10](chapitres/10_trigonometrie/README.md) décrit les conventions de réponse, les tests indépendants, les contrôles aux bornes et la génération ciblée.
 
+**Chapitre 12 — Calcul intégral**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [12A](chapitres/12_calcul_integral/12A_integrales_aires.html) | Terminale | Intégrales, aires, primitives, propriétés, encadrements et valeur moyenne |
+| [12B](chapitres/12_calcul_integral/12B_integration_methodes.html) | Terminale | Intégration par parties, suites d’intégrales, rectangles, milieux et trapèzes |
+
+Le [dossier du chapitre 12](chapitres/12_calcul_integral/README.md) précise les démonstrations, les tests indépendants et la construction isolée pendant le travail parallèle sur le chapitre 11.
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
