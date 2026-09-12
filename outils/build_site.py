@@ -21,6 +21,13 @@ def esc(value):
     return html.escape(str(value), quote=True)
 
 
+def signature():
+    return ('<div class="site-sign">© 2026 '
+            '<a href="https://joasolucions.com" target="_blank" rel="noopener noreferrer">'
+            'Solucions Digitals JOA</a>'
+            ' · Contenu pédagogique sous licence CC BY-SA 4.0</div>')
+
+
 def block(name, text):
     return f'<!-- SITE:{name}:START -->\n{text}\n<!-- SITE:{name}:END -->'
 
@@ -201,6 +208,7 @@ def build():
             pager += f'<a href="{prefix}{following["path"] if following else "chapitres.html"}"><small>{label if following else "Parcours terminé"} →</small><strong>{esc(following["title"]) if following else "Revenir au programme"}</strong></a></div><a class="site-page-top" href="#site-main">↑ Haut de la fiche</a>'
             source = source.replace('</main>', block('PAGER', pager) + '\n</main>', 1)
         config = json.dumps({'version': 1, 'kind': kind, 'prefix': prefix, 'current': lesson['id'] if lesson else None, 'chapters': chapters}, ensure_ascii=False).replace('</', '<\\/')
+        source = source.replace('</body>', block('SIGN', signature()) + '\n</body>', 1)
         source = source.replace('</body>', block('SCRIPT', f'<script id="site-config" type="application/json">{config}</script>\n<script>\n{js}\n</script>') + '\n</body>')
         if not path.exists() or source != path.read_text():
             path.write_text(source)

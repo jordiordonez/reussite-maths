@@ -32,3 +32,6 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 @media(max-width:360px){.site-brand{font-size:16px}.site-header{gap:6px}.site-actions{gap:2px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 @media print{body{padding:0!important}.site-header,.site-sidebar,.site-shade,.site-breadcrumb,.navbar,body>nav#nav,.site-lesson-tools,.site-pager,.site-page-top,.site-dialog,.site-backup{display:none!important}body>main,body>header{max-width:none}.card{box-shadow:none;break-inside:avoid}}
+.site-sign{max-width:820px;margin:0 auto;padding:14px 16px 34px;color:#8a93a1;font-size:12px;text-align:center;font-family:system-ui,-apple-system,sans-serif;line-height:1.6}
+.site-sign a{color:#6b7280;text-decoration:underline;text-underline-offset:2px}
+.site-sign a:hover{color:var(--blue)}
