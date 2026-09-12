@@ -331,13 +331,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   <div class="card blue">
     <h3><span class="num">4</span>Multiplication par un réel</h3>
-    <p>Pour un réel \(k\) et un vecteur \(\vec{u}\ne\vec{0}\), le vecteur \(k\vec{u}\) a :</p>
+    <p>Pour un réel \(k\ne 0\) et un vecteur \(\vec{u}\ne\vec{0}\), le vecteur \(k\vec{u}\) a :</p>
     <ul>
-      <li>la <strong>même direction</strong> que \(\vec{u}\) — toujours ;</li>
+      <li>la <strong>même direction</strong> que \(\vec{u}\) — quel que soit le signe de \(k\) ;</li>
       <li>le <strong>même sens</strong> si \(k&gt;0\), le <strong>sens contraire</strong> si \(k&lt;0\) ;</li>
       <li>pour longueur \(\|k\vec{u}\|=|k|\times\|\vec{u}\|.\)</li>
     </ul>
-    <p>Et \(0\times\vec{u}=\vec{0}.\) On calcule comme en algèbre : \(k(\vec{u}+\vec{v})=k\vec{u}+k\vec{v}\) et \((k+k')\vec{u}=k\vec{u}+k'\vec{u}.\)</p>
+    <p>Le cas \(k=0\) est à part : \(0\times\vec{u}=\vec{0},\) et le vecteur nul n’a ni direction ni sens. On calcule comme en algèbre : \(k(\vec{u}+\vec{v})=k\vec{u}+k\vec{v}\) et \((k+k')\vec{u}=k\vec{u}+k'\vec{u}.\)</p>
     <div class="key"><b>Exemple.</b> Si \(\vec{u}\,(3\,;\,-2)\) alors \(2\vec{u}\,(6\,;\,-4)\) (deux fois plus long, même sens) et \(-\tfrac{1}{2}\vec{u}\,(-1{,}5\,;\,1)\) (deux fois plus court, sens contraire).</div>
     <div class="box amber"><span class="lbl">Milieu, en version vectorielle</span>
       \(I\) est le milieu de \([AB]\) si et seulement si \(\overrightarrow{AI}=\tfrac{1}{2}\overrightarrow{AB}\), ce qui équivaut aussi à \(\overrightarrow{IA}+\overrightarrow{IB}=\vec{0}.\) Ces deux écritures servent tout le temps dans les démonstrations sans repère.
@@ -366,7 +366,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3><span class="num">6</span>Base, repère, coordonnées</h3>
     <p><strong>Base du plan.</strong> Deux vecteurs \(\vec{i}\) et \(\vec{j}\) <strong>non colinéaires</strong> forment une base du plan : tout vecteur \(\vec{w}\) du plan s'écrit alors <strong>d'une seule manière</strong></p>
     \[\vec{w}=x\,\vec{i}+y\,\vec{j},\]
-    <p>et le couple \((x\,;\,y)\) est le couple de coordonnées de \(\vec{w}\) dans cette base. C'est l'unicité qui rend les calculs possibles : deux vecteurs sont égaux si et seulement si ils ont les mêmes coordonnées.</p>
+    <p>et le couple \((x\,;\,y)\) est le couple de coordonnées de \(\vec{w}\) dans cette base. C'est l'unicité qui rend les calculs possibles : deux vecteurs sont égaux si et seulement s’ils ont les mêmes coordonnées.</p>
     <p><strong>Repère.</strong> Un repère \((O\,;\,\vec{i},\vec{j})\) est une base plus une origine. Les coordonnées d'un point \(M\) sont celles du vecteur \(\overrightarrow{OM}.\)</p>
     <div class="box"><span class="lbl">Les quatre formules de coordonnées</span>
       Avec \(\vec{u}\,(x\,;\,y)\), \(\vec{v}\,(x'\,;\,y')\), \(A(x_A\,;\,y_A)\), \(B(x_B\,;\,y_B)\) et \(k\) réel :
@@ -605,6 +605,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     return String(Math.round(x * p) / p).replace('.', ',');
   }
   function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  // coefficient devant une inconnue : « m », « -m », « 3m » — jamais « 1m » ni « -1m »
+  function coefTex(k, s) { return k === 1 ? s : (k === -1 ? '-' + s : k + s); }
+  // quotient exact : pas de dénominateur égal à 1, pas de dénominateur négatif
+  function quotTex(N, D) {
+    if (D < 0) { N = -N; D = -D; }
+    return D === 1 ? String(N) : '\\dfrac{' + N + '}{' + D + '}';
+  }
   function parseNum(s) {
     if (s === null || s === undefined) return NaN;
     s = String(s).trim().replace(',', '.').replace(/\s/g, '');
@@ -683,14 +690,26 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   var BLUE = '#2563eb', AMBER = '#d97706', GREEN = '#22a06b', GREY = '#9ca3af', CORAL = '#f97362';
   var F1 = { u: { x: 2, y: 1 }, v: { x: -1, y: 2 }, w: { x: 3, y: 4 }, defi: false, a0: 0, b0: 0 };
 
+  // pgcd, pour afficher les coefficients de façon EXACTE : jamais un arrondi derrière un « = »
+  function pgcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+  // n/d réduit : « 3 », « -3 », « 2/5 », « -2/5 »
+  function fracTxt(n, d) {
+    if (d < 0) { n = -n; d = -d; }
+    var g = pgcd(n, d); n /= g; d /= g;
+    return d === 1 ? String(n) : (n + '/' + d);
+  }
+  // le même, précédé de « + » ou « − » : évite d’écrire « + -2 »
+  function fracSigne(n, d) {
+    if (d < 0) { n = -n; d = -d; }
+    return (n < 0 ? ' − ' : ' + ') + fracTxt(Math.abs(n), d);
+  }
+
   function f1coefs() {
     var det = F1.u.x * F1.v.y - F1.v.x * F1.u.y;
     if (det === 0) return null;
-    return {
-      a: (F1.w.x * F1.v.y - F1.w.y * F1.v.x) / det,
-      b: (F1.u.x * F1.w.y - F1.u.y * F1.w.x) / det,
-      det: det
-    };
+    var na = F1.w.x * F1.v.y - F1.w.y * F1.v.x;
+    var nb = F1.u.x * F1.w.y - F1.u.y * F1.w.x;
+    return { a: na / det, b: nb / det, na: na, nb: nb, det: det };
   }
 
   function drawF1() {
@@ -713,7 +732,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var warn = $('f1warn');
     if (!c) {
       warn.hidden = false;
-      warn.innerHTML = '<b>' + ov('u') + ' et ' + ov('v') + ' sont colinéaires</b> (déterminant nul) : ils ne forment pas une base du plan, la décomposition est impossible. Déplace l’un des deux.';
+      warn.innerHTML = '<b>' + ov('u') + ' et ' + ov('v') + ' sont colinéaires</b> (déterminant nul) : ils ne forment pas une base du plan. Les vecteurs qu’on peut atteindre sont seulement ceux de leur direction commune — et pour ceux-là l’écriture <i>a</i>' + ov('u') + ' + <i>b</i>' + ov('v') + ' n’est plus unique. Déplace l’un des deux.';
       $('f1coef').innerHTML = ov('u') + ' ' + co(F1.u.x, F1.u.y) + ' &nbsp; ' + ov('v') + ' ' + co(F1.v.x, F1.v.y) + ' &nbsp; ' + ov('w') + ' ' + co(F1.w.x, F1.w.y);
       return;
     }
@@ -722,7 +741,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (F1.defi) {
       txt += '<b>' + ov('w') + ' = a × ' + ov('u') + ' + b × ' + ov('v') + '</b> — à toi de trouver a et b.';
     } else {
-      txt += '<b>' + ov('w') + ' = ' + fmt(c.a) + ' × ' + ov('u') + ' + ' + fmt(c.b) + ' × ' + ov('v') + '</b>';
+      txt += '<b>' + ov('w') + ' = ' + fracTxt(c.na, c.det) + ' × ' + ov('u') + fracSigne(c.nb, c.det) + ' × ' + ov('v') + '</b>';
     }
     $('f1coef').innerHTML = txt;
   }
@@ -761,6 +780,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     $('f1defi').addEventListener('click', function () {
       var guard = 0, a, b;
+      // si les deux vecteurs choisis sont colinéaires, ils ne forment pas une base :
+      // le couple (a ; b) ne serait pas unique et le défi n’aurait pas de réponse unique.
+      if (F1.u.x * F1.v.y - F1.v.x * F1.u.y === 0) { F1.u = { x: 2, y: 1 }; F1.v = { x: -1, y: 2 }; }
       do {
         a = pick([-2, -1, 1, 2, 3]); b = pick([-2, -1, 1, 2, 3]);
         guard++;
@@ -1014,7 +1036,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       correction:
         '<p><b>1. Traduire.</b> \\(\\vec{u}\\) et \\(\\vec{v}\\) sont colinéaires si et seulement si leur déterminant est nul :</p>' +
         '<p>\\(' + par(a2) + '\\times m-' + par(c2) + '\\times' + par(b2) + '=0.\\)</p>' +
-        '<p><b>2. Résoudre.</b> \\(' + a2 + 'm-' + par(c2 * b2) + '=0\\), donc \\(' + a2 + 'm=' + (c2 * b2) + '\\), donc \\(m=\\dfrac{' + (c2 * b2) + '}{' + a2 + '}=' + m + '.\\)</p>' +
+        '<p><b>2. Résoudre.</b> ' +
+        (a2 === 1
+          ? '\\(m-' + par(c2 * b2) + '=0\\), donc \\(m=' + m + '.\\)'
+          : '\\(' + coefTex(a2, 'm') + '-' + par(c2 * b2) + '=0\\), donc \\(' + coefTex(a2, 'm') + '=' + (c2 * b2) + '\\), donc ' +
+            (a2 === -1 ? '\\(m=' + m + '.\\)' : '\\(m=' + quotTex(c2 * b2, a2) + '=' + m + '.\\)')) + '</p>' +
         '<div class="box green"><span class="lbl">Vérification</span>Avec \\(m=' + m + '\\) : \\(\\vec{v}\\,(' + c2 + '\\,;\\,' + m + ')=' + k2 + '\\vec{u}\\) — on retrouve bien un multiple de \\(\\vec{u}.\\)</div>'
     };
   }, function (cur) {
