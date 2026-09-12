@@ -372,7 +372,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <li>La courbe est donc au-dessus de sa tangente en \(0,\) d'équation \(y = f'(0)(x-0)+f(0) = 1\times x + 1 = x+1.\)</li>
         <li>Conclusion : \(e^x \geqslant x+1\) pour tout \(x \in \mathbb{R}.\)</li>
       </ol>
-      <p>Contrôle numérique : pour \(x=1,\) \(e \approx 2{,}718 \geqslant 2\) ; pour \(x=-0{,}5,\) \(e^{-0,5}\approx 0{,}607 \geqslant 0{,}5.\) L'égalité n'a lieu qu'en \(x=0.\)</p>
+      <p>Contrôle numérique : pour \(x=1,\) \(e \approx 2{,}718 \geqslant 2\) ; pour \(x=-0{,}5,\) \(e^{-0{,}5}\approx 0{,}607 \geqslant 0{,}5.\) L'égalité n'a lieu qu'en \(x=0.\)</p>
     </div>
     <p><b>Le même raisonnement avec une fonction concave.</b> Pour \(f(x)=\ln x\) sur \(]0;+\infty[\) : \(f'(x)=\dfrac{1}{x}\) et \(f''(x)=-\dfrac{1}{x^2} &lt; 0,\) donc \(\ln\) est <b>concave</b> et sa courbe est <b>sous</b> ses tangentes. La tangente en \(1\) a pour équation \(y = 1\times(x-1)+0 = x-1,\) d'où \(\ln x \leqslant x-1\) pour tout \(x &gt; 0.\)</p>
     <div class="stat"><p><b>Remarque.</b> La fonction logarithme népérien est étudiée <b>plus tard dans l'année</b> : garde cet exemple de côté, il tombe souvent au bac une fois le chapitre sur \(\ln\) terminé.</p></div>
@@ -598,6 +598,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (Object.is(v, -0)) v = 0;
     return String(v).replace('.', ',');
   }
+  // « = » si l'affichage est exact, « ≈ » si la valeur a été arrondie.
+  function rel(x, d) {
+    var p = Math.pow(10, d === undefined ? 2 : d);
+    return (Math.abs(Math.round(x * p) / p - x) < 1e-12 ? '= ' : '\\approx ') + fmt(x, d);
+  }
   // Un nombre négatif s'écrit entre parenthèses dans un produit ou avant un exposant.
   function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
   function parseNum(s) {
@@ -752,14 +757,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       if (xi > P1.xmin && xi < P1.xmax) {
         g += '<line x1="' + P1.X(xi).toFixed(1) + '" y1="' + P1.py + '" x2="' + P1.X(xi).toFixed(1) + '" y2="' + (P1.py + P1.ph) + '" stroke="#d97706" stroke-width="1.4" stroke-dasharray="4 4"/>';
       }
-      // partie convexe (f'' >= 0) et partie concave
-      if (a > 0) {
-        g += curve(f, P1, P1.xmin, Math.min(xi, P1.xmax), '#f97362', 2.8);
-        g += curve(f, P1, Math.max(xi, P1.xmin), P1.xmax, '#22a06b', 2.8);
-      } else {
-        g += curve(f, P1, P1.xmin, Math.min(xi, P1.xmax), '#22a06b', 2.8);
-        g += curve(f, P1, Math.max(xi, P1.xmin), P1.xmax, '#f97362', 2.8);
-      }
+      // partie convexe (f'' >= 0) et partie concave, découpées à l'intérieur du cadre
+      var xc = Math.max(P1.xmin, Math.min(P1.xmax, xi));
+      var colG = (a > 0) ? '#f97362' : '#22a06b';   // à gauche de x_I
+      var colD = (a > 0) ? '#22a06b' : '#f97362';   // à droite de x_I
+      if (xc > P1.xmin) g += curve(f, P1, P1.xmin, xc, colG, 2.8);
+      if (xc < P1.xmax) g += curve(f, P1, xc, P1.xmax, colD, 2.8);
     } else {
       g += curve(f, P1, P1.xmin, P1.xmax, b >= 0 ? '#22a06b' : '#f97362', 2.8);
     }
@@ -785,15 +788,19 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       '\\(f\'\'(x) = ' + polyTex([[6 * a, 1], [2 * b, 0]]) + '\\)';
 
     var v = d2(xt);
-    var etat = v > 1e-9 ? 'convexe' : (v < -1e-9 ? 'concave' : 'ni l\'un ni l\'autre (f″ s\'annule)');
     var coul = v > 1e-9 ? '#22a06b' : (v < -1e-9 ? '#f97362' : '#d97706');
-    $('f1out').innerHTML = 'En \\(x_T = ' + fmt(xt) + '\\) : \\(f\'\'(x_T) = ' + fmt(v) + ',\\) ' +
-      '<b style="color:' + coul + '">' + (v > 1e-9 ? 'f″ > 0' : (v < -1e-9 ? 'f″ < 0' : 'f″ = 0')) + '</b> ' +
-      'donc \\(f\\) est <b style="color:' + coul + '">' + etat + '</b> autour de ce point.';
+    var verdict;
+    if (v > 1e-9) verdict = 'donc \\(f\\) est <b style="color:' + coul + '">convexe</b> autour de ce point.';
+    else if (v < -1e-9) verdict = 'donc \\(f\\) est <b style="color:' + coul + '">concave</b> autour de ce point.';
+    else if (Math.abs(a) > 1e-9) verdict = 'et \\(f\'\'\\) <b style="color:' + coul + '">change de signe</b> ici : \\(x_T\\) est l\'abscisse du <b>point d\'inflexion</b>.';
+    else verdict = 'et \\(f\'\'\\) est nulle partout : \\(f\\) est affine, donc <b style="color:' + coul + '">à la fois convexe et concave</b>.';
+    $('f1out').innerHTML = 'En \\(x_T = ' + fmt(xt) + '\\) : \\(f\'\'(x_T) ' + rel(v) + ',\\) ' +
+      '<b style="color:' + coul + '">' + (v > 1e-9 ? 'f″ > 0' : (v < -1e-9 ? 'f″ < 0' : 'f″ = 0')) + '</b> ' + verdict;
 
     var msg;
     if (xi === null) {
-      msg = 'Avec \\(a = 0\\) la fonction est du second degré : \\(f\'\'\\) est constante, il n\'y a <b>aucun point d\'inflexion</b>.';
+      msg = 'Avec \\(a = 0,\\) la fonction est ' + (Math.abs(b) > 1e-9 ? 'du second degré' : 'affine') +
+        ' : \\(f\'\'\\) est constante, il n\'y a <b>aucun point d\'inflexion</b>.';
     } else {
       msg = 'Point d\'inflexion en \\(x_I = -\\dfrac{b}{3a} = ' + fmt(xi) + '\\) : c\'est là que \\(f\'\'\\) change de signe. ' +
         (a > 0 ? 'Comme \\(a > 0,\\) \\(f\\) est concave puis convexe.' : 'Comme \\(a < 0,\\) \\(f\\) est convexe puis concave.');
@@ -804,7 +811,18 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       for (k = 0; k <= 40; k++) { xx = lo + (hi - lo) * k / 40; if (d2(xx) < 0) allCvx = false; if (d2(xx) > 0) allCcv = false; }
       if (allCvx) msg += ' Sur \\([x_A\\,;x_B]\\) la courbe est entièrement <b>sous</b> la sécante : \\(f\\) y est convexe.';
       else if (allCcv) msg += ' Sur \\([x_A\\,;x_B]\\) la courbe est entièrement <b>au-dessus</b> de la sécante : \\(f\\) y est concave.';
-      else msg += ' L\'intervalle \\([x_A\\,;x_B]\\) contient le point d\'inflexion : la courbe traverse la sécante.';
+      else {
+        // f change de convexité sur [xA;xB] : aucune règle ne s'applique, on lit la position réelle.
+        var pente = (f(hi) - f(lo)) / (hi - lo), sous = true, dessus = true, ec;
+        for (k = 1; k < 60; k++) {
+          xx = lo + (hi - lo) * k / 60;
+          ec = f(xx) - (f(lo) + pente * (xx - lo));
+          if (ec > 1e-9) sous = false;
+          if (ec < -1e-9) dessus = false;
+        }
+        msg += ' L\'intervalle \\([x_A\\,;x_B]\\) contient le point d\'inflexion : \\(f\\) y change de convexité, donc <b>aucune règle ne garantit la position</b> de la courbe par rapport à la sécante. Ici, la courbe ' +
+          (sous && dessus ? 'est confondue avec la sécante' : (sous ? 'reste <b>sous</b> la sécante' : (dessus ? 'reste <b>au-dessus</b> de la sécante' : '<b>traverse</b> la sécante'))) + '.';
+      }
     }
     $('f1msg').innerHTML = msg;
     typeset($('f1formula')); typeset($('f1out')); typeset($('f1msg'));
@@ -886,13 +904,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var cvx = v2 > 1e-9, ccv = v2 < -1e-9;
     var coul = cvx ? '#22a06b' : (ccv ? '#f97362' : '#d97706');
     $('f2out').innerHTML = '\\(f(x) = ' + o.tf + ',\\) \\(f\'(x) = ' + o.t1 + ',\\) \\(f\'\'(x) = ' + o.t2 + '.\\)<br>' +
-      'En \\(x = ' + fmt(x) + '\\) : \\(f(x) = ' + fmt(o.f(x)) + ',\\) \\(f\'(x) = ' + fmt(v1) + ',\\) \\(f\'\'(x) = ' + fmt(v2) + '.\\)';
+      'En \\(x = ' + fmt(x) + '\\) : \\(f(x) ' + rel(o.f(x)) + ',\\) \\(f\'(x) ' + rel(v1) + ',\\) \\(f\'\'(x) ' + rel(v2) + '.\\)';
     $('f2msg').innerHTML = '<b style="color:' + coul + '">' +
       (cvx ? 'f″(x) > 0' : (ccv ? 'f″(x) < 0' : 'f″(x) = 0')) + '</b> → ' +
       (cvx ? 'la courbe de \\(f\'\\) <b>monte</b> ici, donc \\(f\\) est <b>convexe</b> (courbe verte, en cuvette).'
            : (ccv ? 'la courbe de \\(f\'\\) <b>descend</b> ici, donc \\(f\\) est <b>concave</b> (courbe corail, en colline).'
                   : 'il faut regarder si \\(f\'\'\\) <b>change de signe</b> : si oui, point d\'inflexion ; sinon, la convexité ne change pas.')) +
-      ' Par ailleurs \\(f\'(' + fmt(x) + ') = ' + fmt(v1) + '\\) : \\(f\\) est ici <b>' + (v1 > 1e-9 ? 'croissante' : (v1 < -1e-9 ? 'décroissante' : 'de tangente horizontale')) + '</b> — c\'est une information <b>différente</b>.';
+      ' Par ailleurs \\(f\'(' + fmt(x) + ') ' + rel(v1) + '\\) : \\(f\\) est ici <b>' + (v1 > 1e-9 ? 'croissante' : (v1 < -1e-9 ? 'décroissante' : 'de tangente horizontale')) + '</b> — c\'est une information <b>différente</b>.';
     typeset($('f2out')); typeset($('f2msg'));
   }
   sel2.addEventListener('change', draw2);
@@ -915,7 +933,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (P3.inY(tg)) g += dot(P3, x, tg, '#f97362', 4.5);
     if (P3.inY(ex)) g += dot(P3, x, ex, '#2563eb', 4.5);
     $('svg3').innerHTML = g;
-    $('f3out').innerHTML = 'Pour \\(x = ' + fmt(x) + '\\) : \\(e^x \\approx ' + fmt(ex, 3) + '\\) et \\(1+x = ' + fmt(tg) + '.\\) ' +
+    $('f3out').innerHTML = 'Pour \\(x = ' + fmt(x) + '\\) : \\(e^x \\approx ' + fmt(ex, 3) + '\\) et \\(1+x ' + rel(tg) + '.\\) ' +
       'Écart : \\(e^x - (1+x) \\approx ' + fmt(ecart, 3) + '.\\)';
     $('f3msg').innerHTML = Math.abs(x) < 1e-9
       ? 'En \\(x = 0\\) l\'écart est <b>nul</b> : c\'est le point de tangence, seul cas d\'égalité.'
@@ -1019,9 +1037,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var convexeADroite = (a > 0);
     var bonneRep = (droite === convexeADroite) ? 0 : 1; // 0 = convexe, 1 = concave
     var yi = a * xi * xi * xi + b * xi * xi + c * xi + d;
+    // -b/(3a) écrit sans double signe ni dénominateur négatif
+    var fracHaut = (3 * a > 0) ? -b : b, fracBas = Math.abs(3 * a);
+    // 2b peut être nul (x_I = 0) : on n'écrit alors aucun terme constant.
+    var membre = (6 * a) + 'x' + (2 * b === 0 ? '' : (2 * b > 0 ? ' + ' + (2 * b) : ' - ' + Math.abs(2 * b)));
     var signeExpl = a > 0
-      ? '\\(' + (6 * a) + 'x ' + (2 * b >= 0 ? '+ ' + (2 * b) : '- ' + Math.abs(2 * b)) + ' \\geqslant 0 \\iff x \\geqslant ' + xi + '.\\)'
-      : '\\(' + (6 * a) + 'x ' + (2 * b >= 0 ? '+ ' + (2 * b) : '- ' + Math.abs(2 * b)) + ' \\geqslant 0 \\iff x \\leqslant ' + xi + '\\) (on divise par \\(' + (6 * a) + ' < 0,\\) l\'inégalité change de sens).';
+      ? '\\(' + membre + ' \\geqslant 0 \\iff x \\geqslant ' + xi + '.\\)'
+      : '\\(' + membre + ' \\geqslant 0 \\iff x \\leqslant ' + xi + '\\) (on divise par \\(' + (6 * a) + ' < 0,\\) l\'inégalité change de sens).';
     return {
       xi: xi, bonneRep: bonneRep, borne: borne,
       enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + tf + '.\\)</p>' +
@@ -1038,7 +1060,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'En particulier, sur ' + borne + ' elle est <b>' + (bonneRep === 0 ? 'convexe' : 'concave') + '</b>.</p>' +
         '<p><b>4. Point d\'inflexion.</b> \\(f\'\'\\) s\'annule <b>en changeant de signe</b> en \\(x_I = ' + xi + '\\) : c\'est bien un point d\'inflexion. ' +
         'Son ordonnée est \\(f(' + xi + ') = ' + yi + ',\\) donc \\(I(' + xi + '\\,;' + yi + ').\\)</p>' +
-        '<p class="stat">Rappel utile : pour \\(f(x)=ax^3+bx^2+cx+d,\\) on a toujours \\(x_I = -\\dfrac{b}{3a} = -\\dfrac{' + b + '}{' + (3 * a) + '} = ' + xi + '.\\)</p>'
+        '<p class="stat">Rappel utile : pour \\(f(x)=ax^3+bx^2+cx+d,\\) on a toujours \\(x_I = -\\dfrac{b}{3a}\\) ; ici \\(x_I = \\dfrac{' + fracHaut + '}{' + fracBas + '} = ' + xi + '.\\)</p>'
     };
   }, function (e, get) {
     var v = parseNum(get('rep').value), s = get('sel').value;
@@ -1080,7 +1102,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         correct = ']−∞ ; ' + r1 + ']';
         opts = [correct, '[' + r1 + ' ; +∞[', 'ℝ tout entier', 'aucun intervalle'];
       }
-      expl = 'La droite tracée est celle de \\(f\'\'.\\) Elle est au-dessus de l\'axe sur ' + correct.replace('−∞', '-\\infty') + ', donc \\(f\'\' \\geqslant 0\\) et \\(f\\) est convexe exactement là. Elle traverse l\'axe en \\(' + r1 + '\\) : il y a <b>un</b> point d\'inflexion.';
+      expl = 'La droite tracée est celle de \\(f\'\'.\\) Elle est au-dessus de l\'axe sur ' + esc(correct) + ', donc \\(f\'\' \\geqslant 0\\) et \\(f\\) est convexe exactement là. Elle traverse l\'axe en \\(' + r1 + '\\) : il y a <b>un</b> point d\'inflexion.';
     } else {
       r1 = rnd(-3, 3);
       d2 = function (x) { return k * (x - r1) * (x - r1) / 2; };
@@ -1105,7 +1127,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     return {
       bon: ordre.indexOf(0), nb: nbInfl, correct: correct,
       enonce: '<p>Ci-dessous la courbe de la <b>dérivée seconde</b> \\(f\'\'\\) d\'une fonction \\(f\\) définie et deux fois dérivable sur \\(\\mathbb{R}\\) (la courbe de \\(f\\) n\'est <b>pas</b> donnée).</p>' + svg +
-        '<ol><li>Sur quel(s) intervalle(s) \\(f\\) est-elle convexe ?</li><li>Combien \\(\\mathcal{C}_f\\) a-t-elle de points d\'inflexion ?</li></ol>',
+        '<ol><li>Sur quel(s) intervalle(s) \\(f\\) est-elle convexe ? (donne l\'ensemble <b>le plus grand possible</b>)</li><li>Combien \\(\\mathcal{C}_f\\) a-t-elle de points d\'inflexion ?</li></ol>',
       inputs: champSel('ex3-sel', '\\(f\\) convexe sur', melange) + ' &nbsp; ' + champNum('ex3-rep', 'Nombre de points d\'inflexion :'),
       correction: '<p><b>1. Ce qu\'on lit.</b> La courbe tracée est celle de \\(f\'\',\\) donc on regarde son <b>signe</b> : là où elle est au-dessus de l\'axe des abscisses, \\(f\'\'(x) \\geqslant 0\\) et \\(f\\) est <b>convexe</b> ; là où elle est en dessous, \\(f\\) est <b>concave</b>.</p>' +
         '<p><b>2. Lecture.</b> ' + expl + '</p>' +

@@ -17,7 +17,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 3B | Calculer une dérivée | ✅ | 20 (dont 1 formule de dérivée fausse affichée en direct) |
 | 3C | Variations et extremums | ✅ | 10 (dont 1 correction fautive sur la moitié des tirages) |
 | 3D | Dérivée d'une composée | ⬜ | |
-| 3E | Convexité | ⬜ | |
+| 3E | Convexité | ✅ | 10 (dont 1 verdict faux dans 57 % des réglages) |
 | 4A | Fonctions de référence | ⬜ | |
 | 4B | Limites de fonctions | ⬜ | |
 | 4C | Continuité et valeurs intermédiaires | ⬜ | |
