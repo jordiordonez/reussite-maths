@@ -102,6 +102,14 @@ Un fichier HTML unique, avec dans l'ordre :
 
 Le [dossier du chapitre 7](chapitres/07_probabilites/README.md) décrit ses tests mathématiques indépendants, ses tests navigateur et la génération ciblée à utiliser pendant les relectures parallèles.
 
+**Chapitre 8 — Combinatoire et dénombrement**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [8A](chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html) | Terminale | Listes, permutations, combinaisons, coefficients binomiaux, Pascal et chemins à k succès |
+
+Le [dossier du chapitre 8](chapitres/08_combinatoire_denombrement/README.md) précise les démonstrations exigibles, le lien entre 7C et la future loi binomiale, ainsi que ses tests indépendants et navigateur.
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
