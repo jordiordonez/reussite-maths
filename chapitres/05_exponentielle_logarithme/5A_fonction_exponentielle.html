@@ -291,12 +291,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   </div>
 
   <div class="card">
-    <h3><span class="num">2</span>La relation fonctionnelle <span class="tag demo">à savoir démontrer</span></h3>
+    <h3><span class="num">2</span>La relation fonctionnelle <span class="tag deep">approfondissement</span></h3>
     <div class="key">
       <p>Pour tous réels \(x\) et \(y :\)</p>
       \[\exp(x + y) = \exp(x) \times \exp(y).\]
     </div>
-    <p>L'exponentielle <b>transforme les sommes en produits</b>. En prenant \(y = -x\) on obtient</p>
+    <p>Cette relation est <b>admise</b> en Première (sa démonstration est un approfondissement possible du programme). L'exponentielle <b>transforme les sommes en produits</b>. En prenant \(y = -x\) on obtient</p>
     \[\exp(x) \times \exp(-x) = \exp(0) = 1.\]
     <p><b>Démonstration de ce dernier point.</b> On pose \(g(x) = u(x)v(x)\) avec \(u(x) = \exp(x)\) et \(v(x) = \exp(-x).\) Alors \(u' = u\) et \(v' = -v,\) donc</p>
     \[g' = u'v + uv' = uv - uv = 0.\]
@@ -337,6 +337,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <tr><th>\(\mathrm{e}^{x}\)</th><td>\(0{,}135\)</td><td>\(0{,}368\)</td><td>\(1\)</td><td>\(2{,}718\)</td><td>\(7{,}389\)</td><td>\(20{,}09\)</td></tr>
       </table>
     </div>
+    <p style="color:#6b7280;font-size:.9rem">Seule la valeur \(\mathrm{e}^{0} = 1\) est exacte : les autres sont des <b>valeurs approchées</b> (\(\mathrm{e}^{-2} \approx 0{,}135,\) \(\mathrm{e}^{3} \approx 20{,}09\)).</p>
     <div class="ok">
       <p><b>La conséquence la plus utile</b>, celle qui sert à résoudre les équations :</p>
       \[\mathrm{e}^{a} = \mathrm{e}^{b} \iff a = b, \qquad \mathrm{e}^{a} < \mathrm{e}^{b} \iff a < b.\]
@@ -614,6 +615,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     typeset(el);
   }
   function texNum(x, d) { return fmt(x, d === undefined ? 2 : d).replace(',', '{,}'); }
+  // Valeur réellement écrite par fmt(x, d) : sert à savoir si l'écriture est exacte.
+  function fmtVal(x, d) {
+    if (!isFinite(x)) return NaN;
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return Math.round(x * p) / p;
+  }
+  // « = » si le nombre affiché est exactement la valeur, « \approx » sinon.
+  // Indispensable : une valeur arrondie derrière un signe égal est une égalité fausse.
+  function eqNum(x, d) { return Math.abs(fmtVal(x, d) - x) < 1e-12 ? ' = ' : ' \\approx '; }
   // écriture française des grands nombres : 1\,600
   function grp(s) {
     var neg = s.charAt(0) === '-'; if (neg) s = s.slice(1);
@@ -702,6 +712,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
      ============================================================ */
   var XA1 = -2, XB1 = 3, L1 = 34, R1 = 392, T1 = 12, B1 = 268;
 
+  // « 0,6t », « t », « -t », « 0 » : jamais « 1t » ni « 0,0t ».
+  function expo1(k, v) {
+    if (Math.abs(k) < 1e-12) return '0';
+    if (Math.abs(k - 1) < 1e-12) return v;
+    if (Math.abs(k + 1) < 1e-12) return '-' + v;
+    return fmt(k, 1) + v;
+  }
+  // Tangente en 0 de t ↦ e^{kt} : y = kx + 1, sans « 1x », « -1x » ni « 0x ».
+  function tanTex(k, tex) {
+    if (Math.abs(k) < 1e-12) return '1';
+    if (Math.abs(k - 1) < 1e-12) return 'x + 1';
+    if (Math.abs(k + 1) < 1e-12) return '-x + 1';
+    return (tex ? texNum(k, 1) : fmt(k, 1)) + 'x + 1';
+  }
+
   function draw1() {
     var k = (+$('sk').value) / 10;
     var t = XA1 + (+$('st').value) / 100 * (XB1 - XA1);
@@ -747,15 +772,17 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     // les étiquettes se placent du côté où la courbe est basse
     var lx = k > 0 ? L1 + 6 : R1 - 4, anc = k > 0 ? 'start' : 'end';
-    svg.appendChild(mk('text', { x: lx, y: T1 + 11, 'text-anchor': anc, 'font-size': 12, fill: '#2563eb' }, 'y = e^(' + fmt(k, 1) + 't)'));
-    svg.appendChild(mk('text', { x: lx, y: T1 + 25, 'text-anchor': anc, 'font-size': 11, fill: '#c2410c' }, 'tangente : y = ' + fmt(k, 1) + 'x + 1'));
+    svg.appendChild(mk('text', { x: lx, y: T1 + 11, 'text-anchor': anc, 'font-size': 12, fill: '#2563eb' }, Math.abs(k) < 1e-12 ? 'y = e^(0t) = 1' : 'y = e^(' + expo1(k, 't') + ')'));
+    svg.appendChild(mk('text', { x: lx, y: T1 + 25, 'text-anchor': anc, 'font-size': 11, fill: '#c2410c' }, 'tangente : y = ' + tanTex(k, false)));
 
     var q = Math.exp(k);
     var sens = k > 0.001 ? 'croissante (croissance exponentielle)' : (k < -0.001 ? 'décroissante (décroissance exponentielle)' : 'constante');
-    var txt = '<p>Pour \\(k = ' + texNum(k, 1) + ' :\\) la fonction est <b>' + sens + '</b>, et \\(\\mathrm{e}^{k} = ' + texNum(q, 4) + '.\\)</p>' +
-      '<p>Point mobile : \\(t = ' + texNum(t, 2) + ',\\) \\(\\mathrm{e}^{kt} = ' + texNum(v, 4) + '.\\) Tangente en \\(0 :\\) \\(y = ' + texNum(k, 1) + 'x + 1.\\)</p>' +
-      '<p>Chaque fois que \\(t\\) augmente de \\(1,\\) la valeur est multipliée par \\(\\mathrm{e}^{k} = ' + texNum(q, 4) + ',\\) soit ' +
-      (q >= 1 ? 'une hausse de \\(' : 'une baisse de \\(') + texNum(Math.abs(q - 1) * 100, 2) + '\\ \\%\\) par pas.</p>';
+    var varia = Math.abs(q - 1) < 1e-12
+      ? 'et la valeur ne change pas.'
+      : 'soit ' + (q > 1 ? 'une hausse' : 'une baisse') + ' d\'environ \\(' + texNum(Math.abs(q - 1) * 100, 2) + '\\ \\%\\) par pas.';
+    var txt = '<p>Pour \\(k = ' + texNum(k, 1) + ' :\\) la fonction est <b>' + sens + '</b>, et \\(\\mathrm{e}^{k}' + eqNum(q, 4) + texNum(q, 4) + '.\\)</p>' +
+      '<p>Point mobile : \\(t = ' + texNum(t, 2) + ',\\) \\(\\mathrm{e}^{kt}' + eqNum(v, 4) + texNum(v, 4) + '.\\) Tangente en \\(0 :\\) \\(y = ' + tanTex(k, true) + '.\\)</p>' +
+      '<p>Chaque fois que \\(t\\) augmente de \\(1,\\) la valeur est multipliée par \\(\\mathrm{e}^{k}' + eqNum(q, 4) + texNum(q, 4) + ',\\) ' + varia + '</p>';
     $('read1').innerHTML = txt;
 
     var tab = '<p style="margin:.6rem 0 .2rem">Les valeurs aux abscisses entières (points verts) forment une suite géométrique de raison \\(\\mathrm{e}^{k}\\) :</p>' +
@@ -767,7 +794,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     tab += '</tr><tr><th>\\(\\dfrac{u_n}{u_{n-1}}\\)</th><td>—</td>';
     for (i = 1; i <= 4; i++) { tab += '<td>' + fmt(Math.exp(k * i) / Math.exp(k * (i - 1)), 4) + '</td>'; }
     tab += '</tr></table></div>' +
-      '<p style="color:#6b7280;font-size:.9rem">Le quotient est constant : c\'est exactement la définition d\'une suite géométrique (fiche 2B), de raison \\(\\mathrm{e}^{k} = ' + texNum(q, 4) + '.\\)</p>';
+      '<p style="color:#6b7280;font-size:.9rem">Valeurs arrondies au dix-millième. Le quotient est constant : c\'est exactement la définition d\'une suite géométrique (fiche 2B), de raison \\(\\mathrm{e}^{k}' + eqNum(q, 4) + texNum(q, 4) + '.\\)</p>';
     $('tab1table').innerHTML = tab;
     typeset($('read1')); typeset($('tab1table'));
   }
@@ -806,9 +833,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var d = '', y = 1, i, xi, ecartMax = 0;
     d += 'M' + n1(X(0)) + ' ' + n1(Y(1));
     for (i = 1; i <= nd; i++) {
+      var yPrec = y;
       y = y * (1 + h);
       xi = i * h;
-      if (y > yb) { d += ' L' + n1(X(xi)) + ' ' + n1(Y(yb)); break; }
+      // Sortie du cadre : on coupe le segment là où il traverse vraiment le bord haut,
+      // sinon la pente dessinée ne serait plus celle du pas h.
+      if (y > yb) { d += ' L' + n1(X(xi - h + h * (yb - yPrec) / (y - yPrec))) + ' ' + n1(Y(yb)); break; }
       d += ' L' + n1(X(xi)) + ' ' + n1(Y(y));
       var e = Math.abs(Math.exp(xi) - y);
       if (e > ecartMax) ecartMax = e;
@@ -833,9 +863,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var approE = Math.pow(1 + h, Math.round(1 / h));
     var exact = Math.exp(xEnd);
+    var ecart = Math.abs(exact - yEnd);
+    var phraseE = xEnd >= 1 - 1e-12
+      ? 'Approximation de \\(\\mathrm{e}\\) obtenue en \\(x = 1 :\\) \\(\\left(1 + ' + texNum(h, 3) + '\\right)^{' + Math.round(1 / h) + '}' + eqNum(approE, 5) + texNum(approE, 5) + '\\)'
+      : 'La ligne brisée n\'a pas encore atteint \\(x = 1 :\\) avance le curseur « étapes » pour lire l\'approximation de \\(\\mathrm{e},\\) qui vaudra \\(\\left(1 + ' + texNum(h, 3) + '\\right)^{' + Math.round(1 / h) + '}' + eqNum(approE, 5) + texNum(approE, 5) + '\\)';
     var txt = '<p>Pas \\(h = ' + texNum(h, 3) + ',\\) \\(' + N + '\\) étapes en tout, \\(' + nd + '\\) tracées.</p>' +
-      '<p>Dernier point construit : \\(x_{' + nd + '} = ' + texNum(xEnd, 3) + ',\\) \\(y_{' + nd + '} = ' + texNum(yEnd, 4) + '.\\) Valeur exacte : \\(\\mathrm{e}^{' + texNum(xEnd, 3) + '} = ' + texNum(exact, 4) + '.\\) <b>Écart : ' + fmt(Math.abs(exact - yEnd), 4) + '</b>.</p>' +
-      '<p>Approximation de \\(\\mathrm{e}\\) obtenue en \\(x = 1 :\\) \\(\\left(1 + ' + texNum(h, 3) + '\\right)^{' + Math.round(1 / h) + '} = ' + texNum(approE, 5) + '\\) &nbsp;·&nbsp; valeur exacte \\(\\mathrm{e} = 2{,}718\\,28.\\)</p>' +
+      '<p>Dernier point construit : \\(x_{' + nd + '} = ' + texNum(xEnd, 3) + ',\\) \\(y_{' + nd + '}' + eqNum(yEnd, 4) + texNum(yEnd, 4) + '.\\) Valeur exacte : \\(\\mathrm{e}^{' + texNum(xEnd, 3) + '}' + eqNum(exact, 4) + texNum(exact, 4) + '.\\) <b>Écart ' + (Math.abs(fmtVal(ecart, 4) - ecart) < 1e-12 ? '=' : '≈') + ' ' + fmt(ecart, 4) + '</b>.</p>' +
+      '<p>' + phraseE + ' &nbsp;·&nbsp; à comparer au nombre \\(\\mathrm{e} \\approx 2{,}718\\,28.\\)</p>' +
       '<p style="color:#6b7280;font-size:.9rem">Plus le pas est petit, plus la ligne brisée colle à la courbe : c\'est ainsi qu\'une machine calcule \\(\\mathrm{e}^{x}\\) à partir des seules conditions \\(f\' = f\\) et \\(f(0) = 1.\\) La ligne brisée reste toujours <b>en dessous</b> de la courbe.</p>';
     $('read2').innerHTML = txt;
     typeset($('read2'));
@@ -907,6 +941,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       etapes = '<p><b>1.</b> Au numérateur, un produit devient une somme d\'exposants : \\(' + expTex(a) + ' \\times ' + expTex(b) + ' = \\mathrm{e}^{' + a + ' + ' + par(b) + '} = ' + expTex(a + b) + '.\\)</p>' +
         '<p><b>2.</b> Un quotient devient une différence : \\(\\dfrac{' + expTex(a + b) + '}{' + expTex(c) + '} = \\mathrm{e}^{' + (a + b) + ' - ' + par(c) + '} = ' + expTex(p) + '.\\)</p>';
     } else if (v === 'pow') {
+      // a = 1 ferait écrire « e^{n × 1} » : une multiplication par 1 dans la correction.
+      while (a === 1) { a = rndNonZero(-6, 7); }
       p = a * n + b;
       expr = '\\left(' + expTex(a) + '\\right)^{' + n + '} \\times ' + expTex(b);
       etapes = '<p><b>1.</b> Une puissance d\'exponentielle multiplie l\'exposant : \\(\\left(' + expTex(a) + '\\right)^{' + n + '} = \\mathrm{e}^{' + n + ' \\times ' + par(a) + '} = ' + expTex(a * n) + '.\\)</p>' +
@@ -968,9 +1004,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       '\\[' + gA + ' ' + relTex + ' ' + gB + '.\\]' +
       '<p><b>2. On regroupe.</b> On passe les termes en \\(x\\) à gauche et les constantes à droite :</p>' +
       '\\[' + (m === 1 ? 'x' : (m === -1 ? '-x' : m + 'x')) + ' ' + relTex + ' ' + (d - b) + '.\\]' +
-      '<p><b>3. On divise par \\(' + m + '.\\)</b> ' +
-      (type === 'eq' ? 'On obtient directement la solution.' :
-        (m > 0 ? 'Ce nombre est <b>positif</b> : le sens de l\'inégalité est conservé.' : 'Ce nombre est <b>négatif</b> : le sens de l\'inégalité <b>change</b>.')) + '</p>' +
+      (m === 1
+        ? '<p><b>3. Le coefficient de \\(x\\) vaut déjà \\(1.\\)</b> Rien à diviser : la solution se lit directement.</p>'
+        : (m === -1
+          ? '<p><b>3. On multiplie par \\(-1.\\)</b> ' + (type === 'eq' ? 'On obtient la solution.' : 'On change de signe, donc le sens de l\'inégalité <b>change</b>.') + '</p>'
+          : '<p><b>3. On divise par \\(' + m + '.\\)</b> ' +
+            (type === 'eq' ? 'On obtient directement la solution.' :
+              (m > 0 ? 'Ce nombre est <b>positif</b> : le sens de l\'inégalité est conservé.' : 'Ce nombre est <b>négatif</b> : le sens de l\'inégalité <b>change</b>.')) + '</p>')) +
       '<div class="ok">\\[' + repTex + '\\]' +
       '<p>Ensemble des solutions : ' + (rep === 'eq' ? '\\(\\{' + texNum(x0, 2) + '\\}.\\)' :
         (rep === 'le' ? '\\(]-\\infty\\,;' + texNum(x0, 2) + ']. \\)' : '\\([' + texNum(x0, 2) + '\\,;+\\infty[.\\)')) + '</p></div>' +
@@ -1070,14 +1110,19 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   wireEx(3, ['ex3-rep', 'ex3-rep2', 'ex3-rep3'], genEx3, function (e) {
     var v1 = parseNum($('ex3-rep').value), v2 = parseNum($('ex3-rep2').value), v3 = parseNum($('ex3-rep3').value);
     if (isNaN(v1) || isNaN(v2) || isNaN(v3)) return { ok: false, msg: 'Remplis les trois réponses avec des nombres.' };
-    var tol1 = Math.max(0.05, Math.abs(e.val) * 0.004);
-    var o1 = Math.abs(v1 - e.val) <= tol1;
-    var o2 = Math.abs(v2 - e.taux) <= 0.15;
+    // L'énoncé demande un arrondi à 0,01 près et à 0,1 % près :
+    // on n'accepte qu'un demi-rang d'écart avec la valeur exacte, donc le bon arrondi et lui seul.
+    var o1 = Math.abs(v1 - e.val) <= 0.005 + 1e-9;
+    var o2 = Math.abs(v2 - e.taux) <= 0.05 + 1e-9;
     var o3 = Math.abs(v3 - e.seuil) < 1e-9;
     if (o1 && o2 && o3) return { ok: true, msg: 'Les trois réponses sont bonnes.' };
     var mauvaises = [];
-    if (!o1) mauvaises.push('la valeur de \\(' + e.nom + '(' + e.t1 + ')\\) (remplace \\(t\\) par \\(' + e.t1 + '\\) dans la formule)');
-    if (!o2) mauvaises.push('le taux (c\'est \\(\\left(\\mathrm{e}^{k} - 1\\right) \\times 100,\\) pas \\(k \\times 100\\))');
+    if (!o1) mauvaises.push(Math.abs(v1 - e.val) <= 1
+      ? 'la valeur de \\(' + e.nom + '(' + e.t1 + ')\\) : tu y es presque, mais l\'arrondi à \\(0{,}01\\) près demandé est \\(' + texNumG(e.val, 2) + '\\)'
+      : 'la valeur de \\(' + e.nom + '(' + e.t1 + ')\\) (remplace \\(t\\) par \\(' + e.t1 + '\\) dans la formule)');
+    if (!o2) mauvaises.push(Math.abs(v2 - e.taux) <= 1
+      ? 'le taux : arrondi à \\(0{,}1\\ \\%\\) près, il vaut \\(' + texNum(e.taux, 1) + '\\ \\%\\)'
+      : 'le taux (c\'est \\(\\left(\\mathrm{e}^{k} - 1\\right) \\times 100,\\) pas \\(k \\times 100\\))');
     if (!o3) mauvaises.push('le seuil (calcule les valeurs entières une par une jusqu\'à franchir la limite)');
     return { ok: false, msg: 'À revoir : ' + mauvaises.join(' ; ') + '.' };
   });
@@ -1106,7 +1151,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var a = rnd(-5, 5);
       return build('Pour le réel \\(x = ' + a + ',\\) le nombre \\(\\mathrm{e}^{x}\\) est :',
         ['strictement positif', 'du signe de \\(x\\)', 'nul si \\(x = 0\\)', 'négatif si \\(x < 0\\)'], 0,
-        'Pour tout réel \\(x,\\) \\(\\mathrm{e}^{x} > 0 :\\) ici \\(\\mathrm{e}^{' + a + '} \\approx ' + texNum(Math.exp(a), 4) + '.\\)');
+        'Pour tout réel \\(x,\\) \\(\\mathrm{e}^{x} > 0 :\\) ici \\(\\mathrm{e}^{' + a + '}' + eqNum(Math.exp(a), 4) + texNum(Math.exp(a), 4) + '.\\)');
     },
     function () {
       var a = rndNonZero(2, 6);
@@ -1167,7 +1212,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'Dérivée d\'un produit : \\(1 \\times \\mathrm{e}^{x} + x \\times \\mathrm{e}^{x} = (x+1)\\mathrm{e}^{x}.\\)');
     },
     function () {
-      var a = rnd(5, 9), b = rnd(1, 4);
+      var a = rnd(5, 9), b = rnd(2, 4);
       return build('\\(\\dfrac{' + expTex(a) + '}{' + expTex(b) + '}\\) est égal à :',
         ['\\(' + expTex(a - b) + '\\)', '\\(' + expTex(a * b) + '\\)', '\\(' + expTex(a + b) + '\\)', '\\(\\dfrac{' + a + '}{' + b + '}\\)'], 0,
         'Un quotient soustrait les exposants : \\(\\dfrac{\\mathrm{e}^{x}}{\\mathrm{e}^{y}} = \\mathrm{e}^{x-y}.\\)');
