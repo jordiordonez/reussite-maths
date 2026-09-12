@@ -40,5 +40,7 @@ Ces fiches ont été écrites en appliquant d'emblée les leçons des 255 anomal
 | 10A, 10B | Fonctions trigonométriques | Codex | `revue/10A.md`, `10B.md` |
 | 11A, 11B | Primitives et équations différentielles | Claude | `revue/11A.md`, `11B.md` — 12 et 18 défauts corrigés avant livraison |
 | 12A, 12B | Calcul intégral | Codex | `revue/12A.md`, `12B.md` |
+| 13A, 13B | Sommes de variables aléatoires, loi des grands nombres | Claude | `revue/13A.md`, `13B.md` — 9 et 14 défauts corrigés avant livraison |
+| 14A, 14B | Algorithmique et programmation | Claude | `revue/14A.md`, `14B.md` — 4 défauts chacune ; 1,85 M de programmes Python réellement exécutés |
 
 Elles n'ont pas encore été relues par un relecteur indépendant, contrairement aux vingt et une premières.

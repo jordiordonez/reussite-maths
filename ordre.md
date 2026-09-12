@@ -32,8 +32,8 @@ Statut : ✅ fait · 🔨 en cours · ⬜ à produire
 | 10 | **Fonctions trigonométriques** | Dérivées de sinus et cosinus, variations, courbes, limite du taux d'accroissement en 0 | Cercle trigonométrique, radians, cosinus et sinus d'un réel, parité, périodicité | 10A (1re) · 10B (Term) | ✅ |
 | 11 | **Primitives et équations différentielles** | Notion de primitive, primitives des fonctions de référence, équations y′ = f, y′ = ay, y′ = ay + b, problème de Cauchy | Dérivation (chapitre 3), exponentielle (chapitre 5) | 11A, 11B (Term) | ✅ |
 | 12 | **Calcul intégral** | Intégrale et aire, propriétés, lien avec les primitives, valeur moyenne, intégration par parties, méthode des rectangles | Primitives (chapitre 11), aires vues au collège | 12A, 12B (Term) | ✅ |
-| 13 | **Sommes de variables aléatoires et loi des grands nombres** | Somme de variables aléatoires, linéarité de l'espérance, variance d'une somme de variables indépendantes, échantillon, inégalité de Bienaymé-Tchebychev, inégalité de concentration, loi des grands nombres | Espérance et variance (chapitre 7), loi binomiale (chapitre 9) | 13A (Term) | ⬜ |
-| 14 | **Algorithmique et programmation** | Écriture de fonctions Python liées aux chapitres : seuils, dichotomie, Newton, simulation, comptage | Listes, boucles, fonctions, conditions | 14A (transversal) | ⬜ |
+| 13 | **Sommes de variables aléatoires et loi des grands nombres** | Somme de variables aléatoires, linéarité de l'espérance, variance d'une somme de variables indépendantes, échantillon, inégalité de Bienaymé-Tchebychev, inégalité de concentration, loi des grands nombres | Espérance et variance (chapitre 7), loi binomiale (chapitre 9) | 13A, 13B (Term) | ✅ |
+| 14 | **Algorithmique et programmation** | Écriture de fonctions Python liées aux chapitres : seuils, dichotomie, Newton, simulation, comptage | Listes, boucles, fonctions, conditions | 14A, 14B (transversal) | ✅ |
 
 ## Dépendances à respecter
 
