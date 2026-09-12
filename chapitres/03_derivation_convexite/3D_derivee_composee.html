@@ -308,7 +308,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   <div class="card">
     <h3>4. Les quatre cas usuels à connaître par cœur</h3>
-    <div class="key"><b>Puissance</b> — \(\big(u^n\big)' = n\,u'\,u^{n-1}\) pour \(n\) entier.<br>
+    <div class="key"><b>Puissance</b> — \(\big(u^n\big)' = n\,u'\,u^{n-1}\) pour \(n\) entier (et, si \(n \leqslant 0,\) là où \(u \neq 0\)).<br>
       \(f(x) = (x^2+1)^3\) donne \(f'(x) = 3 \times 2x \times (x^2+1)^2 = 6x(x^2+1)^2,\) donc \(f'(1) = 6 \times 4 = 24.\)</div>
     <div class="key"><b>Racine</b> — \(\big(\sqrt{u}\big)' = \dfrac{u'}{2\sqrt{u}},\) valable là où \(u > 0.\)<br>
       \(f(x) = \sqrt{x^2+3}\) donne \(f'(x) = \dfrac{2x}{2\sqrt{x^2+3}} = \dfrac{x}{\sqrt{x^2+3}},\) donc \(f'(1) = \dfrac{1}{2}.\)</div>
@@ -335,7 +335,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p>La racine est strictement positive, donc <b>le signe de \(f'(x)\) est celui de \(x-2\)</b> : \(f\) décroît sur \(]-\infty\,;2]\) puis croît sur \([2\,;+\infty[,\) avec un minimum \(f(2) = \sqrt{1} = 1.\)</p>
     <div class="tablewrap"><table>
       <tr><th>\(x\)</th><th>\(-\infty\)</th><th>\(2\)</th><th>\(+\infty\)</th></tr>
-      <tr><th>\(f'(x)\)</th><td>—</td><td>\(0\)</td><td>+</td></tr>
+      <tr><th>\(f'(x)\)</th><td>−</td><td>\(0\)</td><td>+</td></tr>
       <tr><th>\(f\)</th><td>décroissante</td><td>\(1\)</td><td>croissante</td></tr>
     </table></div>
     <div class="ok"><b>Réflexe.</b> Factoriser \(f'(x)\) fait apparaître un facteur de signe évident (une racine, un carré, une exponentielle, toujours \(> 0\)) : le signe ne dépend alors que d'un petit morceau.</div>
@@ -361,7 +361,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <tr><td>\(e^{3x}\)</td><td>\(3x\)</td><td>\(e^{X}\)</td></tr>
       <tr><td>\(\dfrac{1}{x^2-4}\)</td><td>\(x^2-4\)</td><td>\(\dfrac{1}{X}\)</td></tr>
     </table></div>
-    <p>Attention : \(x^2+1\) n'est pas une composée (c'est une somme), et \(x\,e^{x}\) non plus (c'est un produit). Seul le facteur \(e^{x}\) serait une composée si l'exposant dépendait de \(x\) autrement que par \(x\) lui-même.</p>
+    <p>Attention : \(x^2+1\) <b>ne se dérive pas</b> avec la formule de la composée (la dernière opération est une addition), et \(x\,e^{x}\) non plus (c'est un produit). Dans \(x\,e^{x},\) le facteur \(e^{x}\) deviendrait une vraie composée si l'exposant était autre chose que \(x\) — par exemple \(x\,e^{3x},\) où il faut dériver \(e^{3x}\) avec la formule.</p>
   </div>
 
   <div class="card green">
@@ -593,6 +593,25 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (c === -1) return '-' + rest;
     return c + rest;
   }
+  // Puissance : on n'écrit jamais l'exposant 1.
+  function pow(base, e) { return e === 1 ? base : base + '^{' + e + '}'; }
+  // Terme à ajouter dans une somme : « + 5x » ou « − 5x », jamais « + -5x ».
+  function addT(c, rest) {
+    if (c < 0) return ' - ' + coef(-c, rest);
+    return ' + ' + coef(c, rest);
+  }
+  // « = » si l'écriture décimale à d décimales est exacte, « ≈ » sinon.
+  function exact(x, d) {
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return isFinite(x) && Math.abs(x * p - Math.round(x * p)) < 1e-9;
+  }
+  function rel() {                          // rel(v1, d1, v2, d2, …)
+    var i;
+    for (i = 0; i < arguments.length; i += 2) {
+      if (!exact(arguments[i], arguments[i + 1])) return '\\approx';
+    }
+    return '=';
+  }
 
   /* ---------- navigation sticky ---------- */
   var links = [].slice.call(document.querySelectorAll('#nav a'));
@@ -700,35 +719,41 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       f: function (X) { return X * X; }, d: function (X) { return 2 * X; },
       c: function (a) { return '\\left(' + a + '\\right)^2'; },
       cd: function (a) { return '2\\left(' + a + '\\right)'; },
-      ok: function () { return true; }, cond: 'définie sur \\(\\mathbb{R}\\)'
+      ok: function () { return true; }, def: function () { return true; },
+      cond: 'définie sur \\(\\mathbb{R}\\)', condD: 'définie sur \\(\\mathbb{R}\\)'
     },
     {
       lab: 'X³', t: 'X^3', dt: '3X^2',
       f: function (X) { return X * X * X; }, d: function (X) { return 3 * X * X; },
       c: function (a) { return '\\left(' + a + '\\right)^3'; },
       cd: function (a) { return '3\\left(' + a + '\\right)^2'; },
-      ok: function () { return true; }, cond: 'définie sur \\(\\mathbb{R}\\)'
+      ok: function () { return true; }, def: function () { return true; },
+      cond: 'définie sur \\(\\mathbb{R}\\)', condD: 'définie sur \\(\\mathbb{R}\\)'
     },
     {
       lab: '√X', t: '\\sqrt{X}', dt: '\\dfrac{1}{2\\sqrt{X}}',
       f: function (X) { return Math.sqrt(X); }, d: function (X) { return 1 / (2 * Math.sqrt(X)); },
       c: function (a) { return '\\sqrt{' + a + '}'; },
       cd: function (a) { return '\\dfrac{1}{2\\sqrt{' + a + '}}'; },
-      ok: function (X) { return X > 1e-9; }, cond: 'il faut \\(u(x) > 0\\)'
+      ok: function (X) { return X > 1e-9; }, def: function (X) { return X >= -1e-9; },
+      cond: 'il faut \\(u(x) \\geqslant 0\\) pour définir \\(f,\\) et \\(u(x) > 0\\) pour la dériver',
+      condD: 'il faut \\(u(x) > 0\\) : \\(\\sqrt{X}\\) n\'est pas dérivable en \\(0\\)'
     },
     {
       lab: '1 / X', t: '\\dfrac{1}{X}', dt: '-\\dfrac{1}{X^2}',
       f: function (X) { return 1 / X; }, d: function (X) { return -1 / (X * X); },
       c: function (a) { return '\\dfrac{1}{' + a + '}'; },
       cd: function (a) { return '-\\dfrac{1}{\\left(' + a + '\\right)^2}'; },
-      ok: function (X) { return Math.abs(X) > 1e-9; }, cond: 'il faut \\(u(x) \\neq 0\\)'
+      ok: function (X) { return Math.abs(X) > 1e-9; }, def: function (X) { return Math.abs(X) > 1e-9; },
+      cond: 'il faut \\(u(x) \\neq 0\\)', condD: 'il faut \\(u(x) \\neq 0\\)'
     },
     {
       lab: 'e^X', t: 'e^{X}', dt: 'e^{X}',
       f: function (X) { return Math.exp(X); }, d: function (X) { return Math.exp(X); },
       c: function (a) { return 'e^{' + a + '}'; },
       cd: function (a) { return 'e^{' + a + '}'; },
-      ok: function () { return true; }, cond: 'définie sur \\(\\mathbb{R}\\)'
+      ok: function () { return true; }, def: function () { return true; },
+      cond: 'définie sur \\(\\mathbb{R}\\)', condD: 'définie sur \\(\\mathbb{R}\\)'
     }
   ];
 
@@ -742,13 +767,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   function uu() { return UF[+selU.value]; }
   function vv() { return VF[+selV.value]; }
-  function comp(x) {
+  function comp(x) {                        // valeur : ensemble de DÉFINITION
     var u = uu(), v = vv(), U = u.f(x);
-    if (!isFinite(U) || !v.ok(U)) return NaN;
+    if (!isFinite(U) || !v.def(U)) return NaN;
     var y = v.f(U);
     return isFinite(y) ? y : NaN;
   }
-  function compD(x) {
+  function compD(x) {                       // dérivée : ensemble de DÉRIVABILITÉ
     var u = uu(), v = vv(), U = u.f(x);
     if (!isFinite(U) || !v.ok(U)) return NaN;
     var y = v.d(U) * u.d(x);
@@ -814,9 +839,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
 
     var s1 = $('chainVals'), s2 = $('chainDer');
-    var h1 = '\\(u(x) = ' + u.t + '\\) donc \\(u(' + tx(x, 2) + ') = ' + tx(U, 3) + '.\\)<br>';
+    // Les valeurs affichées sont arrondies au millième : on n'écrit « = » que
+    // lorsque l'écriture décimale est exacte, sinon « ≈ ».
+    var h1 = '\\(u(x) = ' + u.t + '\\) donc \\(u(' + tx(x, 2) + ') ' + rel(U, 3) + ' ' + tx(U, 3) + '.\\)<br>';
     if (isFinite(Y)) {
-      h1 += '\\(v(X) = ' + v.t + '\\) donc \\(f(' + tx(x, 2) + ') = v\\left(' + tx(U, 3) + '\\right) = ' + tx(Y, 3) + '.\\)';
+      h1 += '\\(v(X) = ' + v.t + '\\) donc \\(f(' + tx(x, 2) + ') ' + rel(U, 3) + ' v\\left(' + tx(U, 3) + '\\right)\\) et \\(f(' + tx(x, 2) + ') ' + rel(Y, 3) + ' ' + tx(Y, 3) + '.\\)';
     } else {
       h1 += '\\(v(X) = ' + v.t + '\\) n\'accepte pas la valeur \\(' + tx(U, 3) + '\\) : la composée n\'est pas définie en ce point (' + v.cond + ').';
     }
@@ -824,8 +851,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var du = u.d(x), dv = isFinite(U) && v.ok(U) ? v.d(U) : NaN;
     if (isFinite(dv)) {
-      s2.innerHTML = '\\(u\'(x) = ' + u.dt + '\\) donc \\(u\'(' + tx(x, 2) + ') = ' + tx(du, 3) + '\\) ; \\(v\'(X) = ' + v.dt + '\\) donc \\(v\'\\big(u(x)\\big) = ' + tx(dv, 3) + '.\\)<br>'
-        + '<b>Produit :</b> \\((v \\circ u)\'(' + tx(x, 2) + ') = v\'\\big(u(x)\\big) \\times u\'(x) = ' + nm(dv, 3) + ' \\times ' + nm(du, 3) + ' = ' + tx(dv * du, 3) + '.\\)';
+      // On ne multiplie jamais deux valeurs arrondies l'une par l'autre : le produit
+      // affiché est calculé à partir des valeurs exactes.
+      s2.innerHTML = '\\(u\'(x) = ' + u.dt + '\\) donc \\(u\'(' + tx(x, 2) + ') ' + rel(du, 3) + ' ' + tx(du, 3) + '\\) ; \\(v\'(X) = ' + v.dt + '\\) donc \\(v\'\\big(u(x)\\big) ' + rel(dv, 3) + ' ' + tx(dv, 3) + '.\\)<br>'
+        + '<b>Produit :</b> \\((v \\circ u)\'(' + tx(x, 2) + ') = v\'\\big(u(x)\\big) \\times u\'(x) ' + rel(dv * du, 3) + ' ' + tx(dv * du, 3) + '.\\)';
+    } else if (isFinite(Y)) {
+      s2.innerHTML = 'La composée est bien définie en \\(x = ' + tx(x, 2) + '\\) mais elle n\'y est <b>pas dérivable</b> : ' + v.condD + '.';
     } else {
       s2.innerHTML = 'La dérivée de la composée n\'existe pas en \\(x = ' + tx(x, 2) + '\\) : ' + v.cond + '.';
     }
@@ -888,11 +919,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       mk('circle', { cx: X(x0), cy: Y(d0), r: 5.5, fill: '#f97362', stroke: '#fff', 'stroke-width': 1.5 }, g);
     }
 
-    var u = uu(), v = vv(), U = u.f(x0);
+    var u = uu(), v = vv();
     var st = $('curveVals');
     if (isFinite(f0) && isFinite(d0)) {
-      st.innerHTML = '\\(f(' + tx(x0, 2) + ') = ' + tx(f0, 3) + '\\) et la tangente a pour pente \\(f\'(' + tx(x0, 2) + ') = ' + tx(d0, 3) + '.\\)<br>'
-        + '\\(f\'(x) = ' + v.cd(u.t) + ' \\times \\left(' + u.dt + '\\right)\\) et ici \\(' + nm(v.d(U), 3) + ' \\times ' + nm(u.d(x0), 3) + ' = ' + tx(d0, 3) + '\\) : c\'est bien l\'ordonnée du point rouge.';
+      st.innerHTML = '\\(f(' + tx(x0, 2) + ') ' + rel(f0, 3) + ' ' + tx(f0, 3) + '\\) et la tangente a pour pente \\(f\'(' + tx(x0, 2) + ') ' + rel(d0, 3) + ' ' + tx(d0, 3) + '.\\)<br>'
+        + '\\(f\'(x) = ' + v.cd(u.t) + ' \\times \\left(' + u.dt + '\\right)\\) et ici \\(v\'\\big(u(x)\\big) \\times u\'(x) ' + rel(d0, 3) + ' ' + tx(d0, 3) + '\\) : c\'est bien l\'ordonnée du point rouge.';
+    } else if (isFinite(f0)) {
+      st.innerHTML = 'En \\(x = ' + tx(x0, 2) + '\\) la composée est définie (\\(f(' + tx(x0, 2) + ') ' + rel(f0, 3) + ' ' + tx(f0, 3) + '\\)) mais elle n\'y est pas dérivable : ' + v.condD + '.';
     } else {
       st.innerHTML = 'En \\(x = ' + tx(x0, 2) + '\\) la composée n\'est pas définie (' + v.cond + ').';
     }
@@ -948,10 +981,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     function () {
       var n = rnd(2, 5), a = pick([2, 3, -2, -3]), b = rndNonZero(-4, 4);
       var L = lin(a, b), na = n * a;
+      var B1 = pow('\\left(' + L + '\\right)', n - 1);
       return build('Soit \\(f(x) = \\left(' + L + '\\right)^{' + n + '}.\\) Alors \\(f\'(x)\\) vaut :',
-        ['\\(' + coef(na, '\\left(' + L + '\\right)^{' + (n - 1) + '}') + '\\)',
-         '\\(' + coef(n, '\\left(' + L + '\\right)^{' + (n - 1) + '}') + '\\)',
-         '\\(' + coef(a, '\\left(' + L + '\\right)^{' + (n - 1) + '}') + '\\)',
+        ['\\(' + coef(na, B1) + '\\)',
+         '\\(' + coef(n, B1) + '\\)',
+         '\\(' + coef(a, B1) + '\\)',
          '\\(' + coef(na, '\\left(' + L + '\\right)^{' + n + '}') + '\\)'],
         0, '\\(\\big(u^n\\big)\' = n\\,u\'\\,u^{n-1}\\) avec \\(u\'(x) = ' + a + '\\) : on multiplie par ' + a + ' et l\'exposant descend de 1.');
     },
@@ -1021,12 +1055,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     function () {
       var c = pick([2, 3, 4]), n = rnd(2, 4);
+      var B2 = pow('\\left(' + c + 'x^2+1\\right)', n - 1);
       return build('Soit \\(f(x) = \\left(' + c + 'x^2+1\\right)^{' + n + '}.\\) Alors \\(f\'(x)\\) vaut :',
-        ['\\(' + (2 * c * n) + 'x\\left(' + c + 'x^2+1\\right)^{' + (n - 1) + '}\\)',
-         '\\(' + n + '\\left(' + c + 'x^2+1\\right)^{' + (n - 1) + '}\\)',
-         '\\(' + (2 * c) + 'x\\left(' + c + 'x^2+1\\right)^{' + (n - 1) + '}\\)',
+        ['\\(' + (2 * c * n) + 'x' + B2 + '\\)',
+         '\\(' + n + B2 + '\\)',
+         '\\(' + (2 * c) + 'x' + B2 + '\\)',
          '\\(' + (2 * c * n) + 'x\\left(' + c + 'x^2+1\\right)^{' + n + '}\\)'],
-        0, '\\(u\'(x) = ' + (2 * c) + 'x,\\) donc \\(n\\,u\'\\,u^{n-1} = ' + n + ' \\times ' + (2 * c) + 'x \\times u^{' + (n - 1) + '}.\\)');
+        0, '\\(u\'(x) = ' + (2 * c) + 'x,\\) donc \\(n\\,u\'\\,u^{n-1} = ' + n + ' \\times ' + (2 * c) + 'x \\times ' + pow('u', n - 1) + '.\\)');
     }
   ];
 
@@ -1087,7 +1122,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   $('qcm-new').addEventListener('click', renderQcm);
 
   /* ---------- exercices ---------- */
-  function tolOk(v, res) { return Math.abs(v - res) <= Math.max(0.005, Math.abs(res) * 1e-4); }
+  // Toutes les réponses attendues sont des décimaux exacts (multiples de 0,25).
+  // Tolérance ABSOLUE d'un demi-centième, jamais relative : une tolérance relative
+  // deviendrait énorme sur les grandes valeurs et féliciterait une réponse fausse.
+  function tolOk(v, res) { return Math.abs(v - res) <= 5e-3 + 1e-9; }
   function chk(e, v) {
     if (tolOk(v, e.res)) return { ok: true, msg: 'Correct.' };
     if (e.piege !== undefined && tolOk(v, e.piege)) {
@@ -1106,6 +1144,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (Math.abs(t) < 1 || Math.abs(t) > 3) { n = 3; a = 2; b = 1; x0 = 0; t = 1; }
     var L = lin(a, b), na = n * a;
     var pw = Math.pow(t, n - 1), res = na * pw;
+    var BL = pow('\\left(' + L + '\\right)', n - 1);
+    // Quand n = 2 l'exposant vaut 1 : l'étape intermédiaire serait une répétition.
+    var etape = (n - 1 > 1) ? (' = ' + par(na) + ' \\times ' + par(pw)) : '';
     return {
       res: res,
       piege: n * pw,
@@ -1113,10 +1154,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         + '<p>Calculer \\(f\'(' + x0 + ').\\)</p>',
       correction: '<p><b>1. Identifier.</b> \\(u(x) = ' + L + '\\) (intérieure) et \\(v(X) = X^{' + n + '}\\) (extérieure), donc \\(f = v \\circ u.\\)</p>'
         + '<p><b>2. Dériver.</b> \\(u\'(x) = ' + a + '\\) et \\(\\big(u^n\\big)\' = n\\,u\'\\,u^{n-1}\\) donnent</p>'
-        + '<p>\\(f\'(x) = ' + n + ' \\times ' + par(a) + ' \\times \\left(' + L + '\\right)^{' + (n - 1) + '} = ' + coef(na, '\\left(' + L + '\\right)^{' + (n - 1) + '}') + '.\\)</p>'
+        + '<p>\\(f\'(x) = ' + n + ' \\times ' + par(a) + ' \\times ' + BL + ' = ' + coef(na, BL) + '.\\)</p>'
         + '<p><b>3. Calculer en \\(x_0 = ' + x0 + '.\\)</b> \\(u(' + x0 + ') = ' + t + ',\\) donc</p>'
-        + '<p>\\(f\'(' + x0 + ') = ' + par(na) + ' \\times ' + par(t) + '^{' + (n - 1) + '} = ' + par(na) + ' \\times ' + par(pw) + ' = ' + res + '.\\)</p>'
-        + '<div class="warn">Sans le facteur \\(u\'(x) = ' + a + '\\) on aurait trouvé \\(' + (n * pw) + '\\) : c\'est l\'erreur classique.</div>'
+        + '<p>\\(f\'(' + x0 + ') = ' + par(na) + ' \\times ' + pow(par(t), n - 1) + etape + ' = ' + res + '.\\)</p>'
+        + (a === 1
+            ? '<div class="warn">Ici \\(u\'(x) = 1,\\) donc l\'oubli du facteur ne se verrait pas sur le résultat : c\'est un cas trompeur. Dès que \\(u\'(x) \\neq 1,\\) l\'oublier change la réponse.</div>'
+            : '<div class="warn">Sans le facteur \\(u\'(x) = ' + a + '\\) on aurait trouvé \\(' + (n * pw) + '\\) : c\'est l\'erreur classique.</div>')
     };
   }, chk);
 
@@ -1153,7 +1196,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
           + '<p><b>2. Dériver.</b> \\(u\'(x) = ' + DU + '\\) et \\(\\big(\\sqrt{u}\\big)\' = \\dfrac{u\'}{2\\sqrt{u}},\\) donc</p>'
           + '<p>\\(f\'(x) = \\dfrac{' + DU + '}{2\\sqrt{' + T + '}}.\\)</p>'
           + '<p><b>3. Calculer en \\(x_0 = ' + x0 + '.\\)</b> \\(u(' + x0 + ') = ' + (k * k) + ',\\) donc \\(\\sqrt{u(' + x0 + ')} = ' + k + '\\) et \\(u\'(' + x0 + ') = ' + num + '.\\)</p>'
-          + '<p>\\(f\'(' + x0 + ') = \\dfrac{' + num + '}{2 \\times ' + k + '} = \\dfrac{' + num + '}{' + (2 * k) + '} = ' + tx(res, 4) + '.\\)</p>'
+          + '<p>\\(f\'(' + x0 + ') = ' + (k === 1 ? '\\dfrac{' + num + '}{2}' : '\\dfrac{' + num + '}{2 \\times ' + k + '} = \\dfrac{' + num + '}{' + (2 * k) + '}') + ' = ' + tx(res, 4) + '.\\)</p>'
           + '<div class="key">Le dénominateur \\(2\\sqrt{u}\\) est toujours positif : le signe de \\(f\'\\) est celui de \\(u\'.\\)</div>'
       };
     }
@@ -1165,7 +1208,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         + '<p><b>2. Dériver.</b> \\(u\'(x) = ' + DU + '\\) et \\(\\left(\\dfrac{1}{u}\\right)\' = -\\dfrac{u\'}{u^2},\\) donc</p>'
         + '<p>\\(f\'(x) = \\dfrac{-\\left(' + DU + '\\right)}{\\left(' + T + '\\right)^2}.\\)</p>'
         + '<p><b>3. Calculer en \\(x_0 = ' + x0 + '.\\)</b> \\(u(' + x0 + ') = ' + m + '\\) donc \\(u(' + x0 + ')^2 = ' + (m * m) + ',\\) et \\(u\'(' + x0 + ') = ' + num + '.\\)</p>'
-        + '<p>\\(f\'(' + x0 + ') = \\dfrac{' + (-num) + '}{' + (m * m) + '} = ' + tx(res, 4) + '.\\)</p>'
+        + '<p>\\(f\'(' + x0 + ') = ' + (m === 1 ? String(-num) : '\\dfrac{' + (-num) + '}{' + (m * m) + '} = ' + tx(res, 4)) + '.\\)</p>'
         + '<div class="key">Le dénominateur \\(u^2\\) est toujours positif : le signe de \\(f\'\\) est l\'opposé de celui de \\(u\'.\\)</div>'
     };
   }, chk);
@@ -1181,15 +1224,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         ok = (Math.abs(t) >= 1 && Math.abs(t) <= 3);
       } while (g < 600 && !ok);
       if (!ok) { n = 3; a = 2; b = -1; x0 = 1; t = 1; }
-      var L = lin(a, b);
+      var L = lin(a, b), BP = pow('\\left(' + L + '\\right)', n - 1);
       res = Math.pow(t, n) + n * a * x0 * Math.pow(t, n - 1);
       return {
         res: res,
         enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb{R}\\) par \\(f(x) = x\\left(' + L + '\\right)^{' + n + '}.\\)</p>'
           + '<p>Calculer \\(f\'(' + x0 + ').\\)</p>',
         correction: '<p><b>1. Reconnaître la structure.</b> La dernière opération est une <b>multiplication</b> : \\(f = AB\\) avec \\(A(x) = x\\) et \\(B(x) = \\left(' + L + '\\right)^{' + n + '}.\\)</p>'
-          + '<p><b>2. Dériver chaque facteur.</b> \\(A\'(x) = 1.\\) Pour \\(B,\\) c\'est une composée : \\(u(x) = ' + L + '\\) et \\(v(X) = X^{' + n + '},\\) donc \\(B\'(x) = ' + coef(n * a, '\\left(' + L + '\\right)^{' + (n - 1) + '}') + '.\\)</p>'
-          + '<p><b>3. Règle du produit.</b> \\(f\'(x) = A\'B + AB\' = \\left(' + L + '\\right)^{' + n + '} + ' + coef(n * a, 'x\\left(' + L + '\\right)^{' + (n - 1) + '}') + '.\\)</p>'
+          + '<p><b>2. Dériver chaque facteur.</b> \\(A\'(x) = 1.\\) Pour \\(B,\\) c\'est une composée : \\(u(x) = ' + L + '\\) et \\(v(X) = X^{' + n + '},\\) donc \\(B\'(x) = ' + coef(n * a, BP) + '.\\)</p>'
+          + '<p><b>3. Règle du produit.</b> \\(f\'(x) = A\'B + AB\' = \\left(' + L + '\\right)^{' + n + '}' + addT(n * a, 'x' + BP) + '.\\)</p>'
           + '<p><b>4. Calculer en \\(x_0 = ' + x0 + '.\\)</b> \\(' + L.replace(/x/g, '(' + x0 + ')') + ' = ' + t + '.\\)</p>'
           + '<p>\\(f\'(' + x0 + ') = ' + par(Math.pow(t, n)) + ' + ' + par(n * a) + ' \\times ' + par(x0) + ' \\times ' + par(Math.pow(t, n - 1)) + ' = ' + res + '.\\)</p>'
           + '<div class="warn">Erreur classique : n\'écrire que \\(x \\times B\'(x)\\) en oubliant le terme \\(A\'B,\\) ou oublier le facteur \\(' + a + '\\) venant de \\(u\'.\\)</div>'
@@ -1203,13 +1246,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     } while (g < 900 && !ok);
     if (!ok) { a = 1; b = 1; c = 2; x0 = 0; k = 1; d = 1; val = 1; res = 1 + 1; }
     var L2 = lin(a, b), R2 = lin(c, d);
+    var frac2 = (c < 0 ? ' - ' : ' + ') + '\\dfrac{' + coef(Math.abs(c), '\\left(' + L2 + '\\right)') + '}{2\\sqrt{' + R2 + '}}';
     return {
       res: res,
       enonce: '<p>Soit \\(f(x) = \\left(' + L2 + '\\right)\\sqrt{' + R2 + '},\\) définie là où \\(' + R2 + ' \\geqslant 0.\\)</p>'
         + '<p>Calculer \\(f\'(' + x0 + ').\\)</p>',
       correction: '<p><b>1. Reconnaître la structure.</b> C\'est un <b>produit</b> : \\(A(x) = ' + L2 + '\\) et \\(B(x) = \\sqrt{' + R2 + '},\\) et \\(B\\) est elle-même une <b>composée</b> avec \\(u(x) = ' + R2 + '\\) et \\(v(X) = \\sqrt{X}.\\)</p>'
         + '<p><b>2. Dériver chaque facteur.</b> \\(A\'(x) = ' + a + '\\) et \\(B\'(x) = \\dfrac{' + c + '}{2\\sqrt{' + R2 + '}}\\) (formule \\(\\big(\\sqrt{u}\\big)\' = \\dfrac{u\'}{2\\sqrt{u}},\\) valable pour \\(' + R2 + ' > 0\\)).</p>'
-        + '<p><b>3. Règle du produit.</b> \\(f\'(x) = ' + a + '\\sqrt{' + R2 + '} + \\dfrac{' + c + '\\left(' + L2 + '\\right)}{2\\sqrt{' + R2 + '}}.\\)</p>'
+        + '<p><b>3. Règle du produit.</b> \\(f\'(x) = ' + coef(a, '\\sqrt{' + R2 + '}') + frac2 + '.\\)</p>'
         + '<p><b>4. Calculer en \\(x_0 = ' + x0 + '.\\)</b> \\(' + R2.replace(/x/g, '(' + x0 + ')') + ' = ' + (k * k) + '\\) donc \\(\\sqrt{\\;} = ' + k + ',\\) et \\(' + L2.replace(/x/g, '(' + x0 + ')') + ' = ' + val + '.\\)</p>'
         + '<p>\\(f\'(' + x0 + ') = ' + par(a) + ' \\times ' + k + ' + \\dfrac{' + par(c) + ' \\times ' + par(val) + '}{' + (2 * k) + '} = ' + tx(res, 4) + '.\\)</p>'
         + '<div class="warn">Erreur classique : oublier le \\(2\\sqrt{u}\\) au dénominateur, ou oublier le facteur \\(u\'(x) = ' + c + '.\\)</div>'
