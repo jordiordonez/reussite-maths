@@ -331,7 +331,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <strong>Exemple 4 (le sens change à cause du calcul, pas de l'exponentielle).</strong> \(\mathrm e^{-2x}\geq \mathrm e^{x-6}\iff -2x\geq x-6\iff -3x\geq -6\iff x\leq 2.\) C'est la division par \(-3\) qui a renversé l'inégalité.
     </div>
     <div class="box">
-      <strong>Deux cas particuliers très fréquents.</strong><br>
+      <strong>Trois cas particuliers très fréquents.</strong><br>
       • \(\mathrm e^{A}=0\) n'a <strong>aucune solution</strong>, et \(\mathrm e^{A}&lt;0\) non plus : une exponentielle est toujours strictement positive.<br>
       • \(\mathrm e^{A}&gt;0\) est vraie <strong>pour tout \(x\)</strong> : l'ensemble des solutions est \(\mathbb R.\)<br>
       • Une équation comme \(\mathrm e^{x}=5\) n'a pas de solution « visible » : les deux membres ne sont pas tous les deux des exponentielles. Elle se résoudra avec le <strong>logarithme</strong> (fiche 5C).
@@ -353,6 +353,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <tr><th>\(x\)</th><th>\(-10\)</th><th>\(-5\)</th><th>\(-1\)</th><th>\(0\)</th><th>\(1\)</th><th>\(5\)</th><th>\(10\)</th></tr>
         <tr><td class="lab">\(\mathrm e^{x}\)</td><td>\(0{,}000045\)</td><td>\(0{,}0067\)</td><td>\(0{,}368\)</td><td>\(1\)</td><td>\(2{,}718\)</td><td>\(148{,}4\)</td><td>\(22\,026\)</td></tr>
       </table>
+      <p style="font-size:.85rem;color:var(--muted);margin:.3rem 0 0">Valeurs arrondies, sauf \(\mathrm e^{0}=1.\)</p>
     </div>
     <div class="box">
       <strong>Composées : on fait tendre l'exposant.</strong> Si \(u(x)\to+\infty\) alors \(\mathrm e^{u(x)}\to+\infty\) ; si \(u(x)\to-\infty\) alors \(\mathrm e^{u(x)}\to0.\)<br>
@@ -368,8 +369,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3><span class="num">4</span>Croissances comparées : l'exponentielle gagne toujours</h3>
     <div class="key">
       <strong>Énoncé exact (à citer tel quel).</strong> Pour tout entier naturel \(n\geq1\) :
-      \[\lim_{x\to+\infty}\frac{\mathrm e^{x}}{x^{n}}=+\infty,\qquad\qquad \lim_{x\to+\infty}\frac{x^{n}}{\mathrm e^{x}}=0,\]
-      et
+      \[\lim_{x\to+\infty}\frac{\mathrm e^{x}}{x^{n}}=+\infty,\qquad\qquad \lim_{x\to+\infty}\frac{x^{n}}{\mathrm e^{x}}=0.\]
+      Et, séparément (il n'y a pas de \(n\) ici) :
       \[\lim_{x\to-\infty}x\,\mathrm e^{x}=0.\]
     </div>
     <p>La démonstration figure dans la fiche <a href="../04_limites_continuite/4B_limites_de_fonctions.html">4B</a> (démonstration exigible). Ici, on retient la <strong>formule à écrire</strong> et surtout le <strong>moment où l'utiliser</strong> : dès qu'une forme indéterminée mélange une exponentielle et une puissance de \(x.\)</p>
@@ -387,6 +388,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <tr><td class="lab">\(\mathrm e^{x}\)</td><td>\(148\)</td><td>\(22\,026\)</td><td>\(4{,}85\times10^{8}\)</td><td>\(1{,}07\times10^{13}\)</td></tr>
         <tr><td class="lab">\(\dfrac{x^{3}}{\mathrm e^{x}}\)</td><td>\(0{,}84\)</td><td>\(0{,}045\)</td><td>\(1{,}6\times10^{-5}\)</td><td>\(2{,}5\times10^{-9}\)</td></tr>
       </table>
+      <p style="font-size:.85rem;color:var(--muted);margin:.3rem 0 0">Ligne \(x^{3}\) exacte ; les deux autres lignes sont arrondies.</p>
     </div>
     <div class="warn">
       <strong>Le sens compte.</strong> En \(+\infty\), c'est \(\mathrm e^{x}\) qui l'emporte : \(\frac{x^{n}}{\mathrm e^{x}}\to0\) et \(\frac{\mathrm e^{x}}{x^{n}}\to+\infty.\) Écrire l'inverse est l'erreur la plus fréquente du chapitre. Et \(x\,\mathrm e^{x}\to0\) vaut <strong>en \(-\infty\)</strong> seulement : en \(+\infty\), \(x\,\mathrm e^{x}\to+\infty.\)
@@ -503,7 +505,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <div class="lvl"><b>F.I. \(\frac{\infty}{\infty}\) avec l'exponentielle au dénominateur, en \(+\infty\)</b> → <b>séparer la fraction</b> terme à terme, puis \(\frac{x^{n}}{\mathrm e^{x}}\to0.\)<br>\(\frac{3x^{2}-x}{\mathrm e^{x}}=3\frac{x^{2}}{\mathrm e^{x}}-\frac{x}{\mathrm e^{x}}\to0.\)</div>
         <div class="lvl"><b>F.I. \(0\times\infty\) en \(-\infty\)</b> (un polynôme fois \(\mathrm e^{x}\)) → <b>développer</b> et utiliser \(x\,\mathrm e^{x}\to0\) et \(\mathrm e^{x}\to0.\)<br>\((3x+2)\mathrm e^{x}=3x\mathrm e^{x}+2\mathrm e^{x}\to0.\)</div>
         <div class="lvl"><b>Quotient de deux exponentielles, ou F.I. \(\frac{\infty}{\infty}\) entre exponentielles</b> → <b>factoriser par l'exponentielle dominante</b> en haut et en bas.<br>\(\frac{\mathrm e^{x}+3}{2\mathrm e^{x}-1}=\frac{\mathrm e^{x}\left(1+\frac{3}{\mathrm e^{x}}\right)}{\mathrm e^{x}\left(2-\frac{1}{\mathrm e^{x}}\right)}=\frac{1+3\mathrm e^{-x}}{2-\mathrm e^{-x}}\to\frac12\) en \(+\infty.\)</div>
-        <div class="lvl"><b>Exposant autre que \(x\)</b> (par exemple \(\mathrm e^{2x}\) ou \(\mathrm e^{-x}\)) → <b>poser \(t=\) l'exposant</b> et se ramener aux formules du cours.<br>\(\lim_{x\to+\infty}x^{2}\mathrm e^{-x}\) : on pose \(t=x\), c'est \(\frac{x^{2}}{\mathrm e^{x}}\to0.\) &nbsp; \(\lim_{x\to-\infty}x\,\mathrm e^{2x}=\frac12\,(2x)\mathrm e^{2x}\to0\) avec \(t=2x\to-\infty.\)</div>
+        <div class="lvl"><b>Exposant autre que \(x\)</b> (par exemple \(\mathrm e^{2x}\) ou \(\mathrm e^{-x}\)) → <b>poser \(t=\) l'exposant</b> et se ramener aux formules du cours.<br>\(\lim_{x\to+\infty}x^{2}\mathrm e^{-x}\) : pas besoin de poser quoi que ce soit, \(\mathrm e^{-x}=\frac{1}{\mathrm e^{x}}\) donne \(x^{2}\mathrm e^{-x}=\frac{x^{2}}{\mathrm e^{x}}\to0.\) &nbsp; Pour \(\lim_{x\to-\infty}x\,\mathrm e^{2x}\), on pose \(t=2x\) : alors \(x\,\mathrm e^{2x}=\frac12\,t\,\mathrm e^{t}\) et \(t\to-\infty\), donc la limite vaut \(0.\)</div>
       </div>
     </div>
     <div class="key">
@@ -704,7 +706,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <section id="qcm">
   <h2><span>5.</span> QCM</h2>
   <div class="card">
-    <p>Quatre questions tirées au hasard dans une banque de 18. Une seule bonne réponse par question.</p>
+    <p>Quatre questions tirées au hasard dans une banque de 19. Une seule bonne réponse par question.</p>
     <div id="qcm-container"></div>
     <div class="score" id="qcm-score"></div>
     <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
@@ -755,6 +757,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     return fmt(x, ax < 1 ? 4 : (ax < 100 ? 2 : 1));
   }
+  // Vrai si l'écriture produite par fmtSci redonne exactement x.
+  function sciExact(x) {
+    if (!isFinite(x)) return false;
+    var ax = Math.abs(x), v, e, m, d, p;
+    if (ax !== 0 && (ax >= 1e5 || ax < 1e-3)) {
+      e = Math.floor(Math.log(ax) / Math.LN10);
+      m = x / Math.pow(10, e);
+      v = (Math.round(m * 100) / 100) * Math.pow(10, e);
+    } else {
+      d = ax < 1 ? 4 : (ax < 100 ? 2 : 1);
+      p = Math.pow(10, d);
+      v = Math.round(x * p) / p;
+    }
+    return Math.abs(v - x) <= 1e-9 * Math.max(1, ax);
+  }
   function plainSci(x) {
     if (!isFinite(x)) return '—';
     var ax = Math.abs(x);
@@ -796,6 +813,34 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   /* ---------- écriture en TeX ---------- */
   function numTex(x) { return fmt(x, 4).replace(',', '{,}'); }
+  // Vrai seulement si l'écriture à d décimales redonne exactement x.
+  function exactAt(x, d) {
+    if (!isFinite(x)) return false;
+    var p = Math.pow(10, d);
+    return Math.abs(Math.round(x * p) / p - x) <= 1e-9 * Math.max(1, Math.abs(x));
+  }
+  // « = » si l'arrondi à d décimales est exact, « ≈ » sinon.
+  function relTex(x, d) { return exactAt(x, d) ? '=' : '\\approx'; }
+  function relTxt(x, d) { return exactAt(x, d) ? '=' : '≈'; }
+  function roundTex(x, d) { var p = Math.pow(10, d); return numTex(Math.round(x * p) / p); }
+  // Écriture décimale sûre (toFixed évite la notation 1e-7 de String()).
+  function decTex(x, d) {
+    var s = x.toFixed(d);
+    if (s.indexOf('.') >= 0) s = s.replace(/0+$/, '').replace(/\.$/, '');
+    if (s === '-0') s = '0';
+    return s.replace('.', '{,}');
+  }
+  // Nombre de décimales : au moins `base`, davantage pour garder trois chiffres
+  // significatifs quand la valeur est très petite (sinon un extremum non nul s'écrit « 0 »).
+  function autoDec(x, base, cap) {
+    var ax = Math.abs(x), d = base;
+    if (ax > 0 && ax < 1) d = Math.max(base, 2 - Math.floor(Math.log(ax) / Math.LN10));
+    return Math.min(cap, d);
+  }
+  function relDec(x, base, cap) { var d = autoDec(x, base, cap); return relTex(x, d) + decTex(x, d); }
+  function cellDec(x, base, cap) { var d = autoDec(x, base, cap); return (exactAt(x, d) ? '' : '\\approx') + decTex(x, d); }
+  // Même valeur écrite dans un tableau : « ≈ » en préfixe quand l'écriture est arrondie.
+  function cellTex(x, d) { return (exactAt(x, d) ? '' : '\\approx') + roundTex(x, d); }
   function coefTex(x) { if (x === 1) return ''; if (x === -1) return '-'; return numTex(x); }
   function expTex(c) {
     var arg;
@@ -940,7 +985,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       mk('line', { x1: X(x0), y1: Y(fx0), x2: X(x0), y2: y0, stroke: '#d97706', 'stroke-dasharray': '3 3' }, svg);
       mk('circle', { cx: X(x0), cy: Y(fx0), r: 5, fill: '#d97706' }, svg);
       txt(svg, Math.min(X(x0) + 8, W - 90), Y(fx0) - 8,
-        (A > 0 ? 'min ' : 'max ') + minus(fmt(fx0, 2)) + ' en x = ' + minus(fmt(x0, 2)),
+        (A > 0 ? 'min ' : 'max ') + (exactAt(fx0, autoDec(fx0, 2, 5)) ? '=' : '≈') + ' ' + minus(decTex(fx0, autoDec(fx0, 2, 5)).replace('{,}', ',')) + ' en x ' + relTxt(x0, 2) + ' ' + minus(fmt(x0, 2)),
         { fill: '#d97706', 'font-weight': '700' });
     }
     // graduations
@@ -953,7 +998,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var txtLim = '\\(\\lim_{x\\to-\\infty}f(x)=' + limM + '\\) &nbsp;·&nbsp; \\(\\lim_{x\\to+\\infty}f(x)=' + limP + '.\\)';
     if (asym) txtLim += '<br>La droite d\'équation \\(y=0\\) est asymptote horizontale ' +
       (asym === '-\\infty' ? 'en \\(-\\infty\\)' : 'en \\(+\\infty\\)') + ' (c ' + (c > 0 ? '&gt;' : '&lt;') + ' 0).';
-    else txtLim += '<br>Pas d\'exponentielle ici : aucune asymptote horizontale.';
+    else if (a === 0) txtLim += '<br>Pas d\'exponentielle ici : \\(f\\) est la fonction constante égale à \\(' + numTex(b) + '\\), et la droite \\(y=' + numTex(b) + '\\) est asymptote horizontale des deux côtés (cas dégénéré).';
+    else txtLim += '<br>Pas d\'exponentielle ici : \\(f\\) est affine non constante, donc aucune asymptote horizontale.';
     $('fLim').innerHTML = txtLim;
     typeset($('fLim'));
 
@@ -965,12 +1011,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '<tr><td class="lab">\\(f\'(x)\\)</td><td></td><td class="sgn ' + (croiss ? 'pos' : 'neg') + '">\\(' + (croiss ? '+' : '-') + '\\)</td><td></td></tr>' +
         '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + limM + '\\)</td><td class="arrow">' + (croiss ? '↗' : '↘') + '</td><td>\\(' + limP + '\\)</td></tr></table>';
       if (a === 0 && b === 0) tab = '<p><em>a = b = 0 : la fonction est nulle.</em></p>';
+      else if (a === 0 && c === 0) tab = '<p><em>a = 0 et c = 0 : \\(f\\) est la fonction constante égale à \\(' + numTex(b) + '\\). Sa dérivée est nulle partout : il n\'y a pas de variation à décrire.</em></p>';
     } else {
       var s1 = (A > 0) ? '-' : '+', s2 = (A > 0) ? '+' : '-';
-      tab = '<table class="vartab"><tr><td class="lab">\\(x\\)</td><td>\\(-\\infty\\)</td><td></td><td>\\(' + numTex(Math.round(x0 * 1000) / 1000) + '\\)</td><td></td><td>\\(+\\infty\\)</td></tr>' +
+      tab = '<table class="vartab"><tr><td class="lab">\\(x\\)</td><td>\\(-\\infty\\)</td><td></td><td>\\(' + cellTex(x0, 3) + '\\)</td><td></td><td>\\(+\\infty\\)</td></tr>' +
         '<tr><td class="lab">\\(f\'(x)\\)</td><td></td><td class="sgn ' + (A > 0 ? 'neg' : 'pos') + '">\\(' + s1 + '\\)</td><td>\\(0\\)</td><td class="sgn ' + (A > 0 ? 'pos' : 'neg') + '">\\(' + s2 + '\\)</td><td></td></tr>' +
-        '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + limM + '\\)</td><td class="arrow">' + (A > 0 ? '↘' : '↗') + '</td><td>\\(' + numTex(Math.round(fx0 * 1000) / 1000) + '\\)</td><td class="arrow">' + (A > 0 ? '↗' : '↘') + '</td><td>\\(' + limP + '\\)</td></tr></table>' +
-        '<p style="font-size:.9rem;margin:.4rem 0 0">\\(f\'(x)=' + prodTex(A, B, c) + '\\) s\'annule en \\(x_0=-\\dfrac{a+bc}{ac}=' + numTex(Math.round(x0 * 1000) / 1000) + '\\), et \\(\\mathrm e^{' + (c === 1 ? 'x' : (coefTex(c) + 'x')) + '}&gt;0\\) : le signe de \\(f\'\\) est celui de \\(' + linTex(A, B) + '.\\)</p>';
+        '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + limM + '\\)</td><td class="arrow">' + (A > 0 ? '↘' : '↗') + '</td><td>\\(' + cellDec(fx0, 3, 8) + '\\)</td><td class="arrow">' + (A > 0 ? '↗' : '↘') + '</td><td>\\(' + limP + '\\)</td></tr></table>' +
+        '<p style="font-size:.9rem;margin:.4rem 0 0">\\(f\'(x)=' + prodTex(A, B, c) + '\\) s\'annule en \\(x_0=-\\dfrac{a+bc}{ac}' + relTex(x0, 3) + roundTex(x0, 3) + '\\), et \\(\\mathrm e^{' + (c === 1 ? 'x' : (coefTex(c) + 'x')) + '}&gt;0\\) : le signe de \\(f\'\\) est celui de \\(' + linTex(A, B) + '.\\)</p>';
     }
     $('fTab').innerHTML = tab;
     typeset($('fTab'));
@@ -995,7 +1042,18 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       if (prev > 0 && g <= 0) fin = x;
       prev = g;
     }
-    return (fin === null) ? null : { deb: deb, fin: fin };
+    if (fin === null) return null;
+    // La grille au centième ne suffit pas : on affine par dichotomie, sinon la
+    // valeur annoncée peut être fausse d'un centième entier (n = 4 : 8,62 au lieu de 8,61).
+    function aff(lo, hi) {
+      var m, k;
+      for (k = 0; k < 60; k++) {
+        m = (lo + hi) / 2;
+        if ((n * Math.log(lo) - lo > 0) === (n * Math.log(m) - m > 0)) lo = m; else hi = m;
+      }
+      return (lo + hi) / 2;
+    }
+    return { deb: aff(deb - 0.01, deb), fin: aff(fin - 0.01, fin) };
   }
 
   function drawG() {
@@ -1049,12 +1107,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     txt(svg, L - 4, T + 10, gLogMode ? ('10^' + fmt(Math.log(top) / Math.LN10, 1)) : plainSci(top), { 'text-anchor': 'end' });
 
     var r = E(xm) / P(xm);
-    $('gInfo').innerHTML = 'En \\(x=' + xm + '\\) : \\(x^{' + n + '}=\\)&nbsp;' + fmtSci(P(xm)) +
-      ' &nbsp;·&nbsp; \\(\\mathrm e^{x}=\\)&nbsp;' + fmtSci(E(xm)) +
-      ' &nbsp;·&nbsp; rapport \\(\\dfrac{\\mathrm e^{x}}{x^{' + n + '}}=\\)&nbsp;<b>' + fmtSci(r) + '</b>.' +
+    $('gInfo').innerHTML = 'En \\(x=' + xm + '\\) : \\(x^{' + n + '}' + (sciExact(P(xm)) ? '=' : '\\approx') + '\\)&nbsp;' + fmtSci(P(xm)) +
+      ' &nbsp;·&nbsp; \\(\\mathrm e^{x}' + (sciExact(E(xm)) ? '=' : '\\approx') + '\\)&nbsp;' + fmtSci(E(xm)) +
+      ' &nbsp;·&nbsp; rapport \\(\\dfrac{\\mathrm e^{x}}{x^{' + n + '}}' + (sciExact(r) ? '=' : '\\approx') + '\\)&nbsp;<b>' + fmtSci(r) + '</b>.' +
       (xc === null
         ? '<br>Pour \\(n=' + n + '\\), \\(\\mathrm e^{x}\\) est au-dessus de \\(x^{' + n + '}\\) dès \\(x\\geq0.\\)'
-        : '<br>\\(x^{' + n + '}\\) ne dépasse \\(\\mathrm e^{x}\\) que sur l\'intervalle \\(\\left[' + fmt(xc.deb, 2).replace(',', '{,}') + '\\,;' + fmt(xc.fin, 2).replace(',', '{,}') + '\\right]\\) ; au-delà de \\(x\\approx' + fmt(xc.fin, 2).replace(',', '{,}') + '\\), \\(\\mathrm e^{x}\\) passe devant <b>définitivement</b> : c\'est exactement ce que dit \\(\\lim_{x\\to+\\infty}\\frac{\\mathrm e^{x}}{x^{' + n + '}}=+\\infty.\\)');
+        : '<br>\\(x^{' + n + '}\\) ne dépasse \\(\\mathrm e^{x}\\) que sur un intervalle \\(\\left[\\alpha\\,;\\beta\\right]\\) avec \\(\\alpha\\approx' + fmt(xc.deb, 2).replace(',', '{,}') + '\\) et \\(\\beta\\approx' + fmt(xc.fin, 2).replace(',', '{,}') + '\\) ; au-delà de \\(x\\approx' + fmt(xc.fin, 2).replace(',', '{,}') + '\\), \\(\\mathrm e^{x}\\) passe devant <b>définitivement</b> : c\'est exactement ce que dit \\(\\lim_{x\\to+\\infty}\\frac{\\mathrm e^{x}}{x^{' + n + '}}=+\\infty.\\)');
     typeset($('gInfo'));
 
     var cols = [1, 5, 10, 20, 40], row1 = '', row2 = '', row3 = '', row0 = '';
@@ -1067,7 +1125,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('gTab').innerHTML = '<table><tr><th>\\(x\\)</th>' + row0 + '</tr>' +
       '<tr><td class="lab">\\(x^{' + n + '}\\)</td>' + row1 + '</tr>' +
       '<tr><td class="lab">\\(\\mathrm e^{x}\\)</td>' + row2 + '</tr>' +
-      '<tr><td class="lab">\\(\\frac{x^{' + n + '}}{\\mathrm e^{x}}\\)</td>' + row3 + '</tr></table>';
+      '<tr><td class="lab">\\(\\frac{x^{' + n + '}}{\\mathrm e^{x}}\\)</td>' + row3 + '</tr></table>' +
+      '<p style="font-size:.85rem;color:#6b7280;margin:.3rem 0 0">Valeurs arrondies, sauf la ligne \\(x^{' + n + '}\\) jusqu\'à \\(10^{5}.\\)</p>';
     typeset($('gTab'));
   }
   ['gN', 'gX'].forEach(function (id) { $(id).addEventListener('input', drawG); });
@@ -1116,8 +1175,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       });
       $('mExpr').innerHTML = '\\(u(t)=5\\left(1-\\mathrm e^{-t/\\tau}\\right)\\) avec \\(\\tau=' + fmt(tau, 1).replace(',', '{,}') + '\\) s. ' +
         'Dérivée : \\(u\'(t)=\\dfrac{5}{\\tau}\\,\\mathrm e^{-t/\\tau}&gt;0\\) : la tension croît, et \\(\\lim_{t\\to+\\infty}u(t)=5\\) car \\(\\mathrm e^{-t/\\tau}\\to0.\\)';
-      info = 'Lecture : à \\(t=\\tau=' + fmt(tau, 1).replace(',', '{,}') + '\\) s, \\(u=' + fmt(f(tau), 2).replace(',', '{,}') + '\\) V, soit <b>63 %</b> de la valeur finale ; ' +
-        'à \\(t=3\\tau\\), \\(u=' + fmt(f(3 * tau), 2).replace(',', '{,}') + '\\) V (95 %) ; à \\(t=5\\tau\\), \\(u=' + fmt(f(5 * tau), 2).replace(',', '{,}') + '\\) V (99 %). ' +
+      info = 'Lecture : à \\(t=\\tau=' + fmt(tau, 1).replace(',', '{,}') + '\\) s, \\(u\\approx' + fmt(f(tau), 2).replace(',', '{,}') + '\\) V, soit <b>63 %</b> de la valeur finale ; ' +
+        'à \\(t=3\\tau\\), \\(u\\approx' + fmt(f(3 * tau), 2).replace(',', '{,}') + '\\) V (95 %) ; à \\(t=5\\tau\\), \\(u\\approx' + fmt(f(5 * tau), 2).replace(',', '{,}') + '\\) V (99 %). ' +
         'Les pourcentages <b>ne dépendent pas de \\(\\tau\\)</b> : c\'est la signature d\'une exponentielle.';
     } else {
       // demi-vie lue sur le graphique (dichotomie)
@@ -1140,7 +1199,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     // graduations
     txt(svg, L, Y(0) + 17, '0');
     txt(svg, L + pw, Y(0) + 17, 't = ' + fmt(tmax, 1).replace('.', ','), { 'text-anchor': 'end' });
-    txt(svg, L - 4, T + 10, fmt(top, 0) + unite.slice(0, 2), { 'text-anchor': 'end' });
+    txt(svg, L - 4, T + 10, fmt(top, 1) + (mode === 'cond' ? ' V' : ' noy.'), { 'text-anchor': 'end' });
     $('mInfo').innerHTML = info;
     typeset($('mExpr')); typeset($('mInfo'));
   }
@@ -1256,7 +1315,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     return { val: v, sens: null };
   }, function (e, ans) {
-    var okV = Math.abs(ans.val - e.val) < 0.005;
+    var okV = Math.abs(ans.val - e.val) < 1e-6;   // la solution est un entier exact : égalité exigée
     if (e.kind === 'ineq') {
       var okS = (ans.sens === e.sens);
       if (okV && okS) return { ok: true, msg: 'Correct : \\(\\mathcal S\\) a pour borne \\(' + numTex(e.val) + '.\\)' };
@@ -1280,7 +1339,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var x0 = rnd(-2, 2);
     var A = a * c, B = a + b * c;
     var val = (A * x0 + B) * Math.exp(c * x0);
-    var exact = (c * x0 === 0);
+    // Exact aussi quand la parenthèse s'annule : f'(x0) vaut alors 0, pas « environ 0 ».
+    var exact = (c * x0 === 0) || (A * x0 + B === 0);
+    var prodForme = mulTex(A * x0 + B, eTex(c * x0)), finTex = numTex(val);
     var ex = expTex(c);
     var corr = '<p><b>Étape 1 — on reconnaît un produit.</b> On pose \\(u(x)=' + linTex(a, b) + '\\) et \\(v(x)=' + ex + '.\\)</p>' +
       '<p>\\(u\'(x)=' + numTex(a) + '\\) et, d\'après \\(\\big(\\mathrm e^{w}\\big)\'=w\'\\mathrm e^{w}\\), \\(v\'(x)=' + mulTex(c, ex) + '.\\)</p>' +
@@ -1290,9 +1351,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       '<p>\\(f\'(x)=\\left(' + numTex(a) + (c > 0 ? '+' : '-') + (Math.abs(c) === 1 ? '' : numTex(Math.abs(c))) + '\\left(' + linTex(a, b) + '\\right)\\right)' + ex + '=\\left(' + linTex(A, B) + '\\right)' + ex + '\\)</p>' +
       '<p>Donc \\(\\alpha=' + numTex(A) + '\\) et \\(\\beta=' + numTex(B) + '.\\)</p>' +
       '<p><b>Étape 4 — valeur en \\(x_0=' + numTex(x0) + '\\) :</b></p>' +
-      '<p>\\(f\'(' + numTex(x0) + ')=\\left(' + numTex(A) + '\\times' + parNeg(x0) + addTex(B) + '\\right)' + eTex(c * x0) + '=' + mulTex(A * x0 + B, eTex(c * x0)) +
-      (exact ? '=' + numTex(val) : '\\approx' + fmt(val, 2).replace(',', '{,}')) + '.\\)</p>' +
-      '<p class="key"><b>Le réflexe :</b> \\(' + ex + '&gt;0\\) pour tout \\(x\\), donc le signe de \\(f\'\\) est celui de \\(' + linTex(A, B) + '\\) — et la fonction change de sens en \\(x=' + numTex(Math.round((-B / A) * 1000) / 1000) + '.\\)</p>';
+      '<p>\\(f\'(' + numTex(x0) + ')=\\left(' + numTex(A) + '\\times' + parNeg(x0) + (B === 0 ? '' : addTex(B)) + '\\right)' + eTex(c * x0) + '=' + prodForme +
+      (exact ? (prodForme === finTex ? '' : '=' + finTex) : '\\approx' + fmt(val, 2).replace(',', '{,}')) + '.\\)</p>' +
+      '<p class="key"><b>Le réflexe :</b> \\(' + ex + '&gt;0\\) pour tout \\(x\\), donc le signe de \\(f\'\\) est celui de \\(' + linTex(A, B) + '\\) — et la fonction change de sens en \\(x' + relTex(-B / A, 3) + roundTex(-B / A, 3) + '.\\)</p>';
     return {
       A: A, B: B, val: val, exact: exact, x0: x0,
       enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb R\\) par \\(f(x)=' + prodTex(a, b, c) + '.\\)</p>' +
@@ -1306,7 +1367,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     return { A: al, B: be, val: v };
   }, function (e, ans) {
     var okA = Math.abs(ans.A - e.A) < 1e-6, okB = Math.abs(ans.B - e.B) < 1e-6;
-    var tol = Math.max(0.011, Math.abs(e.val) * 0.01);
+    var tol = e.exact ? 1e-6 : 0.005;   // valeur exacte : égalité ; arrondi au centième : un demi-rang, pas plus
     var okV = Math.abs(ans.val - e.val) < tol;
     if (okA && okB && okV) return { ok: true, msg: 'Correct : \\(f\'(x)=\\left(' + linTex(e.A, e.B) + '\\right)\\mathrm e^{\\ldots}\\) et \\(f\'(' + numTex(e.x0) + ')' + (e.exact ? '=' : '\\approx') + fmt(e.val, 2).replace(',', '{,}') + '.\\)' };
     if (!okA && !okB) return { ok: false, msg: 'La dérivée n\'est pas bonne. Applique \\((uv)\'=u\'v+uv\'\\) puis <b>factorise par l\'exponentielle</b> : n\'oublie pas le facteur \\(u\'\\) en dérivant \\(\\mathrm e^{cx}.\\)' };
@@ -1347,11 +1408,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       '<p><b>5. Signe de \\(f\'.\\)</b> Pour tout réel \\(x\\), \\(' + ex + '&gt;0\\), donc \\(f\'(x)\\) est du signe de \\(' + linTex(A, B) + '.\\)</p>' +
       '<p>\\(' + linTex(A, B) + '=0\\iff x=' + numTex(x0) + '\\), et ce polynôme du premier degré est ' + (A > 0 ? 'négatif avant, positif après' : 'positif avant, négatif après') + ' (son coefficient directeur \\(' + numTex(A) + '\\) est ' + (A > 0 ? 'positif' : 'négatif') + ').</p>' +
       '<p><b>6. Variations.</b> \\(f\\) est ' + (A > 0 ? 'décroissante puis croissante' : 'croissante puis décroissante') + ' : elle admet un <b>' + (nat === 'min' ? 'minimum' : 'maximum') + '</b> en \\(x_0=' + numTex(x0) + '\\), égal à</p>' +
-      '<p>\\(f(' + numTex(x0) + ')=' + mulTex(a * x0 + b, eTex(c * x0)) + '\\approx' + fmt(fx0, 3).replace(',', '{,}') + '.\\)</p>' +
+      '<p>\\(f(' + numTex(x0) + ')=' + mulTex(a * x0 + b, eTex(c * x0)) + relDec(fx0, 3, 8) + '.\\)</p>' +
       '<div class="tablewrap"><table class="vartab">' +
       '<tr><td class="lab">\\(x\\)</td><td>\\(-\\infty\\)</td><td></td><td>\\(' + numTex(x0) + '\\)</td><td></td><td>\\(+\\infty\\)</td></tr>' +
       '<tr><td class="lab">\\(f\'(x)\\)</td><td></td><td class="sgn ' + (A > 0 ? 'neg' : 'pos') + '">\\(' + (A > 0 ? '-' : '+') + '\\)</td><td>\\(0\\)</td><td class="sgn ' + (A > 0 ? 'pos' : 'neg') + '">\\(' + (A > 0 ? '+' : '-') + '\\)</td><td></td></tr>' +
-      '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + lab[limM] + '\\)</td><td class="arrow">' + (A > 0 ? '↘' : '↗') + '</td><td>\\(' + fmt(fx0, 2).replace(',', '{,}') + '\\)</td><td class="arrow">' + (A > 0 ? '↗' : '↘') + '</td><td>\\(' + lab[limP] + '\\)</td></tr>' +
+      '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + lab[limM] + '\\)</td><td class="arrow">' + (A > 0 ? '↘' : '↗') + '</td><td>\\(' + cellDec(fx0, 3, 8) + '\\)</td><td class="arrow">' + (A > 0 ? '↗' : '↘') + '</td><td>\\(' + lab[limP] + '\\)</td></tr>' +
       '</table></div>' +
       '<p class="key"><b>Vérification rapide de l\'extremum :</b> \\(ax_0+b=-\\dfrac{a}{c}=' + numTex(-a / c) + '\\), donc \\(f(x_0)=' + mulTex(-a / c, eTex(c * x0)) + '.\\) ✓</p>';
 
@@ -1367,7 +1428,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     return { limM: lm, limP: lp, nat: nt, x0: v };
   }, function (e, ans) {
     var okM = ans.limM === e.limM, okP = ans.limP === e.limP;
-    var okX = Math.abs(ans.x0 - e.x0) < 0.011, okN = ans.nat === e.nat;
+    var okX = Math.abs(ans.x0 - e.x0) < 1e-6, okN = ans.nat === e.nat;
     if (okM && okP && okX && okN) return { ok: true, msg: 'Parfait : tout est juste. Déplie la correction pour comparer la <b>rédaction</b>.' };
     var pb = [];
     if (!okM) pb.push('la limite en \\(-\\infty\\)');
@@ -1442,7 +1503,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'Ici \\(u(x)=-x^{2}\\) donc \\(u\'(x)=-2x\\), et \\(\\big(\\mathrm e^{u}\\big)\'=u\'\\mathrm e^{u}.\\)');
     },
     function () {
-      var a = rndNonZero(2, 5), b = rndNonZero(-5, 5);
+      var a = rnd(2, 5), b = rndNonZero(-5, 5);
+      while (b === -a) { b = rndNonZero(-5, 5); }   // sinon a+b = 0 et deux options deviennent la même fonction
       return build('Quelle est la dérivée de \\(f(x)=(' + linTex(a, b) + ')\\,\\mathrm e^{x}\\) ?',
         ['\\((' + linTex(a, a + b) + ')\\,\\mathrm e^{x}\\)', '\\(' + numTex(a) + '\\mathrm e^{x}\\)', '\\((' + linTex(a, b) + ')\\,\\mathrm e^{x}\\)', '\\(' + numTex(a) + 'x\\,\\mathrm e^{x}\\)'], 0,
         '\\((uv)\'=u\'v+uv\'=' + numTex(a) + '\\mathrm e^{x}+(' + linTex(a, b) + ')\\mathrm e^{x}=(' + linTex(a, a + b) + ')\\mathrm e^{x}.\\)');
@@ -1466,7 +1528,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var d = k * (a - 1);
       return build('L\'ensemble des solutions de \\(\\mathrm e^{' + a + 'x}&lt;\\mathrm e^{x+' + d + '}\\) est :',
         ['\\(\\left]-\\infty\\,;' + k + '\\right[\\)', '\\(\\left]' + k + '\\,;+\\infty\\right[\\)', '\\(\\mathbb R\\)', '\\(\\varnothing\\)'], 0,
-        'Par stricte croissance : \\(' + a + 'x&lt;x+' + d + '\\), soit \\(' + (a - 1) + 'x&lt;' + d + '\\), soit \\(x&lt;' + k + '.\\)');
+        'Par stricte croissance : \\(' + a + 'x&lt;x+' + d + '\\), soit ' + (a === 2 ? '' : '\\(' + linTex(a - 1, 0) + '&lt;' + d + '\\), soit ') + '\\(x&lt;' + k + '.\\)');
     },
     function () {
       var k = rndNonZero(2, 5);
