@@ -92,6 +92,16 @@ Un fichier HTML unique, avec dans l'ordre :
 | 6B | Terminale | Vecteurs de l'espace, coplanarité, bases et repères |
 | 6C | Terminale | Droites et plans, positions relatives, sections de cube |
 
+**Chapitre 7 — Probabilités conditionnelles et variables aléatoires**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [7A](chapitres/07_probabilites/7A_probabilites_conditionnelles.html) | Première | Conditionnement, arbres, probabilités totales et indépendance |
+| [7B](chapitres/07_probabilites/7B_variables_aleatoires.html) | Première | Loi, espérance, variance, écart type et jeu équitable |
+| [7C](chapitres/07_probabilites/7C_epreuves_independantes_bernoulli.html) | Terminale | Épreuves indépendantes, Bernoulli, chemins et événements |
+
+Le [dossier du chapitre 7](chapitres/07_probabilites/README.md) décrit ses tests mathématiques indépendants, ses tests navigateur et la génération ciblée à utiliser pendant les relectures parallèles.
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
@@ -141,7 +151,7 @@ python3 -m http.server 8765 --bind 127.0.0.1
 node outils/test_site.cjs
 ```
 
-Les tests couvrent les 21 fiches présentes, le rendu des formules, les résultats,
+Les tests découvrent les fiches présentes et couvrent le rendu des formules, les résultats,
 la reprise, l’export/import, la migration du carnet, les onglets et le mobile.
 Les captures de contrôle sont écrites dans `/tmp/reussite-maths-qa`.
 

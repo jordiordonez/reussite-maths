@@ -163,7 +163,7 @@ def hub_content(kind, chapters):
 <section id="sauvegarde" class="site-backup"><h2>Mon suivi, sur cet appareil</h2><p class="site-lead">Aucun compte nécessaire. Ton suivi reste après la fermeture du navigateur, mais peut disparaître si ses données sont effacées. En navigation privée, il est temporaire.</p><p class="site-hint">Pour changer d’appareil ou de navigateur, exporte une copie puis importe-la sur l’autre appareil. Les sauvegardes sont fusionnées avec le suivi existant.</p><div class="site-backup-actions"><button class="site-btn secondary" id="site-export">Exporter mon suivi</button><button class="site-btn secondary" id="site-import-open">Importer une sauvegarde</button><input type="file" id="site-import-file" accept=".json,application/json" hidden></div><details><summary style="font-size:13px;min-height:44px;cursor:pointer">Importer un ancien carnet copié</summary><label for="site-import-text" class="site-hint">Colle le texte exporté depuis l’ancien guide.</label><textarea class="site-input" id="site-import-text" rows="4"></textarea><button class="site-btn subtle" id="site-import-text-button">Importer ce carnet</button></details><p class="site-message" id="site-backup-message" role="status"></p></section>'''
 
 
-def build():
+def build(only=None):
     chapters = catalog()
     css = (HERE / 'site.css').read_text()
     js = (HERE / 'site.js').read_text()
@@ -174,6 +174,8 @@ def build():
     for filename, kind in [('index.html', 'home'), ('chapitres.html', 'catalog'), ('progres.html', 'progress')]:
         targets.append((ROOT / filename, kind, None))
     for path, kind, lesson in targets:
+        if only and path.relative_to(ROOT).as_posix() not in only:
+            continue
         prefix = '../' * len(path.relative_to(ROOT).parts[:-1])
         active = 'catalog' if kind in ('lesson', 'template') else kind
         if kind in ('home', 'catalog', 'progress'):
@@ -212,8 +214,14 @@ def build():
         source = source.replace('</body>', block('SCRIPT', f'<script id="site-config" type="application/json">{config}</script>\n<script>\n{js}\n</script>') + '\n</body>')
         if not path.exists() or source != path.read_text():
             path.write_text(source)
-    print(f'Interface intégrée : {len(lessons)} fiches, guide, squelette et 3 pages principales.')
+    if only:
+        print(f'Interface intégrée aux {len(only)} chemins sélectionnés ; catalogue de {len(lessons)} fiches.')
+    else:
+        print(f'Interface intégrée : {len(lessons)} fiches, guide, squelette et 3 pages principales.')
 
 
 if __name__ == '__main__':
-    build()
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--only', nargs='+', help='Ne générer que ces chemins relatifs (travail parallèle).')
+    build(parser.parse_args().only)
