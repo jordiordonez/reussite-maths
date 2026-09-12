@@ -384,7 +384,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <p><b>Exemple.</b> \(f(x) = x^3+x-1\) sur \([0\,;1].\) On a \(f'(x) = 3x^2+1 &gt; 0,\) donc \(f\) est strictement croissante sur \([0\,;1].\) Avec \(f(0) = -1 &lt; 0 &lt; 1 = f(1),\) l'équation \(f(x) = 0\) admet une <b>unique</b> solution \(\alpha\) dans \([0\,;1],\) avec \(\alpha \approx 0{,}68.\)</p>
     </div>
     <div class="warn">
-      <p>Sans la stricte monotonie, on n'a <b>aucun</b> droit de parler d'unicité. Sur \([-2\,;2],\) la fonction \(f(x) = x^2\) est continue, \(f(-2) = 4\) et \(f(2) = 4\) ; l'équation \(f(x) = 1\) a <b>deux</b> solutions, \(-1\) et \(1.\)</p>
+      <p>Sans la stricte monotonie, on n'a <b>aucun</b> droit de parler d'unicité. Sur \([-2\,;2],\) la fonction \(f(x) = x^3-3x\) est continue, \(f(-2) = -2\) et \(f(2) = 2 :\) la valeur \(0\) est bien comprise entre \(f(-2)\) et \(f(2),\) donc le TVI s'applique. Et pourtant l'équation \(f(x) = 0,\) c'est-à-dire \(x(x^2-3) = 0,\) a <b>trois</b> solutions dans \([-2\,;2]:\) \(-\sqrt3,\) \(0\) et \(\sqrt3.\) Ici \(f\) n'est pas monotone (elle décroît sur \([-1\,;1]\)).</p>
     </div>
     <h4>Avec un tableau de variations</h4>
     <p>En pratique on découpe l'intervalle en morceaux sur lesquels \(f\) est strictement monotone, et on applique le corollaire sur <b>chaque</b> morceau. Le nombre de solutions de \(f(x)=k\) est alors le nombre de morceaux « traversés » par la valeur \(k.\)</p>
@@ -460,7 +460,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p>On part d'un intervalle \([a\,;b]\) contenant \(\alpha,\) puis on répète :</p>
     <ol>
       <li>calculer le milieu \(m = \dfrac{a+b}{2}\) ;</li>
-      <li>calculer \(f(m)\) et comparer son signe à celui de \(f(a) - k\) ;</li>
+      <li>calculer \(f(m) - k\) et comparer son signe à celui de \(f(a) - k\) ;</li>
       <li>si \(f(m)\) et \(f(a)\) sont <b>du même côté</b> de \(k,\) la solution est dans \([m\,;b]\) : on remplace \(a\) par \(m\) ; sinon elle est dans \([a\,;m]\) : on remplace \(b\) par \(m\) ;</li>
       <li>recommencer jusqu'à ce que l'amplitude soit assez petite.</li>
     </ol>
@@ -493,7 +493,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <li><b>Oublier de justifier la continuité.</b> Sans elle, le TVI ne s'applique pas : la phrase « \(f\) est continue sur \([a\,;b]\) » doit être écrite, même si c'est évident.</li>
       <li><b>Oublier la stricte monotonie et conclure à l'unicité.</b> Le TVI seul donne « au moins une solution ». Écrire « une unique solution » sans avoir étudié le signe de \(f'\) est une faute classique.</li>
       <li><b>Se tromper de sens dans l'encadrement.</b> Quand \(f\) est <b>décroissante</b>, \(f(1{,}3) &gt; k &gt; f(1{,}4)\) donne quand même \(1{,}3 &lt; \alpha &lt; 1{,}4 :\) l'encadrement porte sur \(\alpha,\) pas sur les images. Toujours écrire les bornes dans l'ordre croissant.</li>
-      <li><b>Résoudre \(L = f(L)\) sans avoir prouvé la convergence.</b> Cette équation ne donne que la valeur d'une limite <b>si elle existe</b> ; une suite divergente peut très bien admettre un point fixe.</li>
+      <li><b>Résoudre \(L = f(L)\) sans avoir prouvé la convergence.</b> Cette équation ne donne que la valeur d'une limite <b>si elle existe</b> ; l'équation \(L = f(L)\) peut très bien avoir une solution alors que la suite, elle, diverge.</li>
       <li><b>Confondre \(f(x) = k\) et \(f(x) = 0.\)</b> Si \(k \neq 0,\) c'est la valeur \(k\) qui doit être comprise entre \(f(a)\) et \(f(b),\) pas \(0.\)</li>
       <li><b>Donner \(\alpha\) au lieu de son encadrement</b> (ou l'inverse). Lire la question : « valeur approchée à \(10^{-2}\) » et « encadrement d'amplitude \(10^{-2}\) » ne demandent pas la même écriture.</li>
       <li><b>Croire que « continue » signifie « dérivable ».</b> \(x \mapsto |x|\) est continue partout mais n'est pas dérivable en \(0.\)</li>
@@ -643,6 +643,18 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (Object.is(v, -0)) v = 0;
     return String(v).replace('.', '{,}');
   }
+  // Valeur réellement écrite par texNum : permet de savoir si l'écriture est exacte.
+  function texVal(x, d) {
+    var p = Math.pow(10, d === undefined ? 6 : d);
+    var v = Math.round(x * p) / p;
+    if (Object.is(v, -0)) v = 0;
+    return v;
+  }
+  // Un nombre arrondi ne s'écrit jamais derrière un signe « = » : on choisit le bon symbole.
+  function eqNum(x, d) {
+    var exact = Math.abs(texVal(x, d) - x) <= 1e-12 * Math.max(1, Math.abs(x));
+    return (exact ? ' = ' : ' \\approx ') + texNum(x, d);
+  }
   // Un nombre négatif s'écrit entre parenthèses dans un produit ou avant un exposant.
   function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
   function parseNum(s) {
@@ -758,6 +770,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       } else if (Math.abs(cur) < 1e-12 && i < N) { res.push(x); }
       prev = cur;
     }
+    // borne droite : une solution peut se trouver exactement en x2 (la boucle ne la voit pas)
+    if (Math.abs(fn(x2) - k) < 1e-9 && (res.length === 0 || Math.abs(res[res.length - 1] - x2) > 1e-6)) res.push(x2);
     return res;
   }
 
@@ -804,17 +818,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('f1out').innerHTML = 'Nombre de solutions de \\(f(x) = ' + texNum(k, 2) + '\\) sur \\([0\\,;4]\\) : <b style="color:' +
       (sols.length ? '#22a06b' : '#f97362') + '">' + sols.length + '</b>' + (sols.length ? ' (environ ' + liste + ').' : '.');
 
-    var fa = f1(0), fb = f1(4), entre = (k > Math.min(fa, fb) && k < Math.max(fa, fb));
+    // « compris entre » inclut les bornes : k = f(0) ou k = f(4) relève bien du TVI.
+    var fa = f1(0), fb = f1(4), bas = Math.min(fa, fb), haut = Math.max(fa, fb);
+    var entre = (k >= bas - 1e-9 && k <= haut + 1e-9);
+    var sg1 = (Math.abs(k - bas) < 1e-9) ? ' \\leqslant ' : ' &lt; ';
+    var sg2 = (Math.abs(k - haut) < 1e-9) ? ' \\leqslant ' : ' &lt; ';
     var msg;
     if (mode1 === 'cont') {
       msg = '\\(f\\) est un polynôme, donc <b>continue</b> sur \\([0\\,;4]\\) ; \\(f(0) = ' + texNum(fa, 2) + '\\) et \\(f(4) = ' + texNum(fb, 2) + '.\\) ';
-      if (entre) msg += 'Ici \\(' + texNum(fa, 2) + ' &lt; ' + texNum(k, 2) + ' &lt; ' + texNum(fb, 2) + '\\) : le <b>TVI garantit au moins une solution</b>, et on en compte ' + sols.length + '.';
+      if (entre) msg += 'Ici \\(' + texNum(bas, 2) + sg1 + texNum(k, 2) + sg2 + texNum(haut, 2) + '\\) : le <b>TVI garantit au moins une solution</b>, et on en compte ' + sols.length + '.';
       else if (sols.length) msg += 'Ici \\(k\\) n\u2019est <b>pas</b> compris entre \\(f(0)\\) et \\(f(4),\\) donc le TVI ne dit rien\u2026 et pourtant il y a ' + sols.length + ' solution(s) : le théorème donne une condition <b>suffisante</b>, pas nécessaire.';
       else msg += 'Ici \\(k\\) est en dehors des valeurs prises par \\(f\\) : aucune solution.';
     } else {
       msg = '\\(g\\) vaut \\(f(x)\\) pour \\(x &lt; 2\\) et \\(f(x)+2\\) pour \\(x \\geqslant 2 :\\) elle <b>n\u2019est pas continue</b> en \\(2\\) (limite à gauche \\(1,\\) image \\(3\\)). ';
       if (entre && sols.length === 0) {
-        msg += '<b style="color:#f97362">Ici \\(g(0) = 1 &lt; ' + texNum(k, 2) + ' &lt; ' + texNum(fb, 2) + ' = g(4)\\) et pourtant l\u2019équation n\u2019a aucune solution :</b> le théorème des valeurs intermédiaires <b>tombe en défaut</b> dès que la continuité manque.';
+        msg += '<b style="color:#f97362">Ici \\(g(0) = ' + texNum(fa, 2) + sg1 + texNum(k, 2) + sg2 + texNum(fb, 2) + ' = g(4)\\) et pourtant l\u2019équation n\u2019a aucune solution :</b> le théorème des valeurs intermédiaires <b>tombe en défaut</b> dès que la continuité manque.';
       } else if (sols.length) {
         msg += 'Pour cette valeur de \\(k\\) il y a ' + sols.length + ' solution(s), mais essaie \\(k = 2{,}5 :\\) il n\u2019y en aura aucune, alors que \\(k\\) est bien compris entre \\(g(0)\\) et \\(g(4).\\)';
       } else {
@@ -856,15 +874,16 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('svg2').innerHTML = g;
 
     var n = D.steps.length;
-    $('f2out').innerHTML = '<b>Étape ' + n + '</b> — intervalle courant \\([' + texNum(D.a, 4) + '\\,;' + texNum(D.b, 4) + ']\\), ' +
-      'amplitude \\(' + texNum(D.b - D.a, 6) + ' = \\dfrac{1}{2^{' + n + '}}.\\) Prochain milieu : \\(m = ' + texNum(m, 4) + '.\\)' +
+    // Les bornes sont des fractions de dénominateur 2^n : 12 décimales les écrivent toutes exactement.
+    $('f2out').innerHTML = '<b>Étape ' + n + '</b> — intervalle courant \\([' + texNum(D.a, 12) + '\\,;' + texNum(D.b, 12) + ']\\), ' +
+      'amplitude \\(' + texNum(D.b - D.a, 12) + ' = \\dfrac{1}{2^{' + n + '}}.\\) Prochain milieu : \\(m = ' + texNum(m, 12) + '.\\)' +
       (n >= 10 ? ' <b style="color:#22a06b">Précision \\(10^{-3}\\) atteinte.</b>' : '');
 
     var t = '<tr><th>étape</th><th>\\(a\\)</th><th>\\(b\\)</th><th>\\(m\\)</th><th>\\(f(m)\\)</th><th>on garde</th></tr>';
     D.steps.forEach(function (s, i) {
-      t += '<tr><td>' + (i + 1) + '</td><td>' + fmt(s.a, 4) + '</td><td>' + fmt(s.b, 4) + '</td><td>' + fmt(s.m, 4) + '</td>' +
-        '<td style="color:' + (s.fm < 0 ? '#f97362' : '#22a06b') + '">' + fmt(s.fm, 3) + '</td>' +
-        '<td>[' + fmt(s.na, 4) + ' ; ' + fmt(s.nb, 4) + ']</td></tr>';
+      t += '<tr><td>' + (i + 1) + '</td><td>' + fmt(s.a, 12) + '</td><td>' + fmt(s.b, 12) + '</td><td>' + fmt(s.m, 12) + '</td>' +
+        '<td style="color:' + (s.fm < 0 ? '#f97362' : '#22a06b') + '">' + (Math.abs(texVal(s.fm, 3) - s.fm) <= 1e-12 ? '' : '≈ ') + fmt(s.fm, 3) + '</td>' +
+        '<td>[' + fmt(s.na, 12) + ' ; ' + fmt(s.nb, 12) + ']</td></tr>';
     });
     $('f2tab').innerHTML = t;
     typeset($('f2out')); typeset($('f2tab'));
@@ -915,8 +934,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     g += dot(P, u0, u0, '#f97362', 4, 'u₀');
     $('svg3').innerHTML = g;
 
-    var aff = liste.slice(0, 6).map(function (v, i2) { return '\\(u_{' + i2 + '} = ' + texNum(v, 3) + '\\)'; }).join(' ; ');
-    $('f3out').innerHTML = aff + (liste.length > 6 ? ' … ' : ' ') + '<br>\\(u_{' + n + '} = ' + texNum(u, 5) + '\\) et \\(|u_{' + n + '} - L| = ' + texNum(Math.abs(u - c.L), 5) + '.\\)';
+    var aff = liste.slice(0, 6).map(function (v, i2) { return '\\(u_{' + i2 + '}' + eqNum(v, 3) + '\\)'; }).join(' ; ');
+    $('f3out').innerHTML = aff + (liste.length > 6 ? ' … ' : ' ') + '<br>\\(u_{' + n + '}' + eqNum(u, 5) + '\\) et \\(|u_{' + n + '} - L|' + eqNum(Math.abs(u - c.L), 5) + '.\\)';
     $('f3msg').innerHTML = 'La fonction \\(f(x) = ' + c.tex + '\\) est continue. Si \\((u_n)\\) converge vers \\(L,\\) alors \\(u_{n+1} = f(u_n)\\) tend à la fois vers \\(L\\) et vers \\(f(L),\\) donc \\(L = f(L) :\\) \\[' + c.eq + '.\\] Le point fixe est \\(L = ' + texNum(c.L, 4) + ',\\) l\u2019abscisse du point où la courbe coupe la droite \\(y = x.\\)';
     typeset($('f3out')); typeset($('f3msg'));
   }
@@ -1059,7 +1078,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       a0: a0, b0: b0, al: al, n: n, k: k,
       enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb{R}\\) par \\(f(x) = ' + tex + '.\\)</p>' +
         '<p>On admet que l\u2019équation \\(f(x) = ' + k + '\\) admet une unique solution \\(\\alpha\\) sur \\([' + n + '\\,;' + (n + 1) + ']\\) (tu le démontreras dans la correction).</p>' +
-        '<p>Donne un <b>encadrement de \\(\\alpha\\) d\u2019amplitude \\(0{,}1\\)</b> : \\(a &lt; \\alpha &lt; b.\\)</p>',
+        '<p>Donne l\u2019<b>encadrement de \\(\\alpha\\) obtenu par balayage au dixième</b> : \\(a &lt; \\alpha &lt; b,\\) où \\(a\\) et \\(b\\) sont deux <b>dixièmes consécutifs</b>.</p>',
       inputs: champNum('ex2-a', '\\(a = \\)') + ' &nbsp; ' + champNum('ex2-b', '\\(b = \\)'),
       correction: '<p><b>1. Continuité.</b> \\(f\\) est une fonction polynôme, donc dérivable et <b>continue</b> sur \\([' + n + '\\,;' + (n + 1) + '].\\)</p>' +
         '<p><b>2. Stricte monotonie.</b> \\(f\'(x) = 3x^2 + ' + p + ' &gt; 0\\) pour tout réel \\(x\\) (somme d\u2019un carré positif et de \\(' + p + '\\)), donc \\(f\\) est <b>strictement croissante</b> sur \\(\\mathbb{R}.\\)</p>' +
@@ -1119,7 +1138,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var expl2 = '';
     det.forEach(function (s, i2) {
-      expl2 += '<p><b>Étape ' + (i2 + 1) + '.</b> \\(m = \\dfrac{' + texNum(s.a, 3) + ' + ' + texNum(s.b, 3) + '}{2} = ' + texNum(s.m, 3) + '\\) et \\(f(' + texNum(s.m, 3) + ') \\approx ' + texNum(s.fm, 3) + ' ' +
+      expl2 += '<p><b>Étape ' + (i2 + 1) + '.</b> \\(m = \\dfrac{' + texNum(s.a, 3) + ' + ' + texNum(s.b, 3) + '}{2} = ' + texNum(s.m, 3) + '\\) et \\(f(' + texNum(s.m, 3) + ')' + eqNum(s.fm, 3) + ' ' +
         (s.fm < 0 ? '&lt; 0' : '&gt; 0') + '.\\) Comme \\(f\\) est croissante, la solution est ' +
         (s.fm < 0 ? 'à <b>droite</b> de \\(m\\)' : 'à <b>gauche</b> de \\(m\\)') + ' : on garde \\([' + texNum(s.na, 3) + '\\,;' + texNum(s.nb, 3) + '].\\)</p>';
     });
