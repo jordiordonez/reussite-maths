@@ -38,7 +38,7 @@ Ces fiches ont été écrites en appliquant d'emblée les leçons des 255 anomal
 | 8A | Combinatoire et dénombrement | Codex | `revue/8A.md` |
 | 9A | Loi binomiale | Codex | `revue/9A.md` |
 | 10A, 10B | Fonctions trigonométriques | Codex | `revue/10A.md`, `10B.md` |
-| 11A, 11B | Primitives et équations différentielles | Claude | `revue/11A.md`, `11B.md` |
+| 11A, 11B | Primitives et équations différentielles | Claude | `revue/11A.md`, `11B.md` — 12 et 18 défauts corrigés avant livraison |
 | 12A, 12B | Calcul intégral | Codex | `revue/12A.md`, `12B.md` |
 
 Elles n'ont pas encore été relues par un relecteur indépendant, contrairement aux vingt et une premières.
