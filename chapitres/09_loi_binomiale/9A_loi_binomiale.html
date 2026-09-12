@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9A · Loi binomiale</title>
+
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+
+<style>
+:root{
+  --bg:#faf8f5; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --blue:#2563eb; --blue-soft:#e8efff;
+  --coral:#f97362; --coral-soft:#fde8e4;
+  --green:#22a06b; --green-soft:#e3f5ec;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.5rem} h3{font-size:1.1rem;color:var(--blue)}
+p{margin:.4em 0 .8em}
+ul,ol{padding-left:1.25rem;margin:.3rem 0 .8rem} li{margin:.3rem 0}
+
+header{padding:2rem 1.1rem 1.2rem;text-align:center;background:linear-gradient(180deg,var(--blue-soft) 0%,var(--bg) 100%)}
+header h1{font-size:1.75rem;opacity:0;transform:translateY(14px);animation:rise .8s ease forwards}
+header .sub{color:var(--muted);opacity:0;animation:rise .8s .3s ease forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.5rem .5rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav a{display:inline-block;min-height:44px;line-height:44px;padding:0 .9rem;margin:0 .15rem;border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.92rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+nav a.active{background:var(--blue);color:#fff}
+
+main{max-width:820px;margin:0 auto;padding:1rem .85rem 3rem}
+section{margin:1.3rem 0 2rem;scroll-margin-top:64px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin:.8rem 0}
+.card.blue{border-left:6px solid var(--blue)}
+.card.green{border-left:6px solid var(--green)}
+.card.coral{border-left:6px solid var(--coral)}
+.card.amber{border-left:6px solid var(--amber)}
+.tag{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);vertical-align:middle;font-family:system-ui,sans-serif;max-width:100%}
+.tag.demo{background:var(--coral-soft);color:#c2410c}
+.tag.deep{background:var(--amber-soft);color:#92400e}
+.key{background:var(--amber-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.warn{background:var(--coral-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.ok{background:var(--green-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+
+button{min-height:44px;padding:.5rem 1rem;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+button.ghost{background:#f3f4f6;color:var(--ink);box-shadow:none}
+button:active{transform:translateY(1px)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type="text"],input[type="number"],select{min-height:44px;font-size:1rem;font-family:inherit;padding:.45rem .6rem;border:1px solid #d1d5db;border-radius:10px;background:#fff;max-width:100%}
+input[type="range"]{width:100%;min-height:36px}
+label{font-size:.92rem;color:var(--muted)}
+
+.feedback{margin:.5rem 0;font-weight:600;min-height:1.4em}
+.feedback.good{color:var(--green)} .feedback.bad{color:#c2410c}
+.correction{display:none;background:#f4f2ee;border-radius:12px;padding:.8rem .9rem;margin-top:.6rem}
+.correction.show{display:block}
+
+.qcm-q{border-top:1px solid var(--line);padding-top:.9rem;margin-top:.9rem}
+.qcm-q:first-child{border-top:0;margin-top:0}
+.choices{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.5rem 0}
+@media (min-width:560px){.choices{grid-template-columns:1fr 1fr}}
+.choice{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font-weight:400;box-shadow:none}
+.choice .letter{display:inline-block;width:1.5em;font-weight:700;color:var(--blue)}
+.choice.correct{background:var(--green-soft);border-color:var(--green)}
+.choice.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.expl{display:none;font-size:.94rem;margin-top:.35rem}
+.expl.show{display:block}
+.score{font-weight:700;margin-top:.8rem}
+
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:1.5rem 1rem 2.5rem}
+
+/* --- Figures. NE JAMAIS écrire une règle « svg { … } » globale :
+   MathJax produit lui aussi des <svg> et ils seraient déformés.
+   Toujours passer par la classe .figure. --- */
+.figure{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:12px;touch-action:pan-y}
+
+/* ===== Bloc responsive obligatoire — ne pas modifier ===== */
+/* Les formules gardent leur taille normale : c'est le bloc parent qui défile
+   horizontalement quand la formule est plus large que la carte. */
+mjx-container svg{
+  width:auto !important;height:auto !important;max-width:none !important;
+  display:inline !important;background:none !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;
+}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding-bottom:3px}
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml{
+  position:absolute !important;top:0 !important;left:0 !important;
+  width:1px !important;height:1px !important;overflow:hidden !important;
+  clip:rect(1px,1px,1px,1px) !important;padding:0 !important;border:0 !important;white-space:nowrap !important;
+}
+.correction,.corr,.enonce,.feedback,.expl,.stem,.question,
+.correction p,.corr p,.enonce p,.expl p,
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol{
+  max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+}
+p:has(> mjx-container),ul:has(> li > mjx-container), ol:has(> li > mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),dd:has(> mjx-container),summary:has(> mjx-container),
+div:has(> mjx-container){max-width:100%;overflow-x:auto;overflow-y:hidden}
+h1,h2,h3,h4{flex-wrap:wrap}
+div:has(> table){max-width:100%;overflow-x:auto}
+pre{max-width:100%;overflow-x:auto}
+.correction::-webkit-scrollbar,.corr::-webkit-scrollbar,
+p::-webkit-scrollbar,ul::-webkit-scrollbar{height:4px}
+.correction::-webkit-scrollbar-thumb,.corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border-radius:4px}
+/* ===== fin du bloc responsive ===== */
+</style>
+
+<style>
+/* ===== Navigation compacte (ajout) =====
+   Les cinq onglets tiennent sur un écran de téléphone, sans défilement
+   horizontal, et un bouton ramène à la liste des fiches. */
+.navbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.25rem;
+  padding:.4rem .45rem;background:rgba(250,248,245,.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid #e5e7eb;
+}
+.navbar > nav{
+  position:static;flex:1;min-width:0;display:flex;gap:.25rem;margin:0;padding:0;
+  background:none;border:0;box-shadow:none;overflow:visible;white-space:normal;backdrop-filter:none;
+}
+.navbar nav a{
+  flex:1 1 0;min-width:0;margin:0;padding:0 .3rem;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.nav-home{
+  flex:0 0 42px;display:inline-block;min-height:44px;line-height:44px;text-align:center;
+  border-radius:999px;background:#fff;color:#2563eb;text-decoration:none;font-size:1.1rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.nshort{display:none}
+@media (max-width:600px){
+  .nlong{display:none}
+  .nshort{display:inline}
+  .navbar nav a{font-size:.84rem;padding:0 .2rem}
+}
+/* Bouton de remontée en haut de page */
+.to-top{
+  position:fixed;right:.85rem;bottom:.85rem;width:48px;height:48px;border-radius:50%;border:0;
+  background:#2563eb;color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+.retour-fiches{display:inline-block;margin-top:.6rem;color:#2563eb;text-decoration:none;font-weight:600;min-height:44px;line-height:44px}
+</style>
+<style>
+    .tablewrap{overflow-x:auto;margin:1rem 0}table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{padding:10px;border:1px solid #dce2ec;text-align:left}th{background:#edf3ff}
+    .control{display:grid;grid-template-columns:minmax(90px,1fr) 2fr 30px;align-items:center;gap:10px;margin:16px 0}.control label{color:#475569;font-size:12px}.control input{min-width:0;width:100%}.control output{font-size:13px;text-align:right}.caption{font-size:12px;color:#64748b}.figure{margin:16px auto;max-width:620px;display:block}.row input{min-width:0;width:150px}#vevent{display:block;width:100%;margin:10px 0}
+    .proof{margin:16px 0;padding:12px;border:1px solid #dce2ec;border-radius:10px}.proof summary{min-height:44px;cursor:pointer;font-weight:600;color:#1d4ed8}.proof pre{overflow:auto;font-size:12px}.key{overflow-wrap:anywhere}
+    </style>
+<!-- SITE:STYLE:START -->
+<style>
+/* Source commune, intégrée dans les HTML par build_site.py. */
+:root{--bg:#faf8f5;--ink:#1f2937;--muted:#647084;--blue:#2563eb;--blue-soft:#e8efff;--line:#e4e5e7;--header-h:64px;--side-w:264px;--shadow:0 3px 14px rgba(31,41,55,.045)}
+html{scroll-padding-top:0}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding-top:var(--header-h)}
+*{box-sizing:border-box}[hidden]{display:none!important}a{color:var(--blue)}button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid #1d4ed8!important;outline-offset:4px}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.22}p{margin:.5em 0 1em}button,.site-btn{min-height:44px}
+.site-skip{position:fixed;left:16px;top:-100px;z-index:200;background:white;padding:12px}.site-skip:focus{top:8px}
+.site-header{position:fixed;inset:0 0 auto;height:var(--header-h);z-index:70;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:24px;padding:0 32px}
+.site-brand{color:var(--ink);font-family:Georgia,serif;font-weight:700;font-size:21px;display:flex;gap:10px;align-items:center;text-decoration:none;white-space:nowrap}
+.site-global{position:static!important;display:flex;align-items:center;gap:4px;flex:1;background:none!important;border:0!important;padding:0!important;overflow:visible!important;backdrop-filter:none!important;white-space:nowrap}
+.site-global a{display:flex;align-items:center;min-height:44px;padding:0 13px;color:#566174;text-decoration:none;background:none;box-shadow:none;border-radius:8px;margin:0;font-size:14px;line-height:1.3}
+.site-global a[aria-current=page]{color:#1d4ed8;background:#eff4ff;font-weight:650}.site-actions{margin-left:auto;display:flex;gap:8px;align-items:center}.site-icon{width:44px;height:44px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);box-shadow:none;display:grid;place-items:center;text-decoration:none}.site-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.site-search-trigger{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:#fafafa;color:#596477;padding:0 12px;border-radius:9px;box-shadow:none;font-size:13px;font-weight:400}.site-search-trigger svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}.site-search-trigger kbd{font:11px system-ui;border:1px solid var(--line);border-radius:4px;padding:0 4px;background:#fff}
+.site-menu-button{display:none}.site-sidebar{position:fixed;left:0;top:var(--header-h);bottom:0;width:var(--side-w);overflow:auto;background:#f5f3ef;border-right:1px solid var(--line);padding:25px 18px;z-index:60}.site-side-label,.site-eyebrow{font:600 11px/1.5 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#647084}.site-side-label{margin:2px 10px 17px}.site-side-mobile{display:none}.site-side-chapter{margin:4px 0}.site-side-chapter>summary{list-style:none;display:flex;gap:10px;align-items:center;min-height:48px;line-height:1.4;font-size:13px;font-weight:550;cursor:pointer;padding:8px;border-radius:8px}.site-side-chapter>summary::-webkit-details-marker{display:none}.site-side-chapter>summary:after{content:'›';margin-left:auto}.site-side-chapter[open]>summary:after{transform:rotate(90deg)}.site-side-number{font:14px Georgia;color:#647084;min-width:19px}.site-side-group{color:#738093;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin:12px 9px 5px}.site-side-link{display:flex;gap:8px;color:#596477;text-decoration:none;font-size:12px;line-height:1.4;padding:10px 10px 10px 14px;min-height:44px;border-left:2px solid transparent;border-radius:0 7px 7px 0}.site-side-link span:first-child{color:#7a8494;font-size:11px;min-width:21px}.site-side-link[aria-current=page]{background:#e6edfb;color:#1d4ed8;border-left-color:var(--blue);font-weight:650}.site-side-link:hover,.site-side-chapter>summary:hover{background:#ebeae6}.site-side-link[aria-current=page]:hover{background:#e6edfb}.site-soon{font-size:12px;color:#78808c;margin:8px 10px}.site-side-footer{border-top:1px solid var(--line);margin-top:24px;padding:18px 8px;font-size:12px;color:#647084}.site-side-footer a{display:block;margin-top:8px}.site-shade{position:fixed;inset:var(--header-h) 0 0;background:#18233766;z-index:55;border:0;border-radius:0;padding:0;box-shadow:none}.site-drawer-open{overflow:hidden}
+.site-breadcrumb{max-width:820px;margin:24px auto 0;padding:0 16px;color:#77808f;font-size:12px;display:flex;flex-wrap:wrap;gap:8px}.site-breadcrumb a{color:#647084;text-decoration:none}.site-chapter-button{display:none}
+body>header{max-width:820px;margin:0 auto;padding:27px 16px 23px;text-align:left;background:none}body>header h1{font-size:clamp(26px,3vw,36px);opacity:1;transform:none;animation:none;margin:0 0 10px;letter-spacing:-.025em}body>header .sub,body>header .who{opacity:1;animation:none;transform:none;font-size:13px;color:var(--muted)}body>header .who{margin-top:10px}
+body>.navbar,body>nav#nav{top:var(--header-h);z-index:40;background:rgba(250,248,245,.98);padding:8px max(16px,calc((100% - 788px)/2));border-bottom:1px solid var(--line);backdrop-filter:none;position:sticky}
+body>.navbar>.nav-home{display:none}body>.navbar>nav,body>nav#nav{display:flex;gap:4px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+body>.navbar>nav{position:static;background:none;border:0;min-width:0;padding:0;flex:1}body>.navbar nav a,body>nav#nav a{flex:0 0 auto;display:block;padding:0 15px;margin:0;min-height:44px;line-height:44px;border-radius:8px;font-size:13px;background:transparent;color:#5d6778;box-shadow:none;text-decoration:none;overflow:visible}
+body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8;font-weight:650}.navbar .nlong{display:inline}.navbar .nshort{display:none}body>main{max-width:820px;margin:0 auto;padding:14px 16px 48px;min-width:0}section{scroll-margin-top:136px}.card{border:1px solid #e8e8e8;box-shadow:var(--shadow);border-radius:14px;padding:22px;margin:16px 0;background:white}.card.blue,.card.green,.card.coral,.card.amber{border-left-width:3px}body>.to-top{display:none!important}body>footer{max-width:820px;margin:0 auto;text-align:left;padding:20px 16px 35px;color:#748092;font-size:12px}body>footer .retour-fiches{display:none}
+.site-lesson-tools{border-bottom:1px solid var(--line);padding:0 0 18px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#687386}.site-lesson-tools label{font-size:12px;color:#596477}.site-lesson-tools select{min-height:44px;width:auto;padding:5px 30px 5px 10px;border:1px solid var(--line);border-radius:8px;background:white;font-size:12px;color:var(--ink)}.site-local-note{display:flex;gap:6px;align-items:center}.site-local-note:before{content:'';width:6px;height:6px;border-radius:50%;background:#22a06b;flex-shrink:0}.site-storage-failed:before{background:#b45309}.site-storage-failed{color:#92400e}
+.site-pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid var(--line);padding-top:26px;margin-top:34px}.site-pager a{padding:16px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink);background:white;line-height:1.5}.site-pager a:last-child{text-align:right}.site-pager small{display:block;color:#647084;font-size:11px;margin-bottom:6px}.site-pager strong{font-size:14px;font-weight:600}.site-page-top{display:block;text-align:center;font-size:12px;margin-top:22px;padding:12px}
+.site-hub>main{max-width:1100px;padding:48px 30px 72px}.site-hub>footer{max-width:1100px;padding-inline:30px}.site-hub h1{font-size:clamp(32px,5vw,46px);letter-spacing:-.035em;font-weight:400;margin:8px 0 14px}.site-lead{color:#647084;max-width:620px;font-size:15px}.site-hub h2{font-size:24px;font-weight:400;margin:0 0 8px}.site-hub h3{color:var(--ink);font-size:19px;font-weight:400;margin:0 0 8px}.site-hub a{text-decoration:none}.site-section-title{display:flex;align-items:baseline;gap:12px;justify-content:space-between;margin:35px 0 16px}.site-section-title a{font-size:12px}.site-hero{display:grid;grid-template-columns:1fr 210px;background:#eff3fb;border:1px solid #dce5f5;border-radius:18px;padding:32px;margin:28px 0 0;position:relative;overflow:hidden}.site-hero h2{font-size:30px;max-width:580px;margin:12px 0}.site-hero p{color:#596a85;font-size:14px;max-width:510px}.site-hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px}.site-btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;background:var(--blue);color:#fff!important;border:1px solid var(--blue);border-radius:9px;padding:10px 18px;text-decoration:none;font-size:13px;font-weight:600;box-shadow:none}.site-btn.secondary{background:#fff;color:#1d4ed8!important;border:1px solid #d7dfed}.site-btn.subtle{background:transparent;color:#596477!important;border-color:var(--line)}.site-hero-art{align-self:center;justify-self:center;width:185px;height:185px;color:#2563eb}.site-hero-art svg{width:100%;height:100%}.site-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.site-tile{display:block;border:1px solid var(--line);border-radius:14px;background:white;padding:24px;color:var(--ink)}.site-tile p{font-size:13px;color:#647084;margin-bottom:0}.site-tile .site-eyebrow{display:block;margin-bottom:12px}.site-tile-link{display:block;color:#2563eb;font-size:13px;margin-top:18px}.site-tile:hover{border-color:#b7c9e9}.site-empty{border:1px dashed #cfd5df;border-radius:12px;padding:26px;color:#647084;font-size:14px;background:#ffffff70}.site-hint{font-size:12px;color:#758093;margin-top:24px}.site-hint a{text-decoration:underline}
+.site-catalog-tools{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:28px 0 20px}.site-input{width:100%;min-height:46px;border:1px solid #d6dce5;border-radius:9px;padding:10px 13px;background:white;color:var(--ink);font-size:14px}.site-catalog-tools>.site-input{width:270px}.site-filters{display:flex;flex-wrap:wrap;gap:5px}.site-filters button{font-size:12px;padding:9px 12px;min-height:44px;background:transparent;color:#647084;border:1px solid transparent;border-radius:8px;box-shadow:none;font-weight:500}.site-filters button[aria-pressed=true]{background:white;border-color:#d6dce5;color:#1d4ed8}.site-chapter{background:white;border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}.site-chapter>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:20px;min-height:76px;line-height:1.4}.site-chapter>summary::-webkit-details-marker{display:none}.site-chapter>summary:after{content:'+';font-size:23px;font-weight:300;margin-left:auto;color:#647084}.site-chapter[open]>summary:after{content:'−'}.site-number{font:22px Georgia;color:#2563eb;background:#eff4ff;min-width:44px;height:44px;display:grid;place-items:center;border-radius:11px}.site-chapter-title{font-size:15px;font-weight:600}.site-chapter-meta{font-size:12px;font-weight:400;color:#748092;display:block;margin-top:5px}.site-chapter-content{padding:0 20px 20px}.site-chapter-intro{font-size:13px;color:#647084;border-top:1px solid var(--line);padding-top:16px}.site-chapter-content h3{font-family:system-ui;font-size:11px;font-weight:600;letter-spacing:.04em;color:#647084;margin:20px 0 10px;text-transform:uppercase}.site-lesson-row{display:flex;gap:14px;align-items:center;color:var(--ink);border-radius:9px;padding:13px 12px;min-height:56px;background:#fafafa;margin:6px 0;border:1px solid #eceef1}.site-lesson-row:hover{background:#f0f4fc;border-color:#c8d7f0}.site-lesson-code{font-size:12px;color:#647084;min-width:25px}.site-lesson-name{font-size:14px;flex:1}.site-lesson-state{font-size:10px;border-radius:5px;padding:3px 7px;color:#647084;background:#edeff2;white-space:nowrap}.site-lesson-state[data-state=review]{background:#fef3c7;color:#854d0e}.site-lesson-state[data-state=validated]{background:#e3f5ec;color:#166534}.site-lesson-state[data-state=started]{background:#e8efff;color:#1d4ed8}.site-count{font-size:12px;color:#748092}
+.site-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}.site-stat{border:1px solid var(--line);background:white;border-radius:12px;padding:22px}.site-stat strong{display:block;font:34px Georgia;color:var(--ink)}.site-stat span{font-size:12px;color:#647084}.site-progress-list{display:grid;gap:10px}.site-progress-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:white;border:1px solid var(--line);border-radius:10px;padding:17px}.site-progress-row a{color:var(--ink);font-size:14px}.site-progress-row small{font-size:12px;color:#647084;display:block;margin-top:5px}.site-progress-row select{font-size:12px;min-height:44px;border:1px solid var(--line);border-radius:8px;background:white;padding:5px;max-width:140px}.site-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.site-form-grid label{font-size:12px;color:#596477;display:block}.site-form-grid input,.site-form-grid select{margin-top:5px}.site-form-wide{grid-column:1/-1}.site-journal-row{border-top:1px solid var(--line);padding:16px 0;display:flex;justify-content:space-between;gap:16px;font-size:13px}.site-journal-row p{margin:5px 0;color:#647084}.site-journal-row small{color:#647084}.site-journal-actions{display:flex;align-items:flex-start;gap:5px;flex-shrink:0}.site-journal-actions button{font-size:11px;padding:6px 9px}.site-backup{border-top:1px solid var(--line);padding-top:26px;margin-top:35px}.site-backup-actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.site-message{font-size:13px;color:#166534;min-height:24px}.site-message[data-error=true]{color:#9f301c}.site-warning{padding:12px 16px;border:1px solid #ead5aa;background:#fffbef;border-radius:9px;color:#854d0e;font-size:12px;margin:16px 0}
+.site-dialog{border:1px solid #dce2ec;border-radius:16px;background:var(--bg);color:var(--ink);width:min(660px,calc(100% - 28px));max-height:80vh;padding:24px;box-shadow:0 20px 80px #17233740}.site-dialog::backdrop{background:#17233766}.site-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}.site-dialog h2{font-size:25px;margin:0;font-weight:400}.site-search-results{overflow:auto;max-height:48vh;padding-top:14px}.site-search-results a{display:block;min-height:56px;padding:12px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:14px}.site-search-results a:hover{background:#e8efff}.site-search-results small{display:block;color:#647084;font-size:11px;margin-top:3px}.site-search-results p{font-size:13px;color:#647084}.site-announcement{font-size:12px;color:#647084}
+@media(min-width:1100px){body.site-with-sidebar{padding-left:var(--side-w)}body.site-with-sidebar>.navbar{padding-inline:max(16px,calc((100% - 788px)/2))}body.site-with-sidebar.site-guide>nav#nav{display:none}.site-guide .site-sidebar .site-side-link{font-size:13px;padding-block:14px}}
+@media(max-width:1099px){.site-header{padding:0 18px;gap:12px}.site-menu-button{display:grid}.site-global{display:none}.site-sidebar{transform:translateX(-100%);transition:transform .18s;visibility:hidden;width:min(320px,88vw)}.site-drawer-open .site-sidebar{transform:none;visibility:visible}.site-side-mobile{display:block;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:20px}.site-side-mobile a{display:block;color:#596477;padding:12px;text-decoration:none;font-size:14px;border-radius:8px}.site-side-mobile a[aria-current=page]{background:#e8efff;color:#1d4ed8}.site-chapter-button{display:block;background:none;color:#647084;border:0;box-shadow:none;font-size:12px;padding:0;min-height:44px;font-weight:500}.site-breadcrumb{margin-top:10px}.site-breadcrumb .site-desktop-crumb{display:none}.site-hub>main{padding-top:35px}}
+@media(max-width:600px){:root{--header-h:56px}.site-header{padding:0 12px;gap:9px}.site-brand{font-size:17px;gap:7px}.site-actions{gap:5px}.site-icon{border:0;width:40px;padding:9px}.site-search-trigger{width:40px;padding:10px;justify-content:center;border:0;background:white}.site-search-trigger span,.site-search-trigger kbd{display:none}.site-hub>main{padding:28px 18px 42px}.site-hub>footer{padding:20px 18px}.site-hub h1{font-size:34px}.site-lead{font-size:14px}.site-hero{grid-template-columns:1fr;padding:24px}.site-hero h2{font-size:27px}.site-hero-art{display:none}.site-grid{grid-template-columns:1fr}.site-tile{padding:22px}.site-section-title{margin-top:28px}.site-section-title h2{font-size:22px}.site-catalog-tools{gap:12px}.site-catalog-tools>.site-input{width:100%}.site-filters{gap:2px}.site-filters button{padding:8px 10px}.site-chapter>summary{padding:16px;gap:12px}.site-chapter-title{font-size:14px}.site-chapter-content{padding-inline:14px}.site-lesson-row{gap:8px;padding-inline:10px;flex-wrap:wrap}.site-lesson-name{font-size:13px;min-width:130px}.site-lesson-state{margin-left:auto}.site-stats{gap:8px}.site-stat{padding:15px 11px}.site-stat strong{font-size:28px}.site-stat span{font-size:11px}.site-form-grid{grid-template-columns:1fr}.site-form-wide{grid-column:auto}.site-progress-row{grid-template-columns:1fr}.site-progress-row select{max-width:none;width:100%}.site-journal-row{flex-wrap:wrap}.site-journal-actions{width:100%}.site-pager{gap:8px}.site-pager a{padding:12px}.site-pager strong{font-size:12px}.site-pager small{font-size:10px}body>header{padding:16px 16px 20px}body>.navbar,body>nav#nav{padding:6px 10px}body>.navbar nav a,body>nav#nav a{font-size:12px;padding:0 12px;min-height:44px;line-height:44px}.card{padding:17px}body>main{padding-top:12px}.site-dialog{padding:18px}.site-breadcrumb{margin-top:0}.site-lesson-tools{gap:8px}}
+.site-side-link[aria-current=location]{background:#e6edfb;color:#1d4ed8;border-left-color:var(--blue);font-weight:650}
+#site-main{scroll-margin-top:136px}.site-chapter{scroll-margin-top:80px}
+@media(max-width:600px){.site-icon,.site-search-trigger{width:44px;min-width:44px}}
+@media(max-width:360px){.site-brand{font-size:16px}.site-header{gap:6px}.site-actions{gap:2px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+@media print{body{padding:0!important}.site-header,.site-sidebar,.site-shade,.site-breadcrumb,.navbar,body>nav#nav,.site-lesson-tools,.site-pager,.site-page-top,.site-dialog,.site-backup{display:none!important}body>main,body>header{max-width:none}.card{box-shadow:none;break-inside:avoid}}
+.site-sign{max-width:820px;margin:0 auto;padding:14px 16px 34px;color:#8a93a1;font-size:12px;text-align:center;font-family:system-ui,-apple-system,sans-serif;line-height:1.6}
+.site-sign a{color:#6b7280;text-decoration:underline;text-underline-offset:2px}
+.site-sign a:hover{color:var(--blue)}
+
+</style>
+<!-- SITE:STYLE:END -->
+</head>
+<body class="site-with-sidebar">
+<!-- SITE:SHELL:START -->
+<a class="site-skip" href="#site-main">Aller au contenu</a>
+<div class="site-header" role="banner">
+ <button class="site-icon site-menu-button" id="site-menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="site-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+ <a class="site-brand" href="../../index.html">Réussite Spé Maths</a>
+ <nav class="site-global" aria-label="Navigation principale"><a href="../../index.html">Accueil</a><a href="../../chapitres.html" aria-current="page">Chapitres</a><a href="../../strategie/reussir_lannee.html">Méthode</a><a href="../../progres.html">Mes progrès</a></nav>
+ <div class="site-actions"><button class="site-search-trigger" id="site-search-open" aria-label="Rechercher une notion"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>Rechercher</span><kbd>/</kbd></button>
+ <a class="site-icon" href="../../progres.html#sauvegarde" aria-label="Mon suivi sur cet appareil" title="Mon suivi sur cet appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></a></div>
+</div>
+<button class="site-shade" id="site-shade" aria-label="Fermer le menu" hidden tabindex="-1"></button>
+<aside class="site-sidebar" id="site-sidebar" aria-label="Programme et fiches"><div class="site-side-mobile"><a href="../../index.html">Accueil</a><a href="../../chapitres.html" aria-current="page">Chapitres</a><a href="../../strategie/reussir_lannee.html">Méthode</a><a href="../../progres.html">Mes progrès</a></div><p class="site-side-label">Le programme · Terminale spé</p><details class="site-side-chapter" data-chapter="1"><summary><span class="site-side-number">01</span>Produit scalaire et géométrie</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html"><span>1A</span><span>Produit scalaire : les définitions</span></a><a class="site-side-link" href="../../chapitres/01_produit_scalaire/1B_produit_scalaire_applications.html"><span>1B</span><span>Produit scalaire : applications</span></a><a class="site-side-link" href="../../chapitres/01_produit_scalaire/1C_geometrie_reperee.html"><span>1C</span><span>Géométrie repérée</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/01_produit_scalaire/1D_espace_orthogonalite_distances.html"><span>1D</span><span>Orthogonalité et distances dans l&#x27;espace</span></a></details><details class="site-side-chapter" data-chapter="2"><summary><span class="site-side-number">02</span>Suites</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/02_suites/2A_suites_generation_variations.html"><span>2A</span><span>Suites numériques : génération et variations</span></a><a class="site-side-link" href="../../chapitres/02_suites/2B_suites_arithmetiques_geometriques.html"><span>2B</span><span>Suites arithmétiques et géométriques</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/02_suites/2C_recurrence_limites.html"><span>2C</span><span>Récurrence et limites de suites</span></a></details><details class="site-side-chapter" data-chapter="3"><summary><span class="site-side-number">03</span>Dérivation et convexité</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/03_derivation_convexite/3A_nombre_derive_tangente.html"><span>3A</span><span>Nombre dérivé et tangente</span></a><a class="site-side-link" href="../../chapitres/03_derivation_convexite/3B_calcul_de_derivees.html"><span>3B</span><span>Calcul de dérivées</span></a><a class="site-side-link" href="../../chapitres/03_derivation_convexite/3C_variations_extremums.html"><span>3C</span><span>Variations, extremums et optimisation</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/03_derivation_convexite/3D_derivee_composee.html"><span>3D</span><span>Dérivée d&#x27;une fonction composée</span></a><a class="site-side-link" href="../../chapitres/03_derivation_convexite/3E_convexite.html"><span>3E</span><span>Convexité</span></a></details><details class="site-side-chapter" data-chapter="4"><summary><span class="site-side-number">04</span>Limites de fonctions et continuité</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/04_limites_continuite/4A_fonctions_de_reference.html"><span>4A</span><span>Les fonctions de référence</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/04_limites_continuite/4B_limites_de_fonctions.html"><span>4B</span><span>Limites de fonctions</span></a><a class="site-side-link" href="../../chapitres/04_limites_continuite/4C_continuite_tvi.html"><span>4C</span><span>Continuité et valeurs intermédiaires</span></a></details><details class="site-side-chapter" data-chapter="5"><summary><span class="site-side-number">05</span>Exponentielle et logarithme</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/05_exponentielle_logarithme/5A_fonction_exponentielle.html"><span>5A</span><span>La fonction exponentielle</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/05_exponentielle_logarithme/5B_fonctions_avec_exponentielle.html"><span>5B</span><span>Fonctions avec une exponentielle</span></a><a class="site-side-link" href="../../chapitres/05_exponentielle_logarithme/5C_logarithme_neperien.html"><span>5C</span><span>Logarithme népérien</span></a></details><details class="site-side-chapter" data-chapter="6"><summary><span class="site-side-number">06</span>Géométrie dans l&#x27;espace</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/06_geometrie_espace/6A_calcul_vectoriel_plan.html"><span>6A</span><span>Calcul vectoriel dans le plan</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/06_geometrie_espace/6B_vecteurs_espace.html"><span>6B</span><span>Vecteurs de l&#x27;espace</span></a><a class="site-side-link" href="../../chapitres/06_geometrie_espace/6C_droites_plans_espace.html"><span>6C</span><span>Droites et plans de l’espace</span></a></details><details class="site-side-chapter" data-chapter="7"><summary><span class="site-side-number">07</span>Probabilités conditionnelles et variables aléatoires</summary><div class="site-side-group">Réactiver les bases · Première</div><a class="site-side-link" href="../../chapitres/07_probabilites/7A_probabilites_conditionnelles.html"><span>7A</span><span>Probabilités conditionnelles et indépendance</span></a><a class="site-side-link" href="../../chapitres/07_probabilites/7B_variables_aleatoires.html"><span>7B</span><span>Variables aléatoires, espérance et variance</span></a><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/07_probabilites/7C_epreuves_independantes_bernoulli.html"><span>7C</span><span>Épreuves indépendantes et schéma de Bernoulli</span></a></details><details class="site-side-chapter" data-chapter="8"><summary><span class="site-side-number">08</span>Combinatoire et dénombrement</summary><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html"><span>8A</span><span>Combinatoire et dénombrement</span></a></details><details class="site-side-chapter" data-chapter="9" open><summary><span class="site-side-number">09</span>Loi binomiale</summary><div class="site-side-group">Approfondir · Terminale</div><a class="site-side-link" href="../../chapitres/09_loi_binomiale/9A_loi_binomiale.html" aria-current="page"><span>9A</span><span>Loi binomiale</span></a></details><details class="site-side-chapter" data-chapter="10"><summary><span class="site-side-number">10</span>Fonctions trigonométriques</summary><p class="site-soon">À venir</p></details><details class="site-side-chapter" data-chapter="11"><summary><span class="site-side-number">11</span>Primitives et équations différentielles</summary><p class="site-soon">À venir</p></details><details class="site-side-chapter" data-chapter="12"><summary><span class="site-side-number">12</span>Calcul intégral</summary><p class="site-soon">À venir</p></details><details class="site-side-chapter" data-chapter="13"><summary><span class="site-side-number">13</span>Sommes de variables aléatoires et loi des grands nombres</summary><p class="site-soon">À venir</p></details><details class="site-side-chapter" data-chapter="14"><summary><span class="site-side-number">14</span>Algorithmique et programmation</summary><p class="site-soon">À venir</p></details><div class="site-side-footer">Un peu, régulièrement.<br>Un chapitre à la fois.<a href="../../progres.html#sauvegarde">Sauvegarder mon suivi</a></div></aside>
+<dialog class="site-dialog" id="site-search-dialog" aria-labelledby="site-search-title">
+ <div class="site-dialog-head"><h2 id="site-search-title">Une notion à retrouver ?</h2><button class="site-icon" id="site-search-close" aria-label="Fermer la recherche"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+ <label for="site-search-input" class="site-eyebrow">Fiche, notion ou méthode</label>
+ <input id="site-search-input" class="site-input" type="search" placeholder="Tangente, suites, récurrence…" autocomplete="off">
+ <p class="site-announcement" id="site-search-count" role="status"></p><div class="site-search-results" id="site-search-results"></div>
+</dialog>
+<!-- SITE:SHELL:END -->
+
+<!-- SITE:CRUMBS:START -->
+<div class="site-breadcrumb"><button class="site-chapter-button" data-open-program>Chapitre 9 · Voir les fiches ↓</button><span class="site-desktop-crumb"><a href="../../chapitres.html">Chapitres</a> › <a href="../../chapitres.html#ch9">Loi binomiale</a> › Loi binomiale</span></div>
+<!-- SITE:CRUMBS:END -->
+<header>
+  <h1>9A · Loi binomiale</h1>
+  <div class="sub">Terminale · Mathématiques</div>
+</header>
+
+<div class="navbar">
+  <a class="nav-home" href="../../index.html" title="Toutes les fiches" aria-label="Toutes les fiches">←</a>
+  <nav id="nav">
+    <a href="#cours">Cours</a>
+    <a href="#methode"><span class="nlong">Méthode</span><span class="nshort">Méth.</span></a>
+    <a href="#visu"><span class="nlong">Visualisation</span><span class="nshort">Visu</span></a>
+    <a href="#exos"><span class="nlong">Exercices</span><span class="nshort">Exos</span></a>
+    <a href="#qcm">QCM</a>
+  </nav>
+</div>
+
+<main id="site-main" tabindex="-1">
+<!-- SITE:TOOLS:START -->
+<div class="site-lesson-tools"><span class="site-local-note" data-storage-note>Suivi enregistré sur cet appareil</span><label for="site-lesson-status">Cette fiche : <select id="site-lesson-status"><option value="started">En cours</option><option value="review">À revoir</option><option value="validated">Validé par moi</option></select></label></div>
+<!-- SITE:TOOLS:END -->
+<section id="cours"><h2>Cours</h2>
+<div class="card blue"><h3>1. Reconnaître une loi binomiale</h3><p>On répète un nombre fixé n d’épreuves de Bernoulli <b>indépendantes, de même probabilité de succès p</b>. La variable X compte le nombre de succès. On écrit \(X\sim\mathcal B(n,p).\)</p><p>X est entier, entre 0 et n. Exemple : dix composants passent chacun le même test, avec probabilité de réussite 0,8, indépendamment les uns des autres. Le nombre de réussites suit \(\mathcal B(10,0{,}8).\)</p><div class="warn">Même probabilité ne signifie pas indépendance. Des essais indépendants de probabilités différentes ne donnent pas, en général, une loi binomiale. Des tirages sans remise ne sont pas automatiquement indépendants.</div><p>Prérequis : 7C pour les chemins d’un schéma de Bernoulli ; 8A pour compter les positions des succès.</p></div>
+<div class="card"><h3>2. La probabilité d’exactement k succès</h3><p>Pour \(0&lt;p&lt;1\) et tout entier \(0\leq k\leq n,\)</p><div class="key">\[P(X=k)=\binom nk p^k(1-p)^{n-k}.\]</div><p>Exemple : pour \(X\sim\mathcal B(4,1/2),\)</p>\[P(X=2)=6\times\frac1{16}=\frac38.\]<details class="proof"><summary>À savoir démontrer — la formule binomiale</summary><ol><li>Fixons un chemin à k succès et n−k échecs. Par indépendance, sa probabilité est le produit \(p^k(1-p)^{n-k}.\)</li><li>Choisir les k positions de succès parmi n fixe tout le chemin : il existe \(\binom nk\) chemins de ce type, d’après 8A.</li><li>Ces chemins sont deux à deux incompatibles. L’événement X = k est leur réunion. On additionne donc \(\binom nk\) fois la même probabilité, ce qui donne la formule.</li></ol></details><p>Aux frontières, on raisonne directement : si p = 0, X vaut toujours 0 ; si p = 1, X vaut toujours n. Les autres valeurs ont probabilité nulle. On évite ainsi une écriture ambiguë avec \(0^0.\) Hors des entiers de 0 à n, la probabilité est nulle.</p></div>
+<div class="card"><h3>3. Traduire « au plus », « au moins » et « entre »</h3><p>On note \(F(k)=P(X\leq k).\) Les probabilités s’additionnent sur les valeurs entières demandées :</p>\[F(k)=\sum_{j=0}^k P(X=j)\quad(0\leq k\leq n).\]<p>Pour des bornes entières a ≤ b :</p><div class="tablewrap"><table><tr><th>Question</th><th>Calcul</th></tr><tr><td>Au plus k</td><td>\(F(k)\)</td></tr><tr><td>Strictement moins que k</td><td>\(F(k-1)\)</td></tr><tr><td>Au moins k</td><td>\(1-F(k-1)\)</td></tr><tr><td>Strictement plus que k</td><td>\(1-F(k)\)</td></tr><tr><td>Entre a et b, inclus</td><td>\(F(b)-F(a-1)\)</td></tr></table></div><p>On prend F(k) = 0 si k &lt; 0, et F(k) = 1 si k ≥ n. Exemple avec \(\mathcal B(4,1/2)\) : \(P(X\leq1)=5/16,\) donc \(P(X\geq2)=11/16.\)</p><div class="warn">« Au moins 2 » inclut 2 ; « strictement plus que 2 » ne l’inclut pas. Ne pas arrondir avant de sommer ou soustraire.</div></div>
+<div class="card green"><h3>4. Espérance, variance et écart type</h3>\[E(X)=np,\]\[ V(X)=np(1-p).\]\[\sigma(X)=\sqrt{np(1-p)}.\]<p>Pour \(\mathcal B(10,0{,}3),\) l’espérance est 3, la variance 2,1 et l’écart type vaut \(\sqrt{2{,}1}\approx1{,}449.\) L’espérance n’est pas une valeur garantie : pour \(\mathcal B(4,0{,}3),\) elle vaut 1,2, alors que X reste entier.</p><details class="proof"><summary>À savoir démontrer — espérance et variance</summary><p>Notons \(X_i=1\) si l’essai i réussit, et 0 sinon. Alors \(X=X_1+\cdots+X_n.\) Les variables \(X_i\) sont indépendantes dans ce modèle et suivent toutes la loi de Bernoulli de paramètre p.</p><p>D’après 7C, \(E(X_i)=p\) et \(V(X_i)=p(1-p).\) On utilise deux propriétés des sommes : l’espérance est additive ; la variance est additive pour des variables indépendantes. Ces propriétés sont admises ici et reprises au chapitre 13.</p>\[E(X)=\sum_{i=1}^n E(X_i)=np,\]\[V(X)=\sum_{i=1}^n V(X_i)=np(1-p).\]<p>L’écart type est la racine carrée de la variance. L’indépendance est indispensable à cette addition des variances.</p></details><p>Si p = 0 ou p = 1, X est constante et sa variance est nulle, conformément à ces formules.</p></div>
+<div class="card"><h3>5. Chercher un seuil sans se tromper d’inégalité</h3><p>Pour un risque fixé \(0\leq\alpha\leq1,\) on peut chercher le plus petit entier k entre 0 et n tel que \(P(X&gt;k)\leq\alpha.\) La probabilité de dépassement décroît au sens large avec k : on teste les entiers dans l’ordre, ou on utilise la fonction cumulée.</p><p>Exemple pour \(\mathcal B(4,1/2)\) et \(\alpha=0{,}1\) :</p>\[P(X&gt;2)=\frac5{16}&gt;0{,}1,\]\[P(X&gt;3)=\frac1{16}\leq0{,}1.\]<p>Le premier seuil convenable est donc 3. Cela permet, par exemple, de chercher une capacité minimale sous une contrainte de risque dans un modèle de réservations.</p><div class="warn">Vérifier le candidat <b>et l’entier précédent</b>. Une probabilité affichée arrondie à 0,100 peut en réalité être supérieure à 0,1 : on compare les valeurs non arrondies.</div></div>
+<div class="card"><h3>6. Chercher un intervalle de valeurs</h3><p>Un intervalle d’entiers \([a,b]\) peut être choisi pour couvrir une probabilité au moins égale à \(1-\alpha,\) ou pour décrire une zone de faible probabilité. On calcule \(F(b)-F(a-1)\) et on compare à la valeur demandée. Si l’énoncé dit strictement supérieur ou inférieur, conserver ce caractère strict.</p><p>Exemple avec \(\mathcal B(10,1/2)\) :</p>\[P(2\leq X\leq8)=\frac{1002}{1024}&gt;0{,}95.\]\[P(0\leq X\leq1)=\frac{11}{1024}&lt;0{,}05.\]<p>Ces intervalles répondent à deux questions différentes. Ils ne sont pas annoncés comme les plus courts possibles. Le seuil du point 5 fournit, lui, un intervalle \([0,k]\) de probabilité au moins \(1-\alpha.\)</p></div>
+<div class="card"><h3>7. Simuler et comparer à la loi</h3><p>Une valeur de X s’obtient en comptant les succès sur n essais. Répéter cette expérience R fois, indépendamment, produit un échantillon de R valeurs de la même loi binomiale.</p><p><b>Ne pas confondre n et R :</b> n est le nombre d’essais pour obtenir une valeur de X ; R est le nombre de valeurs de X simulées. La fréquence d’une valeur k est son nombre d’apparitions divisé par R.</p><details class="proof"><summary>Python — simuler une valeur de X</summary><pre><code>from random import random
+
+def binomiale(n, p):
+    succes = 0
+    for _ in range(n):
+        if random() &lt; p:
+            succes += 1
+    return succes</code></pre><p>On prend n entier positif ou nul et p entre 0 et 1. Les appels au générateur simulent les essais indépendants. Pour obtenir un échantillon, appeler cette fonction plusieurs fois.</p></details><p>La fréquence observée n’est pas forcément égale à la probabilité. Ajouter des observations ne la rapproche pas de la théorie à chaque étape. La moyenne observée fluctue aussi autour de l’espérance théorique.</p><p>Les lois géométrique et de Poisson ne sont pas nécessaires dans cette fiche.</p></div>
+</section>
+<section id="methode"><h2>Méthode</h2><div class="card"><h3>Résoudre un exercice de loi binomiale</h3><ol><li>Définir le succès, n, p et ce que compte X.</li><li>Justifier les deux issues, le nombre fixé d’essais, la même probabilité et l’indépendance.</li><li>Traduire l’événement avec les bonnes bornes entières : égalité, cumul ou intervalle.</li><li>Calculer exactement ou garder la précision de la calculatrice. Pour un intervalle, soustraire F(a−1), pas F(a).</li><li>Pour un seuil, tester le candidat et son prédécesseur avec les valeurs non arrondies.</li><li>Arrondir seulement le résultat final, à la précision demandée.</li></ol></div><div class="card"><h3>Avec une calculatrice ou un tableur</h3><p><b>Sur calculatrice :</b> repère les fonctions de la loi binomiale. Les noms et menus varient selon le modèle. La fonction ponctuelle donne \(P(X=k),\) la fonction cumulée donne \(P(X\leq k).\) Renseigne n, p et la borne entière demandée ; ne confonds pas p avec le risque α.</p><ol><li>Pour « au plus k », utilise directement la fonction cumulée en k.</li><li>Pour « au moins k », calcule 1 moins la cumulée en k−1.</li><li>Pour \(a\leq X\leq b,\) soustrais la cumulée en a−1 à celle en b.</li></ol><p>Si a = 0, le terme F(−1) vaut 0 : inutile de saisir une borne négative si l’outil ne l’accepte pas.</p><p><b>Sur tableur :</b> construis trois colonnes : j (de 0 à n), la probabilité ponctuelle P(X = j), puis le cumul F(j). La première cellule de cumul reprend P(X = 0) ; chaque cellule suivante ajoute sa probabilité au cumul précédent. Utilise la fonction binomiale ponctuelle du logiciel ou la formule du cours, en gardant n et p fixes lors de la recopie. Pour un intervalle, soustrais ensuite les deux cumulées appropriées.</p><p><b>Test de contrôle :</b> avec n = 4 et p = 0,5, la colonne des probabilités est 1/16, 4/16, 6/16, 4/16, 1/16. Le cumul en 1 vaut 5/16 et le dernier cumul vaut 1. Ne recopie pas les seules valeurs affichées arrondies pour calculer un seuil.</p></div><div class="card coral"><h3>Les erreurs à éviter</h3><ul><li>Oublier le coefficient binomial en confondant un chemin et tous les chemins à k succès.</li><li>Remplacer « au moins k » par X &gt; k.</li><li>Confondre espérance et variance, ou variance et écart type.</li><li>Appliquer automatiquement la binomiale à des essais dépendants.</li><li>Conclure qu’une probabilité très petite, affichée arrondie à zéro, est exactement nulle.</li></ul></div></section>
+<section id="visu"><h2>Visualisation</h2><div class="card"><h3>La loi, un événement et un échantillon</h3><div class="control"><label for="vn">Essais par expérience n</label><input id="vn" type="range" min="1" max="20" value="10"><output id="vn-out" for="vn">10</output></div><div class="control"><label for="vp">Probabilité p</label><input id="vp" type="range" min="0" max="10" value="5"><output id="vp-out" for="vp">0,5</output></div><label for="vevent">Événement à colorier</label><select id="vevent"><option value="point">X = a</option><option value="cdf">X ≤ a</option><option value="tail">X ≥ a</option><option value="interval" selected>a ≤ X ≤ b</option></select><div class="control"><label for="va">Borne a</label><input id="va" type="range" min="0" max="10" value="3"><output id="va-out" for="va">3</output></div><div class="control"><label for="vb">Borne b (intervalle)</label><input id="vb" type="range" min="3" max="10" value="7"><output id="vb-out" for="vb">7</output></div><svg id="fig" class="figure" viewBox="0 0 360 300" role="img" aria-label="Loi binomiale : probabilités et fréquences observées"></svg><p class="caption">Bleu : probabilités de l’événement · gris : autres probabilités · vert : fréquences simulées. L’échelle verticale s’adapte aux hauteurs.</p><div id="law-values" class="key" aria-live="polite"></div><div id="event-values" class="key" aria-live="polite"></div><div class="row"><button id="simulate" type="button">Simuler 200 valeurs de X</button><button id="reset-simulation" class="ghost" type="button">Effacer la simulation</button></div><p id="sim-result" aria-live="polite"></p><p class="caption">Changer n ou p efface la simulation précédente. Changer l’événement conserve l’échantillon, issu de la même loi.</p></div><div class="card"><h3>Un seuil de dépassement</h3><p>On conserve la loi choisie ci-dessus. Cherchons le plus petit entier k entre 0 et n pour lequel P(X &gt; k) ≤ α.</p><div class="control"><label for="alpha">Risque maximal α</label><input id="alpha" type="range" min="0" max="100" value="5"><output id="alpha-out" for="alpha">0,05</output></div><div id="threshold-values" class="key" aria-live="polite"></div><button id="show-threshold" type="button">Colorier l’intervalle [0 ; k]</button><p class="caption">Le seuil est calculé avec des fractions exactes. Les décimaux affichés sont des approximations à six décimales au plus. Une probabilité positive plus petite que 10⁻⁶ est signalée, pas confondue avec zéro.</p></div></section>
+<section id="exos"><h2>Exercices</h2><p>Respecte la précision de chaque exercice : valeur exacte, arrondi au millième ou entier. Les fractions et décimaux équivalents sont acceptés.</p>  <div class="card" id="ex1">
+    <h3>Exercice 1 · Exactement k succès <span class="tag">Niveau 1</span></h3>
+    <div id="ex1-enonce"></div>
+    <div class="row">
+      <input type="text" id="ex1-rep" inputmode="decimal" aria-label="Réponse à l’exercice 1" placeholder="réponse">
+      <button id="ex1-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" role="status" id="ex1-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex1-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex1-correction"></div>
+  </div>  <div class="card" id="ex2">
+    <h3>Exercice 2 · Un intervalle, au millième <span class="tag">Niveau 2</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="row">
+      <input type="text" id="ex2-rep" inputmode="decimal" aria-label="Réponse à l’exercice 2" placeholder="réponse">
+      <button id="ex2-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" role="status" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>  <div class="card" id="ex3">
+    <h3>Exercice 3 · Une capacité minimale <span class="tag">Niveau 3</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="row">
+      <input type="text" id="ex3-rep" inputmode="decimal" aria-label="Réponse à l’exercice 3" placeholder="réponse">
+      <button id="ex3-check" type="button">Vérifier</button>
+    </div>
+    <div class="feedback" role="status" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div></section><section id="qcm"><h2>QCM</h2><div class="card"><p>Quatre questions tirées dans une banque de seize. Une seule réponse correcte par question.</p><div id="qcm-container"></div><div class="score" id="qcm-score" role="status"></div><div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div></div></section>
+<!-- SITE:PAGER:START -->
+<div class="site-pager"><a href="../../chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html"><small>← Fiche précédente</small><strong>Combinatoire et dénombrement</strong></a><a href="../../chapitres.html"><small>Parcours terminé →</small><strong>Revenir au programme</strong></a></div><a class="site-page-top" href="#site-main">↑ Haut de la fiche</a>
+<!-- SITE:PAGER:END -->
+</main>
+
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+  <p><a class="retour-fiches" href="../../index.html">← Toutes les fiches</a></p>
+</footer>
+
+<script id="chapter9-model">
+/* Calculs rationnels exacts : les BigInt restent internes, les fractions sont sérialisables. */
+(function(root){
+  'use strict';
+  const gcd=(a,b)=>b?gcd(b,a%b):a<0n?-a:a;
+  function R(a,b=1){let n=BigInt(a),d=BigInt(b);if(!d)throw Error('Dénominateur nul');if(d<0n){n=-n;d=-d;}const g=gcd(n,d);return {n:String(n/g),d:String(d/g)};}
+  const add=(a,b)=>R(BigInt(a.n)*BigInt(b.d)+BigInt(b.n)*BigInt(a.d),BigInt(a.d)*BigInt(b.d));
+  const sub=(a,b)=>R(BigInt(a.n)*BigInt(b.d)-BigInt(b.n)*BigInt(a.d),BigInt(a.d)*BigInt(b.d));
+  const cmp=(a,b)=>{const x=BigInt(a.n)*BigInt(b.d)-BigInt(b.n)*BigInt(a.d);return x<0n?-1:x>0n?1:0;};
+  const val=a=>Number(a.n)/Number(a.d);
+  const tex=a=>a.d==='1'?a.n:(a.n.startsWith('-')?'-':'')+'\\frac{'+a.n.replace('-','')+'}{'+a.d+'}';
+  const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+  function shuffle(xs){const a=xs.slice();for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;}
+  function choose(n,k){if(k<0||k>n)return 0n;let c=1n;for(let j=1;j<=k;j++)c=c*BigInt(n-j+1)/BigInt(j);return c;}
+  function law(n,m){
+    if(!Number.isInteger(n)||n<0||n>30||!Number.isInteger(m)||m<0||m>10)throw Error('Paramètres hors domaine');
+    if(m===0||m===10)return Array.from({length:n+1},(_,k)=>R(k===(m===0?0:n)?1:0));
+    return Array.from({length:n+1},(_,k)=>R(choose(n,k)*BigInt(m)**BigInt(k)*BigInt(10-m)**BigInt(n-k),10n**BigInt(n)));
+  }
+  function interval(dist,a,b){return dist.reduce((s,p,k)=>k>=a&&k<=b?add(s,p):s,R(0));}
+  const point=(d,k)=>k>=0&&k<d.length?d[k]:R(0);
+  const cdf=(d,k)=>interval(d,0,k);
+  const tail=(d,k)=>interval(d,k+1,d.length-1);
+  function threshold(d,alpha){for(let k=0;k<d.length;k++)if(cmp(tail(d,k),alpha)<=0)return k;throw Error('Seuil introuvable');}
+  function rounded(a,places=3){const scale=10n**BigInt(places),n=BigInt(a.n),d=BigInt(a.d);if(n<0n)throw Error('Arrondi de probabilité négative');return R((2n*n*scale+d)/(2n*d),scale);}
+  function decimal(a,places=3){const r=rounded(a,places),scale=10n**BigInt(places),digits=(BigInt(r.n)*scale/BigInt(r.d)).toString().padStart(places+1,'0');return places?digits.slice(0,-places)+','+digits.slice(-places):digits;}
+  function rational(raw){
+    const s=String(raw).trim().replace(/−/g,'-').replace(/,/g,'.');
+    if(s.length>100||!/^\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)\s*(?:\/\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)\s*)?$/.test(s))return null;
+    function part(x){x=x.trim();const sign=x.startsWith('-')?-1n:1n,b=x.replace(/^[+-]/,'').split('.');return [sign*BigInt((b[0]||'0')+(b[1]||'')),10n**BigInt((b[1]||'').length)];}
+    const parts=s.split('/'),a=part(parts[0]),b=parts.length===2?part(parts[1]):[1n,1n];return b[0]===0n?null:R(a[0]*b[1],a[1]*b[0]);
+  }
+  const parseNum=raw=>{const a=rational(raw);return a?val(a):NaN;};
+  const accepts=(e,raw)=>{const a=rational(raw);return !!a&&cmp(a,e.answer)===0;};
+  function numeric(kind,data,q,answer,wrong,expl){
+    const options=[answer];for(const x of wrong)if(!options.some(a=>cmp(a,x)===0))options.push(x);
+    for(let i=1;options.length<4;i++){const x=add(answer,R(i,10));if(!options.some(a=>cmp(a,x)===0))options.push(x);}
+    const mixed=shuffle(options.slice(0,4));return {kind,data,q,options:mixed.map(a=>'\\('+tex(a)+'\\)'),correct:mixed.findIndex(a=>cmp(a,answer)===0),expl};
+  }
+  function concept(kind,q,options,correct,expl){const order=shuffle([0,1,2,3]);return {kind,data:{},q,options:order.map(i=>options[i]),correct:order.indexOf(correct),expl};}
+  const parameters=()=>{const n=rnd(3,7),m=rnd(1,9);return {n,m,k:rnd(0,n)};};
+  const description=d=>`X suit la loi \\(\\mathcal B(${d.n},${tex(R(d.m,10))}).\\)`;
+  const generators=[
+    ()=>{const n=rnd(3,6),m=rnd(1,9),k=rnd(0,n),d={n,m,k},a=point(law(n,m),k),c=choose(n,k),path=R(BigInt(m)**BigInt(k)*BigInt(10-m)**BigInt(n-k),10n**BigInt(n));
+      return {data:d,answer:a,enonce:`<p>On répète ${n} tests indépendants. Chacun a deux issues et réussit avec la même probabilité \\(${tex(R(m,10))}.\\) X compte les tests réussis.</p><p>Calculer \\(P(X=${k}).\\) Donner la <b>valeur exacte</b>, sous forme de fraction ou de décimal exact.</p>`,correction:`<ol><li>Le nombre d’essais est ${n}, le paramètre de succès est \\(p=${tex(R(m,10))}.\\) X suit une loi binomiale.</li><li>Il y a \\(\\binom{${n}}{${k}}=${c}\\) chemins à ${k} succès. Chacun a pour probabilité \\[\\left(${tex(R(m,10))}\\right)^{${k}}\\left(${tex(R(10-m,10))}\\right)^{${n-k}}=${tex(path)}.\\]</li><li>Les chemins sont incompatibles ; on additionne leurs probabilités : \\[P(X=${k})=${c}\\times${tex(path)}=${tex(a)}.\\]</li></ol><p>Le coefficient binomial compte les chemins ; il ne remplace pas leur probabilité.</p>`};},
+    ()=>{const n=rnd(6,12),m=rnd(1,9),a=rnd(1,n-2),b=rnd(a+1,n),d={n,m,a,b},dist=law(n,m),exact=interval(dist,a,b),answer=rounded(exact);
+      return {data:d,answer,exact,rounded:true,enonce:`<p>${description(d)}</p><p>Calculer \\(P(${a}\\leq X\\leq${b}).\\) Donner le résultat <b>arrondi au millième</b> (trois chiffres après la virgule).</p>`,correction:`<ol><li>Les deux bornes sont incluses. On additionne les probabilités pour les entiers ${a} à ${b}.</li><li>Avec la fonction cumulée \\(F(t)=P(X\\leq t),\\) on peut écrire \\[P(${a}\\leq X\\leq${b})=F(${b})-F(${a-1}).\\]</li><li>Les valeurs exactes sont \\(F(${b})=${tex(cdf(dist,b))}\\) et \\(F(${a-1})=${tex(cdf(dist,a-1))}.\\)</li><li>Leur différence vaut \\(${tex(exact)}.\\) On arrondit seulement maintenant : <b>${decimal(exact)}</b>.</li></ol><p>Soustraire F(${a}) exclurait à tort la valeur ${a}. Le vérificateur attend le bon arrondi, pas une valeur seulement voisine.</p>`};},
+    ()=>{const n=rnd(8,16),m=rnd(2,8),percent=[5,10,20,25][rnd(0,3)],d={n,m,percent},dist=law(n,m),alpha=R(percent,100),k=threshold(dist,alpha),t=tail(dist,k),prev=k?tail(dist,k-1):null;
+      return {data:d,answer:R(k),enonce:`<p>${n} personnes ont réservé une activité. Chacune vient avec probabilité \\(${tex(R(m,10))},\\) indépendamment des autres. X compte les personnes présentes.</p><p>Quel est le <b>plus petit nombre entier de places k</b>, entre 0 et ${n}, pour lequel \\(P(X>k)\\leq${tex(alpha)}\\) ? Donner cet entier.</p>`,correction:`<ol><li>On modélise X par \\(\\mathcal B(${n},${tex(R(m,10))}).\\) Il manque des places exactement lorsque X &gt; k.</li><li>Pour k = ${k}, la probabilité de dépassement est \\(${tex(t)}\\) : elle est inférieure ou égale à \\(${tex(alpha)}.\\)</li><li>${k?`Pour k = ${k-1}, cette probabilité vaut \\(${tex(prev)},\\) strictement supérieure à \\(${tex(alpha)}.\\)`:'Zéro est déjà le plus petit entier autorisé.'}</li><li>La probabilité \\(P(X>k)\\) décroît au sens large avec k. Le plus petit nombre de places est donc <b>${k}</b>.</li></ol><p>Comparer les valeurs exactes évite de valider un seuil à tort à cause d’un arrondi.</p>`};}
+  ];
+  const qcmBank=[
+    ()=>{const d=parameters(),a=point(law(d.n,d.m),d.k);return numeric('point',d,`${description(d)} Que vaut \\(P(X=${d.k})\\) ?`,a,[R(d.m,10),R(0),sub(R(1),a)],`On utilise le coefficient binomial et la probabilité d’un chemin : \\(P(X=${d.k})=${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),dist=law(d.n,d.m),a=cdf(dist,d.k);return numeric('cdf',d,`${description(d)} Que vaut \\(P(X\\leq${d.k})\\) ?`,a,[point(dist,d.k),tail(dist,d.k),R(0)],`On additionne les valeurs de 0 à ${d.k} inclus : \\(${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),dist=law(d.n,d.m),a=tail(dist,d.k-1);return numeric('atLeast',d,`${description(d)} Probabilité d’au moins ${d.k} succès ?`,a,[tail(dist,d.k),cdf(dist,d.k),point(dist,d.k)],`Au moins ${d.k} signifie X ≥ ${d.k} : \\(1-P(X\\leq${d.k-1})=${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),dist=law(d.n,d.m),a=cdf(dist,d.k-1);return numeric('strictLess',d,`${description(d)} Que vaut \\(P(X<${d.k})\\) ?`,a,[cdf(dist,d.k),point(dist,d.k),R(1)],`X est entier, donc X < ${d.k} équivaut à X ≤ ${d.k-1}. Le résultat est \\(${tex(a)}.\\)`);},
+    ()=>{const d=parameters();d.a=rnd(0,d.n-1);d.b=rnd(d.a+1,d.n);const dist=law(d.n,d.m),a=interval(dist,d.a,d.b);return numeric('interval',d,`${description(d)} Que vaut \\(P(${d.a}\\leq X\\leq${d.b})\\) ?`,a,[point(dist,d.a),cdf(dist,d.b),sub(R(1),a)],`On inclut toutes les valeurs de ${d.a} à ${d.b} : \\(${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),a=R(d.n*d.m,10);return numeric('mean',d,`${description(d)} Quelle est son espérance ?`,a,[R(d.m,10),R(d.n),R(d.n*d.m*(10-d.m),100)],`\\(E(X)=np=${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),a=R(d.n*d.m*(10-d.m),100);return numeric('variance',d,`${description(d)} Quelle est sa variance ?`,a,[R(d.n*d.m,10),R(d.m*(10-d.m),100),R(0)],`\\(V(X)=np(1-p)=${tex(a)}.\\)`);},
+    ()=>{const n=[4,16][rnd(0,1)],a=R(Math.sqrt(n)/2);return numeric('sigma',{n},`X suit \\(\\mathcal B(${n},1/2).\\) Quel est son écart type ?`,a,[R(n/4),R(n/2),R(0)],`La variance vaut ${n/4} ; sa racine carrée est \\(${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),dist=law(d.n,d.m),a=dist[0];return numeric('none',d,`${description(d)} Probabilité d’aucun succès ?`,a,[dist[d.n],sub(R(1),a),R(0)],`Le seul chemin est constitué d’échecs : \\((1-p)^{${d.n}}=${tex(a)}.\\)`);},
+    ()=>{const d=parameters(),a=tail(law(d.n,d.m),0);return numeric('atLeastOne',d,`${description(d)} Probabilité d’au moins un succès ?`,a,[sub(R(1),a),R(d.m,10),R(1)],`C’est le complément d’aucun succès : \\(1-(1-p)^{${d.n}}=${tex(a)}.\\)`);},
+    ()=>{const d=parameters();d.percent=[5,10,25,50][rnd(0,3)];const dist=law(d.n,d.m),k=threshold(dist,R(d.percent,100));return numeric('threshold',d,`${description(d)} Plus petit entier k entre 0 et ${d.n} avec \\(P(X>k)\\leq${tex(R(d.percent,100))}\\) ?`,R(k),[R(Math.max(0,k-1)),R(k+1),R(d.n)],`Le premier entier satisfaisant le risque demandé est ${k}. Le test compare P(X > k), pas P(X ≥ k).`);},
+    ()=>{const d=parameters(),exact=point(law(d.n,d.m),d.k),a=rounded(exact);return numeric('rounded',d,`${description(d)} Arrondir \\(P(X=${d.k})\\) au millième.`,a,[add(a,R(1,1000)),sub(a,R(1,1000)),exact],`La valeur exacte est \\(${tex(exact)}.\\) Son arrondi est ${decimal(exact)}, soit \\(${tex(a)}.\\)`);},
+    ()=>concept('model','Quelle situation justifie directement une loi binomiale pour le nombre de succès ?', ['Un nombre fixé d’essais indépendants à deux issues, avec le même p.','Des essais indépendants dont p change à chaque fois.','Des tirages sans remise quelconques dans une urne.','Des essais de même p, sans hypothèse d’indépendance.'],0,'Il faut à la fois un nombre fixé d’essais, deux issues, la constance de p et l’indépendance.'),
+    ()=>concept('support','Si X suit une loi binomiale de paramètres n et p, quelle affirmation est toujours vraie ?', ['X est un entier compris entre 0 et n.','X est toujours égal à np.','X peut prendre toute valeur réelle entre 0 et n.','X est une probabilité comprise entre 0 et 1.'],0,'X compte les succès. Son espérance np peut, elle, ne pas être entière.'),
+    ()=>concept('paths','Dans la formule binomiale, que représente le coefficient binomial ?', ['Le nombre de chemins ayant exactement k succès.','La probabilité d’un seul chemin.','Le nombre total de chemins, quel que soit k.','La probabilité de succès d’un essai.'],0,'8A compte les choix des k positions de succès ; 7C donne le produit des probabilités le long d’un chemin.'),
+    ()=>concept('simulation','On simule 200 valeurs indépendantes de X suivant la même loi binomiale. Que peut-on affirmer ?', ['La fréquence observée peut différer de la probabilité théorique.','Chaque fréquence est exactement la probabilité théorique.','La moyenne est forcément np à chaque simulation.','Ajouter une simulation rapproche toujours la fréquence de la théorie.'],0,'Un échantillon fluctue : la loi théorique n’impose pas des fréquences exactes dans chaque série finie.')
+  ];
+  root.Chapter9={code:'9A',R,add,sub,cmp,val,tex,choose,law,point,cdf,tail,interval,threshold,rounded,decimal,parseNum,accepts,generators,qcmBank};
+})(globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function rndNonZero(a, b) { var x = 0; while (x === 0) { x = rnd(a, b); } return x; }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  // Affichage à la française : virgule décimale.
+  function fmt(x, d) {
+    if (!isFinite(x)) return '—';
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return String(Math.round(x * p) / p).replace('.', ',');
+  }
+  // Un nombre négatif s'écrit entre parenthèses dans un produit ou avant un exposant.
+  function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  function parseNum(s) { return Chapter9.parseNum(s); }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'good' : 'bad');
+    el.innerHTML = (ok ? '✓ ' : '✗ ') + msg;
+    typeset(el);
+  }
+
+  /* ---------- navigation sticky ---------- */
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.scrollY + 110, cur = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', updateNav); updateNav();
+
+  /* ---------- exercices génératifs ----------
+     gen()  -> objet décrivant l'exercice, avec .enonce et .correction (HTML)
+     check(e, valeurSaisie) -> {ok: bool, msg: string}
+  */
+  function wireExercise(n, gen, check) {
+    var id = 'ex' + n, cur = null;
+    function render() {
+      var next = gen(), guard = 0;
+      while (cur && JSON.stringify(cur.data) === JSON.stringify(next.data) && guard++ < 100) next = gen();
+      cur = next;
+      Chapter9.activeExercises[n - 1] = cur;
+      $(id + '-enonce').innerHTML = cur.enonce;
+      $(id + '-rep').value = '';
+      $(id + '-fb').textContent = '';
+      $(id + '-fb').className = 'feedback';
+      $(id + '-correction').classList.remove('show');
+      $(id + '-correction').innerHTML = '';
+      $(id + '-corr').textContent = 'Voir la correction';
+      typeset($(id + '-enonce'));
+    }
+    $(id + '-check').addEventListener('click', function () {
+      var raw = $(id + '-rep').value;
+      var v = parseNum(raw);
+      if (isNaN(v)) { setFeedback($(id + '-fb'), false, 'Écris une réponse numérique.'); return; }
+      var r = check(cur, raw);
+      setFeedback($(id + '-fb'), r.ok, r.msg);
+    });
+    $(id + '-rep').addEventListener('keydown', function (e) { if (e.key === 'Enter') $(id + '-check').click(); });
+    $(id + '-corr').addEventListener('click', function () {
+      var box = $(id + '-correction');
+      if (box.classList.contains('show')) {
+        box.classList.remove('show'); this.textContent = 'Voir la correction';
+      } else {
+        box.innerHTML = cur.correction; box.classList.add('show');
+        this.textContent = 'Masquer la correction'; typeset(box);
+      }
+    });
+    $(id + '-new').addEventListener('click', render);
+    render();
+  }
+
+  /* ---------- QCM ----------
+     Chaque entrée de la banque est une fonction rendant
+     { q, options: [4 chaînes], correct: index, expl }.
+     Les réponses vivent dans qcmMap, JAMAIS dans un attribut onclick ou data-.
+  */
+  function build(q, options, correctIdx, expl) {
+    var idx = shuffle([0, 1, 2, 3]);
+    return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
+  }
+
+  var qcmBank = Chapter9.qcmBank;
+
+  var qcmMap = {}, answered = 0, score = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var box = $('qcm-container');
+    box.innerHTML = ''; $('qcm-score').textContent = '';
+    qcmMap = {}; answered = 0; score = 0;
+    shuffle(qcmBank).slice(0, 4).forEach(function (gen, i) {
+      var item = gen(), guard = 0;
+      // deux options identiques rendraient la question insoluble
+      while (guard++ < 30 && new Set(item.options).size < 4) { item = gen(); }
+      Chapter9.activeQcm[i] = item;
+      qcmMap[i] = { correct: item.correct, expl: item.expl, done: false };
+      var q = document.createElement('div'); q.className = 'qcm-q';
+      var st = document.createElement('div'); st.className = 'question';
+      st.innerHTML = (i + 1) + '. ' + item.q; q.appendChild(st);
+      var ch = document.createElement('div'); ch.className = 'choices';
+      item.options.forEach(function (opt, j) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice';
+        b.innerHTML = '<span class="letter">' + LETTERS[j] + '</span>' + opt;
+        b.addEventListener('click', function () { answer(i, j, ch); });
+        ch.appendChild(b);
+      });
+      q.appendChild(ch);
+      var ex = document.createElement('div'); ex.className = 'expl'; ex.id = 'qcm-expl-' + i;
+      q.appendChild(ex); box.appendChild(q);
+    });
+    typeset(box);
+  }
+
+  function answer(i, j, choicesEl) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+    var btns = choicesEl.querySelectorAll('button');
+    btns.forEach(function (b, k) {
+      b.disabled = true;
+      if (k === info.correct) b.classList.add('correct');
+      else if (k === j) b.classList.add('wrong');
+    });
+    var ok = (j === info.correct);
+    if (ok) score++;
+    answered++;
+    var ex = $('qcm-expl-' + i);
+    ex.innerHTML = '<b style="color:' + (ok ? 'var(--green)' : 'var(--coral)') + '">' +
+      (ok ? 'Bonne réponse !' : 'Faux. La bonne réponse est ' + LETTERS[info.correct] + '.') + '</b> ' + info.expl;
+    ex.classList.add('show');
+    typeset(ex);
+    if (answered === 4) {
+      var s = $('qcm-score');
+      s.textContent = 'Score : ' + score + ' / 4' +
+        (score === 4 ? ' — parfait !' : (score >= 2 ? ' — relis les explications des erreurs.' : ' — relis le cours puis refais un QCM.'));
+      s.style.color = score >= 3 ? 'var(--green)' : (score === 2 ? 'var(--amber)' : 'var(--coral)');
+    }
+  }
+  $('qcm-new').addEventListener('click', renderQcm);
+
+  /* ---------- démarrage ---------- */
+  Chapter9.activeExercises = [];
+  Chapter9.activeQcm = [];
+  Chapter9.generators.forEach(function (gen, index) {
+    wireExercise(index + 1, gen, function (e, raw) {
+      return Chapter9.accepts(e, raw)
+        ? {ok: true, msg: 'Correct : le résultat respecte la question et la précision demandée.'}
+        : {ok: false, msg: 'Vérifie l’événement, ses bornes et la précision demandée. Une valeur voisine n’est pas forcément la bonne réponse.'};
+    });
+  });
+  renderQcm();
+
+  // Le contenu est injecté avant le chargement de MathJax : on retente au chargement.
+  var tries = 0;
+  (function wait() {
+    if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
+    if (tries++ < 100) setTimeout(wait, 200);
+  })();
+})();
+</script>
+<script id="chapter9-visuals">
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id),M=Chapter9;
+  let counts=[],runs=0;
+  const format=x=>x.toLocaleString('fr-FR',{maximumFractionDigits:6});
+  const probability=r=>M.cmp(r,M.R(0))>0&&M.cmp(r,M.R(1,1000000))<0?'positive, < 0,000001':(r.n==='0'||M.cmp(r,M.R(1))===0?'= ':'≈ ')+format(M.val(r));
+  const node=(svg,tag,attrs,text)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;svg.append(e);return e;};
+  function params(){return {n:+$('vn').value,m:+$('vp').value};}
+  function event(k,a,b){const kind=$('vevent').value;return kind==='point'?k===a:kind==='cdf'?k<=a:kind==='tail'?k>=a:k>=a&&k<=b;}
+  function threshold(){
+    const {n,m}=params(),dist=M.law(n,m),alpha=M.R(+$('alpha').value,100),k=M.threshold(dist,alpha);
+    $('alpha-out').textContent=format(M.val(alpha));
+    const result=$('threshold-values');result.replaceChildren();
+    const title=document.createElement('strong');title.id='threshold-k';title.textContent=k;result.append('Plus petit seuil k : ',title,'. ');
+    const tail=document.createElement('span');tail.id='threshold-tail';tail.textContent=`P(X > ${k}) ${probability(M.tail(dist,k))} (≤ α). `;result.append(tail);
+    const previous=document.createElement('span');previous.id='threshold-previous';previous.textContent=k?`Pour k = ${k-1}, P(X > k) ${probability(M.tail(dist,k-1))} (> α).`:'Zéro est déjà le plus petit entier autorisé.';result.append(previous);
+    return k;
+  }
+  function draw(){
+    const {n,m}=params(),dist=M.law(n,m);
+    $('va').max=n;if(+$('va').value>n)$('va').value=n;
+    const a=+$('va').value;$('vb').max=n;$('vb').min=a;
+    if(+$('vb').value<a)$('vb').value=a;if(+$('vb').value>n)$('vb').value=n;const b=+$('vb').value;
+    $('vn-out').textContent=n;$('vp-out').textContent=format(m/10);$('va-out').textContent=a;$('vb-out').textContent=b;
+    $('vb').disabled=$('vevent').value!=='interval';
+    const mu=M.R(n*m,10),variance=M.R(n*m*(10-m),100),sigma=Math.sqrt(M.val(variance));
+    $('law-values').textContent=`E(X) = ${format(M.val(mu))} · V(X) = ${format(M.val(variance))} · σ(X) ≈ ${format(sigma)}.`;
+    const mass=dist.reduce((s,p,k)=>event(k,a,b)?M.add(s,p):s,M.R(0));
+    $('event-values').textContent=`Probabilité de l’événement : ${probability(mass)}. Somme de la loi = 1.`;
+    const frequencies=dist.map((_,k)=>runs?(counts[k]||0)/runs:0),top=Math.max(...dist.map(M.val),...frequencies)*1.12;
+    const svg=$('fig');svg.replaceChildren();
+    node(svg,'line',{x1:30,y1:245,x2:345,y2:245,stroke:'#94a3b8'});
+    node(svg,'text',{x:5,y:20,'font-size':11,fill:'#64748b'},format(top));
+    node(svg,'text',{x:12,y:245,'font-size':11,fill:'#64748b'},'0');
+    node(svg,'text',{x:170,y:288,'font-size':12,fill:'#475569'},'Nombre de succès k');
+    const step=310/(n+1);
+    dist.forEach((p,k)=>{const x=30+k*step,h=210*M.val(p)/top;
+      const rect=node(svg,'rect',{x,y:245-h,width:step*(runs ? .48 : .85),height:h,fill:event(k,a,b)?'#2563eb':'#cbd5e1','data-k':k});
+      const title=document.createElementNS('http://www.w3.org/2000/svg','title');title.textContent=`P(X = ${k}) ${probability(p)}`;rect.append(title);
+      if(runs)node(svg,'rect',{x:x+step*.5,y:245-210*frequencies[k]/top,width:step*.4,height:210*frequencies[k]/top,fill:'#22a06b','data-sample-k':k});
+      if(n<=10||k%2===0||k===n)node(svg,'text',{x:x+step*.4,y:263,'text-anchor':'middle','font-size':11,fill:'#475569'},k);
+    });
+    const observed=runs?counts.reduce((s,c,k)=>s+c*k,0)/runs:0,selected=runs?counts.reduce((s,c,k)=>s+(event(k,a,b)?c:0),0):0;
+    $('sim-result').textContent=runs?`${runs} valeurs de X simulées (${n} essais chacune). Moyenne observée ≈ ${format(observed)}. Fréquence de l’événement ≈ ${format(selected/runs)}.`:'Aucune simulation pour cette loi.';
+    threshold();
+  }
+  function reset(){runs=0;counts=Array(params().n+1).fill(0);draw();}
+  ['vn','vp'].forEach(id=>$(id).addEventListener('input',reset));
+  ['va','vb'].forEach(id=>$(id).addEventListener('input',draw));$('vevent').addEventListener('change',draw);
+  $('alpha').addEventListener('input',threshold);
+  $('simulate').addEventListener('click',()=>{const {n,m}=params();for(let i=0;i<200;i++){let k=0;for(let j=0;j<n;j++)if(Math.random()<m/10)k++;counts[k]++;runs++;}draw();});
+  $('reset-simulation').addEventListener('click',reset);
+  $('show-threshold').addEventListener('click',()=>{const k=threshold();$('vevent').value='interval';$('va').value=0;$('vb').min=0;$('vb').value=k;draw();});reset();
+})();
+
+</script>
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+<script>
+(function(){
+  var b = document.getElementById('toTop');
+  if (!b) return;
+  function maj(){ b.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+<!-- SITE:SIGN:START -->
+<div class="site-sign">© 2026 <a href="https://joasolucions.com" target="_blank" rel="noopener noreferrer">Solucions Digitals JOA</a> · Contenu pédagogique sous licence CC BY-SA 4.0</div>
+<!-- SITE:SIGN:END -->
+<!-- SITE:SCRIPT:START -->
+<script id="site-config" type="application/json">{"version": 1, "kind": "lesson", "prefix": "../../", "current": "9A", "chapters": [{"number": 1, "title": "Produit scalaire et géométrie", "goal": "Produit scalaire dans l'espace, vecteur normal à un plan, équation cartésienne d'un plan, représentation paramétrique d'une droite, projeté orthogonal, distances", "prerequisites": "Produit scalaire dans le plan, Al-Kashi, cercle de diamètre [AB], géométrie repérée, vecteur normal à une droite", "lessons": [{"id": "1A", "title": "Produit scalaire : les définitions", "level": "premiere", "path": "chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Définition par projection orthogonale 2Définition avec le cosinus 3Expression dans une base orthonormée 4Norme et carré scalaire 5Symétrie et bilinéarité 6Caractérisation de l'orthogonalité 7Le signe renseigne sur l'angle"}, {"id": "methode", "title": "Méthode", "keywords": "Choisir la bonne formule selon les données Démontrer une orthogonalité Calculer un angle Erreurs fréquentes"}, {"id": "visualisation", "title": "Visualisation", "keywords": "Les trois formules donnent le même nombre"}, {"id": "exercices", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 · application directe Exercice 2 Niveau 2 · orthogonalité avec paramètre Exercice 3 Niveau 3 · calcul d'un angle"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "1B", "title": "Produit scalaire : applications", "level": "premiere", "path": "chapitres/01_produit_scalaire/1B_produit_scalaire_applications.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1 Développer une norme au carré 2 Formule de polarisation : calculer avec les normes seules 3 Formule d'Al-Kashi démonstration exigible 4 Transformer \\(\\vec{MA}\\cdot\\vec{MB}\\) avec le milieu \\(I\\) 5 Le cercle de diamètre \\([AB]\\) démonstration exigible 6 Théorème de la médiane approfondissement 7 Choisir la méthode de calcul de \\(\\vec u\\cdot\\vec v\\)"}, {"id": "methode", "title": "Méthode", "keywords": "Calculer une longueur avec Al-Kashi Calculer un angle avec Al-Kashi Montrer qu'un ensemble de points est un cercle Calculer \\(\\vec u\\cdot\\vec v\\) quand on connaît trois normes Erreurs fréquentes"}, {"id": "visualisation", "title": "Visualisation", "keywords": ""}, {"id": "exercices", "title": "Exercices", "keywords": "Produit scalaire avec normes et angle Al-Kashi : calculer le troisième côté Angle d'un triangle dont on connaît les trois côtés"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "1C", "title": "Géométrie repérée", "level": "premiere", "path": "chapitres/01_produit_scalaire/1C_geometrie_reperee.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Vecteur normal à une droite 2Équation cartésienne : un point et un vecteur normal 3Projeté orthogonal d'un point sur une droite 4Distance d'un point à une droite 5Équation d'un cercle 6Reconnaître un cercle : compléter le carré 7Parabole : axe de symétrie et sommet"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Trouver une équation de droite avec un vecteur normal Méthode 2 — Trouver le projeté orthogonal \\(H\\) de \\(M\\) sur \\(d\\) Méthode 3 — Reconnaître un cercle (compléter le carré) Méthode 4 — Équation du cercle de diamètre \\([AB]\\) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "1D", "title": "Orthogonalité et distances dans l'espace", "level": "terminale", "path": "chapitres/01_produit_scalaire/1D_espace_orthogonalite_distances.html", "sections": [{"id": "cours", "title": "1Cours", "keywords": "1. Produit scalaire, norme et distance en repère orthonormé Terminale 2. Propriétés (identiques au plan) Première 3. Orthogonalité : vecteurs, droites, droite et plan Terminale 4. Vecteur normal et équation cartésienne d'un plan Terminale Démonstration exigible 5. Représentation paramétrique d'une droite Terminale 6. Projeté orthogonal et distance d'un point à un plan Terminale Démonstration exigible 7. Projeté orthogonal sur une droite, distance point-droite Terminale"}, {"id": "methode", "title": "2Méthode", "keywords": "Montrer qu'un vecteur \\(\\vec n\\) est normal à un plan Équation cartésienne d'un plan Représentation paramétrique d'une droite Intersection d'une droite et d'un plan Projeté orthogonal et distance d'un point \\(M\\) à un plan Erreurs fréquentes"}, {"id": "visu", "title": "3Visualisation", "keywords": "Vue 1 · Plan \\(ax+by+cz+d=0\\), point \\(M\\) et son projeté \\(H\\) Vue 2 · Droite paramétrée \\(M(t) = A + t\\,\\vec u\\)"}, {"id": "exos", "title": "4Exercices", "keywords": "Exercice 1 Niveau 1 · Équation cartésienne d'un plan Exercice 2 Niveau 2 · Intersection d'une droite et d'un plan Exercice 3 Niveau 3 · Projeté orthogonal et distance d'un point à un plan"}, {"id": "qcm", "title": "5QCM", "keywords": ""}]}]}, {"number": 2, "title": "Suites", "goal": "Raisonnement par récurrence, limites, opérations et comparaison, gendarmes, comportement de qⁿ, convergence monotone", "prerequisites": "Modes de génération, sens de variation, suites arithmétiques et géométriques, sommes", "lessons": [{"id": "2A", "title": "Suites numériques : génération et variations", "level": "premiere", "path": "chapitres/02_suites/2A_suites_generation_variations.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Qu'est-ce qu'une suite ? 2Génération explicite : \\(u_n = f(n)\\) 3Génération par récurrence : \\(u_{n+1} = f(u_n)\\) 4Génération par algorithme et par motif 5Représentation graphique 6Sens de variation 7Intuition de limite (sur exemples)"}, {"id": "methode", "title": "2. Méthode", "keywords": "Pour calculer les premiers termes Pour passer d'un mode de génération à l'autre Pour étudier le sens de variation Pour écrire l'algorithme Python d'une suite récurrente Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Suite explicite niveau 1 Exercice 2 — Suite récurrente niveau 2 Exercice 3 — Sens de variation niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "2B", "title": "Suites arithmétiques et géométriques", "level": "premiere", "path": "chapitres/02_suites/2B_suites_arithmetiques_geometriques.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Suite arithmétique : on ajoute toujours le même nombre 2Suite géométrique : on multiplie toujours par le même nombre 3Somme des premiers entiers et somme arithmétique 4Somme des puissances et somme géométrique 5Sens de variation 6Intuition de limite (sans formalisme) 7Récapitulatif"}, {"id": "methode", "title": "Méthode", "keywords": "AReconnaître une suite arithmétique ou géométrique BTrouver le terme général CCalculer une somme de termes consécutifs DModéliser une évolution à taux fixe EChercher un seuil (algorithme) !Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "1Terme général et calcul d'un termeniveau 1 2Somme de termes consécutifsniveau 2 3Modélisation et seuilniveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "2C", "title": "Récurrence et limites de suites", "level": "terminale", "path": "chapitres/02_suites/2C_recurrence_limites.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Le raisonnement par récurrence 2Limite infinie : \\(+\\infty\\) et \\(-\\infty\\) 3Suite convergente : limite finie \\(\\ell\\) 4Opérations sur les limites et formes indéterminées 5Comparaison et théorème des gendarmes 6Comportement de \\((q^n)\\) et inégalité de Bernoulli 7Suites monotones et étude de \\(u_{n+1}=f(u_n)\\)"}, {"id": "methode", "title": "2. Méthode", "keywords": "Pour rédiger une récurrence — modèle à trous Pour calculer une limite — arbre de décision Pour étudier une suite \\(u_{n+1}=f(u_n)\\) Pour écrire un algorithme de seuil (Python, boucle while) Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Limite d'une suite explicite niveau 1 Exercice 2 — Une récurrence, pas à pas niveau 2 Exercice 3 — Gendarmes et comparaison niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 3, "title": "Dérivation et convexité", "goal": "Dérivée d'une fonction composée, dérivée seconde, convexité, point d'inflexion", "prerequisites": "Nombre dérivé, tangente, dérivées usuelles et opérations, dérivée de g(ax+b), variations et extremums", "lessons": [{"id": "3A", "title": "Nombre dérivé et tangente", "level": "premiere", "path": "chapitres/03_derivation_convexite/3A_nombre_derive_tangente.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Le taux de variation entre \\(a\\) et \\(a+h\\) 2. Le nombre dérivé \\(f'(a)\\) 3. Le calcul complet sur la fonction carré 4. La tangente, position limite des sécantes 5. Équation de la tangente à savoir démontrer 6. Ce que mesure \\(f'(a)\\) dans la vraie vie 7. Lire un nombre dérivé sur un graphique"}, {"id": "methode", "title": "Méthode", "keywords": "A. Calculer un nombre dérivé à partir de la définition B. Déterminer l'équation d'une tangente C. Lire \\(f'(a)\\) sur un graphique D. Construire la tangente connaissant \\(f(a)\\) et \\(f'(a)\\) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "3B", "title": "Calcul de dérivées", "level": "premiere", "path": "chapitres/03_derivation_convexite/3B_calcul_de_derivees.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Fonction dérivable sur un intervalle, fonction dérivée 2Les dérivées de référence 3Somme et multiple par un réel 4Dérivée d'un produit à savoir démontrer 5Dérivée d'un inverse et d'un quotient à savoir démontrer 6Dérivée de \\(x\\mapsto g(ax+b)\\) 7Deux fonctions non dérivables en \\(0\\) à savoir démontrer"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Reconnaître la structure avant de dériver Méthode 2 — Appliquer la formule du produit, pas à pas Méthode 3 — Appliquer la formule du quotient sans se tromper de signe Méthode 4 — Simplifier le résultat et donner l'ensemble de dérivabilité Les cinq erreurs qui coûtent des points"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "3C", "title": "Variations, extremums et optimisation", "level": "premiere", "path": "chapitres/03_derivation_convexite/3C_variations_extremums.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Signe de \\(f'\\) et sens de variation 2Dérivée nulle et fonctions constantes 3Le tableau de variations 4Extremum local et nombre dérivé nul piège classique 5Tangente horizontale en un extremum 6Le second degré vu par la dérivation à savoir refaire 7Inégalités et position de deux courbes à savoir démontrer"}, {"id": "methode", "title": "Méthode", "keywords": "Étudier les variations d'une fonction — 5 étapes Étudier le signe d'une dérivée, selon sa forme Résoudre un problème d'optimisation Démontrer une inégalité par l'étude d'une fonction Comparer deux courbes Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "3D", "title": "Dérivée d'une fonction composée", "level": "terminale", "path": "chapitres/03_derivation_convexite/3D_derivee_composee.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Composer deux fonctions : \\(v \\circ u\\) 2. Où la composée est-elle définie ? 3. La formule de dérivation d'une composée admise 4. Les quatre cas usuels à connaître par cœur 5. Le lien avec \\(g(ax+b)\\) vue en Première 6. Étudier une fonction construite à partir des fonctions de référence 7. Ce qui viendra plus tard"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Reconnaître une composée Méthode 2 — Dériver une composée en 3 étapes Méthode 3 — Produit, quotient ou composée ? L'arbre de décision Méthode 4 — Étudier une fonction construite à partir des fonctions de référence Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "3E", "title": "Convexité", "level": "terminale", "path": "chapitres/03_derivation_convexite/3E_convexite.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1La dérivée seconde \\(f''\\) 2Définition : convexe, c'est « sous ses sécantes » 3Les trois caractérisations équivalentes (admises) 4Le tableau à connaître par cœur 5Point d'inflexion 6Démonstration exigible à savoir refaire 7Démontrer une inégalité avec la convexité"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Étudier la convexité d'une fonction Méthode 2 — Lire la convexité sur un graphique Méthode 3 — Esquisser l'allure de \\(\\mathcal{C}_f\\) à partir d'un tableau Méthode 4 — Démontrer une inégalité par la convexité Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 4, "title": "Limites de fonctions et continuité", "goal": "Limites en l'infini et en un point, asymptotes, opérations, croissances comparées, continuité, théorème des valeurs intermédiaires, dichotomie", "prerequisites": "Fonctions de référence et leurs courbes, lecture graphique, suites et limites (chapitre 2)", "lessons": [{"id": "4A", "title": "Les fonctions de référence", "level": "premiere", "path": "chapitres/04_limites_continuite/4A_fonctions_de_reference.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1La fonction carré et la fonction cube 2La fonction inverse et la fonction racine carrée 3La valeur absolue et les puissances entières \\(x^n\\) 4La fonction exponentielle 5Parité : deux symétries à reconnaître 6Lire une courbe : image, antécédent, équation, inéquation 7Que se passe-t-il quand \\(x\\) devient très grand ? vers la Terminale"}, {"id": "methode", "title": "Méthode", "keywords": "Reconnaître une fonction de référence dans une expression Lire une image, un antécédent, résoudre graphiquement Étudier la parité d'une fonction Choisir une fenêtre d'affichage pertinente Décrire le comportement aux bornes de \\(D_f\\) (sans formalisme) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "4B", "title": "Limites de fonctions", "level": "terminale", "path": "chapitres/04_limites_continuite/4B_limites_de_fonctions.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Limite finie en \\(+\\infty\\) et en \\(-\\infty\\) : asymptote horizontale 2Limite infinie en \\(+\\infty\\) et en \\(-\\infty\\) 3Limite en un point : infinie (asymptote verticale) ou finie 4Limites des fonctions de référence 5Opérations sur les limites admises 6Lever une forme indéterminée : factoriser le terme prépondérant 7Limites et comparaison ; croissances comparées"}, {"id": "methode", "title": "2. Méthode", "keywords": "Déterminer une limite — arbre de décision Lire et justifier une asymptote — dans les deux sens Traiter une limite en un point où le dénominateur s'annule Utiliser le théorème des gendarmes pour une fonction Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Quotient de polynômes en \\(+\\infty\\) Niveau 1 Exercice 2 — Limite en un point où le dénominateur s'annule Niveau 2 Exercice 3 — Croissance comparée et terme prépondérant Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "4C", "title": "Continuité et valeurs intermédiaires", "level": "terminale", "path": "chapitres/04_limites_continuite/4C_continuite_tvi.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Continuité en un point, puis sur un intervalle 2Toute fonction dérivable est continue 3Quelles fonctions sont continues ? 4Image d'une suite convergente par une fonction continue 5Le théorème des valeurs intermédiaires 6Le corollaire : continuité + stricte monotonie \\(\\Rightarrow\\) unicité 7La rédaction type attendue au bac à recopier"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Justifier la continuité d'une fonction Méthode 2 — Montrer que \\(f(x) = k\\) a une unique solution sur \\([a\\,;b]\\) Méthode 3 — Encadrer la solution \\(\\alpha\\) Méthode 4 — Limite d'une suite définie par \\(u_{n+1} = f(u_n)\\) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 5, "title": "Exponentielle et logarithme", "goal": "Limites de l'exponentielle, croissances comparées, fonction logarithme népérien, propriétés algébriques, dérivée, résolution d'équations et d'inéquations", "prerequisites": "Définition et propriétés de l'exponentielle, équation fonctionnelle, variations, modélisation d'une croissance", "lessons": [{"id": "5A", "title": "La fonction exponentielle", "level": "premiere", "path": "chapitres/05_exponentielle_logarithme/5A_fonction_exponentielle.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Une fonction égale à sa propre dérivée 2La relation fonctionnelle à savoir démontrer 3Le nombre \\(\\mathrm{e}\\) et la notation \\(\\mathrm{e}^x\\) 4Une suite géométrique cachée lien fiche 2B 5Signe, variations et courbe 6Les fonctions \\(t \\mapsto \\mathrm{e}^{kt}\\) 7Modéliser avec une exponentielle"}, {"id": "methode", "title": "Méthode", "keywords": "Transformer une expression avec les propriétés algébriques Résoudre \\(\\mathrm{e}^{f(x)} = \\mathrm{e}^{g(x)}\\) ou l'inéquation correspondante Dériver une expression contenant \\(\\mathrm{e}^{x}\\) Modéliser une évolution par une exponentielle Reconnaître une suite géométrique derrière une exponentielle Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "5B", "title": "Fonctions avec une exponentielle", "level": "terminale", "path": "chapitres/05_exponentielle_logarithme/5B_fonctions_avec_exponentielle.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Rappel express : les propriétés algébriques et la stricte croissance 2Équations et inéquations : le principe fondamental 3Limites de l'exponentielle et asymptote 4Croissances comparées : l'exponentielle gagne toujours 5Dérivée de \\(\\mathrm e^{u}\\) 6Conséquence décisive : le signe de \\(f'\\) est celui de \\(u'\\) 7Le plan d'étude complet d'une fonction"}, {"id": "methode", "title": "2. Méthode", "keywords": "Résoudre une équation ou une inéquation avec exponentielle Lever une forme indéterminée contenant une exponentielle Étudier une fonction du type \\(f(x)=(ax+b)\\,\\mathrm e^{cx}\\) — les six étapes Déterminer une tangente, et la position de la courbe par rapport à elle Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Équations et inéquations Niveau 1 Exercice 2 — Dérivée d'un produit avec exponentielle Niveau 2 Exercice 3 — Étude complète guidée Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "5C", "title": "Logarithme népérien", "level": "terminale", "path": "chapitres/05_exponentielle_logarithme/5C_logarithme_neperien.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Définition : la fonction réciproque de l'exponentielle 2Propriétés algébriques 3Dérivée du logarithme à savoir démontrer 4Variations, signe, limites 5Courbe : la symétrie par rapport à la droite \\(y=x\\) 6Croissances comparées une limite à savoir démontrer 7Dérivée de \\(\\ln(u)\\)"}, {"id": "methode", "title": "2. Méthode", "keywords": "ARésoudre une équation avec un logarithme BRésoudre une inéquation avec un logarithme CChercher un seuil dans une suite géométrique le lien avec la fiche 2B DDériver et étudier une fonction contenant \\(\\ln\\) ELever une forme indéterminée avec \\(\\ln\\) !Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Simplifier une expression Niveau 1 Exercice 2 — Équation ou inéquation Niveau 2 Exercice 3 — Recherche de seuil Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 6, "title": "Géométrie dans l'espace", "goal": "Vecteurs de l'espace, combinaisons linéaires, bases et repères, positions relatives de droites et de plans, coplanarité, systèmes linéaires", "prerequisites": "Calcul vectoriel dans le plan, colinéarité, repérage", "lessons": [{"id": "6A", "title": "Calcul vectoriel dans le plan", "level": "premiere", "path": "chapitres/06_geometrie_espace/6A_calcul_vectoriel_plan.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Un vecteur : direction, sens, longueur 2Relation de Chasles 3Somme, vecteur nul, opposé, différence 4Multiplication par un réel 5Colinéarité et déterminant 6Base, repère, coordonnées 7Démontrer sans repère à savoir démontrer"}, {"id": "methode", "title": "Méthode", "keywords": "1. Décomposer un vecteur avec la relation de Chasles 2. Montrer que trois points sont alignés 3. Montrer que deux droites sont parallèles 4. Exprimer un vecteur comme combinaison linéaire, à partir d'une figure 5. Démontrer une propriété géométrique sans repère Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 — Coordonnées, somme, multiple Niveau 1 Exercice 2 — Colinéarité Niveau 2 Exercice 3 — Alignement et parallélogramme Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "6B", "title": "Vecteurs de l'espace", "level": "terminale", "path": "chapitres/06_geometrie_espace/6B_vecteurs_espace.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Un vecteur de l'espace, c'est exactement comme dans le plan 2. Chasles et toutes les règles de calcul se transportent 3. Combinaison linéaire 4. Colinéarité : deux vecteurs, une même direction 5. Coplanarité : la nouveauté de Terminale nouveau 6. Base de l'espace et décomposition unique 7. Repère de l'espace, coordonnées, formules"}, {"id": "methode", "title": "Méthode", "keywords": "A. Exprimer un vecteur comme combinaison linéaire à partir d'une figure B. Montrer que trois vecteurs sont coplanaires C. Montrer que quatre points sont coplanaires D. Montrer que trois vecteurs forment une base E. Lire une décomposition sur une figure Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": "Vue 1 · Décomposer un vecteur du cube Vue 2 · Coplanaires ou base ?"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "6C", "title": "Droites et plans de l’espace", "level": "terminale", "path": "chapitres/06_geometrie_espace/6C_droites_plans_espace.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Une droite : un point et une direction 2Un plan : un point et deux directions 3Deux droites : quatre cas, dont un nouveau 4Une droite et un plan : trois cas 5Deux plans : trois cas 6Trois théorèmes de parallélisme 7Tout se ramène à un système linéaire"}, {"id": "methode", "title": "Méthode", "keywords": "A. Déterminer la position relative de deux droites B. Montrer qu'une droite est parallèle à un plan C. Déterminer l'intersection d'une droite et d'un plan D. Construire la section d'un cube par un plan très demandée au bac E. Traduire une configuration par un système et interpréter Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 — Position relative de deux droites Niveau 1 Exercice 2 — Intersection d'une droite et d'un plan Niveau 2 Exercice 3 — Deux droites d'un cube Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 7, "title": "Probabilités conditionnelles et variables aléatoires", "goal": "Succession d'épreuves indépendantes, schéma de Bernoulli", "prerequisites": "Probabilités conditionnelles, arbres pondérés, indépendance, formule des probabilités totales, variable aléatoire, espérance, variance, écart type", "lessons": [{"id": "7A", "title": "Probabilités conditionnelles et indépendance", "level": "premiere", "path": "chapitres/07_probabilites/7A_probabilites_conditionnelles.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. « Sachant A » change la population de référence 2. Sur un arbre : multiplier le long d’un chemin 3. Additionner des chemins incompatibles 4. Inverser le conditionnement 5. Indépendance : une égalité à vérifier 6. Réunion et contrôles de cohérence"}, {"id": "methode", "title": "Méthode", "keywords": "Du texte au calcul Les erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": "Un arbre et ses quatre régions"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "7B", "title": "Variables aléatoires, espérance et variance", "level": "premiere", "path": "chapitres/07_probabilites/7B_variables_aleatoires.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Associer un nombre à chaque issue 2. Construire la loi de probabilité 3. Traduire un événement portant sur X 4. Espérance : une moyenne pondérée 5. Variance et écart type : mesurer la dispersion 6. Gain brut, mise et jeu équitable"}, {"id": "methode", "title": "Méthode", "keywords": "Construire une loi, puis calculer Points de vigilance"}, {"id": "visu", "title": "Visualisation", "keywords": "Une loi, sa moyenne et une expérience simulée"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "7C", "title": "Épreuves indépendantes et schéma de Bernoulli", "level": "terminale", "path": "chapitres/07_probabilites/7C_epreuves_independantes_bernoulli.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Modéliser une succession d’épreuves 2. Indépendance : le produit des probabilités 3. Une épreuve de Bernoulli et sa loi 4. Reconnaître un schéma de Bernoulli 5. Un chemin imposé ou plusieurs chemins ? 6. « Au moins un » : passer au contraire"}, {"id": "methode", "title": "Méthode", "keywords": "Choisir la bonne stratégie Les pièges à éviter"}, {"id": "visu", "title": "Visualisation", "keywords": "Explorer tous les chemins de deux ou trois essais"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 8, "title": "Combinatoire et dénombrement", "goal": "Principes additif et multiplicatif, k-uplets, permutations, combinaisons, coefficients binomiaux et leurs propriétés", "prerequisites": "Dénombrement par arbre vu en Seconde et Première", "lessons": [{"id": "8A", "title": "Combinatoire et dénombrement", "level": "terminale", "path": "chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. D’abord : quels objets compte-t-on ? 2. Additionner des cas disjoints 3. Multiplier des choix successifs 4. Ordonner sans répétition et permuter 5. Choisir sans ordre : les combinaisons 6. Toutes les parties et tous les mots binaires 7. Relation et triangle de Pascal"}, {"id": "methode", "title": "Méthode", "keywords": "Quatre questions pour choisir le bon calcul Pièges fréquents"}, {"id": "visu", "title": "Visualisation", "keywords": "Les mêmes lettres, trois façons de compter Un sous-ensemble, un mot binaire Pascal : retrouver les deux parents"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Former un identifiant Niveau 1 Exercice 2 · Attribuer des postes distincts Niveau 2 Exercice 3 · Former une équipe sous contrainte Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 9, "title": "Loi binomiale", "goal": "Coefficients binomiaux, loi binomiale, espérance et variance, représentations, échantillonnage", "prerequisites": "Variable aléatoire, espérance (chapitre 7), combinaisons (chapitre 8)", "lessons": [{"id": "9A", "title": "Loi binomiale", "level": "terminale", "path": "chapitres/09_loi_binomiale/9A_loi_binomiale.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Reconnaître une loi binomiale 2. La probabilité d’exactement k succès 3. Traduire « au plus », « au moins » et « entre » 4. Espérance, variance et écart type 5. Chercher un seuil sans se tromper d’inégalité 6. Chercher un intervalle de valeurs 7. Simuler et comparer à la loi"}, {"id": "methode", "title": "Méthode", "keywords": "Résoudre un exercice de loi binomiale Avec une calculatrice ou un tableur Les erreurs à éviter"}, {"id": "visu", "title": "Visualisation", "keywords": "La loi, un événement et un échantillon Un seuil de dépassement"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Exactement k succès Niveau 1 Exercice 2 · Un intervalle, au millième Niveau 2 Exercice 3 · Une capacité minimale Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 10, "title": "Fonctions trigonométriques", "goal": "Dérivées de sinus et cosinus, variations, courbes, limite du taux d'accroissement en 0", "prerequisites": "Cercle trigonométrique, radians, cosinus et sinus d'un réel, parité, périodicité", "lessons": []}, {"number": 11, "title": "Primitives et équations différentielles", "goal": "Notion de primitive, primitives des fonctions de référence, équations y′ = f, y′ = ay, y′ = ay + b, problème de Cauchy", "prerequisites": "Dérivation (chapitre 3), exponentielle (chapitre 5)", "lessons": []}, {"number": 12, "title": "Calcul intégral", "goal": "Intégrale et aire, propriétés, lien avec les primitives, valeur moyenne, intégration par parties, méthode des rectangles", "prerequisites": "Primitives (chapitre 11), aires vues au collège", "lessons": []}, {"number": 13, "title": "Sommes de variables aléatoires et loi des grands nombres", "goal": "Somme de variables aléatoires, linéarité de l'espérance, variance d'une somme de variables indépendantes, échantillon, inégalité de Bienaymé-Tchebychev, inégalité de concentration, loi des grands nombres", "prerequisites": "Espérance et variance (chapitre 7), loi binomiale (chapitre 9)", "lessons": []}, {"number": 14, "title": "Algorithmique et programmation", "goal": "Écriture de fonctions Python liées aux chapitres : seuils, dichotomie, Newton, simulation, comptage", "prerequisites": "Listes, boucles, fonctions, conditions", "lessons": []}]}</script>
+<script>
+/* Interface et suivi local. Aucune requête réseau, aucun compte requis. */
+(function () {
+  'use strict';
+  const config = JSON.parse(document.getElementById('site-config').textContent);
+  const $ = (id) => document.getElementById(id);
+  const all = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+  const lessons = config.chapters.flatMap(c => c.lessons.map(l => ({...l, chapter: c.title, chapterNumber: c.number})));
+  const byId = new Map(lessons.map(l => [l.id, l]));
+  const current = byId.get(config.current);
+  const KEY = 'reussite_maths_v1';
+  const LEGACY = 'carnet_maths_v1';
+  const states = {started: 'En cours', review: 'À revoir', validated: 'Validé par moi'};
+  const results = {ok: 'Réussi sans aide', aide: 'Réussi avec aide', ko: 'À revoir'};
+  const normalize = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  const href = (lesson, section = '') => config.prefix + lesson.path + (section ? '#' + encodeURIComponent(section) : '');
+  const empty = () => ({version: 1, lessons: {}, journal: [], last: null, legacyImported: false, tombstones: {}});
+  let state = empty();
+  let storageOK = true;
+  let storageCorrupt = false;
+  const text = (tag, value, className) => {
+    const el = document.createElement(tag);
+    el.textContent = value;
+    if (className) el.className = className;
+    return el;
+  };
+
+  function validate(input) {
+    if (!input || input.version !== 1 || !input.lessons || typeof input.lessons !== 'object' || Array.isArray(input.lessons) || !Array.isArray(input.journal)) throw Error('Format de sauvegarde non reconnu.');
+    if (Object.keys(input.lessons).length > 5000 || input.journal.length > 20000) throw Error('Cette sauvegarde est trop volumineuse.');
+    const out = empty();
+    const validTime = n => typeof n === 'number' && Number.isFinite(n) && n > 0 && n <= Date.now() + 86400000;
+    for (const [id, item] of Object.entries(input.lessons)) {
+      if (!/^\d{1,3}[A-Z]$/.test(id) || !item || !Object.hasOwn(states, item.status) || !validTime(item.updated)) throw Error('Une fiche de la sauvegarde est invalide.');
+      const section = typeof item.section === 'string' && /^[\w-]{0,80}$/.test(item.section) ? item.section : '';
+      out.lessons[id] = {status: item.status, updated: item.updated, section};
+    }
+    out.journal = input.journal.map(row => {
+      if (!row || typeof row.id !== 'string' || !/^[\w-]{1,100}$/.test(row.id) || !validTime(row.ts) || !Object.hasOwn(results, row.res)) throw Error('Une entrée du carnet est invalide.');
+      for (const key of ['chap', 'ex', 'err', 'note']) {
+        if (typeof row[key] !== 'string' || row[key].length > (key === 'note' ? 2000 : 500)) throw Error('Une entrée du carnet est invalide.');
+      }
+      return {id: row.id, ts: row.ts, chap: row.chap, ex: row.ex, res: row.res, err: row.err, note: row.note,
+        lesson: typeof row.lesson === 'string' && /^\d{1,3}[A-Z]$/.test(row.lesson) ? row.lesson : '',
+        updated: validTime(row.updated) ? row.updated : row.ts,
+        source: row.source === 'auto' ? 'auto' : 'manual'};
+    });
+    if (input.last && /^\d{1,3}[A-Z]$/.test(input.last.id) && validTime(input.last.ts)) {
+      out.last = {id: input.last.id, ts: input.last.ts, section: typeof input.last.section === 'string' && /^[\w-]{0,80}$/.test(input.last.section) ? input.last.section : ''};
+    }
+    out.legacyImported = input.legacyImported === true;
+    if (input.tombstones && typeof input.tombstones === 'object') {
+      for (const [id, ts] of Object.entries(input.tombstones)) {
+        if (/^[\w-]{1,100}$/.test(id) && validTime(ts)) out.tombstones[id] = ts;
+      }
+    }
+    return out;
+  }
+
+  function read() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? validate(JSON.parse(raw)) : empty();
+    } catch (e) {
+      storageOK = false;
+      try { storageCorrupt = !!localStorage.getItem(KEY); } catch (_) {}
+      return state;
+    }
+  }
+
+  function merge(a, b) {
+    const out = empty();
+    out.lessons = {...a.lessons};
+    for (const [id, item] of Object.entries(b.lessons)) if (!out.lessons[id] || item.updated >= out.lessons[id].updated) out.lessons[id] = item;
+    out.tombstones = {...a.tombstones};
+    for (const [id, ts] of Object.entries(b.tombstones)) out.tombstones[id] = Math.max(out.tombstones[id] || 0, ts);
+    const rows = new Map(a.journal.map(r => [r.id, r]));
+    b.journal.forEach(r => { if (!rows.has(r.id) || r.updated >= rows.get(r.id).updated) rows.set(r.id, r); });
+    out.journal = [...rows.values()].filter(r => !out.tombstones[r.id]).sort((x, y) => x.ts - y.ts);
+    out.last = !a.last || (b.last && b.last.ts >= a.last.ts) ? b.last : a.last;
+    out.legacyImported = a.legacyImported || b.legacyImported;
+    return out;
+  }
+
+  function storageLabel() {
+    all('[data-storage-note]').forEach(el => {
+      el.textContent = storageOK ? 'Enregistré dans ce navigateur, sur cet appareil.' : (storageCorrupt ? 'Sauvegarde locale illisible : copie conservée. Exporte cette séance avant de partir.' : 'Enregistrement indisponible : exporte ton suivi avant de fermer cette page.');
+      el.classList.toggle('site-storage-failed', !storageOK);
+    });
+    if (!storageOK && !$('site-emergency-export')) {
+      const note = document.querySelector('[data-storage-note]');
+      if (note) {
+        const button = text('button', 'Exporter cette séance', 'site-btn subtle');
+        button.id = 'site-emergency-export'; button.type = 'button';
+        button.addEventListener('click', exportState); note.after(button);
+      }
+    } else if (storageOK) $('site-emergency-export')?.remove();
+  }
+
+  function exportState() {
+    state = merge(state, read());
+    const data = JSON.stringify({...state, exportedAt: new Date().toISOString()}, null, 2);
+    const url = URL.createObjectURL(new Blob([data], {type: 'application/json'}));
+    const a = document.createElement('a'); a.href = url; a.download = 'reussite-maths-suivi-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  function save(change) {
+    state = merge(state, read());
+    if (change) change(state);
+    try {
+      if (storageCorrupt) throw Error('Ne pas écraser une sauvegarde illisible.');
+      localStorage.setItem(KEY, JSON.stringify(state));
+      storageOK = true;
+    } catch (_) { storageOK = false; }
+    storageLabel();
+    paintBadges();
+  }
+
+  function legacyRows(rows) {
+    if (rows.length > 20000) throw Error('Carnet trop volumineux.');
+    const out = empty();
+    out.journal = rows.map((r, index) => {
+      if (!r || typeof r.ts !== 'number' || typeof r.chap !== 'string' || typeof r.ex !== 'string' || !Object.hasOwn(results, r.res)) throw Error('Ancien carnet invalide.');
+      const code = (r.chap.match(/^\d+[A-Z]\b/) || [''])[0];
+      // Stable IDs make repeated imports idempotent, including old entries.
+      const signature = JSON.stringify([r.ts, r.chap, r.ex, r.res, r.err, r.note]);
+      let hash = 2166136261;
+      for (let i = 0; i < signature.length; i++) hash = Math.imul(hash ^ signature.charCodeAt(i), 16777619);
+      return {id: 'legacy-' + r.ts + '-' + (hash >>> 0).toString(36) + '-' + index, ts: r.ts, updated: r.ts, chap: r.chap, ex: r.ex, res: r.res,
+        err: r.err || '', note: r.note || '', lesson: code, source: 'manual'};
+    });
+    out.legacyImported = true;
+    out.journal.forEach(row => {
+      if (!byId.has(row.lesson)) return;
+      const previous = out.lessons[row.lesson];
+      out.lessons[row.lesson] = {status: row.res === 'ko' || previous?.status === 'review' ? 'review' : 'started', section: 'cours', updated: Math.max(row.ts, previous?.updated || 0)};
+    });
+    return validate(out);
+  }
+
+  state = read();
+  if (!state.legacyImported) {
+    try {
+      const legacy = JSON.parse(localStorage.getItem(LEGACY) || '[]');
+      if (Array.isArray(legacy)) {
+        const imported = legacyRows(legacy);
+        save(s => { Object.assign(s, merge(s, imported)); });
+      }
+    } catch (_) { /* Keep the legacy key untouched for manual recovery. */ }
+  }
+  storageLabel();
+
+  function paintBadges() {
+    all('[data-state-for]').forEach(el => {
+      const item = state.lessons[el.dataset.stateFor];
+      el.textContent = item ? states[item.status] : 'À commencer';
+      el.dataset.state = item ? item.status : 'new';
+    });
+  }
+  paintBadges();
+
+  // Desktop programme / mobile drawer. Restore focus, Escape and trap Tab.
+  let drawerOpener = null;
+  function drawer(open, opener) {
+    if (open && window.innerWidth >= 1100) return;
+    document.body.classList.toggle('site-drawer-open', open);
+    $('site-shade').hidden = !open;
+    $('site-menu').setAttribute('aria-expanded', String(open));
+    all('body > main,body > header,body > footer,body > .navbar,body > nav#nav,.site-header .site-brand,.site-actions').forEach(el => { el.inert = open; });
+    if (open) {
+      drawerOpener = opener || $('site-menu');
+      const target = $('site-sidebar').querySelector('a[aria-current="page"]') || $('site-sidebar').querySelector('a');
+      if (target) target.focus();
+    } else if (drawerOpener) { drawerOpener.focus(); drawerOpener = null; }
+  }
+  $('site-menu').addEventListener('click', () => drawer(!document.body.classList.contains('site-drawer-open'), $('site-menu')));
+  $('site-shade').addEventListener('click', () => drawer(false));
+  all('[data-open-program]').forEach(b => b.addEventListener('click', () => drawer(true, b)));
+  $('site-sidebar').addEventListener('click', e => { if (e.target.closest('a')) drawer(false); });
+  window.addEventListener('resize', () => { if (innerWidth >= 1100 && document.body.classList.contains('site-drawer-open')) drawer(false); });
+  document.addEventListener('keydown', e => {
+    if (!document.body.classList.contains('site-drawer-open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); drawer(false); }
+    if (e.key === 'Tab') {
+      const items = [$('site-menu'), ...all('a,button,summary', $('site-sidebar')).filter(x => x.getClientRects().length)];
+      e.preventDefault();
+      const index = items.indexOf(document.activeElement);
+      items[(index + (e.shiftKey ? -1 : 1) + items.length) % items.length].focus();
+    }
+  });
+
+  // Search indexes sections as well as lesson names, with accent-insensitive matching.
+  const searchable = lessons.flatMap(l => [
+    {title: l.title, context: `${l.id} · ${l.level === 'premiere' ? 'Première' : 'Terminale'} · ${l.chapter}`, path: href(l)},
+    ...l.sections.map(s => ({title: `${s.title} — ${l.title}`, context: `${l.id} · ${l.chapter}`, keywords: s.keywords, path: href(l, s.id)}))
+  ]).concat([
+    ['Bien démarrer', 'depart'], ['Comprendre l’apprentissage', 'science'], ['Travailler en autonomie', 'methode'],
+    ['Organiser ma semaine · minuteur', 'semaine'], ['Quand je bloque', 'bloque'], ['Utiliser une IA · prompts', 'chatgpt'], ['Choisir son outil IA', 'abonnement']
+  ].map(([title, id]) => ({title, context: 'Méthode de travail', path: config.prefix + 'strategie/reussir_lannee.html#' + id})));
+  function search() {
+    const query = normalize($('site-search-input').value).trim();
+    const tokens = query.split(/\s+/).filter(Boolean);
+    const found = searchable.filter(x => tokens.every(t => normalize(x.title + ' ' + x.context + ' ' + (x.keywords || '')).includes(t)));
+    const box = $('site-search-results'); box.replaceChildren();
+    $('site-search-count').textContent = query ? `${found.length} résultat${found.length > 1 ? 's' : ''}` : 'Explore les fiches ou saisis une notion.';
+    (query ? found : searchable.filter(x => !x.title.includes(' — '))).slice(0, 40).forEach(x => {
+      const a = text('a', x.title); a.href = x.path; a.append(text('small', x.context)); box.append(a);
+    });
+    if (!found.length) box.append(text('p', 'Aucun résultat. Essaie un mot plus court ou le nom du chapitre.'));
+  }
+  function openSearch() {
+    if (document.body.classList.contains('site-drawer-open')) drawer(false);
+    $('site-search-dialog').showModal(); search(); $('site-search-input').focus();
+  }
+  $('site-search-open').addEventListener('click', openSearch);
+  $('site-search-close').addEventListener('click', () => $('site-search-dialog').close());
+  $('site-search-dialog').addEventListener('click', e => { if (e.target.closest('a')) $('site-search-dialog').close(); });
+  $('site-search-input').addEventListener('input', search);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && $('site-search-dialog').open) {
+      e.preventDefault(); $('site-search-dialog').close(); return;
+    }
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.target.closest('input,textarea,select,[contenteditable="true"]') && !$('site-search-dialog').open) {
+      e.preventDefault(); openSearch();
+    }
+  });
+
+  function changeStatus(id, value) {
+    save(s => { s.lessons[id] = {...s.lessons[id], status: value, section: s.lessons[id]?.section || '', updated: Date.now()}; });
+  }
+  function statusSelect(id) {
+    const select = document.createElement('select');
+    select.setAttribute('aria-label', 'État de la fiche ' + id);
+    Object.entries(states).forEach(([value, label]) => { const option = text('option', label); option.value = value; select.append(option); });
+    select.value = state.lessons[id]?.status || 'started';
+    select.addEventListener('change', () => { changeStatus(id, select.value); if (config.kind === 'progress') renderProgress(); });
+    return select;
+  }
+  function addEntry(row) {
+    save(s => {
+      s.journal.push(row);
+      if (byId.has(row.lesson)) {
+        const previous = s.lessons[row.lesson];
+        s.lessons[row.lesson] = {status: row.res === 'ko' ? 'review' : previous?.status || 'started', section: previous?.section || '', updated: Date.now()};
+      }
+    });
+    if ($('site-lesson-status')) $('site-lesson-status').value = state.lessons[current.id].status;
+  }
+
+  // Anchors keep the complete lesson and all exercise state in the document.
+  const sectionNav = document.querySelector('body > .navbar nav,body > nav#nav');
+  if (sectionNav) {
+    sectionNav.setAttribute('aria-label', 'Sections de la ' + (config.kind === 'method' ? 'méthode' : 'fiche'));
+    const entries = all('a', sectionNav).map(a => ({a, section: document.querySelector(a.getAttribute('href'))})).filter(x => x.section);
+    if (current || config.kind === 'template') entries.forEach(({a}) => {
+      if (/visu/i.test(a.getAttribute('href'))) a.textContent = 'Explorer';
+      else if (/exos|exercices/.test(a.getAttribute('href'))) a.textContent = 'Exercices';
+      else if (/methode/.test(a.getAttribute('href'))) a.textContent = 'Méthode';
+    });
+    let lastSection = '';
+    let scheduled = false;
+    function observeSection() {
+      scheduled = false;
+      let chosen = entries[0];
+      const offset = 140;
+      entries.forEach(x => { if (x.section.getBoundingClientRect().top <= offset) chosen = x; });
+      if (!chosen) return;
+      entries.forEach(x => { x.a.classList.toggle('active', x === chosen); if (x === chosen) x.a.setAttribute('aria-current', 'location'); else x.a.removeAttribute('aria-current'); });
+      if (config.kind === 'method') all('.site-sidebar .site-side-link').forEach(a => {
+        if (a.getAttribute('href') === '#' + chosen.section.id) a.setAttribute('aria-current', 'location');
+        else a.removeAttribute('aria-current');
+      });
+      if (chosen.section.id === lastSection) return;
+      lastSection = chosen.section.id;
+      const a = chosen.a;
+      if (a.offsetLeft < sectionNav.scrollLeft || a.offsetLeft + a.offsetWidth > sectionNav.scrollLeft + sectionNav.clientWidth) sectionNav.scrollLeft = Math.max(0, a.offsetLeft - 20);
+      if (current) save(s => {
+        const ts = Date.now();
+        s.lessons[current.id] = {...s.lessons[current.id], section: lastSection, updated: ts};
+        s.last = {id: current.id, section: lastSection, ts};
+      });
+    }
+    window.addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(observeSection); } }, {passive: true});
+    sectionNav.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      const section = document.querySelector(a.getAttribute('href'));
+      if (section) { section.setAttribute('tabindex', '-1'); section.focus({preventScroll: true}); }
+    });
+    if (current) {
+      save(s => {
+        const ts = Date.now();
+        s.lessons[current.id] = {status: s.lessons[current.id]?.status || 'started', section: s.lessons[current.id]?.section || 'cours', updated: ts};
+        s.last = {id: current.id, section: location.hash.slice(1) || 'cours', ts};
+      });
+      $('site-lesson-status').value = state.lessons[current.id].status;
+      $('site-lesson-status').addEventListener('change', e => changeStatus(current.id, e.target.value));
+    }
+    // Run after the browser's initial fragment navigation, including MathJax layout.
+    window.addEventListener('load', observeSection);
+    if (document.readyState === 'complete') observeSection();
+  }
+
+  if (current) {
+    const signatures = new Map();
+    const helped = new Set();
+    let qcmRecorded = false;
+    function captureExercise(card) {
+      const fb = card.querySelector('.feedback,.fb');
+      if (!fb || !fb.textContent.trim()) return;
+      const fields = all('input,select', card).filter(x => x.type !== 'range' && !x.disabled && x.getClientRects().length);
+      if (fields.some(x => !x.value.trim())) return;
+      const correct = fb.matches('.good,.ok');
+      if (!correct && !fb.matches('.bad,.ko')) return;
+      const signature = fields.map(x => x.value).join('|') + ':' + correct;
+      if (signatures.get(card.id) === signature) return;
+      signatures.set(card.id, signature);
+      const ts = Date.now();
+      addEntry({id: uid(), ts, updated: ts, lesson: current.id, chap: current.id + ' ' + current.title,
+        ex: 'Exercice ' + card.id.replace(/\D/g, ''), res: correct ? (helped.has(card.id) ? 'aide' : 'ok') : 'ko', err: '', note: '', source: 'auto'});
+    }
+    document.addEventListener('click', e => {
+      const button = e.target.closest('button');
+      if (!button) return;
+      const label = normalize(button.textContent);
+      const card = button.closest('.card[id^="ex"]');
+      if (card) {
+        if (/correction/.test(label)) helped.add(card.id);
+        if (/nouvel exercice/.test(label)) { signatures.delete(card.id); helped.delete(card.id); }
+        if (/verifier/.test(label)) setTimeout(() => captureExercise(card), 0);
+      }
+      if (button.closest('#qcm')) {
+        if (/nouveau qcm/.test(label)) qcmRecorded = false;
+        else setTimeout(() => {
+          const score = document.querySelector('#qcm .score, #qcm-score, #qcmScore, #qcmscore');
+          const match = score?.textContent.match(/(\d+)\s*\/\s*(\d+)/);
+          if (!match || qcmRecorded) return;
+          qcmRecorded = true;
+          const ts = Date.now();
+          addEntry({id: uid(), ts, updated: ts, lesson: current.id, chap: current.id + ' ' + current.title,
+            ex: 'QCM · ' + match[1] + ' / ' + match[2], res: match[1] === match[2] ? 'ok' : 'ko', err: '', note: 'Résultat enregistré automatiquement.', source: 'auto'});
+        }, 0);
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const card = e.target.closest('.card[id^="ex"]');
+        if (card) setTimeout(() => captureExercise(card), 0);
+      }
+    });
+  }
+
+  if (config.kind === 'catalog') {
+    let filter = 'all';
+    let remembered = [];
+    try { remembered = JSON.parse(localStorage.getItem('reussite_chapitres_ouverts') || localStorage.getItem('accueil_chapitres_ouverts') || '[]'); } catch (_) {}
+    const chapters = all('[data-catalog-chapter]');
+    chapters.forEach(el => {
+      if (Array.isArray(remembered)) el.open = remembered.includes(el.id);
+      el.addEventListener('toggle', () => {
+        if (!$('site-catalog-query').value && filter === 'all') {
+          try { localStorage.setItem('reussite_chapitres_ouverts', JSON.stringify(chapters.filter(c => c.open).map(c => c.id))); } catch (_) {}
+        }
+      });
+    });
+    function filterCatalog() {
+      const query = normalize($('site-catalog-query').value).trim();
+      let count = 0;
+      chapters.forEach(el => {
+        const chapter = config.chapters.find(c => String(c.number) === el.dataset.catalogChapter);
+        const chapterMatch = normalize(chapter.title + ' ' + chapter.goal).includes(query);
+        let visible = 0;
+        all('[data-lesson]', el).forEach(row => {
+          const l = byId.get(row.dataset.lesson);
+          const matches = (filter === 'all' || l.level === filter) && (chapterMatch || normalize(l.id + ' ' + l.title).includes(query));
+          row.hidden = !matches; if (matches) visible++;
+        });
+        all('[data-level-group]', el).forEach(group => { group.hidden = !all('[data-lesson]', group).some(r => !r.hidden); });
+        el.hidden = !visible && !(filter === 'all' && !chapter.lessons.length && chapterMatch);
+        if (query || filter !== 'all') el.open = !el.hidden;
+        count += visible;
+      });
+      $('site-catalog-count').textContent = count + ' fiche' + (count > 1 ? 's' : '') + ' disponible' + (count > 1 ? 's' : '');
+      $('site-catalog-empty').hidden = chapters.some(c => !c.hidden);
+    }
+    all('[data-filter]').forEach(b => b.addEventListener('click', () => {
+      filter = b.dataset.filter; all('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); filterCatalog();
+    }));
+    $('site-catalog-query').addEventListener('input', filterCatalog);
+    function openFragment() { const el = $(location.hash.slice(1)); if (el?.matches('[data-catalog-chapter]')) { el.open = true; el.scrollIntoView(); } }
+    filterCatalog(); openFragment(); window.addEventListener('hashchange', openFragment);
+  }
+
+  function renderHome() {
+    const last = state.last && byId.get(state.last.id);
+    if (last) {
+      $('site-resume-label').textContent = 'Reprendre là où tu en étais';
+      $('site-resume-title').textContent = last.title;
+      const section = last.sections.find(s => s.id === state.last.section);
+      $('site-resume-description').textContent = `${last.id} · ${last.chapter}${section ? ' · ' + section.title : ''}`;
+      $('site-resume-link').textContent = 'Reprendre ma fiche →';
+      $('site-resume-link').href = href(last, state.last.section);
+    }
+    const review = lessons.filter(l => state.lessons[l.id]?.status === 'review');
+    const today = $('site-today');
+    if (review.length) {
+      today.className = 'site-grid'; today.replaceChildren();
+      review.slice(0, 2).forEach(l => {
+        const a = text('a', '', 'site-tile'); a.href = href(l, l.sections.find(s => /exos|exercices/.test(s.id))?.id || 'cours');
+        a.append(text('span', 'À revoir · ' + l.id, 'site-eyebrow'), text('h3', l.title), text('p', 'Reprends un exercice sans regarder la correction.'), text('span', 'M’entraîner →', 'site-tile-link'));
+        today.append(a);
+      });
+    } else {
+      today.className = 'site-empty'; today.textContent = last ? 'Aucune notion signalée à revoir. Tu peux poursuivre ta dernière fiche ou choisir le chapitre travaillé en classe.' : 'Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.';
+    }
+  }
+  if (config.kind === 'home') renderHome();
+
+  function date(ts) { return new Date(ts).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short', year: 'numeric'}); }
+  function message(id, value, error = false) { $(id).textContent = value; $(id).dataset.error = String(error); }
+  function renderProgress() {
+    const known = Object.entries(state.lessons).filter(([id]) => byId.has(id));
+    $('site-stat-started').textContent = known.length;
+    $('site-stat-review').textContent = known.filter(([, v]) => v.status === 'review').length;
+    $('site-stat-validated').textContent = known.filter(([, v]) => v.status === 'validated').length;
+    const list = $('site-progress-list'); list.replaceChildren();
+    known.sort((a, b) => b[1].updated - a[1].updated).forEach(([id, item]) => {
+      const lesson = byId.get(id), row = text('div', '', 'site-progress-row'), info = document.createElement('div');
+      const a = text('a', id + ' · ' + lesson.title); a.href = href(lesson, item.section);
+      info.append(a, text('small', 'Dernière activité : ' + date(item.updated)));
+      row.append(info, statusSelect(id)); list.append(row);
+    });
+    if (!known.length) list.append(text('div', 'Ton parcours commence avec ta première fiche. Retrouve ensuite ici les notions travaillées.', 'site-empty'));
+    const journal = $('site-journal-list'); journal.replaceChildren();
+    [...state.journal].reverse().forEach(r => {
+      const row = text('div', '', 'site-journal-row'), info = document.createElement('div');
+      info.append(text('small', date(r.ts) + (r.source === 'auto' ? ' · Enregistrement automatique' : '')),
+        text('div', r.chap + ' · ' + r.ex), text('p', results[r.res] + (r.err ? ' · ' + r.err : '') + (r.note ? ' — ' + r.note : '')));
+      const actions = text('div', '', 'site-journal-actions');
+      if (r.res === 'ko') {
+        const done = text('button', 'Refait sans aide', 'site-btn secondary'); done.type = 'button';
+        done.addEventListener('click', () => {
+          const ts = Date.now();
+          save(s => { const original = s.journal.find(x => x.id === r.id); if (original) { original.res = 'ok'; original.updated = ts; } });
+          addEntry({...r, id: uid(), ts, updated: ts, ex: r.ex + ' (refait)', res: 'ok', source: 'manual'});
+          renderProgress();
+        }); actions.append(done);
+      }
+      const remove = text('button', 'Supprimer', 'site-btn subtle'); remove.type = 'button';
+      remove.setAttribute('aria-label', 'Supprimer l’entrée ' + r.ex + ' du ' + date(r.ts));
+      remove.addEventListener('click', () => {
+        if (remove.dataset.armed !== 'true') { remove.dataset.armed = 'true'; remove.textContent = 'Confirmer'; setTimeout(() => { if (remove.isConnected) { remove.dataset.armed = 'false'; remove.textContent = 'Supprimer'; } }, 4000); return; }
+        save(s => { s.tombstones[r.id] = Date.now(); s.journal = s.journal.filter(x => x.id !== r.id); }); renderProgress();
+      }); actions.append(remove); row.append(info, actions); journal.append(row);
+    });
+    if (!state.journal.length) journal.append(text('p', 'Tes résultats d’exercices et de QCM apparaîtront ici. Tu peux aussi noter un exercice fait sur papier.', 'site-hint'));
+  }
+
+  if (config.kind === 'progress') {
+    $('site-file-warning').hidden = location.protocol !== 'file:';
+    lessons.forEach(l => { const option = text('option', l.id + ' · ' + l.title); option.value = l.id; $('site-journal-lesson').append(option); });
+    const other = text('option', 'Autre exercice / manuel'); other.value = ''; $('site-journal-lesson').append(other);
+    $('site-journal-lesson').required = false;
+    if (state.last && byId.has(state.last.id)) $('site-journal-lesson').value = state.last.id;
+    renderProgress();
+    $('site-journal-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const ex = $('site-journal-exercise').value.trim(); if (!ex) return;
+      const lesson = byId.get($('site-journal-lesson').value), ts = Date.now();
+      addEntry({id: uid(), ts, updated: ts, lesson: lesson?.id || '', chap: lesson ? lesson.id + ' ' + lesson.title : 'Autre exercice', ex,
+        res: $('site-journal-result').value, err: $('site-journal-error').value, note: $('site-journal-note').value.trim(), source: 'manual'});
+      $('site-journal-exercise').value = ''; $('site-journal-note').value = ''; $('site-journal-error').value = '';
+      message('site-journal-message', storageOK ? 'Séance ajoutée au carnet.' : 'Séance ajoutée en mémoire. Exporte ton suivi avant de fermer la page.', !storageOK);
+      renderProgress();
+    });
+    $('site-copy-report').addEventListener('click', async () => {
+      const value = ['Mon bilan de travail en mathématiques — Terminale spécialité.', ...state.journal.map(r => `${date(r.ts)} | ${r.chap} | ${r.ex} | ${results[r.res]}${r.err ? ' | ' + r.err : ''}${r.note ? ' | ' + r.note : ''}`), '', 'Propose trois exercices ciblés de difficulté croissante sur mes difficultés. Donne les énoncés, puis attends mes réponses avant de corriger.'].join('\n');
+      try {
+        if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+        else throw Error('clipboard');
+        message('site-journal-message', 'Bilan copié. Tu peux le coller dans ton tuteur IA.');
+      } catch (_) {
+        const area = document.createElement('textarea'); area.value = value; area.setAttribute('aria-label', 'Bilan à copier'); area.className = 'site-input';
+        $('site-copy-report').after(area); area.focus(); area.select();
+        message('site-journal-message', 'Copie le texte sélectionné ci-dessous.');
+      }
+    });
+    $('site-export').addEventListener('click', () => {
+      exportState();
+      message('site-backup-message', 'Export préparé. Conserve le fichier dans un endroit sûr.');
+    });
+    function importText(value) {
+      if (value.length > 8 * 1024 * 1024) throw Error('Fichier trop volumineux (maximum 8 Mo).');
+      const parsed = JSON.parse(value);
+      const imported = Array.isArray(parsed) ? legacyRows(parsed) : validate(parsed);
+      save(s => Object.assign(s, merge(s, imported)));
+      renderProgress();
+      message('site-backup-message', storageOK ? 'Sauvegarde fusionnée avec ton suivi. Les entrées déjà présentes ne sont pas dupliquées.' : 'Import chargé en mémoire. Le navigateur ne peut pas l’enregistrer : exporte une copie avant de partir.', !storageOK);
+    }
+    $('site-import-open').addEventListener('click', () => $('site-import-file').click());
+    $('site-import-file').addEventListener('change', async e => {
+      const file = e.target.files[0]; if (!file) return;
+      try {
+        if (file.size > 8 * 1024 * 1024) throw Error('Fichier trop volumineux (maximum 8 Mo).');
+        importText(await file.text());
+      } catch (err) { message('site-backup-message', 'Import refusé : ' + (err instanceof SyntaxError ? 'ce fichier ne contient pas une sauvegarde JSON valide.' : err.message), true); }
+      e.target.value = '';
+    });
+    $('site-import-text-button').addEventListener('click', () => {
+      try { importText($('site-import-text').value); $('site-import-text').value = ''; }
+      catch (err) { message('site-backup-message', 'Import refusé : ' + (err instanceof SyntaxError ? 'colle exactement les données exportées.' : err.message), true); }
+    });
+  }
+
+  window.addEventListener('storage', e => {
+    if (e.key !== KEY) return;
+    state = merge(state, read()); paintBadges(); storageLabel();
+    if (config.kind === 'home') renderHome();
+    if (config.kind === 'progress') renderProgress();
+    if (current && $('site-lesson-status')) $('site-lesson-status').value = state.lessons[current.id]?.status || 'started';
+  });
+})();
+
+</script>
+<!-- SITE:SCRIPT:END -->
+</body>
+</html>

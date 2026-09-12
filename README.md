@@ -110,6 +110,14 @@ Le [dossier du chapitre 7](chapitres/07_probabilites/README.md) décrit ses test
 
 Le [dossier du chapitre 8](chapitres/08_combinatoire_denombrement/README.md) précise les démonstrations exigibles, le lien entre 7C et la future loi binomiale, ainsi que ses tests indépendants et navigateur.
 
+**Chapitre 9 — Loi binomiale**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [9A](chapitres/09_loi_binomiale/9A_loi_binomiale.html) | Terminale | Loi binomiale, probabilités cumulées, intervalles, seuils, moments et simulation |
+
+Le [dossier du chapitre 9](chapitres/09_loi_binomiale/README.md) décrit les démonstrations, les tests indépendants des probabilités et des arrondis, ainsi que la génération ciblée.
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
