@@ -45,6 +45,7 @@ Ces quatre règles viennent de défauts réellement constatés en production. Le
 
 - MathJax 3 en local, configuration fournie par le squelette : `tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]}`.
 - Toujours `\binom{n}{k}`, jamais `C(n,k)`.
+- **Macros disponibles** dans le MathJax embarqué : `\mathbb`, `\mathcal`, `\text`, `\dfrac`, `\vec`, `\overrightarrow`, `\widehat`, `\binom`, `\lim\limits`, `\displaystyle`, `\left\{\begin{array}…`. **`\boldsymbol` n'est pas disponible** : pour un vecteur, écrire `\vec{u}` ou `\overrightarrow{AB}`.
 - Vecteurs : `\vec{u}`, `\vec{AB}` ; norme : `\|\vec u\|` ; produit scalaire : `\vec u\cdot\vec v`.
 - Après avoir injecté du contenu dynamique contenant des formules, appeler `MathJax.typesetPromise([element])` (vérifier que `window.MathJax` existe).
 

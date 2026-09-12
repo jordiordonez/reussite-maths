@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5B — Fonctions avec une exponentielle</title>
+
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+
+<style>
+:root{
+  --bg:#faf8f5; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --blue:#2563eb; --blue-soft:#e8efff;
+  --coral:#f97362; --coral-soft:#fde8e4;
+  --green:#22a06b; --green-soft:#e3f5ec;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.5rem} h3{font-size:1.1rem;color:var(--blue)}
+p{margin:.4em 0 .8em}
+ul,ol{padding-left:1.25rem;margin:.3rem 0 .8rem} li{margin:.3rem 0}
+
+header{padding:2rem 1.1rem 1.2rem;text-align:center;background:linear-gradient(180deg,var(--blue-soft) 0%,var(--bg) 100%)}
+header h1{font-size:1.75rem;opacity:0;transform:translateY(14px);animation:rise .8s ease forwards}
+header .sub{color:var(--muted);opacity:0;animation:rise .8s .3s ease forwards;letter-spacing:.06em;text-transform:uppercase;font-size:.82rem}
+header .lead{max-width:620px;margin:.8rem auto 0;opacity:0;animation:rise 1s .6s ease forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.5rem .5rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav a{display:inline-block;min-height:44px;line-height:44px;padding:0 .9rem;margin:0 .15rem;border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.92rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+nav a.active{background:var(--blue);color:#fff}
+
+main{max-width:820px;margin:0 auto;padding:1rem .85rem 3rem}
+section{margin:1.3rem 0 2rem;scroll-margin-top:64px}
+section>h2 span{color:var(--blue)}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin:.8rem 0}
+.card.blue{border-left:6px solid var(--blue)}
+.card.green{border-left:6px solid var(--green)}
+.card.coral{border-left:6px solid var(--coral)}
+.card.amber{border-left:6px solid var(--amber)}
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-family:system-ui,sans-serif;font-weight:700;margin-right:8px;font-size:.9rem;vertical-align:middle}
+.tag{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);vertical-align:middle;font-family:system-ui,sans-serif;max-width:100%}
+.tag.demo{background:var(--coral-soft);color:#c2410c}
+.tag.deep{background:var(--amber-soft);color:#92400e}
+.key{background:var(--amber-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.warn{background:var(--coral-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.ok{background:var(--green-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.box{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{border:1px solid var(--line);padding:5px 7px;text-align:center}
+th{background:var(--blue-soft)}
+td.lab{background:#f6f5f2;font-weight:600}
+td.sgn{font-weight:700}
+td.pos{color:var(--green)} td.neg{color:#c2410c}
+.tablewrap{overflow-x:auto;margin:.6rem 0}
+.vartab td{white-space:nowrap}
+.arrow{font-size:1.25rem;font-weight:700;color:var(--blue)}
+
+button{min-height:44px;padding:.5rem 1rem;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+button.ghost{background:#f3f4f6;color:var(--ink);box-shadow:none}
+button:active{transform:translateY(1px)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type="text"],input[type="number"],select{min-height:44px;font-size:1rem;font-family:inherit;padding:.45rem .6rem;border:1px solid #d1d5db;border-radius:10px;background:#fff;max-width:100%}
+input[type="range"]{width:100%;min-height:36px;accent-color:var(--blue)}
+label{font-size:.92rem;color:var(--muted)}
+
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+.tabs button{flex:1 1 30%;background:#fff;color:var(--blue);border:2px solid var(--blue);font-size:.88rem;padding:.4rem .5rem;box-shadow:none}
+.tabs button.active{background:var(--blue);color:#fff}
+.slider{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;margin:.5rem 0}
+.slider label{font-weight:600;min-width:44px;color:var(--ink)}
+.slider output{min-width:62px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--blue);font-size:.95rem}
+.stat{font-size:.96rem;padding:.5rem .75rem;border-radius:10px;background:var(--blue-soft);margin:.5rem 0}
+.stat.good{background:var(--green-soft)}
+.stat.bad{background:var(--coral-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:.7rem;font-size:.85rem;margin:.4rem 0;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:16px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle;background:var(--c)}
+
+.steps{counter-reset:st;list-style:none;padding-left:0}
+.steps li{position:relative;padding-left:34px;margin:.6rem 0}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:0;top:2px;width:25px;height:25px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+.tree .lvl{border-left:3px solid var(--blue);margin:.35rem 0 .35rem .15rem;padding:.2rem 0 .2rem .7rem}
+.tree .lvl .lvl{border-left-color:var(--amber)}
+.tree b{color:var(--blue)}
+
+.field{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.45rem 0}
+.field .lab{min-width:104px;font-weight:600;font-size:.95rem}
+.feedback{margin:.5rem 0;font-weight:600;min-height:1.4em}
+.feedback.good{color:var(--green)} .feedback.bad{color:#c2410c}
+.correction{display:none;background:#f4f2ee;border-radius:12px;padding:.8rem .9rem;margin-top:.6rem}
+.correction.show{display:block}
+
+.qcm-q{border-top:1px solid var(--line);padding-top:.9rem;margin-top:.9rem}
+.qcm-q:first-child{border-top:0;margin-top:0}
+.choices{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.5rem 0}
+@media (min-width:560px){.choices{grid-template-columns:1fr 1fr}}
+.choice{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font-weight:400;box-shadow:none}
+.choice .letter{display:inline-block;width:1.5em;font-weight:700;color:var(--blue)}
+.choice.correct{background:var(--green-soft);border-color:var(--green)}
+.choice.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.expl{display:none;font-size:.94rem;margin-top:.35rem}
+.expl.show{display:block}
+.score{font-weight:700;margin-top:.8rem}
+
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:1.5rem 1rem 2.5rem}
+
+/* --- Figures. NE JAMAIS écrire une règle « svg { … } » globale :
+   MathJax produit lui aussi des <svg> et ils seraient déformés.
+   Toujours passer par la classe .figure. --- */
+.figure{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:12px;touch-action:pan-y}
+
+/* ===== Bloc responsive obligatoire — ne pas modifier ===== */
+/* Les formules gardent leur taille normale : c'est le bloc parent qui défile
+   horizontalement quand la formule est plus large que la carte. */
+mjx-container svg{
+  width:auto !important;height:auto !important;max-width:none !important;
+  display:inline !important;background:none !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;
+}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding-bottom:3px}
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml{
+  position:absolute !important;top:0 !important;left:0 !important;
+  width:1px !important;height:1px !important;overflow:hidden !important;
+  clip:rect(1px,1px,1px,1px) !important;padding:0 !important;border:0 !important;white-space:nowrap !important;
+}
+.correction,.corr,.enonce,.feedback,.expl,.stem,.question,
+.correction p,.corr p,.enonce p,.expl p,
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol{
+  max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+}
+p:has(> mjx-container),ul:has(> li > mjx-container), ol:has(> li > mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),dd:has(> mjx-container),summary:has(> mjx-container),
+div:has(> mjx-container){max-width:100%;overflow-x:auto;overflow-y:hidden}
+h1,h2,h3,h4{flex-wrap:wrap}
+div:has(> table){max-width:100%;overflow-x:auto}
+pre{max-width:100%;overflow-x:auto}
+.correction::-webkit-scrollbar,.corr::-webkit-scrollbar,
+p::-webkit-scrollbar,ul::-webkit-scrollbar{height:4px}
+.correction::-webkit-scrollbar-thumb,.corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border-radius:4px}
+/* ===== fin du bloc responsive ===== */
+</style>
+
+<style>
+/* ===== Navigation compacte (ajout) =====
+   Les cinq onglets tiennent sur un écran de téléphone, sans défilement
+   horizontal, et un bouton ramène à la liste des fiches. */
+.navbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.25rem;
+  padding:.4rem .45rem;background:rgba(250,248,245,.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid #e5e7eb;
+}
+.navbar > nav{
+  position:static;flex:1;min-width:0;display:flex;gap:.25rem;margin:0;padding:0;
+  background:none;border:0;box-shadow:none;overflow:visible;white-space:normal;backdrop-filter:none;
+}
+.navbar nav a{
+  flex:1 1 0;min-width:0;margin:0;padding:0 .3rem;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.nav-home{
+  flex:0 0 42px;display:inline-block;min-height:44px;line-height:44px;text-align:center;
+  border-radius:999px;background:#fff;color:#2563eb;text-decoration:none;font-size:1.1rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.nshort{display:none}
+@media (max-width:600px){
+  .nlong{display:none}
+  .nshort{display:inline}
+  .navbar nav a{font-size:.84rem;padding:0 .2rem}
+}
+/* Bouton de remontée en haut de page */
+.to-top{
+  position:fixed;right:.85rem;bottom:.85rem;width:48px;height:48px;border-radius:50%;border:0;
+  background:#2563eb;color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+.retour-fiches{display:inline-block;margin-top:.6rem;color:#2563eb;text-decoration:none;font-weight:600;min-height:44px;line-height:44px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>5B — Fonctions avec une exponentielle</h1>
+  <div class="sub">Terminale · Mathématiques</div>
+  <p class="lead">Équations, inéquations, limites, dérivée de \(\mathrm e^{u}\) : tout ce qu'il faut pour mener une <strong>étude complète de fonction</strong> avec une exponentielle, comme au bac.</p>
+</header>
+
+<div class="navbar">
+  <a class="nav-home" href="../../index.html" title="Toutes les fiches" aria-label="Toutes les fiches">←</a>
+  <nav id="nav">
+    <a href="#cours">Cours</a>
+    <a href="#methode"><span class="nlong">Méthode</span><span class="nshort">Méth.</span></a>
+    <a href="#visu"><span class="nlong">Visualisation</span><span class="nshort">Visu</span></a>
+    <a href="#exos"><span class="nlong">Exercices</span><span class="nshort">Exos</span></a>
+    <a href="#qcm">QCM</a>
+  </nav>
+</div>
+
+<main>
+
+<!-- ============================ COURS ============================ -->
+<section id="cours">
+  <h2><span>1.</span> Cours</h2>
+
+  <div class="card blue">
+    <p>Cette fiche est la <strong>mise en pratique</strong> de l'exponentielle. Trois outils déjà vus servent ici en permanence :</p>
+    <ul>
+      <li>les <strong>limites usuelles et les opérations sur les limites</strong> (fiche <a href="../04_limites_continuite/4B_limites_de_fonctions.html">4B</a>) ;</li>
+      <li>les <strong>croissances comparées</strong>, démontrées dans la fiche 4B ;</li>
+      <li>la <strong>dérivée d'une composée</strong>, et en particulier \(\big(\mathrm e^{u}\big)'=u'\,\mathrm e^{u}\) (fiche <a href="../03_derivation_convexite/3D_derivee_composee.html">3D</a>).</li>
+    </ul>
+    <p>Ici on ne les redémontre pas : on les <em>utilise</em> pour étudier une fonction du début à la fin. Le <strong>logarithme népérien</strong> n'apparaît pas dans cette fiche : il fait l'objet de la fiche 5C. Toutes les équations traitées ici se résolvent <em>sans</em> lui.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">1</span>Rappel express : les propriétés algébriques et la stricte croissance</h3>
+    <div class="key">
+      Pour tous réels \(x\) et \(y\) et tout entier relatif \(n\) :
+      \[\mathrm e^{x+y}=\mathrm e^{x}\,\mathrm e^{y},\qquad \mathrm e^{-x}=\frac{1}{\mathrm e^{x}},\qquad \mathrm e^{x-y}=\frac{\mathrm e^{x}}{\mathrm e^{y}},\qquad \big(\mathrm e^{x}\big)^{n}=\mathrm e^{nx}.\]
+    </div>
+    <div class="box">
+      <strong>Deux faits qui commandent tout le reste.</strong><br>
+      • Pour tout réel \(x\), \(\mathrm e^{x}&gt;0\) : <strong>l'exponentielle ne s'annule jamais</strong> et ne change jamais de signe.<br>
+      • \(\big(\mathrm e^{x}\big)'=\mathrm e^{x}&gt;0\) : la fonction exponentielle est <strong>strictement croissante sur \(\mathbb R.\)</strong>
+    </div>
+    <div class="ok">
+      <strong>Exemples numériques.</strong> \(\mathrm e^{0}=1\), \(\mathrm e^{1}=\mathrm e\approx 2{,}718\), \(\mathrm e^{2}\approx 7{,}389\), \(\mathrm e^{-1}\approx 0{,}368\), \(\mathrm e^{-3}\approx 0{,}0498.\)<br>
+      \(\mathrm e^{5}\times\mathrm e^{-2}=\mathrm e^{3}\approx 20{,}09\) ; \(\dfrac{\mathrm e^{7}}{\mathrm e^{4}}=\mathrm e^{3}\) ; \(\big(\mathrm e^{2x}\big)^{3}=\mathrm e^{6x}\) ; \(\mathrm e^{x}\,\mathrm e^{-x}=\mathrm e^{0}=1.\)
+    </div>
+    <div class="warn">
+      \(\mathrm e^{x+y}\) n'est <strong>pas</strong> \(\mathrm e^{x}+\mathrm e^{y}\), et \(\mathrm e^{2x}\) n'est <strong>pas</strong> \(2\mathrm e^{x}.\) Vérification immédiate avec \(x=y=1\) : \(\mathrm e^{2}\approx 7{,}39\) alors que \(\mathrm e+\mathrm e\approx 5{,}44\) et \(2\mathrm e\approx 5{,}44.\)
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Équations et inéquations : le principe fondamental</h3>
+    <div class="key">
+      L'exponentielle est <strong>strictement croissante</strong> sur \(\mathbb R\), donc pour tous réels \(A\) et \(B\) :
+      \[\mathrm e^{A}=\mathrm e^{B}\iff A=B,\qquad\qquad \mathrm e^{A}&lt;\mathrm e^{B}\iff A&lt;B.\]
+      (De même avec \(\leq\), \(&gt;\) et \(\geq\) : l'inégalité <strong>garde son sens</strong>.)
+    </div>
+    <p>Autrement dit : quand les <em>deux</em> membres sont des exponentielles, on peut « enlever les exponentielles » et ne garder que les exposants. La justification à écrire dans une copie est toujours la même : <em>« la fonction exponentielle est strictement croissante sur \(\mathbb R\) »</em>.</p>
+    <div class="ok">
+      <strong>Exemple 1 (équation).</strong> \(\mathrm e^{2x+1}=\mathrm e^{5-x}\iff 2x+1=5-x\iff 3x=4\iff x=\dfrac43.\)<br>
+      <strong>Exemple 2 (l'astuce \(1=\mathrm e^{0}\)).</strong> \(\mathrm e^{x^{2}-3x}=1\iff \mathrm e^{x^{2}-3x}=\mathrm e^{0}\iff x^{2}-3x=0\iff x(x-3)=0\iff x=0\ \text{ou}\ x=3.\)<br>
+      <strong>Exemple 3 (inéquation).</strong> \(\mathrm e^{3x}&lt;\mathrm e^{x+4}\iff 3x&lt;x+4\iff 2x&lt;4\iff x&lt;2.\) L'ensemble des solutions est \(\left]-\infty\,;2\right[.\)<br>
+      <strong>Exemple 4 (le sens change à cause du calcul, pas de l'exponentielle).</strong> \(\mathrm e^{-2x}\geq \mathrm e^{x-6}\iff -2x\geq x-6\iff -3x\geq -6\iff x\leq 2.\) C'est la division par \(-3\) qui a renversé l'inégalité.
+    </div>
+    <div class="box">
+      <strong>Deux cas particuliers très fréquents.</strong><br>
+      • \(\mathrm e^{A}=0\) n'a <strong>aucune solution</strong>, et \(\mathrm e^{A}&lt;0\) non plus : une exponentielle est toujours strictement positive.<br>
+      • \(\mathrm e^{A}&gt;0\) est vraie <strong>pour tout \(x\)</strong> : l'ensemble des solutions est \(\mathbb R.\)<br>
+      • Une équation comme \(\mathrm e^{x}=5\) n'a pas de solution « visible » : les deux membres ne sont pas tous les deux des exponentielles. Elle se résoudra avec le <strong>logarithme</strong> (fiche 5C).
+    </div>
+    <div class="warn">
+      <strong>Un produit nul, avec une exponentielle en facteur.</strong> \((2x-6)\,\mathrm e^{x}=0\iff 2x-6=0\) <em>car \(\mathrm e^{x}\neq0\)</em>, donc \(x=3.\) Ne jamais « chercher aussi les \(x\) qui annulent \(\mathrm e^{x}\) » : il n'y en a pas.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Limites de l'exponentielle et asymptote</h3>
+    <div class="key">
+      \[\lim_{x\to+\infty}\mathrm e^{x}=+\infty,\qquad\qquad \lim_{x\to-\infty}\mathrm e^{x}=0.\]
+      Comme \(\lim_{x\to-\infty}\mathrm e^{x}=0\), la droite d'équation <strong>\(y=0\)</strong> (l'axe des abscisses) est <strong>asymptote horizontale</strong> à la courbe de la fonction exponentielle <strong>en \(-\infty.\)</strong>
+    </div>
+    <p>En \(+\infty\), il n'y a <strong>aucune asymptote horizontale</strong> : la courbe s'échappe vers le haut.</p>
+    <div class="tablewrap">
+      <table>
+        <tr><th>\(x\)</th><th>\(-10\)</th><th>\(-5\)</th><th>\(-1\)</th><th>\(0\)</th><th>\(1\)</th><th>\(5\)</th><th>\(10\)</th></tr>
+        <tr><td class="lab">\(\mathrm e^{x}\)</td><td>\(0{,}000045\)</td><td>\(0{,}0067\)</td><td>\(0{,}368\)</td><td>\(1\)</td><td>\(2{,}718\)</td><td>\(148{,}4\)</td><td>\(22\,026\)</td></tr>
+      </table>
+    </div>
+    <div class="box">
+      <strong>Composées : on fait tendre l'exposant.</strong> Si \(u(x)\to+\infty\) alors \(\mathrm e^{u(x)}\to+\infty\) ; si \(u(x)\to-\infty\) alors \(\mathrm e^{u(x)}\to0.\)<br>
+      • \(\lim_{x\to+\infty}\mathrm e^{-x}=0\) (car \(-x\to-\infty\)) : la droite \(y=0\) est asymptote horizontale <strong>en \(+\infty\)</strong> à la courbe de \(x\mapsto\mathrm e^{-x}.\)<br>
+      • \(\lim_{x\to+\infty}\mathrm e^{-x^{2}}=0\) ; \(\lim_{x\to-\infty}\mathrm e^{2x+1}=0\) ; \(\lim_{x\to+\infty}\mathrm e^{3x-7}=+\infty.\)
+    </div>
+    <div class="warn">
+      <strong>Le côté de l'asymptote dépend du signe devant \(x.\)</strong> Pour \(\mathrm e^{x}\) l'asymptote \(y=0\) est en \(-\infty\) ; pour \(\mathrm e^{-x}\) elle est en \(+\infty.\) Annoncer « asymptote horizontale en \(+\infty\) » pour \(\mathrm e^{x}\) est une faute lourde, et elle se repère d'un coup d'œil sur le graphique.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Croissances comparées : l'exponentielle gagne toujours</h3>
+    <div class="key">
+      <strong>Énoncé exact (à citer tel quel).</strong> Pour tout entier naturel \(n\geq1\) :
+      \[\lim_{x\to+\infty}\frac{\mathrm e^{x}}{x^{n}}=+\infty,\qquad\qquad \lim_{x\to+\infty}\frac{x^{n}}{\mathrm e^{x}}=0,\]
+      et
+      \[\lim_{x\to-\infty}x\,\mathrm e^{x}=0.\]
+    </div>
+    <p>La démonstration figure dans la fiche <a href="../04_limites_continuite/4B_limites_de_fonctions.html">4B</a> (démonstration exigible). Ici, on retient la <strong>formule à écrire</strong> et surtout le <strong>moment où l'utiliser</strong> : dès qu'une forme indéterminée mélange une exponentielle et une puissance de \(x.\)</p>
+    <div class="ok">
+      <strong>Exemple 1 (F.I. \(\infty-\infty\)).</strong> \(\lim_{x\to+\infty}\big(\mathrm e^{x}-x^{3}\big)\) : on factorise par \(\mathrm e^{x}\),
+      \[\mathrm e^{x}-x^{3}=\mathrm e^{x}\left(1-\frac{x^{3}}{\mathrm e^{x}}\right).\]
+      Par croissance comparée \(\frac{x^{3}}{\mathrm e^{x}}\to0\), donc la parenthèse tend vers \(1\), et par produit \(\lim_{x\to+\infty}\big(\mathrm e^{x}-x^{3}\big)=+\infty.\)<br>
+      <strong>Exemple 2 (F.I. \(\frac{\infty}{\infty}\)).</strong> \(\lim_{x\to+\infty}\frac{4x^{2}+1}{\mathrm e^{x}}=\lim_{x\to+\infty}\left(4\times\frac{x^{2}}{\mathrm e^{x}}+\frac{1}{\mathrm e^{x}}\right)=0.\) La droite \(y=0\) est asymptote horizontale en \(+\infty.\)<br>
+      <strong>Exemple 3 (F.I. \(0\times\infty\) en \(-\infty\)).</strong> \(\lim_{x\to-\infty}(3x+2)\mathrm e^{x}=3\underbrace{x\,\mathrm e^{x}}_{\to0}+2\underbrace{\mathrm e^{x}}_{\to0}=0.\)
+    </div>
+    <div class="tablewrap">
+      <table>
+        <tr><th>\(x\)</th><th>\(5\)</th><th>\(10\)</th><th>\(20\)</th><th>\(30\)</th></tr>
+        <tr><td class="lab">\(x^{3}\)</td><td>\(125\)</td><td>\(1\,000\)</td><td>\(8\,000\)</td><td>\(27\,000\)</td></tr>
+        <tr><td class="lab">\(\mathrm e^{x}\)</td><td>\(148\)</td><td>\(22\,026\)</td><td>\(4{,}85\times10^{8}\)</td><td>\(1{,}07\times10^{13}\)</td></tr>
+        <tr><td class="lab">\(\dfrac{x^{3}}{\mathrm e^{x}}\)</td><td>\(0{,}84\)</td><td>\(0{,}045\)</td><td>\(1{,}6\times10^{-5}\)</td><td>\(2{,}5\times10^{-9}\)</td></tr>
+      </table>
+    </div>
+    <div class="warn">
+      <strong>Le sens compte.</strong> En \(+\infty\), c'est \(\mathrm e^{x}\) qui l'emporte : \(\frac{x^{n}}{\mathrm e^{x}}\to0\) et \(\frac{\mathrm e^{x}}{x^{n}}\to+\infty.\) Écrire l'inverse est l'erreur la plus fréquente du chapitre. Et \(x\,\mathrm e^{x}\to0\) vaut <strong>en \(-\infty\)</strong> seulement : en \(+\infty\), \(x\,\mathrm e^{x}\to+\infty.\)
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Dérivée de \(\mathrm e^{u}\)</h3>
+    <div class="key">
+      Si \(u\) est dérivable sur un intervalle \(I\), alors \(\mathrm e^{u}\) est dérivable sur \(I\) et
+      \[\big(\mathrm e^{u}\big)'=u'\,\mathrm e^{u}.\]
+      C'est le cas particulier de \((g\circ u)'=u'\times g'\circ u\) avec \(g=\exp\) (fiche <a href="../03_derivation_convexite/3D_derivee_composee.html">3D</a>), puisque \(\exp'=\exp.\)
+    </div>
+    <div class="ok">
+      <strong>Exemples.</strong><br>
+      • \(f(x)=\mathrm e^{3x}\) : \(u(x)=3x\), \(u'(x)=3\), donc \(f'(x)=3\,\mathrm e^{3x}.\)<br>
+      • \(f(x)=\mathrm e^{-2x+5}\) : \(u'(x)=-2\), donc \(f'(x)=-2\,\mathrm e^{-2x+5}.\)<br>
+      • \(f(x)=\mathrm e^{-x^{2}}\) : \(u(x)=-x^{2}\), \(u'(x)=-2x\), donc \(f'(x)=-2x\,\mathrm e^{-x^{2}}.\)<br>
+      • \(f(x)=\mathrm e^{x^{2}-4x+1}\) : \(u'(x)=2x-4\), donc \(f'(x)=(2x-4)\,\mathrm e^{x^{2}-4x+1}.\)
+    </div>
+    <div class="box">
+      <strong>Avec un produit, on combine les deux formules.</strong> Pour \(f(x)=(ax+b)\,\mathrm e^{cx}\), on pose \(v(x)=ax+b\) et \(w(x)=\mathrm e^{cx}\) :
+      \[f'=v'w+vw'=a\,\mathrm e^{cx}+(ax+b)\,c\,\mathrm e^{cx}=\big(acx+a+bc\big)\,\mathrm e^{cx}.\]
+      <strong>On factorise toujours par \(\mathrm e^{cx}\)</strong> : c'est ce qui rend le signe de \(f'\) lisible.<br>
+      <em>Exemple :</em> \(f(x)=(2x-3)\mathrm e^{x}\) donne \(f'(x)=2\mathrm e^{x}+(2x-3)\mathrm e^{x}=(2x-1)\mathrm e^{x}.\)<br>
+      <em>Exemple :</em> \(f(x)=(x+4)\mathrm e^{-2x}\) donne \(f'(x)=\mathrm e^{-2x}-2(x+4)\mathrm e^{-2x}=(-2x-7)\mathrm e^{-2x}.\)
+    </div>
+    <div class="warn">
+      <strong>Oublier \(u'\) est l'erreur n°1.</strong> La dérivée de \(\mathrm e^{3x}\) est \(3\mathrm e^{3x}\), pas \(\mathrm e^{3x}\) ; celle de \(\mathrm e^{-x}\) est \(-\mathrm e^{-x}\), pas \(\mathrm e^{-x}.\) Réflexe : <em>« je descends la dérivée de l'exposant devant »</em>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Conséquence décisive : le signe de \(f'\) est celui de \(u'\)</h3>
+    <div class="key">
+      Puisque \(\mathrm e^{u(x)}&gt;0\) pour tout \(x\), dans \(f'(x)=u'(x)\,\mathrm e^{u(x)}\) le facteur exponentiel <strong>ne change jamais le signe</strong> :
+      \[\operatorname{signe}\big(f'(x)\big)=\operatorname{signe}\big(u'(x)\big).\]
+      Plus généralement, dans un produit \(f'(x)=P(x)\,\mathrm e^{u(x)}\), le signe de \(f'\) est celui du facteur \(P(x)\) seul.
+    </div>
+    <p>C'est <strong>le</strong> gain de temps du chapitre : une étude de signe avec exponentielle se ramène toujours à une étude de signe d'un polynôme, souvent du premier degré.</p>
+    <div class="ok">
+      <strong>Exemple.</strong> \(f(x)=(2x-1)\mathrm e^{x}\) a pour dérivée \(f'(x)=(2x+1)\mathrm e^{x}.\) Comme \(\mathrm e^{x}&gt;0\), \(f'(x)\) est du signe de \(2x+1\) : négatif pour \(x&lt;-\frac12\), positif pour \(x&gt;-\frac12.\) Donc \(f\) est décroissante sur \(\left]-\infty\,;-\frac12\right]\) puis croissante sur \(\left[-\frac12\,;+\infty\right[\), et elle admet un <strong>minimum</strong> en \(x=-\frac12\), qui vaut \(f\!\left(-\frac12\right)=-2\,\mathrm e^{-0{,}5}\approx-1{,}21.\)
+    </div>
+    <div class="box">
+      <strong>Rédaction type dans une copie.</strong> « Pour tout réel \(x\), \(\mathrm e^{x}&gt;0\), donc \(f'(x)\) est du signe de \(2x+1.\) »<br>
+      Une ligne, et le tableau de signes se remplit tout seul.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span>Le plan d'étude complet d'une fonction</h3>
+    <p>C'est le squelette de <strong>tout</strong> exercice d'analyse au bac. Sept étapes, toujours les mêmes.</p>
+    <ol class="steps">
+      <li><strong>Ensemble de définition.</strong> Une exponentielle est définie partout : si \(f(x)=P(x)\mathrm e^{u(x)}\) avec \(P\) et \(u\) polynomiales, alors \(\mathcal D_f=\mathbb R.\) Attention si l'exponentielle est au <em>dénominateur</em> d'un quotient : elle ne s'annule pas, donc là encore pas de valeur interdite venant d'elle.</li>
+      <li><strong>Limites aux bornes.</strong> En \(\pm\infty\) : repérer la forme indéterminée, factoriser par l'exponentielle ou utiliser une croissance comparée.</li>
+      <li><strong>Asymptotes.</strong> Une limite <em>finie</em> \(\ell\) en \(\pm\infty\) donne l'asymptote horizontale \(y=\ell\) ; préciser <strong>de quel côté</strong>.</li>
+      <li><strong>Dérivée.</strong> Produit, quotient ou composée, puis <strong>factorisation par l'exponentielle</strong>.</li>
+      <li><strong>Signe de \(f'.\)</strong> On jette le facteur exponentiel (strictement positif) et on étudie le signe du polynôme restant.</li>
+      <li><strong>Tableau de variations.</strong> Les limites vont <strong>aux bornes ouvertes</strong>, les extremums aux zéros de \(f'.\) Calculer la valeur de l'extremum.</li>
+      <li><strong>Tracé.</strong> Asymptote(s) en pointillés, extremum placé, tangentes remarquables éventuelles.</li>
+    </ol>
+    <div class="ok">
+      <strong>Exemple complet : \(f(x)=(x-2)\mathrm e^{x}\) sur \(\mathbb R.\)</strong><br>
+      <em>1.</em> \(\mathcal D_f=\mathbb R.\)<br>
+      <em>2.</em> En \(+\infty\) : \(x-2\to+\infty\) et \(\mathrm e^{x}\to+\infty\), donc par produit \(\lim_{x\to+\infty}f(x)=+\infty.\)<br>
+      En \(-\infty\) : forme indéterminée \(0\times\infty.\) On développe : \(f(x)=x\,\mathrm e^{x}-2\,\mathrm e^{x}.\) Par croissance comparée \(x\mathrm e^{x}\to0\), et \(\mathrm e^{x}\to0\), donc \(\lim_{x\to-\infty}f(x)=0.\)<br>
+      <em>3.</em> La droite d'équation \(y=0\) est asymptote horizontale à \(\mathcal C_f\) <strong>en \(-\infty.\)</strong> Pas d'asymptote en \(+\infty.\)<br>
+      <em>4.</em> \(f'(x)=1\times\mathrm e^{x}+(x-2)\mathrm e^{x}=(x-1)\mathrm e^{x}.\)<br>
+      <em>5.</em> \(\mathrm e^{x}&gt;0\), donc \(f'(x)\) est du signe de \(x-1\) : négatif sur \(\left]-\infty\,;1\right[\), nul en \(1\), positif sur \(\left]1\,;+\infty\right[.\)<br>
+      <em>6.</em> \(f\) décroît sur \(\left]-\infty\,;1\right]\) puis croît sur \(\left[1\,;+\infty\right[\) ; elle admet un <strong>minimum</strong> en \(x=1\), égal à \(f(1)=-\mathrm e\approx-2{,}718.\)<br>
+      <em>7.</em> On trace l'asymptote \(y=0\) en pointillés à gauche, on place le point \((1\,;-2{,}72)\), et on note que \(f(2)=0\) : la courbe coupe l'axe des abscisses en \(x=2.\)
+    </div>
+    <div class="tablewrap">
+      <table class="vartab">
+        <tr><td class="lab">\(x\)</td><td>\(-\infty\)</td><td></td><td>\(1\)</td><td></td><td>\(+\infty\)</td></tr>
+        <tr><td class="lab">\(f'(x)\)</td><td></td><td class="sgn neg">\(-\)</td><td>\(0\)</td><td class="sgn pos">\(+\)</td><td></td></tr>
+        <tr><td class="lab">\(f(x)\)</td><td>\(0\)</td><td class="arrow">↘</td><td>\(-\mathrm e\)</td><td class="arrow">↗</td><td>\(+\infty\)</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MÉTHODE ============================ -->
+<section id="methode">
+  <h2><span>2.</span> Méthode</h2>
+
+  <div class="card">
+    <h3>Résoudre une équation ou une inéquation avec exponentielle</h3>
+    <ol class="steps">
+      <li><strong>Tout ramener à une comparaison de deux exponentielles.</strong> Utiliser \(1=\mathrm e^{0}\), \(\mathrm e^{x}\mathrm e^{y}=\mathrm e^{x+y}\), \(\frac{1}{\mathrm e^{x}}=\mathrm e^{-x}\), \(\big(\mathrm e^{x}\big)^{n}=\mathrm e^{nx}.\) But : obtenir \(\mathrm e^{A}=\mathrm e^{B}\) ou \(\mathrm e^{A}&lt;\mathrm e^{B}.\)</li>
+      <li><strong>Justifier, puis enlever les exponentielles.</strong> Écrire : « la fonction exponentielle est strictement croissante sur \(\mathbb R\), donc \(\mathrm e^{A}=\mathrm e^{B}\iff A=B\) » (et l'inégalité garde son sens).</li>
+      <li><strong>Résoudre l'équation ou l'inéquation obtenue</strong> sur les exposants : premier degré, second degré, factorisation… C'est un exercice de Première.</li>
+      <li><strong>Conclure avec l'ensemble des solutions</strong>, écrit proprement : \(\mathcal S=\{4\}\), \(\mathcal S=\left]-\infty\,;2\right[\), \(\mathcal S=\{0\,;3\}\)…</li>
+    </ol>
+    <div class="ok">
+      <strong>Exemple A.</strong> \(\mathrm e^{2x}\times\mathrm e^{3}=\mathrm e^{x+7}.\)<br>
+      \(\mathrm e^{2x}\mathrm e^{3}=\mathrm e^{2x+3}\), donc l'équation s'écrit \(\mathrm e^{2x+3}=\mathrm e^{x+7}.\) L'exponentielle étant strictement croissante, cela équivaut à \(2x+3=x+7\), c'est-à-dire \(x=4.\) \(\mathcal S=\{4\}.\)<br>
+      <strong>Exemple B.</strong> \(\mathrm e^{x^{2}+2x}=1.\)<br>
+      \(1=\mathrm e^{0}\), donc l'équation équivaut à \(x^{2}+2x=0\), soit \(x(x+2)=0\), soit \(x=0\) ou \(x=-2.\) \(\mathcal S=\{-2\,;0\}.\)<br>
+      <strong>Exemple C.</strong> \(\mathrm e^{4-x}\leq\mathrm e^{2x+1}.\)<br>
+      Équivaut à \(4-x\leq 2x+1\), soit \(3\leq 3x\), soit \(x\geq1.\) \(\mathcal S=\left[1\,;+\infty\right[.\)<br>
+      <strong>Exemple D (produit nul).</strong> \((x^{2}-9)\,\mathrm e^{2x}=0.\) Comme \(\mathrm e^{2x}\neq0\), cela équivaut à \(x^{2}-9=0\), soit \(x=-3\) ou \(x=3.\)
+    </div>
+    <div class="box">
+      <strong>Contrôle rapide.</strong> Une fois \(x\) trouvé, remplacer dans les deux exposants : ils doivent être égaux. Pour l'exemple A : \(2\times4+3=11\) et \(4+7=11.\) ✓
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Lever une forme indéterminée contenant une exponentielle</h3>
+    <div class="tree">
+      <div class="lvl"><b>0. Je remplace chaque morceau par sa limite.</b> Si aucune F.I. n'apparaît, je conclus en citant l'opération (« par produit », « par somme », « par quotient »). Sinon :
+        <div class="lvl"><b>F.I. \(\infty-\infty\) entre une exponentielle et un polynôme, en \(+\infty\)</b> → <b>factoriser par \(\mathrm e^{x}\)</b>, puis croissance comparée.<br>\(\mathrm e^{x}-5x^{2}=\mathrm e^{x}\left(1-5\,\frac{x^{2}}{\mathrm e^{x}}\right)\to+\infty.\)</div>
+        <div class="lvl"><b>F.I. \(\frac{\infty}{\infty}\) avec l'exponentielle au dénominateur, en \(+\infty\)</b> → <b>séparer la fraction</b> terme à terme, puis \(\frac{x^{n}}{\mathrm e^{x}}\to0.\)<br>\(\frac{3x^{2}-x}{\mathrm e^{x}}=3\frac{x^{2}}{\mathrm e^{x}}-\frac{x}{\mathrm e^{x}}\to0.\)</div>
+        <div class="lvl"><b>F.I. \(0\times\infty\) en \(-\infty\)</b> (un polynôme fois \(\mathrm e^{x}\)) → <b>développer</b> et utiliser \(x\,\mathrm e^{x}\to0\) et \(\mathrm e^{x}\to0.\)<br>\((3x+2)\mathrm e^{x}=3x\mathrm e^{x}+2\mathrm e^{x}\to0.\)</div>
+        <div class="lvl"><b>Quotient de deux exponentielles, ou F.I. \(\frac{\infty}{\infty}\) entre exponentielles</b> → <b>factoriser par l'exponentielle dominante</b> en haut et en bas.<br>\(\frac{\mathrm e^{x}+3}{2\mathrm e^{x}-1}=\frac{\mathrm e^{x}\left(1+\frac{3}{\mathrm e^{x}}\right)}{\mathrm e^{x}\left(2-\frac{1}{\mathrm e^{x}}\right)}=\frac{1+3\mathrm e^{-x}}{2-\mathrm e^{-x}}\to\frac12\) en \(+\infty.\)</div>
+        <div class="lvl"><b>Exposant autre que \(x\)</b> (par exemple \(\mathrm e^{2x}\) ou \(\mathrm e^{-x}\)) → <b>poser \(t=\) l'exposant</b> et se ramener aux formules du cours.<br>\(\lim_{x\to+\infty}x^{2}\mathrm e^{-x}\) : on pose \(t=x\), c'est \(\frac{x^{2}}{\mathrm e^{x}}\to0.\) &nbsp; \(\lim_{x\to-\infty}x\,\mathrm e^{2x}=\frac12\,(2x)\mathrm e^{2x}\to0\) avec \(t=2x\to-\infty.\)</div>
+      </div>
+    </div>
+    <div class="key">
+      Les deux gestes à retenir : <strong>factoriser par l'exponentielle</strong> (elle est le terme prépondérant en \(+\infty\)) et <strong>citer la croissance comparée</strong> avec son énoncé. Une limite juste sans le nom du théorème perd des points.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Étudier une fonction du type \(f(x)=(ax+b)\,\mathrm e^{cx}\) — les six étapes</h3>
+    <ol class="steps">
+      <li><strong>Ensemble de définition :</strong> \(\mathcal D_f=\mathbb R\) (produit d'un polynôme et d'une exponentielle, définies sur \(\mathbb R\)).</li>
+      <li><strong>Limite du côté où l'exponentielle explose</strong> (c'est-à-dire en \(+\infty\) si \(c&gt;0\), en \(-\infty\) si \(c&lt;0\)) : <em>pas</em> de forme indéterminée, on conclut <strong>par produit</strong> avec la règle des signes. Résultat : \(\pm\infty.\)</li>
+      <li><strong>Limite de l'autre côté</strong> (là où \(\mathrm e^{cx}\to0\)) : forme indéterminée \(0\times\infty.\) On développe \(f(x)=ax\,\mathrm e^{cx}+b\,\mathrm e^{cx}\) et on applique la croissance comparée. Résultat : <strong>\(0.\)</strong> On en déduit l'asymptote horizontale \(y=0\), <strong>de ce côté-là</strong>.</li>
+      <li><strong>Dérivée :</strong> produit, puis factorisation par \(\mathrm e^{cx}\) :
+        \[f'(x)=a\,\mathrm e^{cx}+c(ax+b)\,\mathrm e^{cx}=\big(acx+a+bc\big)\,\mathrm e^{cx}.\]</li>
+      <li><strong>Signe :</strong> \(\mathrm e^{cx}&gt;0\), donc \(f'(x)\) est du signe de \(acx+a+bc\), qui s'annule en
+        \[x_{0}=-\frac{a+bc}{ac}.\]
+        Si \(ac&gt;0\), \(f'\) est négative puis positive : <strong>minimum</strong>. Si \(ac&lt;0\), positive puis négative : <strong>maximum</strong>.</li>
+      <li><strong>Tableau de variations et valeur de l'extremum :</strong> on calcule \(f(x_{0}).\) Astuce de vérification : \(a x_{0}+b=-\frac{a}{c}\), donc \(f(x_{0})=-\frac{a}{c}\,\mathrm e^{c x_{0}}.\)</li>
+    </ol>
+    <div class="ok">
+      <strong>Exemple guidé : \(f(x)=(3x+6)\mathrm e^{-x}.\)</strong> Ici \(a=3\), \(b=6\), \(c=-1.\)<br>
+      <em>1.</em> \(\mathcal D_f=\mathbb R.\)<br>
+      <em>2.</em> \(c&lt;0\) : c'est en \(-\infty\) que l'exponentielle explose. \(3x+6\to-\infty\) et \(\mathrm e^{-x}\to+\infty\), donc par produit \(\lim_{x\to-\infty}f(x)=-\infty.\)<br>
+      <em>3.</em> En \(+\infty\) : \(f(x)=3x\,\mathrm e^{-x}+6\,\mathrm e^{-x}=3\frac{x}{\mathrm e^{x}}+\frac{6}{\mathrm e^{x}}.\) Par croissance comparée les deux termes tendent vers \(0\), donc \(\lim_{x\to+\infty}f(x)=0\) : la droite \(y=0\) est asymptote horizontale à \(\mathcal C_f\) <strong>en \(+\infty.\)</strong><br>
+      <em>4.</em> \(f'(x)=3\mathrm e^{-x}-(3x+6)\mathrm e^{-x}=(-3x-3)\mathrm e^{-x}.\)<br>
+      <em>5.</em> \(\mathrm e^{-x}&gt;0\) donc \(f'(x)\) est du signe de \(-3x-3\), qui s'annule en \(x_{0}=-1\) : positif pour \(x&lt;-1\), négatif pour \(x&gt;-1.\) Donc \(f\) croît puis décroît : <strong>maximum</strong> en \(-1.\)<br>
+      <em>6.</em> \(f(-1)=3\,\mathrm e^{1}=3\mathrm e\approx 8{,}15.\) (Contrôle : \(-\frac ac=-\frac{3}{-1}=3\) et \(\mathrm e^{cx_0}=\mathrm e^{1}\) ✓.)
+    </div>
+    <div class="box">
+      <strong>Cas voisins traités pareil.</strong> \(f(x)=(ax^{2}+bx+c)\mathrm e^{kx}\) : même plan, la dérivée reste un polynôme fois l'exponentielle, et le signe se fait avec le discriminant. \(f(x)=\frac{P(x)}{\mathrm e^{x}}\) : écrire \(P(x)\mathrm e^{-x}\) et se ramener au cas ci-dessus.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Déterminer une tangente, et la position de la courbe par rapport à elle</h3>
+    <ol class="steps">
+      <li><strong>Équation de la tangente en \(x_{0}\) :</strong> \(y=f'(x_{0})(x-x_{0})+f(x_{0}).\) Calculer d'abord \(f(x_{0})\) puis \(f'(x_{0})\), séparément, sans se presser.</li>
+      <li><strong>Position :</strong> on étudie le <strong>signe de la différence</strong> \(d(x)=f(x)-\big(f'(x_{0})(x-x_{0})+f(x_{0})\big).\)</li>
+      <li><strong>Conclure :</strong> si \(d(x)&gt;0\), \(\mathcal C_f\) est <strong>au-dessus</strong> de la tangente ; si \(d(x)&lt;0\), elle est <strong>en dessous</strong>. Là où \(d(x)=0\), elles se touchent.</li>
+      <li><strong>Si le signe de \(d\) n'est pas évident</strong>, on étudie \(d\) comme une fonction : \(d'\), tableau de variations, et on montre par exemple que \(d\) admet un minimum égal à \(0.\)</li>
+    </ol>
+    <div class="ok">
+      <strong>Exemple.</strong> \(f(x)=\mathrm e^{x}\), tangente en \(x_{0}=0.\)<br>
+      \(f(0)=1\) et \(f'(0)=\mathrm e^{0}=1\), donc la tangente \(T\) a pour équation \(y=1\times(x-0)+1\), soit \(y=x+1.\)<br>
+      Position : \(d(x)=\mathrm e^{x}-x-1\), donc \(d'(x)=\mathrm e^{x}-1.\) Or \(\mathrm e^{x}-1&gt;0\iff \mathrm e^{x}&gt;\mathrm e^{0}\iff x&gt;0.\) Donc \(d\) décroît sur \(\left]-\infty\,;0\right]\) et croît sur \(\left[0\,;+\infty\right[\) : \(d\) admet un minimum en \(0\), égal à \(d(0)=1-0-1=0.\)<br>
+      Conclusion : \(d(x)\geq0\) pour tout \(x\), donc \(\mathcal C_f\) est <strong>toujours au-dessus</strong> de sa tangente en \(0\), qu'elle ne touche qu'en \(x=0.\) (C'est l'inégalité classique \(\mathrm e^{x}\geq x+1.\))
+    </div>
+    <div class="box">
+      <strong>Lien avec la convexité (fiche 3E).</strong> \(f''(x)=\mathrm e^{x}&gt;0\) : la fonction exponentielle est <strong>convexe</strong> sur \(\mathbb R\), et une fonction convexe est toujours au-dessus de chacune de ses tangentes. Cela redonne le résultat sans calcul de signe.
+    </div>
+  </div>
+
+  <div class="card coral">
+    <h3>Erreurs fréquentes</h3>
+    <div class="warn"><strong>Passer de \(\mathrm e^{A}=\mathrm e^{B}\) à \(A=B\) sans rien dire.</strong> Ce n'est pas une simplification automatique : c'est une conséquence de la <em>stricte croissance</em> (donc de l'injectivité) de l'exponentielle. Une copie qui ne l'écrit pas perd le point de justification. Formule à recopier : « la fonction exponentielle est strictement croissante sur \(\mathbb R\), donc… ».</div>
+    <div class="warn"><strong>Chercher des racines là où il n'y en a pas.</strong> \(\mathrm e^{u(x)}\) ne s'annule <em>jamais</em>. Dans \((x-4)\mathrm e^{2x}=0\), la seule solution est \(x=4.\) Et pour un tableau de signes, le facteur exponentiel n'apporte <strong>aucune</strong> colonne : il est positif partout.</div>
+    <div class="warn"><strong>Se tromper de croissance comparée.</strong> En \(+\infty\) : \(\frac{x^{n}}{\mathrm e^{x}}\to0\) et \(\frac{\mathrm e^{x}}{x^{n}}\to+\infty.\) Le petit contrôle mental : à \(x=10\), \(\mathrm e^{10}\approx22\,000\) alors que \(10^{3}=1\,000\) — l'exponentielle a déjà pris le dessus. Et \(x\,\mathrm e^{x}\to0\) vaut <strong>en \(-\infty\)</strong>, jamais en \(+\infty.\)</div>
+    <div class="warn"><strong>Oublier le facteur \(u'.\)</strong> \(\big(\mathrm e^{-2x}\big)'=-2\mathrm e^{-2x}\), pas \(\mathrm e^{-2x}\) ni \(-2x\,\mathrm e^{-2x}.\) Conséquence sournoise : avec le mauvais \(u'\), le <em>signe</em> de la dérivée est faux, donc tout le tableau de variations l'est aussi.</div>
+    <div class="warn"><strong>Annoncer l'asymptote du mauvais côté.</strong> Pour \(x\mapsto\mathrm e^{x}\) et pour \((ax+b)\mathrm e^{x}\), l'asymptote \(y=0\) est <strong>en \(-\infty\)</strong> ; pour \(\mathrm e^{-x}\) et \((ax+b)\mathrm e^{-x}\), elle est <strong>en \(+\infty.\)</strong> Réflexe : l'asymptote est du côté où l'exponentielle <em>s'écrase</em>, c'est-à-dire là où son exposant tend vers \(-\infty.\)</div>
+    <div class="warn"><strong>Conclure « \(f\) est croissante » à partir du seul \(\mathrm e^{u}&gt;0.\)</strong> \(\mathrm e^{u}&gt;0\) donne le signe du <em>facteur</em> exponentiel, pas celui de \(f'.\) Il reste toujours à étudier le signe de \(u'\) ou du polynôme en facteur.</div>
+  </div>
+</section>
+
+<!-- ============================ VISUALISATION ============================ -->
+<section id="visu">
+  <h2><span>3.</span> Visualisation</h2>
+  <div class="card">
+    <div class="tabs">
+      <button type="button" id="tabF" class="active">Étude de \(f\)</button>
+      <button type="button" id="tabG">Croissances comparées</button>
+      <button type="button" id="tabM">Modélisation</button>
+    </div>
+
+    <!-- Onglet 1 : étude complète de (ax+b)e^(cx) -->
+    <div id="panelF">
+      <p>Règle \(a\), \(b\) et \(c\) : la courbe, la <strong>dérivée calculée symboliquement</strong>, l'extremum, l'asymptote et le <strong>tableau de variations</strong> se mettent à jour en temps réel. Change le signe de \(c\) et observe de quel côté part l'asymptote.</p>
+      <div class="slider"><label for="fA">a</label><input type="range" id="fA" min="-3" max="3" step="1" value="1"><output id="fAOut">1</output></div>
+      <div class="slider"><label for="fB">b</label><input type="range" id="fB" min="-6" max="6" step="1" value="-2"><output id="fBOut">−2</output></div>
+      <div class="slider"><label for="fC">c</label><input type="range" id="fC" min="-2" max="2" step="0.5" value="1"><output id="fCOut">1</output></div>
+      <div class="stat" id="fExpr"></div>
+      <svg id="figF" class="figure" viewBox="0 0 440 300" role="img" aria-label="Courbe de f, asymptote horizontale et extremum"></svg>
+      <div class="legend"><span style="--c:#2563eb">courbe de f</span><span style="--c:#22a06b">asymptote y = 0</span><span style="--c:#d97706">extremum</span></div>
+      <div class="stat good" id="fLim"></div>
+      <div class="tablewrap" id="fTab"></div>
+    </div>
+
+    <!-- Onglet 2 : croissances comparées -->
+    <div id="panelG" hidden>
+      <p>Sur le même graphique : \(x^{n}\) et \(\mathrm e^{x}.\) Pour les petites valeurs de \(x\), la puissance peut être <em>très</em> au-dessus. Élargis la fenêtre : l'exponentielle finit toujours par passer devant, et le rapport \(\frac{\mathrm e^{x}}{x^{n}}\) explose.</p>
+      <div class="slider"><label for="gN">n</label><input type="range" id="gN" min="1" max="6" step="1" value="3"><output id="gNOut">3</output></div>
+      <div class="slider"><label for="gX">zoom</label><input type="range" id="gX" min="3" max="60" step="1" value="8"><output id="gXOut">8</output></div>
+      <div class="row"><button type="button" class="secondary" id="gLog">Échelle verticale : normale</button></div>
+      <svg id="figG" class="figure" viewBox="0 0 440 300" role="img" aria-label="Comparaison des courbes de x puissance n et de l exponentielle"></svg>
+      <div class="legend"><span style="--c:#d97706">x^n</span><span style="--c:#2563eb">eˣ</span><span style="--c:#f97362">croisement</span></div>
+      <div class="stat" id="gInfo"></div>
+      <div class="tablewrap" id="gTab"></div>
+    </div>
+
+    <!-- Onglet 3 : modélisation -->
+    <div id="panelM" hidden>
+      <p>Deux situations concrètes gouvernées par une exponentielle. Règle la <strong>constante de temps</strong> \(\tau\) et lis les repères directement sur la courbe.</p>
+      <div class="row">
+        <select id="mSel" aria-label="Choix du modèle">
+          <option value="cond">Charge d'un condensateur</option>
+          <option value="radio">Décroissance radioactive</option>
+        </select>
+      </div>
+      <div class="slider"><label for="mTau">τ</label><input type="range" id="mTau" min="0.5" max="6" step="0.1" value="2"><output id="mTauOut">2</output></div>
+      <div class="stat" id="mExpr"></div>
+      <svg id="figM" class="figure" viewBox="0 0 440 300" role="img" aria-label="Courbe de modélisation exponentielle avec repères"></svg>
+      <div class="legend"><span style="--c:#2563eb">grandeur étudiée</span><span style="--c:#22a06b">valeur limite</span><span style="--c:#f97362">repère lu</span></div>
+      <div class="stat good" id="mInfo"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EXERCICES ============================ -->
+<section id="exos">
+  <h2><span>4.</span> Exercices</h2>
+  <p>Trois exercices à valeurs aléatoires : le bouton « Nouvel exercice » change les nombres. Écris les décimaux avec une virgule ou un point, au choix.</p>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 — Équations et inéquations <span class="tag">Niveau 1</span></h3>
+    <div id="ex1-enonce"></div>
+    <div class="field" id="ex1-senswrap" hidden><span class="lab">L'ensemble des solutions est de la forme</span>
+      <select id="ex1-sens">
+        <option value="">— choisir —</option>
+        <option value="inf">\(]-\infty\,;\alpha[\) (ou fermé)</option>
+        <option value="sup">\(]\alpha\,;+\infty[\) (ou fermé)</option>
+      </select>
+    </div>
+    <div class="field"><span class="lab" id="ex1-lab">Réponse</span>
+      <input type="text" id="ex1-rep" inputmode="text" placeholder="ex. 4 ou -1,5">
+    </div>
+    <div class="row"><button id="ex1-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex1-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex1-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex1-correction"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 — Dérivée d'un produit avec exponentielle <span class="tag">Niveau 2</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="field"><span class="lab">\(\alpha=\)</span><input type="text" id="ex2-alpha" inputmode="decimal" placeholder="coefficient de x"></div>
+    <div class="field"><span class="lab">\(\beta=\)</span><input type="text" id="ex2-beta" inputmode="decimal" placeholder="terme constant"></div>
+    <div class="field"><span class="lab" id="ex2-lab">\(f'(x_0)\approx\)</span><input type="text" id="ex2-val" inputmode="decimal" placeholder="valeur"></div>
+    <div class="row"><button id="ex2-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 — Étude complète guidée <span class="tag">Niveau 3</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="field"><span class="lab">\(\lim_{x\to-\infty}f(x)\)</span>
+      <select id="ex3-lm">
+        <option value="">— choisir —</option>
+        <option value="minf">−∞</option>
+        <option value="zero">0</option>
+        <option value="pinf">+∞</option>
+      </select>
+    </div>
+    <div class="field"><span class="lab">\(\lim_{x\to+\infty}f(x)\)</span>
+      <select id="ex3-lp">
+        <option value="">— choisir —</option>
+        <option value="minf">−∞</option>
+        <option value="zero">0</option>
+        <option value="pinf">+∞</option>
+      </select>
+    </div>
+    <div class="field"><span class="lab">Abscisse \(x_0\) de l'extremum</span><input type="text" id="ex3-x0" inputmode="decimal" placeholder="ex. -1,5"></div>
+    <div class="field"><span class="lab">C'est un</span>
+      <select id="ex3-nat">
+        <option value="">— choisir —</option>
+        <option value="max">maximum</option>
+        <option value="min">minimum</option>
+      </select>
+    </div>
+    <div class="row"><button id="ex3-check" type="button">Vérifier</button></div>
+    <div class="feedback" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div>
+</section>
+
+<!-- ============================ QCM ============================ -->
+<section id="qcm">
+  <h2><span>5.</span> QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard dans une banque de 18. Une seule bonne réponse par question.</p>
+    <div id="qcm-container"></div>
+    <div class="score" id="qcm-score"></div>
+    <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+  <p><a class="retour-fiches" href="../../index.html">← Toutes les fiches</a></p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function rndNonZero(a, b) { var x = 0; while (x === 0) { x = rnd(a, b); } return x; }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function fmt(x, d) {
+    if (!isFinite(x)) return '—';
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return String(Math.round(x * p) / p).replace('.', ',');
+  }
+  function fmtSci(x) {
+    if (!isFinite(x)) return '—';
+    var ax = Math.abs(x);
+    if (ax !== 0 && (ax >= 1e5 || ax < 1e-3)) {
+      var e = Math.floor(Math.log(ax) / Math.LN10);
+      var m = x / Math.pow(10, e);
+      return fmt(m, 2) + ' × 10<sup>' + e + '</sup>';
+    }
+    return fmt(x, ax < 1 ? 4 : (ax < 100 ? 2 : 1));
+  }
+  function plainSci(x) {
+    if (!isFinite(x)) return '—';
+    var ax = Math.abs(x);
+    if (ax !== 0 && ax >= 1e5) {
+      var e = Math.floor(Math.log(ax) / Math.LN10);
+      return fmt(x / Math.pow(10, e), 1) + '×10^' + e;
+    }
+    return fmt(x, ax < 100 ? 1 : 0);
+  }
+  function parseNum(s) {
+    if (s === null || s === undefined) return NaN;
+    s = String(s).trim().replace(/\s+/g, '').replace(',', '.').replace(/−/g, '-');
+    if (s === '') return NaN;
+    var m = s.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+    if (m) { var d = parseFloat(m[2]); return d === 0 ? NaN : parseFloat(m[1]) / d; }
+    if (!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
+    return parseFloat(s);
+  }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'good' : 'bad');
+    el.innerHTML = (ok ? '✓ ' : '✗ ') + msg;
+    typeset(el);
+  }
+  var NS = 'http://www.w3.org/2000/svg';
+  function mk(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) { if (Object.prototype.hasOwnProperty.call(attrs, k)) e.setAttribute(k, attrs[k]); }
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(parent, x, y, s, attrs) {
+    var a = attrs || {};
+    a.x = x; a.y = y; a['font-size'] = a['font-size'] || 11;
+    a.fill = a.fill || '#6b7280'; a['font-family'] = 'system-ui,sans-serif';
+    var t = mk('text', a, parent); t.textContent = s; return t;
+  }
+  function clearSvg(s) { while (s.firstChild) s.removeChild(s.firstChild); }
+  function minus(s) { return String(s).replace(/-/g, '−'); }
+
+  /* ---------- écriture en TeX ---------- */
+  function numTex(x) { return fmt(x, 4).replace(',', '{,}'); }
+  function coefTex(x) { if (x === 1) return ''; if (x === -1) return '-'; return numTex(x); }
+  function expTex(c) {
+    var arg;
+    if (c === 1) arg = 'x'; else if (c === -1) arg = '-x'; else if (c === 0) arg = '0'; else arg = coefTex(c) + 'x';
+    return '\\mathrm e^{' + arg + '}';
+  }
+  function eTex(k) {
+    if (k === 0) return '1';
+    if (k === 1) return '\\mathrm e';
+    return '\\mathrm e^{' + numTex(k) + '}';
+  }
+  function mulTex(k, s) {
+    if (k === 0) return '0';
+    if (s === '1') return numTex(k);
+    if (k === 1) return s;
+    if (k === -1) return '-' + s;
+    return numTex(k) + '\\,' + s;
+  }
+  function mulPar(k, s) { return (k < 0) ? '\\left(' + mulTex(k, s) + '\\right)' : mulTex(k, s); }
+  function addTex(v) { return (v < 0 ? '-' : '+') + numTex(Math.abs(v)); }
+  function parNeg(x) { return x < 0 ? '\\left(' + numTex(x) + '\\right)' : numTex(x); }
+  function linTex(a, b) {
+    var s = '';
+    if (a !== 0) s += coefTex(a) + 'x';
+    if (b !== 0) { s += (s === '') ? numTex(b) : ((b > 0 ? '+' : '-') + numTex(Math.abs(b))); }
+    return s === '' ? '0' : s;
+  }
+  // (ax+b) e^{cx} avec parenthèses seulement si utile
+  function prodTex(a, b, c) {
+    var g = linTex(a, b);
+    if (a === 0 && b === 0) return '0';
+    if (c === 0) return g;
+    if (a === 0) return coefTex(b) + expTex(c);
+    if (b === 0) return linTex(a, 0) + '\\,' + expTex(c);
+    return '(' + g + ')\\,' + expTex(c);
+  }
+
+  /* ---------- navigation sticky ---------- */
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.scrollY + 110, cur = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', updateNav); updateNav();
+
+  /* ===================== VISUALISATION ===================== */
+  var TABS = [
+    { btn: 'tabF', panel: 'panelF', draw: function () { drawF(); } },
+    { btn: 'tabG', panel: 'panelG', draw: function () { drawG(); } },
+    { btn: 'tabM', panel: 'panelM', draw: function () { drawM(); } }
+  ];
+  TABS.forEach(function (t) {
+    $(t.btn).addEventListener('click', function () {
+      TABS.forEach(function (o) {
+        $(o.btn).classList.toggle('active', o === t);
+        $(o.panel).hidden = (o !== t);
+      });
+      t.draw();
+    });
+  });
+
+  /* ----- Onglet 1 : étude de f(x) = (ax+b)e^(cx) ----- */
+  function drawF() {
+    var a = parseFloat($('fA').value), b = parseFloat($('fB').value), c = parseFloat($('fC').value);
+    $('fAOut').textContent = minus(fmt(a, 2));
+    $('fBOut').textContent = minus(fmt(b, 2));
+    $('fCOut').textContent = minus(fmt(c, 2));
+    var f = function (x) { return (a * x + b) * Math.exp(c * x); };
+    var A = a * c, B = a + b * c;              // f'(x) = (Ax + B) e^{cx}
+    var x0 = (A !== 0) ? (-B / A) : null;      // zéro de la dérivée
+    var fx0 = (x0 !== null) ? f(x0) : null;
+
+    /* --- expressions symboliques --- */
+    var expr = '\\(f(x)=' + prodTex(a, b, c) + '\\)';
+    var dexpr;
+    if (c === 0) dexpr = '\\(f\'(x)=' + numTex(a) + '\\)';
+    else dexpr = '\\(f\'(x)=' + prodTex(A, B, c) + '\\)';
+    $('fExpr').innerHTML = expr + '<br>' + dexpr +
+      (c === 0 ? ' <em>(c = 0 : plus d\'exponentielle, f est une fonction affine.)</em>' : '');
+    typeset($('fExpr'));
+
+    /* --- limites --- */
+    function inftyOf(s) { return s > 0 ? '+\\infty' : '-\\infty'; }
+    var limM, limP, asym = null;
+    if (c === 0) {
+      limM = (a > 0) ? '-\\infty' : (a < 0 ? '+\\infty' : numTex(b));
+      limP = (a > 0) ? '+\\infty' : (a < 0 ? '-\\infty' : numTex(b));
+    } else if (c > 0) {
+      limM = '0'; asym = '-\\infty';
+      limP = (a !== 0) ? inftyOf(a) : (b !== 0 ? inftyOf(b) : '0');
+    } else {
+      limP = '0'; asym = '+\\infty';
+      limM = (a !== 0) ? inftyOf(-a) : (b !== 0 ? inftyOf(b) : '0');
+    }
+
+    /* --- fenêtre --- */
+    var half = (c === 0) ? 5 : Math.max(2.5, Math.min(9, 2 + 2.5 / Math.abs(c)));
+    var center = (x0 !== null && isFinite(x0)) ? x0 : 0;
+    var xmin = center - half, xmax = center + half;
+    var i, x, y, lo = 0, hi = 0, vals = [];
+    for (i = 0; i <= 300; i++) {
+      x = xmin + (xmax - xmin) * i / 300; y = f(x);
+      if (isFinite(y)) vals.push(y);
+    }
+    vals.forEach(function (v) { if (v < lo) lo = v; if (v > hi) hi = v; });
+    var ref = (fx0 !== null && isFinite(fx0) && fx0 !== 0) ? Math.abs(fx0) : 1;
+    var cap = Math.max(4 * ref, 2);
+    lo = Math.max(lo, -cap); hi = Math.min(hi, cap);
+    if (hi - lo < 1) { hi += 0.5; lo -= 0.5; }
+    var pad = (hi - lo) * 0.12; lo -= pad; hi += pad;
+
+    var svg = $('figF'); clearSvg(svg);
+    var L = 44, R = 14, T = 14, Bm = 28, W = 440, H = 300;
+    var pw = W - L - R, ph = H - T - Bm;
+    function X(v) { return L + (v - xmin) / (xmax - xmin) * pw; }
+    function Y(v) { return T + (hi - v) / (hi - lo) * ph; }
+    mk('rect', { x: 0, y: 0, width: W, height: H, fill: '#fff' }, svg);
+    // axes
+    var y0 = (lo <= 0 && hi >= 0) ? Y(0) : (hi < 0 ? T : T + ph);
+    mk('line', { x1: L, y1: y0, x2: L + pw, y2: y0, stroke: '#9ca3af' }, svg);
+    if (X(0) >= L && X(0) <= L + pw) mk('line', { x1: X(0), y1: T, x2: X(0), y2: T + ph, stroke: '#9ca3af' }, svg);
+    // asymptote y = 0
+    if (asym) {
+      mk('line', { x1: L, y1: Y(0), x2: L + pw, y2: Y(0), stroke: '#22a06b', 'stroke-width': 2, 'stroke-dasharray': '7 4' }, svg);
+      txt(svg, (asym === '-\\infty') ? L + 5 : L + pw - 5, Y(0) - 6, 'y = 0',
+        { fill: '#22a06b', 'font-weight': '700', 'text-anchor': (asym === '-\\infty') ? 'start' : 'end' });
+    }
+    // courbe
+    var d = '', started = false;
+    for (i = 0; i <= 600; i++) {
+      x = xmin + (xmax - xmin) * i / 600; y = f(x);
+      if (!isFinite(y) || y > hi + (hi - lo) || y < lo - (hi - lo)) { started = false; continue; }
+      var yy = Math.max(lo, Math.min(hi, y));
+      d += (started ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(yy).toFixed(1) + ' ';
+      started = true;
+    }
+    if (d) mk('path', { d: d, fill: 'none', stroke: '#2563eb', 'stroke-width': 2.3 }, svg);
+    // extremum
+    if (x0 !== null && x0 > xmin && x0 < xmax && fx0 >= lo && fx0 <= hi) {
+      mk('line', { x1: X(x0), y1: Y(fx0), x2: X(x0), y2: y0, stroke: '#d97706', 'stroke-dasharray': '3 3' }, svg);
+      mk('circle', { cx: X(x0), cy: Y(fx0), r: 5, fill: '#d97706' }, svg);
+      txt(svg, Math.min(X(x0) + 8, W - 90), Y(fx0) - 8,
+        (A > 0 ? 'min ' : 'max ') + minus(fmt(fx0, 2)) + ' en x = ' + minus(fmt(x0, 2)),
+        { fill: '#d97706', 'font-weight': '700' });
+    }
+    // graduations
+    txt(svg, L, T + ph + 16, minus(fmt(xmin, 1)));
+    txt(svg, L + pw, T + ph + 16, minus(fmt(xmax, 1)), { 'text-anchor': 'end' });
+    txt(svg, L - 4, T + 10, minus(fmt(hi, 1)), { 'text-anchor': 'end' });
+    txt(svg, L - 4, T + ph, minus(fmt(lo, 1)), { 'text-anchor': 'end' });
+
+    /* --- texte des limites --- */
+    var txtLim = '\\(\\lim_{x\\to-\\infty}f(x)=' + limM + '\\) &nbsp;·&nbsp; \\(\\lim_{x\\to+\\infty}f(x)=' + limP + '.\\)';
+    if (asym) txtLim += '<br>La droite d\'équation \\(y=0\\) est asymptote horizontale ' +
+      (asym === '-\\infty' ? 'en \\(-\\infty\\)' : 'en \\(+\\infty\\)') + ' (c ' + (c > 0 ? '&gt;' : '&lt;') + ' 0).';
+    else txtLim += '<br>Pas d\'exponentielle ici : aucune asymptote horizontale.';
+    $('fLim').innerHTML = txtLim;
+    typeset($('fLim'));
+
+    /* --- tableau de variations --- */
+    var tab;
+    if (x0 === null) {
+      var croiss = (c === 0) ? (a > 0) : (B > 0);
+      tab = '<table class="vartab"><tr><td class="lab">\\(x\\)</td><td>\\(-\\infty\\)</td><td></td><td>\\(+\\infty\\)</td></tr>' +
+        '<tr><td class="lab">\\(f\'(x)\\)</td><td></td><td class="sgn ' + (croiss ? 'pos' : 'neg') + '">\\(' + (croiss ? '+' : '-') + '\\)</td><td></td></tr>' +
+        '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + limM + '\\)</td><td class="arrow">' + (croiss ? '↗' : '↘') + '</td><td>\\(' + limP + '\\)</td></tr></table>';
+      if (a === 0 && b === 0) tab = '<p><em>a = b = 0 : la fonction est nulle.</em></p>';
+    } else {
+      var s1 = (A > 0) ? '-' : '+', s2 = (A > 0) ? '+' : '-';
+      tab = '<table class="vartab"><tr><td class="lab">\\(x\\)</td><td>\\(-\\infty\\)</td><td></td><td>\\(' + numTex(Math.round(x0 * 1000) / 1000) + '\\)</td><td></td><td>\\(+\\infty\\)</td></tr>' +
+        '<tr><td class="lab">\\(f\'(x)\\)</td><td></td><td class="sgn ' + (A > 0 ? 'neg' : 'pos') + '">\\(' + s1 + '\\)</td><td>\\(0\\)</td><td class="sgn ' + (A > 0 ? 'pos' : 'neg') + '">\\(' + s2 + '\\)</td><td></td></tr>' +
+        '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + limM + '\\)</td><td class="arrow">' + (A > 0 ? '↘' : '↗') + '</td><td>\\(' + numTex(Math.round(fx0 * 1000) / 1000) + '\\)</td><td class="arrow">' + (A > 0 ? '↗' : '↘') + '</td><td>\\(' + limP + '\\)</td></tr></table>' +
+        '<p style="font-size:.9rem;margin:.4rem 0 0">\\(f\'(x)=' + prodTex(A, B, c) + '\\) s\'annule en \\(x_0=-\\dfrac{a+bc}{ac}=' + numTex(Math.round(x0 * 1000) / 1000) + '\\), et \\(\\mathrm e^{' + (c === 1 ? 'x' : (coefTex(c) + 'x')) + '}&gt;0\\) : le signe de \\(f\'\\) est celui de \\(' + linTex(A, B) + '.\\)</p>';
+    }
+    $('fTab').innerHTML = tab;
+    typeset($('fTab'));
+  }
+  ['fA', 'fB', 'fC'].forEach(function (id) { $(id).addEventListener('input', drawF); });
+
+  /* ----- Onglet 2 : croissances comparées ----- */
+  var gLogMode = false;
+  $('gLog').addEventListener('click', function () {
+    gLogMode = !gLogMode;
+    this.textContent = 'Échelle verticale : ' + (gLogMode ? 'logarithmique' : 'normale');
+    drawG();
+  });
+
+  function croisement(n) {
+    // bornes de l'intervalle où x^n est au-dessus de e^x (s'il existe)
+    var prev = -1, deb = null, fin = null, i, x, g;
+    for (i = 1; i <= 6000; i++) {
+      x = i * 0.01;
+      g = n * Math.log(x) - x;                   // signe de x^n - e^x
+      if (prev <= 0 && g > 0 && deb === null) deb = x;
+      if (prev > 0 && g <= 0) fin = x;
+      prev = g;
+    }
+    return (fin === null) ? null : { deb: deb, fin: fin };
+  }
+
+  function drawG() {
+    var n = parseInt($('gN').value, 10);
+    var xm = parseFloat($('gX').value);
+    $('gNOut').textContent = String(n);
+    $('gXOut').textContent = String(xm);
+    var P = function (x) { return Math.pow(x, n); };
+    var E = function (x) { return Math.exp(x); };
+    var svg = $('figG'); clearSvg(svg);
+    var L = 50, R = 14, T = 14, Bm = 30, W = 440, H = 300;
+    var pw = W - L - R, ph = H - T - Bm;
+    var top = Math.max(P(xm), E(xm));
+    var i, x;
+    function Y(v) {
+      if (gLogMode) {
+        var lv = Math.log(Math.max(v, 1e-3)) / Math.LN10;
+        var lmin = -1, lmax = Math.log(top) / Math.LN10;
+        return T + (lmax - lv) / (lmax - lmin) * ph;
+      }
+      return T + (top - v) / top * ph;
+    }
+    function X(v) { return L + v / xm * pw; }
+    mk('rect', { x: 0, y: 0, width: W, height: H, fill: '#fff' }, svg);
+    mk('line', { x1: L, y1: T + ph, x2: L + pw, y2: T + ph, stroke: '#9ca3af' }, svg);
+    mk('line', { x1: L, y1: T, x2: L, y2: T + ph, stroke: '#9ca3af' }, svg);
+    [[P, '#d97706'], [E, '#2563eb']].forEach(function (o) {
+      var d = '', started = false;
+      for (i = 0; i <= 600; i++) {
+        x = xm * i / 600;
+        var v = o[0](x);
+        if (!isFinite(v) || (gLogMode && v <= 1e-3) || (!gLogMode && v > top * 1.02)) { started = false; continue; }
+        var yy = Y(v);
+        if (yy < T - 5 || yy > T + ph + 5) { started = false; continue; }
+        d += (started ? 'L' : 'M') + X(x).toFixed(1) + ' ' + yy.toFixed(1) + ' ';
+        started = true;
+      }
+      if (d) mk('path', { d: d, fill: 'none', stroke: o[1], 'stroke-width': 2.3 }, svg);
+    });
+    var xc = croisement(n);
+    if (xc !== null && xc.fin <= xm) {
+      mk('line', { x1: X(xc.fin), y1: T, x2: X(xc.fin), y2: T + ph, stroke: '#f97362', 'stroke-width': 2, 'stroke-dasharray': '5 4' }, svg);
+      txt(svg, Math.min(X(xc.fin) + 5, W - 95), T + 13, 'croisement x ≈ ' + fmt(xc.fin, 2), { fill: '#f97362', 'font-weight': '700' });
+      if (xc.deb <= xm) {
+        mk('line', { x1: X(xc.deb), y1: T, x2: X(xc.deb), y2: T + ph, stroke: '#f97362', 'stroke-dasharray': '2 4' }, svg);
+      }
+    }
+    txt(svg, L + 6, T + 12, 'n = ' + n, { fill: '#d97706', 'font-weight': '700' });
+    txt(svg, L, T + ph + 17, '0');
+    txt(svg, L + pw, T + ph + 17, 'x = ' + xm, { 'text-anchor': 'end' });
+    txt(svg, L - 4, T + 10, gLogMode ? ('10^' + fmt(Math.log(top) / Math.LN10, 1)) : plainSci(top), { 'text-anchor': 'end' });
+
+    var r = E(xm) / P(xm);
+    $('gInfo').innerHTML = 'En \\(x=' + xm + '\\) : \\(x^{' + n + '}=\\)&nbsp;' + fmtSci(P(xm)) +
+      ' &nbsp;·&nbsp; \\(\\mathrm e^{x}=\\)&nbsp;' + fmtSci(E(xm)) +
+      ' &nbsp;·&nbsp; rapport \\(\\dfrac{\\mathrm e^{x}}{x^{' + n + '}}=\\)&nbsp;<b>' + fmtSci(r) + '</b>.' +
+      (xc === null
+        ? '<br>Pour \\(n=' + n + '\\), \\(\\mathrm e^{x}\\) est au-dessus de \\(x^{' + n + '}\\) dès \\(x\\geq0.\\)'
+        : '<br>\\(x^{' + n + '}\\) ne dépasse \\(\\mathrm e^{x}\\) que sur l\'intervalle \\(\\left[' + fmt(xc.deb, 2).replace(',', '{,}') + '\\,;' + fmt(xc.fin, 2).replace(',', '{,}') + '\\right]\\) ; au-delà de \\(x\\approx' + fmt(xc.fin, 2).replace(',', '{,}') + '\\), \\(\\mathrm e^{x}\\) passe devant <b>définitivement</b> : c\'est exactement ce que dit \\(\\lim_{x\\to+\\infty}\\frac{\\mathrm e^{x}}{x^{' + n + '}}=+\\infty.\\)');
+    typeset($('gInfo'));
+
+    var cols = [1, 5, 10, 20, 40], row1 = '', row2 = '', row3 = '', row0 = '';
+    cols.forEach(function (v) {
+      row0 += '<th>\\(' + v + '\\)</th>';
+      row1 += '<td>' + fmtSci(P(v)) + '</td>';
+      row2 += '<td>' + fmtSci(E(v)) + '</td>';
+      row3 += '<td>' + fmtSci(P(v) / E(v)) + '</td>';
+    });
+    $('gTab').innerHTML = '<table><tr><th>\\(x\\)</th>' + row0 + '</tr>' +
+      '<tr><td class="lab">\\(x^{' + n + '}\\)</td>' + row1 + '</tr>' +
+      '<tr><td class="lab">\\(\\mathrm e^{x}\\)</td>' + row2 + '</tr>' +
+      '<tr><td class="lab">\\(\\frac{x^{' + n + '}}{\\mathrm e^{x}}\\)</td>' + row3 + '</tr></table>';
+    typeset($('gTab'));
+  }
+  ['gN', 'gX'].forEach(function (id) { $(id).addEventListener('input', drawG); });
+
+  /* ----- Onglet 3 : modélisation ----- */
+  function drawM() {
+    var mode = $('mSel').value;
+    var tau = parseFloat($('mTau').value);
+    $('mTauOut').textContent = fmt(tau, 1);
+    var tmax = 6 * tau;
+    var U0 = 5, N0 = 1000;
+    var f, top, asympt, unite;
+    if (mode === 'cond') {
+      f = function (t) { return U0 * (1 - Math.exp(-t / tau)); };
+      top = U0 * 1.18; asympt = U0; unite = ' V';
+    } else {
+      f = function (t) { return N0 * Math.exp(-t / tau); };
+      top = N0 * 1.15; asympt = 0; unite = ' noyaux';
+    }
+    var svg = $('figM'); clearSvg(svg);
+    var L = 52, R = 14, T = 14, Bm = 30, W = 440, H = 300;
+    var pw = W - L - R, ph = H - T - Bm;
+    function X(t) { return L + t / tmax * pw; }
+    function Y(v) { return T + (top - v) / top * ph; }
+    mk('rect', { x: 0, y: 0, width: W, height: H, fill: '#fff' }, svg);
+    mk('line', { x1: L, y1: Y(0), x2: L + pw, y2: Y(0), stroke: '#9ca3af' }, svg);
+    mk('line', { x1: L, y1: T, x2: L, y2: Y(0), stroke: '#9ca3af' }, svg);
+    // valeur limite
+    mk('line', { x1: L, y1: Y(asympt), x2: L + pw, y2: Y(asympt), stroke: '#22a06b', 'stroke-width': 2, 'stroke-dasharray': '7 4' }, svg);
+    txt(svg, L + 5, Y(asympt) - 6, mode === 'cond' ? 'y = 5 (valeur finale)' : 'y = 0 (asymptote)', { fill: '#22a06b', 'font-weight': '700' });
+    // courbe
+    var d = '', i, t;
+    for (i = 0; i <= 500; i++) {
+      t = tmax * i / 500;
+      d += (i === 0 ? 'M' : 'L') + X(t).toFixed(1) + ' ' + Y(f(t)).toFixed(1) + ' ';
+    }
+    mk('path', { d: d, fill: 'none', stroke: '#2563eb', 'stroke-width': 2.4 }, svg);
+
+    var info;
+    if (mode === 'cond') {
+      [[tau, '63 %'], [3 * tau, '95 %'], [5 * tau, '99 %']].forEach(function (p) {
+        mk('line', { x1: X(p[0]), y1: Y(0), x2: X(p[0]), y2: Y(f(p[0])), stroke: '#f97362', 'stroke-dasharray': '3 3' }, svg);
+        mk('line', { x1: L, y1: Y(f(p[0])), x2: X(p[0]), y2: Y(f(p[0])), stroke: '#f97362', 'stroke-dasharray': '3 3' }, svg);
+        mk('circle', { cx: X(p[0]), cy: Y(f(p[0])), r: 4, fill: '#f97362' }, svg);
+        txt(svg, X(p[0]) + 4, Y(f(p[0])) - 5, p[1], { fill: '#f97362', 'font-weight': '700' });
+      });
+      $('mExpr').innerHTML = '\\(u(t)=5\\left(1-\\mathrm e^{-t/\\tau}\\right)\\) avec \\(\\tau=' + fmt(tau, 1).replace(',', '{,}') + '\\) s. ' +
+        'Dérivée : \\(u\'(t)=\\dfrac{5}{\\tau}\\,\\mathrm e^{-t/\\tau}&gt;0\\) : la tension croît, et \\(\\lim_{t\\to+\\infty}u(t)=5\\) car \\(\\mathrm e^{-t/\\tau}\\to0.\\)';
+      info = 'Lecture : à \\(t=\\tau=' + fmt(tau, 1).replace(',', '{,}') + '\\) s, \\(u=' + fmt(f(tau), 2).replace(',', '{,}') + '\\) V, soit <b>63 %</b> de la valeur finale ; ' +
+        'à \\(t=3\\tau\\), \\(u=' + fmt(f(3 * tau), 2).replace(',', '{,}') + '\\) V (95 %) ; à \\(t=5\\tau\\), \\(u=' + fmt(f(5 * tau), 2).replace(',', '{,}') + '\\) V (99 %). ' +
+        'Les pourcentages <b>ne dépendent pas de \\(\\tau\\)</b> : c\'est la signature d\'une exponentielle.';
+    } else {
+      // demi-vie lue sur le graphique (dichotomie)
+      var lo = 0, hi = tmax, mid = 0, k;
+      for (k = 0; k < 60; k++) { mid = (lo + hi) / 2; if (f(mid) > N0 / 2) lo = mid; else hi = mid; }
+      var th = mid;
+      mk('line', { x1: L, y1: Y(N0 / 2), x2: X(th), y2: Y(N0 / 2), stroke: '#f97362', 'stroke-dasharray': '3 3' }, svg);
+      mk('line', { x1: X(th), y1: Y(0), x2: X(th), y2: Y(N0 / 2), stroke: '#f97362', 'stroke-width': 2, 'stroke-dasharray': '5 4' }, svg);
+      mk('circle', { cx: X(th), cy: Y(N0 / 2), r: 5, fill: '#f97362' }, svg);
+      txt(svg, X(th) + 6, Y(N0 / 2) - 6, 't½ ≈ ' + fmt(th, 2), { fill: '#f97362', 'font-weight': '700' });
+      mk('line', { x1: L, y1: Y(N0 / 4), x2: X(2 * th), y2: Y(N0 / 4), stroke: '#d97706', 'stroke-dasharray': '2 3' }, svg);
+      mk('circle', { cx: X(2 * th), cy: Y(N0 / 4), r: 4, fill: '#d97706' }, svg);
+      txt(svg, X(2 * th) + 6, Y(N0 / 4) - 6, '2 t½ → 250', { fill: '#d97706', 'font-weight': '700' });
+      $('mExpr').innerHTML = '\\(N(t)=1000\\,\\mathrm e^{-t/\\tau}\\) avec \\(\\tau=' + fmt(tau, 1).replace(',', '{,}') + '\\) jours. ' +
+        'Dérivée : \\(N\'(t)=-\\dfrac{1000}{\\tau}\\,\\mathrm e^{-t/\\tau}&lt;0\\) : la population décroît, et \\(\\lim_{t\\to+\\infty}N(t)=0\\) (asymptote \\(y=0\\)).';
+      info = 'Lecture graphique de la <b>demi-vie</b> : on cherche \\(t\\) tel que \\(N(t)=500.\\) On lit \\(t_{1/2}\\approx' + fmt(th, 2).replace(',', '{,}') + '\\) jours, ' +
+        'soit \\(t_{1/2}\\approx' + fmt(th / tau, 2).replace(',', '{,}') + '\\,\\tau.\\) Ce coefficient \\(0{,}69\\) est le même pour toutes les valeurs de \\(\\tau\\) — sa valeur exacte, \\(\\ln 2\\), se calculera avec le logarithme (fiche 5C). ' +
+        'Au bout de \\(2t_{1/2}\\approx' + fmt(2 * th, 2).replace(',', '{,}') + '\\) jours, il reste \\(250\\) noyaux : on divise encore par \\(2.\\)';
+    }
+    // graduations
+    txt(svg, L, Y(0) + 17, '0');
+    txt(svg, L + pw, Y(0) + 17, 't = ' + fmt(tmax, 1).replace('.', ','), { 'text-anchor': 'end' });
+    txt(svg, L - 4, T + 10, fmt(top, 0) + unite.slice(0, 2), { 'text-anchor': 'end' });
+    $('mInfo').innerHTML = info;
+    typeset($('mExpr')); typeset($('mInfo'));
+  }
+  $('mSel').addEventListener('change', drawM);
+  $('mTau').addEventListener('input', drawM);
+
+  /* ===================== EXERCICES ===================== */
+  function wireExercise(n, gen, collect, check, reset) {
+    var id = 'ex' + n, cur = null;
+    function render() {
+      cur = gen();
+      $(id + '-enonce').innerHTML = cur.enonce;
+      if (reset) reset(cur);
+      $(id + '-fb').textContent = '';
+      $(id + '-fb').className = 'feedback';
+      $(id + '-correction').classList.remove('show');
+      $(id + '-correction').innerHTML = '';
+      $(id + '-corr').textContent = 'Voir la correction';
+      typeset($(id + '-enonce'));
+    }
+    $(id + '-check').addEventListener('click', function () {
+      var ans = collect();
+      if (ans === null) { setFeedback($(id + '-fb'), false, 'Complète toutes les réponses.'); return; }
+      var r = check(cur, ans);
+      setFeedback($(id + '-fb'), r.ok, r.msg);
+    });
+    $(id + '-corr').addEventListener('click', function () {
+      var box = $(id + '-correction');
+      if (box.classList.contains('show')) {
+        box.classList.remove('show'); this.textContent = 'Voir la correction';
+      } else {
+        box.innerHTML = cur.correction; box.classList.add('show');
+        this.textContent = 'Masquer la correction'; typeset(box);
+      }
+    });
+    $(id + '-new').addEventListener('click', render);
+    render();
+  }
+  var JUSTIF = 'La fonction exponentielle est <b>strictement croissante</b> sur \\(\\mathbb R\\), donc \\(\\mathrm e^{A}=\\mathrm e^{B}\\iff A=B\\) (et \\(\\mathrm e^{A}&lt;\\mathrm e^{B}\\iff A&lt;B\\)).';
+
+  /* --- Exercice 1 : équations et inéquations --- */
+  wireExercise(1, function () {
+    var t = rnd(1, 4), a, b, c, d, s, k;
+    if (t === 1 || t === 4) {
+      s = rndNonZero(-5, 5);
+      a = rndNonZero(-4, 4); c = rndNonZero(-4, 4);
+      while (c === a) { c = rndNonZero(-4, 4); }
+      b = rnd(-6, 6);
+      if (t === 4) { while (b === 0) { b = rnd(-6, 6); } }
+      d = b + (a - c) * s;
+      var gauche = (t === 1)
+        ? '\\mathrm e^{' + linTex(a, b) + '}'
+        : '\\mathrm e^{' + linTex(a, 0) + '}\\times' + eTex(b);
+      var etape = (t === 4)
+        ? '<p><b>Étape 1.</b> On regroupe le membre de gauche : \\(\\mathrm e^{' + linTex(a, 0) + '}\\times' + eTex(b) + '=\\mathrm e^{' + linTex(a, b) + '}\\) (propriété \\(\\mathrm e^{X}\\mathrm e^{Y}=\\mathrm e^{X+Y}\\)).</p>'
+        : '<p><b>Étape 1.</b> Les deux membres sont déjà des exponentielles.</p>';
+      return {
+        kind: 'eq', val: s, sens: null,
+        enonce: '<p>Résoudre dans \\(\\mathbb R\\) l\'équation \\(' + gauche + '=\\mathrm e^{' + linTex(c, d) + '}.\\)</p><p>Donner la solution \\(x.\\)</p>',
+        correction: etape +
+          '<p><b>Étape 2.</b> ' + JUSTIF + '</p>' +
+          '<p>L\'équation équivaut donc à \\(' + linTex(a, b) + '=' + linTex(c, d) + '.\\)</p>' +
+          '<p><b>Étape 3.</b> \\(' + linTex(a - c, 0) + '=' + numTex(d - b) + '\\), donc \\(x=' + (Math.abs(a - c) === 1 ? '' : '\\dfrac{' + numTex(d - b) + '}{' + numTex(a - c) + '}=') + numTex(s) + '.\\)</p>' +
+          '<p><b>Étape 4.</b> \\(\\mathcal S=\\{' + numTex(s) + '\\}.\\)</p>' +
+          '<p class="ok"><b>Contrôle :</b> les deux exposants en \\(x=' + numTex(s) + '\\) valent \\(' + numTex(a * s + b) + '\\) et \\(' + numTex(c * s + d) + '\\) : ils sont bien égaux.</p>'
+      };
+    }
+    if (t === 2) {
+      k = rndNonZero(-6, 6);           // e^{x^2 + kx} = 1
+      var r1 = 0, r2 = -k, gr = Math.max(r1, r2);
+      return {
+        kind: 'eq', val: gr, sens: null,
+        enonce: '<p>Résoudre dans \\(\\mathbb R\\) l\'équation \\(\\mathrm e^{x^{2}' + (k > 0 ? '+' : '-') + (Math.abs(k) === 1 ? '' : Math.abs(k)) + 'x}=1.\\)</p>' +
+          '<p>Donner <b>la plus grande</b> des deux solutions.</p>',
+        correction: '<p><b>Étape 1.</b> On écrit \\(1=\\mathrm e^{0}\\) : l\'équation devient \\(\\mathrm e^{x^{2}' + (k > 0 ? '+' : '-') + (Math.abs(k) === 1 ? '' : Math.abs(k)) + 'x}=\\mathrm e^{0}.\\)</p>' +
+          '<p><b>Étape 2.</b> ' + JUSTIF + '</p>' +
+          '<p>Elle équivaut donc à \\(x^{2}' + (k > 0 ? '+' : '-') + (Math.abs(k) === 1 ? '' : Math.abs(k)) + 'x=0.\\)</p>' +
+          '<p><b>Étape 3.</b> On factorise : \\(x\\left(x' + (k > 0 ? '+' : '-') + Math.abs(k) + '\\right)=0\\), donc \\(x=0\\) ou \\(x=' + numTex(-k) + '.\\)</p>' +
+          '<p><b>Étape 4.</b> \\(\\mathcal S=\\{' + numTex(Math.min(r1, r2)) + '\\,;' + numTex(gr) + '\\}\\) ; la plus grande solution est \\(' + numTex(gr) + '.\\)</p>' +
+          '<p class="warn">Ici on n\'a <b>pas</b> le droit de « diviser par \\(\\mathrm e^{x}\\) » ou de chercher où l\'exponentielle s\'annule : elle ne s\'annule jamais. C\'est l\'astuce \\(1=\\mathrm e^{0}\\) qui débloque tout.</p>'
+      };
+    }
+    // t === 3 : inéquation
+    s = rndNonZero(-5, 5);
+    a = rndNonZero(-4, 4); c = rndNonZero(-4, 4);
+    while (c === a) { c = rndNonZero(-4, 4); }
+    b = rnd(-6, 6); d = b + (a - c) * s;
+    var strict = pick(['&lt;', '\\leq']);
+    var texOp = (strict === '&lt;') ? '&lt;' : '\\leq';
+    var sens = (a - c > 0) ? 'inf' : 'sup';
+    var ensTex = (sens === 'inf')
+      ? '\\left]-\\infty\\,;' + numTex(s) + (strict === '&lt;' ? '\\right[' : '\\right]')
+      : (strict === '&lt;' ? '\\left]' : '\\left[') + numTex(s) + '\\,;+\\infty\\right[';
+    return {
+      kind: 'ineq', val: s, sens: sens,
+      enonce: '<p>Résoudre dans \\(\\mathbb R\\) l\'inéquation \\(\\mathrm e^{' + linTex(a, b) + '}' + texOp + '\\mathrm e^{' + linTex(c, d) + '}.\\)</p>' +
+        '<p>Donner la <b>borne</b> \\(\\alpha\\) de l\'intervalle solution, et sa forme.</p>',
+      correction: '<p><b>Étape 1.</b> ' + JUSTIF + ' L\'inégalité <b>garde son sens</b> quand on passe aux exposants.</p>' +
+        '<p>L\'inéquation équivaut à \\(' + linTex(a, b) + texOp + linTex(c, d) + '.\\)</p>' +
+        '<p><b>Étape 2.</b> On regroupe : \\(' + linTex(a - c, 0) + texOp + numTex(d - b) + '.\\)</p>' +
+        '<p><b>Étape 3.</b> On divise par \\(' + numTex(a - c) + '\\), qui est <b>' + (a - c > 0 ? 'positif : le sens est conservé' : 'négatif : le sens s\'inverse') + '</b> :</p>' +
+        '<p>\\(x' + (sens === 'inf' ? texOp : (strict === '&lt;' ? '&gt;' : '\\geq')) + numTex(s) + '.\\)</p>' +
+        '<p><b>Étape 4.</b> \\(\\mathcal S=' + ensTex + '.\\)</p>' +
+        '<p class="ok"><b>Contrôle :</b> on teste \\(x=' + numTex(s + (sens === 'inf' ? -1 : 1)) + '\\) : les exposants valent \\(' + numTex(a * (s + (sens === 'inf' ? -1 : 1)) + b) + '\\) et \\(' + numTex(c * (s + (sens === 'inf' ? -1 : 1)) + d) + '\\), l\'inégalité est bien vérifiée.</p>'
+    };
+  }, function () {
+    var v = parseNum($('ex1-rep').value);
+    if (isNaN(v)) return null;
+    if (!$('ex1-senswrap').hidden) {
+      var s = $('ex1-sens').value;
+      if (!s) return null;
+      return { val: v, sens: s };
+    }
+    return { val: v, sens: null };
+  }, function (e, ans) {
+    var okV = Math.abs(ans.val - e.val) < 0.005;
+    if (e.kind === 'ineq') {
+      var okS = (ans.sens === e.sens);
+      if (okV && okS) return { ok: true, msg: 'Correct : \\(\\mathcal S\\) a pour borne \\(' + numTex(e.val) + '.\\)' };
+      if (okV && !okS) return { ok: false, msg: 'La borne est bonne, mais pas le sens. Regarde le <b>signe</b> du coefficient par lequel tu divises : s\'il est négatif, l\'inégalité s\'inverse.' };
+      if (!okV && okS) return { ok: false, msg: 'Le sens est bon, mais pas la borne. Repasse aux exposants, puis résous l\'inéquation du premier degré.' };
+      return { ok: false, msg: 'Non. Commence par « l\'exponentielle est strictement croissante », passe aux exposants, puis résous.' };
+    }
+    if (okV) return { ok: true, msg: 'Correct.' };
+    return { ok: false, msg: 'Non. Passe aux exposants (l\'exponentielle est strictement croissante), puis résous l\'équation obtenue.' };
+  }, function (cur) {
+    $('ex1-rep').value = '';
+    $('ex1-sens').value = '';
+    $('ex1-senswrap').hidden = (cur.kind !== 'ineq');
+    $('ex1-lab').innerHTML = (cur.kind === 'ineq') ? 'Borne \\(\\alpha=\\)' : 'Réponse';
+    typeset($('ex1-lab'));
+  });
+
+  /* --- Exercice 2 : dérivée de (ax+b)e^{cx} et valeur en un point --- */
+  wireExercise(2, function () {
+    var a = rndNonZero(-4, 4), b = rnd(-6, 6), c = pick([-2, -1, 1, 2, 3]);
+    var x0 = rnd(-2, 2);
+    var A = a * c, B = a + b * c;
+    var val = (A * x0 + B) * Math.exp(c * x0);
+    var exact = (c * x0 === 0);
+    var ex = expTex(c);
+    var corr = '<p><b>Étape 1 — on reconnaît un produit.</b> On pose \\(u(x)=' + linTex(a, b) + '\\) et \\(v(x)=' + ex + '.\\)</p>' +
+      '<p>\\(u\'(x)=' + numTex(a) + '\\) et, d\'après \\(\\big(\\mathrm e^{w}\\big)\'=w\'\\mathrm e^{w}\\), \\(v\'(x)=' + mulTex(c, ex) + '.\\)</p>' +
+      '<p><b>Étape 2 — formule du produit</b> \\((uv)\'=u\'v+uv\'\\) :</p>' +
+      '<p>\\(f\'(x)=' + mulTex(a, ex) + '+\\left(' + linTex(a, b) + '\\right)\\times' + mulPar(c, ex) + '\\)</p>' +
+      '<p><b>Étape 3 — on factorise par \\(' + ex + '\\)</b> (geste obligatoire : c\'est lui qui rend le signe lisible) :</p>' +
+      '<p>\\(f\'(x)=\\left(' + numTex(a) + (c > 0 ? '+' : '-') + (Math.abs(c) === 1 ? '' : numTex(Math.abs(c))) + '\\left(' + linTex(a, b) + '\\right)\\right)' + ex + '=\\left(' + linTex(A, B) + '\\right)' + ex + '\\)</p>' +
+      '<p>Donc \\(\\alpha=' + numTex(A) + '\\) et \\(\\beta=' + numTex(B) + '.\\)</p>' +
+      '<p><b>Étape 4 — valeur en \\(x_0=' + numTex(x0) + '\\) :</b></p>' +
+      '<p>\\(f\'(' + numTex(x0) + ')=\\left(' + numTex(A) + '\\times' + parNeg(x0) + addTex(B) + '\\right)' + eTex(c * x0) + '=' + mulTex(A * x0 + B, eTex(c * x0)) +
+      (exact ? '=' + numTex(val) : '\\approx' + fmt(val, 2).replace(',', '{,}')) + '.\\)</p>' +
+      '<p class="key"><b>Le réflexe :</b> \\(' + ex + '&gt;0\\) pour tout \\(x\\), donc le signe de \\(f\'\\) est celui de \\(' + linTex(A, B) + '\\) — et la fonction change de sens en \\(x=' + numTex(Math.round((-B / A) * 1000) / 1000) + '.\\)</p>';
+    return {
+      A: A, B: B, val: val, exact: exact, x0: x0,
+      enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb R\\) par \\(f(x)=' + prodTex(a, b, c) + '.\\)</p>' +
+        '<p>On sait que \\(f\'\\) s\'écrit \\(f\'(x)=(\\alpha x+\\beta)\\,' + ex + '.\\) Donner \\(\\alpha\\), \\(\\beta\\), puis ' +
+        (exact ? '\\(f\'(' + numTex(x0) + ').\\)' : '\\(f\'(' + numTex(x0) + ')\\) <b>arrondi au centième</b>.') + '</p>',
+      correction: corr
+    };
+  }, function () {
+    var al = parseNum($('ex2-alpha').value), be = parseNum($('ex2-beta').value), v = parseNum($('ex2-val').value);
+    if (isNaN(al) || isNaN(be) || isNaN(v)) return null;
+    return { A: al, B: be, val: v };
+  }, function (e, ans) {
+    var okA = Math.abs(ans.A - e.A) < 1e-6, okB = Math.abs(ans.B - e.B) < 1e-6;
+    var tol = Math.max(0.011, Math.abs(e.val) * 0.01);
+    var okV = Math.abs(ans.val - e.val) < tol;
+    if (okA && okB && okV) return { ok: true, msg: 'Correct : \\(f\'(x)=\\left(' + linTex(e.A, e.B) + '\\right)\\mathrm e^{\\ldots}\\) et \\(f\'(' + numTex(e.x0) + ')' + (e.exact ? '=' : '\\approx') + fmt(e.val, 2).replace(',', '{,}') + '.\\)' };
+    if (!okA && !okB) return { ok: false, msg: 'La dérivée n\'est pas bonne. Applique \\((uv)\'=u\'v+uv\'\\) puis <b>factorise par l\'exponentielle</b> : n\'oublie pas le facteur \\(u\'\\) en dérivant \\(\\mathrm e^{cx}.\\)' };
+    if (!okA) return { ok: false, msg: '\\(\\beta\\) est bon mais pas \\(\\alpha.\\) Le coefficient de \\(x\\) dans la parenthèse vaut \\(a\\times c.\\)' };
+    if (!okB) return { ok: false, msg: '\\(\\alpha\\) est bon mais pas \\(\\beta.\\) Le terme constant vaut \\(a+bc\\) : il vient de \\(u\'v\\) et de la constante de \\(uv\'.\\)' };
+    return { ok: false, msg: 'La dérivée est juste, mais pas la valeur numérique. Remplace \\(x\\) par \\(x_0\\) dans \\((\\alpha x+\\beta)\\mathrm e^{cx}\\) et utilise la calculatrice.' };
+  }, function () {
+    $('ex2-alpha').value = ''; $('ex2-beta').value = ''; $('ex2-val').value = '';
+  });
+
+  /* --- Exercice 3 : étude complète guidée --- */
+  wireExercise(3, function () {
+    var a = pick([1, -1, 2, -2]), c = pick([1, -1, 2, -2]), k = rnd(-4, 4);
+    var b = a * k;
+    var A = a * c, B = a + b * c;
+    var x0 = -B / A;
+    var fx0 = (a * x0 + b) * Math.exp(c * x0);
+    var nat = (A > 0) ? 'min' : 'max';
+    var limM, limP, cote;
+    if (c > 0) { limM = 'zero'; limP = (a > 0) ? 'pinf' : 'minf'; cote = '-\\infty'; }
+    else { limP = 'zero'; limM = (a > 0) ? 'minf' : 'pinf'; cote = '+\\infty'; }
+    var ex = expTex(c);
+    var noteCC = (Math.abs(c) === 1) ? '' :
+      ' (en posant \\(t=' + numTex(c) + 'x\\), on se ramène à \\(\\lim_{t\\to-\\infty}t\\,\\mathrm e^{t}=0\\))';
+    var lab = { zero: '0', pinf: '+\\infty', minf: '-\\infty' };
+    var cotExp = (c > 0) ? '-\\infty' : '+\\infty';
+    var autre = (c > 0) ? '+\\infty' : '-\\infty';
+
+    var corr =
+      '<p><b>1. Ensemble de définition.</b> \\(f\\) est le produit d\'une fonction affine et d\'une exponentielle, toutes deux définies sur \\(\\mathbb R\\) : \\(\\mathcal D_f=\\mathbb R.\\)</p>' +
+      '<p><b>2. Limite en \\(' + autre + '\\)</b> (là où l\'exponentielle explose). \\(\\lim_{x\\to' + autre + '}\\left(' + linTex(a, b) + '\\right)=' + ((a * (c > 0 ? 1 : -1) > 0) ? '+\\infty' : '-\\infty') + '\\) et \\(\\lim_{x\\to' + autre + '}' + ex + '=+\\infty\\), donc <b>par produit</b> :</p>' +
+      '<p>\\(\\lim_{x\\to' + autre + '}f(x)=' + lab[(c > 0) ? limP : limM] + '.\\)</p>' +
+      '<p><b>3. Limite en \\(' + cotExp + '\\)</b> : forme indéterminée \\(0\\times\\infty.\\) On développe :</p>' +
+      '<p>\\(f(x)=' + mulTex(a, 'x\\,' + ex) + (b === 0 ? '' : ((b > 0 ? '+' : '-') + mulTex(Math.abs(b), ex))) + '.\\)</p>' +
+      '<p>Par croissance comparée, \\(\\lim_{x\\to' + cotExp + '}x\\,' + ex + '=0\\)' + noteCC + ', et \\(\\lim_{x\\to' + cotExp + '}' + ex + '=0.\\) Donc <b>par somme</b> : \\(\\lim_{x\\to' + cotExp + '}f(x)=0.\\)</p>' +
+      '<p>La droite d\'équation \\(y=0\\) est donc <b>asymptote horizontale</b> à \\(\\mathcal C_f\\) en \\(' + cotExp + '.\\)</p>' +
+      '<p><b>4. Dérivée.</b> \\(f\'(x)=' + mulTex(a, ex) + '+\\left(' + linTex(a, b) + '\\right)\\times' + mulPar(c, ex) + '=\\left(' + linTex(A, B) + '\\right)' + ex + '.\\)</p>' +
+      '<p><b>5. Signe de \\(f\'.\\)</b> Pour tout réel \\(x\\), \\(' + ex + '&gt;0\\), donc \\(f\'(x)\\) est du signe de \\(' + linTex(A, B) + '.\\)</p>' +
+      '<p>\\(' + linTex(A, B) + '=0\\iff x=' + numTex(x0) + '\\), et ce polynôme du premier degré est ' + (A > 0 ? 'négatif avant, positif après' : 'positif avant, négatif après') + ' (son coefficient directeur \\(' + numTex(A) + '\\) est ' + (A > 0 ? 'positif' : 'négatif') + ').</p>' +
+      '<p><b>6. Variations.</b> \\(f\\) est ' + (A > 0 ? 'décroissante puis croissante' : 'croissante puis décroissante') + ' : elle admet un <b>' + (nat === 'min' ? 'minimum' : 'maximum') + '</b> en \\(x_0=' + numTex(x0) + '\\), égal à</p>' +
+      '<p>\\(f(' + numTex(x0) + ')=' + mulTex(a * x0 + b, eTex(c * x0)) + '\\approx' + fmt(fx0, 3).replace(',', '{,}') + '.\\)</p>' +
+      '<div class="tablewrap"><table class="vartab">' +
+      '<tr><td class="lab">\\(x\\)</td><td>\\(-\\infty\\)</td><td></td><td>\\(' + numTex(x0) + '\\)</td><td></td><td>\\(+\\infty\\)</td></tr>' +
+      '<tr><td class="lab">\\(f\'(x)\\)</td><td></td><td class="sgn ' + (A > 0 ? 'neg' : 'pos') + '">\\(' + (A > 0 ? '-' : '+') + '\\)</td><td>\\(0\\)</td><td class="sgn ' + (A > 0 ? 'pos' : 'neg') + '">\\(' + (A > 0 ? '+' : '-') + '\\)</td><td></td></tr>' +
+      '<tr><td class="lab">\\(f(x)\\)</td><td>\\(' + lab[limM] + '\\)</td><td class="arrow">' + (A > 0 ? '↘' : '↗') + '</td><td>\\(' + fmt(fx0, 2).replace(',', '{,}') + '\\)</td><td class="arrow">' + (A > 0 ? '↗' : '↘') + '</td><td>\\(' + lab[limP] + '\\)</td></tr>' +
+      '</table></div>' +
+      '<p class="key"><b>Vérification rapide de l\'extremum :</b> \\(ax_0+b=-\\dfrac{a}{c}=' + numTex(-a / c) + '\\), donc \\(f(x_0)=' + mulTex(-a / c, eTex(c * x0)) + '.\\) ✓</p>';
+
+    return {
+      limM: limM, limP: limP, x0: x0, nat: nat,
+      enonce: '<p>Soit \\(f\\) définie sur \\(\\mathbb R\\) par \\(f(x)=' + prodTex(a, b, c) + '.\\)</p>' +
+        '<p>Déterminer les limites de \\(f\\) aux bornes de \\(\\mathbb R\\), puis l\'abscisse \\(x_0\\) de son extremum et la nature de cet extremum.</p>',
+      correction: corr
+    };
+  }, function () {
+    var lm = $('ex3-lm').value, lp = $('ex3-lp').value, nt = $('ex3-nat').value, v = parseNum($('ex3-x0').value);
+    if (!lm || !lp || !nt || isNaN(v)) return null;
+    return { limM: lm, limP: lp, nat: nt, x0: v };
+  }, function (e, ans) {
+    var okM = ans.limM === e.limM, okP = ans.limP === e.limP;
+    var okX = Math.abs(ans.x0 - e.x0) < 0.011, okN = ans.nat === e.nat;
+    if (okM && okP && okX && okN) return { ok: true, msg: 'Parfait : tout est juste. Déplie la correction pour comparer la <b>rédaction</b>.' };
+    var pb = [];
+    if (!okM) pb.push('la limite en \\(-\\infty\\)');
+    if (!okP) pb.push('la limite en \\(+\\infty\\)');
+    if (!okX) pb.push('l\'abscisse de l\'extremum');
+    if (!okN) pb.push('la nature de l\'extremum');
+    var aide = !okM || !okP
+      ? ' Rappel : du côté où l\'exposant tend vers \\(-\\infty\\), la croissance comparée donne \\(0\\) ; de l\'autre, c\'est un produit de deux infinis.'
+      : (!okX ? ' Rappel : \\(f\'(x)=(acx+a+bc)\\mathrm e^{cx}\\) s\'annule en \\(x_0=-\\frac{a+bc}{ac}.\\)'
+        : ' Rappel : le signe de \\(f\'\\) est celui de \\(acx+a+bc\\) — si \\(ac&gt;0\\), négatif puis positif, donc un minimum.');
+    return { ok: false, msg: 'À revoir : ' + pb.join(', ') + '.' + aide };
+  }, function () {
+    $('ex3-lm').value = ''; $('ex3-lp').value = ''; $('ex3-nat').value = ''; $('ex3-x0').value = '';
+  });
+
+  /* ===================== QCM ===================== */
+  function build(q, options, correctIdx, expl) {
+    var idx = shuffle([0, 1, 2, 3]);
+    return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
+  }
+
+  var qcmBank = [
+    function () {
+      return build('Que vaut \\(\\lim_{x\\to-\\infty}\\mathrm e^{x}\\) ?',
+        ['\\(0\\)', '\\(-\\infty\\)', '\\(+\\infty\\)', '\\(1\\)'], 0,
+        'L\'exponentielle est toujours strictement positive et s\'écrase vers \\(0\\) en \\(-\\infty.\\)');
+    },
+    function () {
+      return build('La courbe de \\(x\\mapsto\\mathrm e^{x}\\) admet pour asymptote :',
+        ['la droite \\(y=0\\) en \\(-\\infty\\)', 'la droite \\(y=0\\) en \\(+\\infty\\)', 'la droite \\(x=0\\)', 'aucune asymptote'], 0,
+        'C\'est la limite \\(\\lim_{x\\to-\\infty}\\mathrm e^{x}=0\\) qui donne l\'asymptote horizontale \\(y=0\\), du côté de \\(-\\infty.\\)');
+    },
+    function () {
+      var n = rnd(2, 6);
+      return build('Que vaut \\(\\lim_{x\\to+\\infty}\\dfrac{x^{' + n + '}}{\\mathrm e^{x}}\\) ?',
+        ['\\(0\\)', '\\(+\\infty\\)', '\\(1\\)', '\\(' + n + '\\)'], 0,
+        'Croissance comparée : en \\(+\\infty\\), l\'exponentielle l\'emporte sur toute puissance de \\(x.\\)');
+    },
+    function () {
+      var n = rnd(2, 6);
+      return build('Que vaut \\(\\lim_{x\\to+\\infty}\\dfrac{\\mathrm e^{x}}{x^{' + n + '}}\\) ?',
+        ['\\(+\\infty\\)', '\\(0\\)', '\\(1\\)', 'une forme indéterminée sans limite'], 0,
+        'C\'est l\'inverse d\'une quantité qui tend vers \\(0^{+}\\) : la limite est \\(+\\infty.\\)');
+    },
+    function () {
+      return build('Que vaut \\(\\lim_{x\\to-\\infty}x\\,\\mathrm e^{x}\\) ?',
+        ['\\(0\\)', '\\(-\\infty\\)', '\\(+\\infty\\)', '\\(-1\\)'], 0,
+        'Forme indéterminée \\(0\\times\\infty\\), levée par la croissance comparée : \\(\\lim_{x\\to-\\infty}x\\,\\mathrm e^{x}=0.\\)');
+    },
+    function () {
+      var n = rnd(2, 5);
+      return build('Que vaut \\(\\lim_{x\\to+\\infty}\\left(\\mathrm e^{x}-x^{' + n + '}\\right)\\) ?',
+        ['\\(+\\infty\\)', '\\(-\\infty\\)', '\\(0\\)', 'cela dépend de \\(' + n + '\\)'], 0,
+        'On factorise : \\(\\mathrm e^{x}\\left(1-\\frac{x^{' + n + '}}{\\mathrm e^{x}}\\right)\\) ; la parenthèse tend vers \\(1\\), donc le produit vers \\(+\\infty.\\)');
+    },
+    function () {
+      var a = rndNonZero(2, 5), b = rndNonZero(1, 6);
+      return build('Que vaut \\(\\lim_{x\\to-\\infty}(' + a + 'x+' + b + ')\\,\\mathrm e^{x}\\) ?',
+        ['\\(0\\)', '\\(-\\infty\\)', '\\(+\\infty\\)', '\\(' + b + '\\)'], 0,
+        'On développe : \\(' + a + 'x\\mathrm e^{x}+' + b + '\\mathrm e^{x}\\) ; par croissance comparée les deux termes tendent vers \\(0.\\)');
+    },
+    function () {
+      var a = pick([-4, -3, -2, -1, 2, 3, 4]), b = rnd(-5, 5);
+      var u = linTex(a, b);
+      return build('Quelle est la dérivée de \\(f(x)=\\mathrm e^{' + u + '}\\) ?',
+        ['\\(' + coefTex(a) + '\\mathrm e^{' + u + '}\\)', '\\(\\mathrm e^{' + u + '}\\)', '\\((' + u + ')\\,\\mathrm e^{' + u + '}\\)', '\\(\\mathrm e^{' + numTex(a) + '}\\)'], 0,
+        '\\(\\big(\\mathrm e^{u}\\big)\'=u\'\\mathrm e^{u}\\) avec \\(u\'(x)=' + numTex(a) + '.\\)');
+    },
+    function () {
+      return build('Quelle est la dérivée de \\(f(x)=\\mathrm e^{-x^{2}}\\) ?',
+        ['\\(-2x\\,\\mathrm e^{-x^{2}}\\)', '\\(\\mathrm e^{-2x}\\)', '\\(-2x\\,\\mathrm e^{-2x}\\)', '\\(\\mathrm e^{-x^{2}}\\)'], 0,
+        'Ici \\(u(x)=-x^{2}\\) donc \\(u\'(x)=-2x\\), et \\(\\big(\\mathrm e^{u}\\big)\'=u\'\\mathrm e^{u}.\\)');
+    },
+    function () {
+      var a = rndNonZero(2, 5), b = rndNonZero(-5, 5);
+      return build('Quelle est la dérivée de \\(f(x)=(' + linTex(a, b) + ')\\,\\mathrm e^{x}\\) ?',
+        ['\\((' + linTex(a, a + b) + ')\\,\\mathrm e^{x}\\)', '\\(' + numTex(a) + '\\mathrm e^{x}\\)', '\\((' + linTex(a, b) + ')\\,\\mathrm e^{x}\\)', '\\(' + numTex(a) + 'x\\,\\mathrm e^{x}\\)'], 0,
+        '\\((uv)\'=u\'v+uv\'=' + numTex(a) + '\\mathrm e^{x}+(' + linTex(a, b) + ')\\mathrm e^{x}=(' + linTex(a, a + b) + ')\\mathrm e^{x}.\\)');
+    },
+    function () {
+      return build('Si \\(f=\\mathrm e^{u}\\) avec \\(u\\) dérivable, le signe de \\(f\'\\) est :',
+        ['celui de \\(u\'\\)', 'celui de \\(u\\)', 'toujours positif', 'celui de \\(\\mathrm e^{u}\\), donc variable'], 0,
+        '\\(f\'=u\'\\mathrm e^{u}\\) et \\(\\mathrm e^{u}&gt;0\\) : le facteur exponentiel ne change jamais le signe.');
+    },
+    function () {
+      var s = rndNonZero(-4, 4), a = rndNonZero(1, 4), c = rndNonZero(-4, 4);
+      while (c === a) { c = rndNonZero(-4, 4); }
+      var b = rnd(-4, 4), d = b + (a - c) * s;
+      return build('La solution de \\(\\mathrm e^{' + linTex(a, b) + '}=\\mathrm e^{' + linTex(c, d) + '}\\) est :',
+        ['\\(x=' + numTex(s) + '\\)', '\\(x=' + numTex(-s) + '\\)', '\\(x=' + numTex(s + 1) + '\\)', 'il n\'y en a pas'], 0,
+        'L\'exponentielle est strictement croissante, donc l\'équation équivaut à \\(' + linTex(a, b) + '=' + linTex(c, d) + '\\), d\'où \\(x=' + numTex(s) + '.\\)');
+    },
+    function () {
+      var k = rnd(2, 6), a = rnd(2, 4);
+      // e^{a x} < e^{x + k(a-1)}  =>  x < k
+      var d = k * (a - 1);
+      return build('L\'ensemble des solutions de \\(\\mathrm e^{' + a + 'x}&lt;\\mathrm e^{x+' + d + '}\\) est :',
+        ['\\(\\left]-\\infty\\,;' + k + '\\right[\\)', '\\(\\left]' + k + '\\,;+\\infty\\right[\\)', '\\(\\mathbb R\\)', '\\(\\varnothing\\)'], 0,
+        'Par stricte croissance : \\(' + a + 'x&lt;x+' + d + '\\), soit \\(' + (a - 1) + 'x&lt;' + d + '\\), soit \\(x&lt;' + k + '.\\)');
+    },
+    function () {
+      var k = rndNonZero(2, 5);
+      return build('L\'ensemble des solutions de \\(\\mathrm e^{x^{2}-' + k + 'x}=1\\) est :',
+        ['\\(\\{0\\,;' + k + '\\}\\)', '\\(\\{' + k + '\\}\\)', '\\(\\{0\\}\\)', '\\(\\varnothing\\)'], 0,
+        'On écrit \\(1=\\mathrm e^{0}\\) : l\'équation devient \\(x^{2}-' + k + 'x=0\\), soit \\(x(x-' + k + ')=0.\\)');
+    },
+    function () {
+      var k = rnd(2, 9);
+      return build('Combien l\'équation \\(\\mathrm e^{x}=-' + k + '\\) a-t-elle de solutions ?',
+        ['aucune', 'une seule', 'deux', 'une infinité'], 0,
+        'Pour tout réel \\(x\\), \\(\\mathrm e^{x}&gt;0\\) : une exponentielle ne peut jamais être négative.');
+    },
+    function () {
+      return build('Que vaut \\(\\lim_{x\\to+\\infty}\\dfrac{\\mathrm e^{x}+3}{2\\mathrm e^{x}-1}\\) ?',
+        ['\\(\\dfrac12\\)', '\\(+\\infty\\)', '\\(0\\)', '\\(-3\\)'], 0,
+        'Forme \\(\\frac{\\infty}{\\infty}\\) : on factorise par \\(\\mathrm e^{x}\\) en haut et en bas, il reste \\(\\frac{1+3\\mathrm e^{-x}}{2-\\mathrm e^{-x}}\\to\\frac12.\\)');
+    },
+    function () {
+      var a = rndNonZero(2, 5), b = rnd(-5, 5);
+      return build('Que vaut \\(\\lim_{x\\to+\\infty}(' + linTex(a, b) + ')\\,\\mathrm e^{-x}\\) ?',
+        ['\\(0\\)', '\\(+\\infty\\)', '\\(' + numTex(a) + '\\)', '\\(-\\infty\\)'], 0,
+        'On écrit \\(\\frac{' + linTex(a, b) + '}{\\mathrm e^{x}}\\) : par croissance comparée, la limite est \\(0\\) (asymptote \\(y=0\\) en \\(+\\infty\\)).');
+    },
+    function () {
+      return build('Simplifier \\(\\big(\\mathrm e^{x}\\big)^{2}\\times\\mathrm e^{-x}\\) :',
+        ['\\(\\mathrm e^{x}\\)', '\\(\\mathrm e^{2x}\\)', '\\(\\mathrm e^{-2x}\\)', '\\(2\\mathrm e^{x}\\)'], 0,
+        '\\(\\big(\\mathrm e^{x}\\big)^{2}=\\mathrm e^{2x}\\), puis \\(\\mathrm e^{2x}\\mathrm e^{-x}=\\mathrm e^{2x-x}=\\mathrm e^{x}.\\)');
+    },
+    function () {
+      return build('Que vaut \\(\\lim_{x\\to+\\infty}\\mathrm e^{-x^{2}}\\) ?',
+        ['\\(0\\)', '\\(+\\infty\\)', '\\(1\\)', '\\(-\\infty\\)'], 0,
+        'L\'exposant \\(-x^{2}\\) tend vers \\(-\\infty\\), et \\(\\mathrm e^{X}\\to0\\) quand \\(X\\to-\\infty.\\)');
+    }
+  ];
+
+  var qcmMap = {}, answered = 0, score = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var box = $('qcm-container');
+    box.innerHTML = ''; $('qcm-score').textContent = ''; $('qcm-score').style.color = '';
+    qcmMap = {}; answered = 0; score = 0;
+    shuffle(qcmBank).slice(0, 4).forEach(function (gen, i) {
+      var item = gen(), guard = 0;
+      while (guard++ < 40 && new Set(item.options).size < 4) { item = gen(); }
+      qcmMap[i] = { correct: item.correct, expl: item.expl, done: false };
+      var q = document.createElement('div'); q.className = 'qcm-q';
+      var st = document.createElement('div'); st.className = 'question';
+      st.innerHTML = (i + 1) + '. ' + item.q; q.appendChild(st);
+      var ch = document.createElement('div'); ch.className = 'choices';
+      item.options.forEach(function (opt, j) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice';
+        b.innerHTML = '<span class="letter">' + LETTERS[j] + '</span>' + opt;
+        b.addEventListener('click', function () { answer(i, j, ch); });
+        ch.appendChild(b);
+      });
+      q.appendChild(ch);
+      var ex = document.createElement('div'); ex.className = 'expl'; ex.id = 'qcm-expl-' + i;
+      q.appendChild(ex); box.appendChild(q);
+    });
+    typeset(box);
+  }
+
+  function answer(i, j, choicesEl) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+    var btns = choicesEl.querySelectorAll('button');
+    [].forEach.call(btns, function (b, k) {
+      b.disabled = true;
+      if (k === info.correct) b.classList.add('correct');
+      else if (k === j) b.classList.add('wrong');
+    });
+    var ok = (j === info.correct);
+    if (ok) score++;
+    answered++;
+    var ex = $('qcm-expl-' + i);
+    ex.innerHTML = '<b style="color:' + (ok ? 'var(--green)' : 'var(--coral)') + '">' +
+      (ok ? 'Bonne réponse !' : 'Faux. La bonne réponse est ' + LETTERS[info.correct] + '.') + '</b> ' + info.expl;
+    ex.classList.add('show');
+    typeset(ex);
+    if (answered === 4) {
+      var s = $('qcm-score');
+      s.textContent = 'Score : ' + score + ' / 4' +
+        (score === 4 ? ' — parfait !' : (score >= 2 ? ' — relis les explications des erreurs.' : ' — relis le cours puis refais un QCM.'));
+      s.style.color = score >= 3 ? 'var(--green)' : (score === 2 ? 'var(--amber)' : 'var(--coral)');
+    }
+  }
+  $('qcm-new').addEventListener('click', renderQcm);
+
+  /* ---------- démarrage ---------- */
+  drawF(); drawG(); drawM();
+  renderQcm();
+
+  var tries = 0;
+  (function wait() {
+    if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
+    if (tries++ < 100) setTimeout(wait, 200);
+  })();
+})();
+</script>
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+<script>
+(function(){
+  var b = document.getElementById('toTop');
+  if (!b) return;
+  function maj(){ b.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+</body>
+</html>

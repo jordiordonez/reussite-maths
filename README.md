@@ -53,6 +53,22 @@ Un fichier HTML unique, avec dans l'ordre :
 | 4B | Terminale | Limites, asymptotes, formes indéterminées, croissances comparées |
 | 4C | Terminale | Continuité, théorème des valeurs intermédiaires, dichotomie |
 
+**Chapitre 5 — Exponentielle et logarithme**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| 5A | Première | Définition, propriétés algébriques, variations, modélisation |
+| 5B | Terminale | Équations, dérivée de e^u, limites, étude complète de fonctions |
+| 5C | Terminale | Logarithme népérien, propriétés, dérivée, limites, seuils |
+
+**Chapitre 6 — Géométrie dans l'espace**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| 6A | Première | Calcul vectoriel dans le plan : Chasles, colinéarité, base |
+| 6B | Terminale | Vecteurs de l'espace, coplanarité, bases et repères |
+| 6C | Terminale | Droites et plans, positions relatives, sections de cube |
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode

@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5A — La fonction exponentielle</title>
+
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+
+<style>
+:root{
+  --bg:#faf8f5; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --blue:#2563eb; --blue-soft:#e8efff;
+  --coral:#f97362; --coral-soft:#fde8e4;
+  --green:#22a06b; --green-soft:#e3f5ec;
+  --amber:#d97706; --amber-soft:#fef3c7;
+  --radius:16px; --shadow:0 4px 18px rgba(31,41,55,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.55}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.5rem} h3{font-size:1.1rem;color:var(--blue)}
+p{margin:.4em 0 .8em}
+ul,ol{padding-left:1.25rem;margin:.3rem 0 .8rem} li{margin:.3rem 0}
+
+header{padding:2rem 1.1rem 1.2rem;text-align:center;background:linear-gradient(180deg,var(--blue-soft) 0%,var(--bg) 100%)}
+header h1{font-size:1.75rem;opacity:0;transform:translateY(14px);animation:rise .8s ease forwards}
+header .sub{color:var(--muted);opacity:0;animation:rise .8s .3s ease forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+nav{position:sticky;top:0;z-index:20;background:rgba(250,248,245,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.5rem .5rem;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+nav a{display:inline-block;min-height:44px;line-height:44px;padding:0 .9rem;margin:0 .15rem;border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.92rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+nav a.active{background:var(--blue);color:#fff}
+
+main{max-width:820px;margin:0 auto;padding:1rem .85rem 3rem}
+section{margin:1.3rem 0 2rem;scroll-margin-top:64px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin:.8rem 0}
+.card.blue{border-left:6px solid var(--blue)}
+.card.green{border-left:6px solid var(--green)}
+.card.coral{border-left:6px solid var(--coral)}
+.card.amber{border-left:6px solid var(--amber)}
+.tag{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--blue-soft);color:var(--blue);vertical-align:middle;font-family:system-ui,sans-serif;max-width:100%}
+.tag.demo{background:var(--coral-soft);color:#c2410c}
+.tag.deep{background:var(--amber-soft);color:#92400e}
+.key{background:var(--amber-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.warn{background:var(--coral-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+.ok{background:var(--green-soft);border-radius:10px;padding:.55rem .75rem;margin:.5rem 0}
+
+button{min-height:44px;padding:.5rem 1rem;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:1rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+button.secondary{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+button.ghost{background:#f3f4f6;color:var(--ink);box-shadow:none}
+button:active{transform:translateY(1px)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type="text"],input[type="number"],select{min-height:44px;font-size:1rem;font-family:inherit;padding:.45rem .6rem;border:1px solid #d1d5db;border-radius:10px;background:#fff;max-width:100%}
+input[type="range"]{width:100%;min-height:36px}
+label{font-size:.92rem;color:var(--muted)}
+
+.feedback{margin:.5rem 0;font-weight:600;min-height:1.4em}
+.feedback.good{color:var(--green)} .feedback.bad{color:#c2410c}
+.correction{display:none;background:#f4f2ee;border-radius:12px;padding:.8rem .9rem;margin-top:.6rem}
+.correction.show{display:block}
+
+.qcm-q{border-top:1px solid var(--line);padding-top:.9rem;margin-top:.9rem}
+.qcm-q:first-child{border-top:0;margin-top:0}
+.choices{display:grid;grid-template-columns:1fr;gap:.45rem;margin:.5rem 0}
+@media (min-width:560px){.choices{grid-template-columns:1fr 1fr}}
+.choice{display:block;width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;font-weight:400;box-shadow:none}
+.choice .letter{display:inline-block;width:1.5em;font-weight:700;color:var(--blue)}
+.choice.correct{background:var(--green-soft);border-color:var(--green)}
+.choice.wrong{background:var(--coral-soft);border-color:var(--coral)}
+.expl{display:none;font-size:.94rem;margin-top:.35rem}
+.expl.show{display:block}
+.score{font-weight:700;margin-top:.8rem}
+
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:1.5rem 1rem 2.5rem}
+
+/* --- Figures. NE JAMAIS écrire une règle « svg { … } » globale :
+   MathJax produit lui aussi des <svg> et ils seraient déformés.
+   Toujours passer par la classe .figure. --- */
+.figure{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:12px;touch-action:pan-y}
+.tabs{display:flex;gap:.5rem;margin:.2rem 0 .9rem}
+.tabs button{flex:1;background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:none;font-size:.95rem;padding:.4rem .5rem;min-height:44px}
+.tabs button.active{background:var(--blue);color:#fff}
+.pane{display:none}
+.pane.show{display:block}
+.slider{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center;margin:.45rem 0}
+.slider label{font-weight:700;min-width:48px;color:var(--ink)}
+.slider output{min-width:60px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--blue)}
+input[type="range"]{accent-color:var(--blue)}
+.readout{background:#f4f2ee;border-radius:12px;padding:.55rem .75rem;margin:.6rem 0;font-size:.95rem}
+.readout b{color:var(--blue)}
+.tvwrap{overflow-x:auto;margin:.6rem 0}
+table.tv{border-collapse:collapse;width:100%;min-width:250px;font-size:.9rem;text-align:center;background:#fff}
+table.tv th,table.tv td{border:1px solid var(--line);padding:.3rem .35rem;white-space:nowrap}
+table.tv th{background:var(--blue-soft);text-align:center;font-weight:700}
+table.tv td.hi{background:var(--green-soft);font-weight:700}
+table.tv td.lft{text-align:left}
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;margin-right:.45rem;font-size:.9rem;vertical-align:middle;font-family:system-ui,sans-serif}
+.qbox{margin:.55rem 0}
+.qbox .lab{font-size:.92rem;color:var(--muted);display:block;margin-bottom:.2rem}
+.inline-inputs{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.inline-inputs input[type="text"]{flex:1 1 120px;min-width:110px}
+.legend{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.88rem;color:var(--muted);margin:.3rem 0 .1rem}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:.3rem;vertical-align:middle}
+.legend .b{background:#2563eb}
+.legend .o{background:#d97706}
+.legend .g{background:#22a06b}
+.legend .r{background:#f97362}
+
+/* ===== Bloc responsive obligatoire — ne pas modifier ===== */
+/* Les formules gardent leur taille normale : c'est le bloc parent qui défile
+   horizontalement quand la formule est plus large que la carte. */
+mjx-container svg{
+  width:auto !important;height:auto !important;max-width:none !important;
+  display:inline !important;background:none !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;
+}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding-bottom:3px}
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml{
+  position:absolute !important;top:0 !important;left:0 !important;
+  width:1px !important;height:1px !important;overflow:hidden !important;
+  clip:rect(1px,1px,1px,1px) !important;padding:0 !important;border:0 !important;white-space:nowrap !important;
+}
+.correction,.corr,.enonce,.feedback,.expl,.stem,.question,
+.correction p,.corr p,.enonce p,.expl p,
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol{
+  max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+}
+p:has(> mjx-container),ul:has(> li > mjx-container), ol:has(> li > mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),dd:has(> mjx-container),summary:has(> mjx-container),
+div:has(> mjx-container){max-width:100%;overflow-x:auto;overflow-y:hidden}
+h1,h2,h3,h4{flex-wrap:wrap}
+div:has(> table){max-width:100%;overflow-x:auto}
+pre{max-width:100%;overflow-x:auto}
+.correction::-webkit-scrollbar,.corr::-webkit-scrollbar,
+p::-webkit-scrollbar,ul::-webkit-scrollbar{height:4px}
+.correction::-webkit-scrollbar-thumb,.corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb,ul::-webkit-scrollbar-thumb{background:#d7d2ca;border-radius:4px}
+/* ===== fin du bloc responsive ===== */
+</style>
+
+<style>
+/* ===== Navigation compacte (ajout) =====
+   Les cinq onglets tiennent sur un écran de téléphone, sans défilement
+   horizontal, et un bouton ramène à la liste des fiches. */
+.navbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.25rem;
+  padding:.4rem .45rem;background:rgba(250,248,245,.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid #e5e7eb;
+}
+.navbar > nav{
+  position:static;flex:1;min-width:0;display:flex;gap:.25rem;margin:0;padding:0;
+  background:none;border:0;box-shadow:none;overflow:visible;white-space:normal;backdrop-filter:none;
+}
+.navbar nav a{
+  flex:1 1 0;min-width:0;margin:0;padding:0 .3rem;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.nav-home{
+  flex:0 0 42px;display:inline-block;min-height:44px;line-height:44px;text-align:center;
+  border-radius:999px;background:#fff;color:#2563eb;text-decoration:none;font-size:1.1rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.nshort{display:none}
+@media (max-width:600px){
+  .nlong{display:none}
+  .nshort{display:inline}
+  .navbar nav a{font-size:.84rem;padding:0 .2rem}
+}
+/* Bouton de remontée en haut de page */
+.to-top{
+  position:fixed;right:.85rem;bottom:.85rem;width:48px;height:48px;border-radius:50%;border:0;
+  background:#2563eb;color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+.retour-fiches{display:inline-block;margin-top:.6rem;color:#2563eb;text-decoration:none;font-weight:600;min-height:44px;line-height:44px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>5A — La fonction exponentielle</h1>
+  <div class="sub">Première · Mathématiques</div>
+</header>
+
+<div class="navbar">
+  <a class="nav-home" href="../../index.html" title="Toutes les fiches" aria-label="Toutes les fiches">←</a>
+  <nav id="nav">
+    <a href="#cours">Cours</a>
+    <a href="#methode"><span class="nlong">Méthode</span><span class="nshort">Méth.</span></a>
+    <a href="#visu"><span class="nlong">Visualisation</span><span class="nshort">Visu</span></a>
+    <a href="#exos"><span class="nlong">Exercices</span><span class="nshort">Exos</span></a>
+    <a href="#qcm">QCM</a>
+  </nav>
+</div>
+
+<main>
+
+<!-- ============================== COURS ============================== -->
+<section id="cours">
+  <h2>Cours</h2>
+
+  <div class="card blue">
+    <h3><span class="num">1</span>Une fonction égale à sa propre dérivée</h3>
+    <p>On admet le résultat suivant.</p>
+    <div class="key">
+      <p>Il existe une <b>unique</b> fonction \(f\) dérivable sur \(\mathbb{R}\) telle que</p>
+      \[f' = f \quad \text{et} \quad f(0) = 1.\]
+      <p>On l'appelle <b>fonction exponentielle</b> et on la note \(\exp.\)</p>
+    </div>
+    <p>Autrement dit : \(\exp'(x) = \exp(x)\) pour tout réel \(x,\) et \(\exp(0) = 1.\) L'existence et l'unicité sont <b>admises</b> en Première.</p>
+    <p>Conséquence à retenir : en un point de la courbe d'ordonnée \(3,\) la pente de la tangente vaut aussi \(3.\) Plus la courbe est haute, plus elle monte vite : c'est toute l'idée de la croissance exponentielle.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>La relation fonctionnelle <span class="tag demo">à savoir démontrer</span></h3>
+    <div class="key">
+      <p>Pour tous réels \(x\) et \(y :\)</p>
+      \[\exp(x + y) = \exp(x) \times \exp(y).\]
+    </div>
+    <p>L'exponentielle <b>transforme les sommes en produits</b>. En prenant \(y = -x\) on obtient</p>
+    \[\exp(x) \times \exp(-x) = \exp(0) = 1.\]
+    <p><b>Démonstration de ce dernier point.</b> On pose \(g(x) = u(x)v(x)\) avec \(u(x) = \exp(x)\) et \(v(x) = \exp(-x).\) Alors \(u' = u\) et \(v' = -v,\) donc</p>
+    \[g' = u'v + uv' = uv - uv = 0.\]
+    <p>La fonction \(g\) est donc constante, égale à \(g(0) = 1.\)</p>
+    <div class="ok">
+      <p><b>Stricte positivité.</b> Un produit égal à \(1\) ne peut pas contenir de facteur nul : \(\exp(x) \ne 0\) pour tout \(x.\) De plus \(\exp(x) = \exp\!\left(\tfrac{x}{2}\right)^2 \ge 0.\) Donc</p>
+      \[\exp(x) > 0 \quad \text{pour tout réel } x.\]
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Le nombre \(\mathrm{e}\) et la notation \(\mathrm{e}^x\)</h3>
+    <p>On note \(\mathrm{e} = \exp(1) \approx 2{,}718\,281\,8.\) Comme l'exponentielle change les sommes en produits, elle se comporte exactement comme une puissance : on écrit donc</p>
+    \[\exp(x) = \mathrm{e}^{x}.\]
+    <div class="key">
+      <p>Pour tous réels \(x,\ y\) et tout entier \(n :\)</p>
+      \[\mathrm{e}^{x+y} = \mathrm{e}^{x}\mathrm{e}^{y}, \qquad \mathrm{e}^{-x} = \dfrac{1}{\mathrm{e}^{x}}, \qquad \mathrm{e}^{x-y} = \dfrac{\mathrm{e}^{x}}{\mathrm{e}^{y}}, \qquad \mathrm{e}^{nx} = \left(\mathrm{e}^{x}\right)^{n}.\]
+      <p>Et les deux valeurs de base : \(\mathrm{e}^{0} = 1,\) \(\mathrm{e}^{1} = \mathrm{e}.\)</p>
+    </div>
+    <p>Exemples : \(\mathrm{e}^{2}\mathrm{e}^{3} = \mathrm{e}^{5},\) \(\dfrac{\mathrm{e}^{5}}{\mathrm{e}^{2}} = \mathrm{e}^{3},\) \(\left(\mathrm{e}^{2}\right)^{3} = \mathrm{e}^{6},\) \(\dfrac{1}{\mathrm{e}^{4}} = \mathrm{e}^{-4} \approx 0{,}018\,3.\)</p>
+  </div>
+
+  <div class="card green">
+    <h3><span class="num">4</span>Une suite géométrique cachée <span class="tag">lien fiche 2B</span></h3>
+    <div class="key">
+      <p>Pour tout réel \(a,\) la suite \(\left(\mathrm{e}^{na}\right)\) est <b>géométrique de raison \(\mathrm{e}^{a}\)</b> et de premier terme \(\mathrm{e}^{0} = 1.\)</p>
+    </div>
+    <p>En effet \(\dfrac{\mathrm{e}^{(n+1)a}}{\mathrm{e}^{na}} = \mathrm{e}^{(n+1)a - na} = \mathrm{e}^{a},\) qui ne dépend pas de \(n.\)</p>
+    <p>Exemple avec \(a = 0{,}05 :\) la raison vaut \(\mathrm{e}^{0{,}05} \approx 1{,}051\,3,\) soit une hausse de \(5{,}13\ \%\) à chaque pas. Tous les outils de la fiche 2B (terme général \(u_n = u_0 q^{n},\) sens de variation, recherche de seuil par tableau) s'appliquent alors sans rien changer.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Signe, variations et courbe</h3>
+    <p>Puisque \(\exp' = \exp\) et que \(\exp\) est strictement positive, la dérivée est strictement positive : la fonction exponentielle est <b>strictement croissante sur \(\mathbb{R}.\)</b></p>
+    <div class="tvwrap">
+      <table class="tv">
+        <tr><th>\(x\)</th><th>\(-2\)</th><th>\(-1\)</th><th>\(0\)</th><th>\(1\)</th><th>\(2\)</th><th>\(3\)</th></tr>
+        <tr><th>\(\mathrm{e}^{x}\)</th><td>\(0{,}135\)</td><td>\(0{,}368\)</td><td>\(1\)</td><td>\(2{,}718\)</td><td>\(7{,}389\)</td><td>\(20{,}09\)</td></tr>
+      </table>
+    </div>
+    <div class="ok">
+      <p><b>La conséquence la plus utile</b>, celle qui sert à résoudre les équations :</p>
+      \[\mathrm{e}^{a} = \mathrm{e}^{b} \iff a = b, \qquad \mathrm{e}^{a} < \mathrm{e}^{b} \iff a < b.\]
+    </div>
+    <p>La courbe passe par \((0\,;1)\) et \((1\,;\mathrm{e}).\) Comme \(\exp'(0) = \exp(0) = 1,\) la <b>tangente au point d'abscisse \(0\)</b> a pour coefficient directeur \(1\) et pour équation</p>
+    \[y = x + 1.\]
+    <p>Sur le graphique, la courbe reste entièrement au-dessus de cette tangente ; elle se colle à l'axe des abscisses quand \(x\) devient très négatif, sans jamais le toucher, puisque \(\mathrm{e}^{x} > 0.\)</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Les fonctions \(t \mapsto \mathrm{e}^{kt}\)</h3>
+    <div class="key">
+      <p>Pour \(k\) réel, la fonction \(t \mapsto \mathrm{e}^{kt}\) est dérivable sur \(\mathbb{R}\) et</p>
+      \[\left(\mathrm{e}^{kt}\right)' = k\,\mathrm{e}^{kt}.\]
+      <p>Comme \(\mathrm{e}^{kt} > 0,\) la dérivée a le <b>signe de \(k\)</b> :</p>
+      <ul>
+        <li>\(k > 0 :\) fonction strictement croissante, <b>croissance exponentielle</b> ;</li>
+        <li>\(k < 0 :\) fonction strictement décroissante, <b>décroissance exponentielle</b> ;</li>
+        <li>\(k = 0 :\) fonction constante égale à \(1.\)</li>
+      </ul>
+    </div>
+    <p>Quand \(t\) augmente de \(1,\) la valeur est multipliée par \(\mathrm{e}^{k}.\) Exemples : pour \(k = 0{,}03,\) \(\mathrm{e}^{0{,}03} \approx 1{,}030\,5,\) soit \(+3{,}05\ \%\) par pas ; pour \(k = -0{,}1,\) \(\mathrm{e}^{-0{,}1} \approx 0{,}904\,8,\) soit \(-9{,}52\ \%\) par pas.</p>
+  </div>
+
+  <div class="card amber">
+    <h3><span class="num">7</span>Modéliser avec une exponentielle</h3>
+    <p>Une grandeur qui, à chaque pas de temps, est multipliée par un même nombre se modélise par \(f(t) = f(0)\,\mathrm{e}^{kt}.\)</p>
+    <ul>
+      <li><b>Capital placé.</b> \(2\,000\) € modélisés par \(C(t) = 2\,000\,\mathrm{e}^{0{,}04t}\) (\(t\) en années). Au bout de \(10\) ans : \(C(10) = 2\,000\,\mathrm{e}^{0{,}4},\) soit environ \(2\,983{,}65\) €. Le taux annuel est \(\mathrm{e}^{0{,}04} - 1 \approx 0{,}040\,8,\) soit \(+4{,}08\ \%.\)</li>
+      <li><b>Décroissance radioactive.</b> \(N(t) = 100\,\mathrm{e}^{-0{,}05t}\) grammes. Au bout de \(8\) ans : \(100\,\mathrm{e}^{-0{,}4} \approx 67{,}0\) g. Chaque année la masse est multipliée par \(\mathrm{e}^{-0{,}05} \approx 0{,}951\,2,\) soit \(-4{,}88\ \%.\)</li>
+      <li><b>Demi-vie \(T.\)</b> Si la grandeur est divisée par \(2\) tous les \(T,\) alors \(\mathrm{e}^{-kT} = 0{,}5,\) donc le modèle s'écrit \(N(t) = N_0 \times 0{,}5^{\,t/T}.\) Pour l'iode 131, \(T = 8\) jours : \(N(t) = N_0 \times 0{,}5^{\,t/8}.\)</li>
+    </ul>
+    <div class="warn">
+      <p><b>Ce qui attend la Terminale.</b> Si l'énoncé donne le taux (« \(+4\ \%\) par an »), on écrit \(\mathrm{e}^{k} = 1{,}04\) et on travaille avec \(C(t) = C_0 \times 1{,}04^{\,t}\) : la valeur de \(k\) elle-même, comme la date exacte où un seuil est franchi, demande le <b>logarithme népérien</b> (fiche 5C). En Première, un seuil se cherche avec un <b>tableau de valeurs</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== MÉTHODE ============================== -->
+<section id="methode">
+  <h2>Méthode</h2>
+
+  <div class="card blue">
+    <h3>Transformer une expression avec les propriétés algébriques</h3>
+    <ol>
+      <li>Remplacer chaque \(\dfrac{1}{\mathrm{e}^{a}}\) par \(\mathrm{e}^{-a}.\)</li>
+      <li>Transformer chaque puissance : \(\left(\mathrm{e}^{a}\right)^{n} = \mathrm{e}^{na}.\)</li>
+      <li>Regrouper : un produit devient une <b>somme</b> d'exposants, un quotient une <b>différence</b>.</li>
+      <li>Réduire l'exposant final.</li>
+    </ol>
+    <p>Exemple : \(A = \dfrac{\mathrm{e}^{5}\,\mathrm{e}^{-2}}{\left(\mathrm{e}^{3}\right)^{2}} = \mathrm{e}^{5 - 2 - 6} = \mathrm{e}^{-3}.\)</p>
+  </div>
+
+  <div class="card blue">
+    <h3>Résoudre \(\mathrm{e}^{f(x)} = \mathrm{e}^{g(x)}\) ou l'inéquation correspondante</h3>
+    <ol>
+      <li>Tout ramener à la forme \(\mathrm{e}^{A} = \mathrm{e}^{B}\) (ou \(\mathrm{e}^{A} \le \mathrm{e}^{B}\)) en utilisant les propriétés algébriques.</li>
+      <li>Invoquer la <b>stricte croissance</b> : \(\mathrm{e}^{A} = \mathrm{e}^{B} \iff A = B\) et \(\mathrm{e}^{A} \le \mathrm{e}^{B} \iff A \le B\) (le sens est <b>conservé</b>).</li>
+      <li>Résoudre l'équation ou l'inéquation obtenue, qui est ordinaire.</li>
+      <li>Si on divise par un nombre négatif, ne pas oublier de <b>changer le sens</b> de l'inégalité.</li>
+    </ol>
+    <p>Exemple : \(\mathrm{e}^{2x+1} = \mathrm{e}^{5-x}\) équivaut à \(2x + 1 = 5 - x,\) puis à \(3x = 4,\) donc \(x = \dfrac{4}{3}.\)</p>
+    <p>Exemple : \(\mathrm{e}^{-2x+3} \leqslant \mathrm{e}^{x}\) équivaut à \(-2x + 3 \leqslant x,\) puis à \(3 \leqslant 3x,\) donc \(x \geqslant 1.\)</p>
+  </div>
+
+  <div class="card blue">
+    <h3>Dériver une expression contenant \(\mathrm{e}^{x}\)</h3>
+    <ol>
+      <li>Dérivées de base : \(\left(\mathrm{e}^{x}\right)' = \mathrm{e}^{x}\) et \(\left(\mathrm{e}^{ax+b}\right)' = a\,\mathrm{e}^{ax+b}\) — le facteur \(a\) sort devant.</li>
+      <li>Produit \(u v :\) \((uv)' = u'v + uv'.\) Avec \(v = \mathrm{e}^{x},\) on met toujours \(\mathrm{e}^{x}\) en facteur à la fin.</li>
+      <li>Quotient \(\dfrac{u}{v} :\) \(\left(\dfrac{u}{v}\right)' = \dfrac{u'v - uv'}{v^{2}}.\)</li>
+      <li>Pour le signe de la dérivée : \(\mathrm{e}^{\text{quelque chose}} > 0\) toujours, donc seul l'<b>autre facteur</b> décide.</li>
+    </ol>
+    <p>Exemple : pour \(f(x) = (2x - 3)\mathrm{e}^{x},\) on a \(f'(x) = 2\mathrm{e}^{x} + (2x-3)\mathrm{e}^{x},\) soit \(f'(x) = (2x - 1)\mathrm{e}^{x},\) du signe de \(2x - 1.\)</p>
+    <p>Exemple : pour \(g(x) = \dfrac{\mathrm{e}^{x}}{x}\) sur \(]0\,;+\infty[,\) on a \(g'(x) = \dfrac{\mathrm{e}^{x}x - \mathrm{e}^{x}}{x^{2}},\) soit \(g'(x) = \dfrac{(x-1)\mathrm{e}^{x}}{x^{2}}.\)</p>
+  </div>
+
+  <div class="card blue">
+    <h3>Modéliser une évolution par une exponentielle</h3>
+    <ol>
+      <li>Repérer la valeur initiale : \(f(0) = N_0.\) Le modèle est \(f(t) = N_0\,\mathrm{e}^{kt}.\)</li>
+      <li>Choisir le signe de \(k :\) \(k > 0\) si la grandeur augmente, \(k < 0\) si elle diminue.</li>
+      <li>Facteur sur un pas de temps : \(\mathrm{e}^{k}.\) Taux d'évolution : \(\left(\mathrm{e}^{k} - 1\right) \times 100\) en pourcentage.</li>
+      <li>Si l'énoncé donne le taux \(p\ \% :\) écrire \(\mathrm{e}^{k} = 1 + \dfrac{p}{100}\) et garder cette écriture, soit \(f(t) = N_0\left(1 + \tfrac{p}{100}\right)^{t}.\)</li>
+      <li>Si l'énoncé donne la demi-vie \(T :\) \(\mathrm{e}^{-kT} = 0{,}5,\) donc \(f(t) = N_0 \times 0{,}5^{\,t/T}.\)</li>
+      <li>Pour un seuil, faire un <b>tableau de valeurs</b> et repérer le premier entier qui convient.</li>
+    </ol>
+  </div>
+
+  <div class="card blue">
+    <h3>Reconnaître une suite géométrique derrière une exponentielle</h3>
+    <ol>
+      <li>Écrire le terme sous la forme \(u_n = \mathrm{e}^{an + b}.\)</li>
+      <li>Séparer : \(u_n = \mathrm{e}^{b}\left(\mathrm{e}^{a}\right)^{n}.\)</li>
+      <li>Conclure : suite géométrique de premier terme \(u_0 = \mathrm{e}^{b}\) et de raison \(q = \mathrm{e}^{a}.\)</li>
+      <li>Vérifier par le quotient : \(\dfrac{u_{n+1}}{u_n} = \mathrm{e}^{a},\) constant.</li>
+    </ol>
+    <p>Exemple : \(u_n = 3\,\mathrm{e}^{0{,}2n}\) est géométrique de raison \(\mathrm{e}^{0{,}2} \approx 1{,}221\,4\) et de premier terme \(3.\) Comme \(q > 1,\) la suite est croissante : \(+22{,}14\ \%\) par pas.</p>
+  </div>
+
+  <div class="card coral">
+    <h3>Erreurs fréquentes</h3>
+    <ul>
+      <li><b>Écrire \(\mathrm{e}^{x+y} = \mathrm{e}^{x} + \mathrm{e}^{y}.\)</b> Faux : l'exponentielle transforme une somme en <b>produit</b>, \(\mathrm{e}^{x+y} = \mathrm{e}^{x}\mathrm{e}^{y}.\) Vérifie avec \(\mathrm{e}^{1+1} = \mathrm{e}^{2} \approx 7{,}39,\) alors que \(\mathrm{e} + \mathrm{e} \approx 5{,}44.\)</li>
+      <li><b>Croire que \(\mathrm{e}^{x}\) peut être négatif ou nul.</b> Jamais : \(\mathrm{e}^{x} > 0\) pour tout \(x.\) Une équation \(\mathrm{e}^{x} = -3\) n'a donc aucune solution.</li>
+      <li><b>Confondre \(\mathrm{e}^{2x}\) et \(2\mathrm{e}^{x}.\)</b> On a \(\mathrm{e}^{2x} = \left(\mathrm{e}^{x}\right)^{2} :\) pour \(x = 3,\) \(\mathrm{e}^{6} \approx 403\) alors que \(2\mathrm{e}^{3} \approx 40{,}2.\)</li>
+      <li><b>Oublier le facteur \(a\) en dérivant \(\mathrm{e}^{ax+b}.\)</b> La dérivée est \(a\,\mathrm{e}^{ax+b},\) pas \(\mathrm{e}^{ax+b}.\)</li>
+      <li><b>Confondre croissance et décroissance.</b> Le sens est donné par le <b>signe de \(k\)</b> : \(\mathrm{e}^{0{,}2t}\) monte, \(\mathrm{e}^{-0{,}2t}\) descend.</li>
+      <li><b>Écrire \(\mathrm{e}^{-x} = -\mathrm{e}^{x}.\)</b> Faux : \(\mathrm{e}^{-x} = \dfrac{1}{\mathrm{e}^{x}},\) qui reste positif.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================== VISUALISATION ============================== -->
+<section id="visu">
+  <h2>Visualisation</h2>
+
+  <div class="tabs">
+    <button id="tab1" type="button" class="active">Courbe de eᵏᵗ</button>
+    <button id="tab2" type="button">Méthode d'Euler</button>
+  </div>
+
+  <div class="card pane show" id="pane1">
+    <p>Fais varier \(k\) du négatif au positif : la courbe bascule de la décroissance à la croissance. La tangente au point d'abscisse \(0\) a toujours pour équation \(y = kx + 1.\)</p>
+    <div class="legend"><span><i class="b"></i>courbe de \(t \mapsto \mathrm{e}^{kt}\)</span><span><i class="r"></i>tangente en \(0\)</span><span><i class="o"></i>point mobile</span><span><i class="g"></i>valeurs entières</span></div>
+    <svg id="fig" class="figure" viewBox="0 0 400 300" aria-label="Courbe de t vers e puissance kt, avec sa tangente au point d'abscisse 0 et un point mobile"></svg>
+    <div class="slider"><label for="sk">\(k\)</label><input type="range" id="sk" min="-10" max="10" step="1" value="6"><output id="ok">0,6</output></div>
+    <div class="slider"><label for="st">\(t\)</label><input type="range" id="st" min="0" max="100" step="1" value="60"><output id="ot">1</output></div>
+    <div class="readout" id="read1"></div>
+    <div id="tab1table"></div>
+  </div>
+
+  <div class="card pane" id="pane2">
+    <p>La méthode d'Euler reconstruit la courbe à partir des deux seules données \(f' = f\) et \(f(0) = 1 :\) on part du point \((0\,;1)\) et on avance en suivant la tangente sur un petit pas \(h.\) Comme la pente vaut \(y,\) chaque étape s'écrit \(y_{n+1} = y_n + h\,y_n = y_n(1 + h).\)</p>
+    <div class="legend"><span><i class="b"></i>courbe exacte de \(\mathrm{e}^{x}\)</span><span><i class="o"></i>ligne brisée d'Euler</span></div>
+    <svg id="fig2" class="figure" viewBox="0 0 400 300" aria-label="Ligne brisée construite par la méthode d'Euler superposée à la courbe de l'exponentielle"></svg>
+    <div class="slider"><label for="sh">pas \(h\)</label><input type="range" id="sh" min="0" max="9" step="1" value="3"><output id="oh">0,2</output></div>
+    <div class="slider"><label for="sp">étapes</label><input type="range" id="sp" min="0" max="100" step="1" value="100"><output id="op">10</output></div>
+    <div class="readout" id="read2"></div>
+  </div>
+</section>
+
+<!-- ============================== EXERCICES ============================== -->
+<section id="exos">
+  <h2>Exercices</h2>
+
+  <div class="card" id="ex1">
+    <h3>Exercice 1 <span class="tag">Niveau 1</span></h3>
+    <div id="ex1-enonce"></div>
+    <div class="qbox">
+      <span class="lab">Valeur de l'exposant \(p\) :</span>
+      <div class="inline-inputs">
+        <input type="text" id="ex1-rep" inputmode="decimal" placeholder="un entier">
+        <button id="ex1-check" type="button">Vérifier</button>
+      </div>
+    </div>
+    <div class="feedback" id="ex1-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex1-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex1-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex1-correction"></div>
+  </div>
+
+  <div class="card" id="ex2">
+    <h3>Exercice 2 <span class="tag">Niveau 2</span></h3>
+    <div id="ex2-enonce"></div>
+    <div class="qbox">
+      <span class="lab">Forme de l'ensemble des solutions :</span>
+      <select id="ex2-type">
+        <option value="">— choisis —</option>
+        <option value="eq">x = borne</option>
+        <option value="le">x ⩽ borne</option>
+        <option value="ge">x ⩾ borne</option>
+      </select>
+    </div>
+    <div class="qbox">
+      <span class="lab">Valeur de la borne :</span>
+      <div class="inline-inputs">
+        <input type="text" id="ex2-rep" inputmode="decimal" placeholder="un nombre">
+        <button id="ex2-check" type="button">Vérifier</button>
+      </div>
+    </div>
+    <div class="feedback" id="ex2-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex2-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex2-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex2-correction"></div>
+  </div>
+
+  <div class="card" id="ex3">
+    <h3>Exercice 3 <span class="tag">Niveau 3</span></h3>
+    <div id="ex3-enonce"></div>
+    <div class="qbox">
+      <span class="lab" id="ex3-lab1">Valeur demandée :</span>
+      <div class="inline-inputs"><input type="text" id="ex3-rep" inputmode="decimal" placeholder="un nombre"></div>
+    </div>
+    <div class="qbox">
+      <span class="lab" id="ex3-lab2">Taux d'évolution :</span>
+      <div class="inline-inputs"><input type="text" id="ex3-rep2" inputmode="decimal" placeholder="en %, à 0,1 près"></div>
+    </div>
+    <div class="qbox">
+      <span class="lab" id="ex3-lab3">Seuil :</span>
+      <div class="inline-inputs">
+        <input type="text" id="ex3-rep3" inputmode="numeric" placeholder="un entier">
+        <button id="ex3-check" type="button">Vérifier</button>
+      </div>
+    </div>
+    <div class="feedback" id="ex3-fb"></div>
+    <div class="row">
+      <button class="secondary" id="ex3-corr" type="button">Voir la correction</button>
+      <button class="ghost" id="ex3-new" type="button">Nouvel exercice</button>
+    </div>
+    <div class="correction" id="ex3-correction"></div>
+  </div>
+</section>
+
+<!-- ============================== QCM ============================== -->
+<section id="qcm">
+  <h2>QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard. Une seule bonne réponse par question.</p>
+    <div id="qcm-container"></div>
+    <div class="score" id="qcm-score"></div>
+    <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Si tu bloques :</b> relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une <b>indication</b> (pas la solution).</p>
+  <p><a class="retour-fiches" href="../../index.html">← Toutes les fiches</a></p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- utilitaires ---------- */
+  function $(id) { return document.getElementById(id); }
+  function typeset(el) {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise(el ? [el] : undefined).catch(function () {});
+    }
+  }
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function rndNonZero(a, b) { var x = 0; while (x === 0) { x = rnd(a, b); } return x; }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  // Affichage à la française : virgule décimale.
+  function fmt(x, d) {
+    if (!isFinite(x)) return '—';
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return String(Math.round(x * p) / p).replace('.', ',');
+  }
+  function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  function parseNum(s) {
+    if (s === null || s === undefined) return NaN;
+    s = String(s).trim().replace(',', '.').replace(/\s/g, '');
+    if (s === '') return NaN;
+    return Number(s);
+  }
+  function setFeedback(el, ok, msg) {
+    el.className = 'feedback ' + (ok ? 'good' : 'bad');
+    el.innerHTML = (ok ? '✓ ' : '✗ ') + msg;
+    typeset(el);
+  }
+  function texNum(x, d) { return fmt(x, d === undefined ? 2 : d).replace(',', '{,}'); }
+  // écriture française des grands nombres : 1\,600
+  function grp(s) {
+    var neg = s.charAt(0) === '-'; if (neg) s = s.slice(1);
+    var out = '', c = 0, i;
+    for (i = s.length - 1; i >= 0; i--) { out = s.charAt(i) + out; if (++c % 3 === 0 && i > 0) out = '\\,' + out; }
+    return (neg ? '-' : '') + out;
+  }
+  function texNumG(x, d) {
+    var t = texNum(x, d), q = t.split('{,}');
+    return grp(q[0]) + (q[1] !== undefined ? '{,}' + q[1] : '');
+  }
+  // exposant en TeX : e^{-3}, e^{5}
+  function expTex(p) { return '\\mathrm{e}^{' + p + '}'; }
+  // « 2x - 6 », « x + 3 », « -x + 1 »
+  function linTex(a, b) {
+    var s = (a === 1 ? 'x' : (a === -1 ? '-x' : a + 'x'));
+    if (b > 0) s += ' + ' + b;
+    else if (b < 0) s += ' - ' + (-b);
+    return s;
+  }
+  function niceStep(v) {
+    if (!(v > 0)) return 1;
+    var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10));
+    var r = v / p;
+    return (r < 1.5 ? 1 : (r < 3 ? 2 : (r < 7 ? 5 : 10))) * p;
+  }
+
+  /* ---------- navigation sticky ---------- */
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function updateNav() {
+    var y = window.scrollY + 110, cur = 0;
+    secs.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', updateNav); updateNav();
+
+  /* ---------- fabrique d'éléments SVG ---------- */
+  var NS = 'http://www.w3.org/2000/svg';
+  function mk(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) { if (Object.prototype.hasOwnProperty.call(attrs, k)) e.setAttribute(k, attrs[k]); }
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function clearSvg(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+  function n1(v) { return (Math.round(v * 10) / 10).toString(); }
+
+  // grille, axes et graduations communes aux deux figures
+  function repere(svg, xa, xb, ya, yb, X, Y, L, R, T, B, stepX) {
+    var i, gy = niceStep((yb - ya) / 5);
+    for (i = Math.ceil(xa / stepX); i * stepX <= xb; i++) {
+      svg.appendChild(mk('line', { x1: n1(X(i * stepX)), y1: T, x2: n1(X(i * stepX)), y2: B, stroke: '#eef0f3', 'stroke-width': 1 }));
+    }
+    for (i = Math.ceil(ya / gy); i * gy <= yb; i++) {
+      svg.appendChild(mk('line', { x1: L, y1: n1(Y(i * gy)), x2: R, y2: n1(Y(i * gy)), stroke: '#eef0f3', 'stroke-width': 1 }));
+    }
+    var y0 = Math.min(Math.max(Y(0), T), B);
+    svg.appendChild(mk('line', { x1: L, y1: n1(y0), x2: R, y2: n1(y0), stroke: '#9ca3af', 'stroke-width': 1.4 }));
+    if (xa <= 0 && xb >= 0) svg.appendChild(mk('line', { x1: n1(X(0)), y1: T, x2: n1(X(0)), y2: B, stroke: '#9ca3af', 'stroke-width': 1.4 }));
+    for (i = Math.ceil(xa / stepX); i * stepX <= xb; i++) {
+      if (Math.abs(i * stepX) < 1e-9) continue;
+      svg.appendChild(mk('text', { x: n1(X(i * stepX)), y: n1(Math.min(y0 + 13, B - 1)), 'text-anchor': 'middle', 'font-size': 10, fill: '#6b7280' }, fmt(i * stepX, 2)));
+    }
+    for (i = Math.ceil(ya / gy); i * gy <= yb; i++) {
+      if (Math.abs(i * gy) < 1e-9) continue;
+      svg.appendChild(mk('text', { x: L - 3, y: n1(Y(i * gy) + 4), 'text-anchor': 'end', 'font-size': 10, fill: '#6b7280' }, fmt(i * gy, 2)));
+    }
+    return gy;
+  }
+  // chemin d'une courbe, avec levée de crayon hors de la fenêtre
+  function pathOf(f, xa, xb, ya, yb, X, Y, N) {
+    var d = '', pen = false, i, x, y;
+    for (i = 0; i <= N; i++) {
+      x = xa + (xb - xa) * i / N;
+      y = f(x);
+      if (!isFinite(y) || y < ya || y > yb) { pen = false; continue; }
+      d += (pen ? ' L' : ' M') + n1(X(x)) + ' ' + n1(Y(y));
+      pen = true;
+    }
+    return d;
+  }
+
+  /* ============================================================
+     ONGLET 1 — la courbe de t ↦ e^{kt}
+     ============================================================ */
+  var XA1 = -2, XB1 = 3, L1 = 34, R1 = 392, T1 = 12, B1 = 268;
+
+  function draw1() {
+    var k = (+$('sk').value) / 10;
+    var t = XA1 + (+$('st').value) / 100 * (XB1 - XA1);
+    $('ok').textContent = fmt(k, 1);
+    $('ot').textContent = fmt(t, 2);
+
+    var top = Math.max(Math.exp(k * XB1), Math.exp(k * XA1), 1.45);
+    var yb = Math.min(top * 1.06, 22), ya = -0.14 * yb;
+    var X = function (v) { return L1 + (v - XA1) / (XB1 - XA1) * (R1 - L1); };
+    var Y = function (v) { return B1 - (v - ya) / (yb - ya) * (B1 - T1); };
+
+    var svg = $('fig');
+    clearSvg(svg);
+    repere(svg, XA1, XB1, ya, yb, X, Y, L1, R1, T1, B1, 1);
+
+    // tangente au point d'abscisse 0 : y = kx + 1
+    svg.appendChild(mk('path', {
+      d: pathOf(function (x) { return k * x + 1; }, XA1, XB1, ya, yb, X, Y, 60),
+      fill: 'none', stroke: '#f97362', 'stroke-width': 2, 'stroke-dasharray': '6 4'
+    }));
+
+    // courbe
+    svg.appendChild(mk('path', {
+      d: pathOf(function (x) { return Math.exp(k * x); }, XA1, XB1, ya, yb, X, Y, 400),
+      fill: 'none', stroke: '#2563eb', 'stroke-width': 2.6, 'stroke-linejoin': 'round'
+    }));
+
+    // points d'abscisse entière : la suite géométrique
+    var n;
+    for (n = 0; n <= XB1; n++) {
+      var vn = Math.exp(k * n);
+      if (vn < ya || vn > yb) continue;
+      svg.appendChild(mk('circle', { cx: n1(X(n)), cy: n1(Y(vn)), r: 4, fill: '#22a06b', stroke: '#fff', 'stroke-width': 1.6 }));
+    }
+
+    // point mobile
+    var v = Math.exp(k * t);
+    if (v >= ya && v <= yb) {
+      svg.appendChild(mk('line', { x1: n1(X(t)), y1: n1(Y(0)), x2: n1(X(t)), y2: n1(Y(v)), stroke: '#d97706', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
+      svg.appendChild(mk('line', { x1: n1(X(0)), y1: n1(Y(v)), x2: n1(X(t)), y2: n1(Y(v)), stroke: '#d97706', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
+      svg.appendChild(mk('circle', { cx: n1(X(t)), cy: n1(Y(v)), r: 5.5, fill: '#d97706', stroke: '#fff', 'stroke-width': 2 }));
+      svg.appendChild(mk('text', { x: n1(Math.min(X(t) + 7, R1 - 4)), y: n1(Math.max(Y(v) - 7, T1 + 10)), 'text-anchor': 'end', 'font-size': 11, 'font-weight': 'bold', fill: '#b45309' }, fmt(v, 3)));
+    }
+    // les étiquettes se placent du côté où la courbe est basse
+    var lx = k > 0 ? L1 + 6 : R1 - 4, anc = k > 0 ? 'start' : 'end';
+    svg.appendChild(mk('text', { x: lx, y: T1 + 11, 'text-anchor': anc, 'font-size': 12, fill: '#2563eb' }, 'y = e^(' + fmt(k, 1) + 't)'));
+    svg.appendChild(mk('text', { x: lx, y: T1 + 25, 'text-anchor': anc, 'font-size': 11, fill: '#c2410c' }, 'tangente : y = ' + fmt(k, 1) + 'x + 1'));
+
+    var q = Math.exp(k);
+    var sens = k > 0.001 ? 'croissante (croissance exponentielle)' : (k < -0.001 ? 'décroissante (décroissance exponentielle)' : 'constante');
+    var txt = '<p>Pour \\(k = ' + texNum(k, 1) + ' :\\) la fonction est <b>' + sens + '</b>, et \\(\\mathrm{e}^{k} = ' + texNum(q, 4) + '.\\)</p>' +
+      '<p>Point mobile : \\(t = ' + texNum(t, 2) + ',\\) \\(\\mathrm{e}^{kt} = ' + texNum(v, 4) + '.\\) Tangente en \\(0 :\\) \\(y = ' + texNum(k, 1) + 'x + 1.\\)</p>' +
+      '<p>Chaque fois que \\(t\\) augmente de \\(1,\\) la valeur est multipliée par \\(\\mathrm{e}^{k} = ' + texNum(q, 4) + ',\\) soit ' +
+      (q >= 1 ? 'une hausse de \\(' : 'une baisse de \\(') + texNum(Math.abs(q - 1) * 100, 2) + '\\ \\%\\) par pas.</p>';
+    $('read1').innerHTML = txt;
+
+    var tab = '<p style="margin:.6rem 0 .2rem">Les valeurs aux abscisses entières (points verts) forment une suite géométrique de raison \\(\\mathrm{e}^{k}\\) :</p>' +
+      '<div class="tvwrap"><table class="tv"><tr><th>\\(n\\)</th>';
+    var i;
+    for (i = 0; i <= 4; i++) { tab += '<th>' + i + '</th>'; }
+    tab += '</tr><tr><th>\\(\\mathrm{e}^{nk}\\)</th>';
+    for (i = 0; i <= 4; i++) { tab += '<td>' + fmt(Math.exp(k * i), 4) + '</td>'; }
+    tab += '</tr><tr><th>\\(\\dfrac{u_n}{u_{n-1}}\\)</th><td>—</td>';
+    for (i = 1; i <= 4; i++) { tab += '<td>' + fmt(Math.exp(k * i) / Math.exp(k * (i - 1)), 4) + '</td>'; }
+    tab += '</tr></table></div>' +
+      '<p style="color:#6b7280;font-size:.9rem">Le quotient est constant : c\'est exactement la définition d\'une suite géométrique (fiche 2B), de raison \\(\\mathrm{e}^{k} = ' + texNum(q, 4) + '.\\)</p>';
+    $('tab1table').innerHTML = tab;
+    typeset($('read1')); typeset($('tab1table'));
+  }
+
+  /* ============================================================
+     ONGLET 2 — la méthode d'Euler
+     ============================================================ */
+  var HS = [1, 0.5, 0.25, 0.2, 0.125, 0.1, 0.05, 0.04, 0.025, 0.02];
+  var XB2 = 2, L2 = 34, R2 = 392, T2 = 12, B2 = 268;
+
+  function draw2() {
+    var h = HS[+$('sh').value];
+    var N = Math.round(XB2 / h);
+    var nd = Math.max(1, Math.round((+$('sp').value) / 100 * N));
+    $('oh').textContent = fmt(h, 3);
+    $('op').textContent = nd + '/' + N;
+
+    var ya = -0.6, yb = 8.4;
+    var X = function (v) { return L2 + v / XB2 * (R2 - L2); };
+    var Y = function (v) { return B2 - (v - ya) / (yb - ya) * (B2 - T2); };
+
+    var svg = $('fig2');
+    clearSvg(svg);
+    repere(svg, 0, XB2, ya, yb, X, Y, L2, R2, T2, B2, 0.5);
+
+    // repère de x = 1, là où la ligne brisée donne une approximation de e
+    svg.appendChild(mk('line', { x1: n1(X(1)), y1: T2, x2: n1(X(1)), y2: B2, stroke: '#d1d5db', 'stroke-width': 1.2, 'stroke-dasharray': '5 4' }));
+
+    // courbe exacte
+    svg.appendChild(mk('path', {
+      d: pathOf(Math.exp, 0, XB2, ya, yb, X, Y, 400),
+      fill: 'none', stroke: '#2563eb', 'stroke-width': 2.6
+    }));
+
+    // ligne brisée d'Euler
+    var d = '', y = 1, i, xi, ecartMax = 0;
+    d += 'M' + n1(X(0)) + ' ' + n1(Y(1));
+    for (i = 1; i <= nd; i++) {
+      y = y * (1 + h);
+      xi = i * h;
+      if (y > yb) { d += ' L' + n1(X(xi)) + ' ' + n1(Y(yb)); break; }
+      d += ' L' + n1(X(xi)) + ' ' + n1(Y(y));
+      var e = Math.abs(Math.exp(xi) - y);
+      if (e > ecartMax) ecartMax = e;
+    }
+    svg.appendChild(mk('path', { d: d, fill: 'none', stroke: '#d97706', 'stroke-width': 2.4, 'stroke-linejoin': 'round' }));
+
+    // sommets de la ligne brisée, si elle en a peu
+    if (N <= 20) {
+      var yy = 1;
+      for (i = 0; i <= nd; i++) {
+        if (i > 0) yy = yy * (1 + h);
+        if (yy > yb) break;
+        svg.appendChild(mk('circle', { cx: n1(X(i * h)), cy: n1(Y(yy)), r: 3.2, fill: '#d97706', stroke: '#fff', 'stroke-width': 1.4 }));
+      }
+    }
+    var yEnd = Math.pow(1 + h, nd), xEnd = nd * h;
+    if (yEnd <= yb) {
+      svg.appendChild(mk('circle', { cx: n1(X(xEnd)), cy: n1(Y(yEnd)), r: 5.5, fill: '#d97706', stroke: '#fff', 'stroke-width': 2 }));
+    }
+    svg.appendChild(mk('text', { x: n1(X(1)), y: T2 + 11, 'text-anchor': 'middle', 'font-size': 11, fill: '#6b7280' }, 'x = 1'));
+    svg.appendChild(mk('text', { x: R2 - 4, y: T2 + 11, 'text-anchor': 'end', 'font-size': 12, fill: '#2563eb' }, 'y = e^x'));
+
+    var approE = Math.pow(1 + h, Math.round(1 / h));
+    var exact = Math.exp(xEnd);
+    var txt = '<p>Pas \\(h = ' + texNum(h, 3) + ',\\) \\(' + N + '\\) étapes en tout, \\(' + nd + '\\) tracées.</p>' +
+      '<p>Dernier point construit : \\(x_{' + nd + '} = ' + texNum(xEnd, 3) + ',\\) \\(y_{' + nd + '} = ' + texNum(yEnd, 4) + '.\\) Valeur exacte : \\(\\mathrm{e}^{' + texNum(xEnd, 3) + '} = ' + texNum(exact, 4) + '.\\) <b>Écart : ' + fmt(Math.abs(exact - yEnd), 4) + '</b>.</p>' +
+      '<p>Approximation de \\(\\mathrm{e}\\) obtenue en \\(x = 1 :\\) \\(\\left(1 + ' + texNum(h, 3) + '\\right)^{' + Math.round(1 / h) + '} = ' + texNum(approE, 5) + '\\) &nbsp;·&nbsp; valeur exacte \\(\\mathrm{e} = 2{,}718\\,28.\\)</p>' +
+      '<p style="color:#6b7280;font-size:.9rem">Plus le pas est petit, plus la ligne brisée colle à la courbe : c\'est ainsi qu\'une machine calcule \\(\\mathrm{e}^{x}\\) à partir des seules conditions \\(f\' = f\\) et \\(f(0) = 1.\\) La ligne brisée reste toujours <b>en dessous</b> de la courbe.</p>';
+    $('read2').innerHTML = txt;
+    typeset($('read2'));
+  }
+
+  /* ---------- onglets ---------- */
+  var tabBtns = [$('tab1'), $('tab2')], panes = [$('pane1'), $('pane2')];
+  tabBtns.forEach(function (btn, i) {
+    btn.addEventListener('click', function () {
+      tabBtns.forEach(function (b, q) { b.classList.toggle('active', q === i); });
+      panes.forEach(function (p, q) { p.classList.toggle('show', q === i); });
+      if (i === 0) draw1(); else draw2();
+    });
+  });
+  ['sk', 'st'].forEach(function (id) { $(id).addEventListener('input', draw1); });
+  ['sh', 'sp'].forEach(function (id) { $(id).addEventListener('input', draw2); });
+
+  /* ============================================================
+     EXERCICES GÉNÉRATIFS
+     ============================================================ */
+  function wireEx(n, fields, gen, check) {
+    var id = 'ex' + n, cur = null;
+    function render() {
+      var prev = cur ? cur.enonce : null, guard = 0;
+      cur = gen();
+      while (prev !== null && cur.enonce === prev && guard++ < 25) { cur = gen(); }
+      $(id + '-enonce').innerHTML = cur.enonce;
+      fields.forEach(function (fid) { var e = $(fid); if (e) e.value = ''; });
+      if (cur.labels) {
+        cur.labels.forEach(function (t, q) { var e = $(id + '-lab' + (q + 1)); if (e) { e.innerHTML = t; typeset(e); } });
+      }
+      $(id + '-fb').textContent = ''; $(id + '-fb').className = 'feedback';
+      $(id + '-correction').classList.remove('show');
+      $(id + '-correction').innerHTML = '';
+      $(id + '-corr').textContent = 'Voir la correction';
+      typeset($(id + '-enonce'));
+    }
+    $(id + '-check').addEventListener('click', function () {
+      var r = check(cur);
+      setFeedback($(id + '-fb'), r.ok, r.msg);
+    });
+    fields.forEach(function (fid) {
+      var e = $(fid);
+      if (e && e.tagName === 'INPUT') {
+        e.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') $(id + '-check').click(); });
+      }
+    });
+    $(id + '-corr').addEventListener('click', function () {
+      var box = $(id + '-correction');
+      if (box.classList.contains('show')) {
+        box.classList.remove('show'); this.textContent = 'Voir la correction';
+      } else {
+        box.innerHTML = cur.correction; box.classList.add('show');
+        this.textContent = 'Masquer la correction'; typeset(box);
+      }
+    });
+    $(id + '-new').addEventListener('click', render);
+    render();
+  }
+
+  /* ----- Exercice 1 : simplifier un produit-quotient d'exponentielles ----- */
+  function genEx1() {
+    var v = pick(['prod', 'pow', 'quotpow', 'inv']);
+    var a = rndNonZero(-6, 7), b = rndNonZero(-6, 7), c = rndNonZero(-6, 7), n = rnd(2, 4);
+    var expr, p, etapes;
+    if (v === 'prod') {
+      p = a + b - c;
+      expr = '\\dfrac{' + expTex(a) + ' \\times ' + expTex(b) + '}{' + expTex(c) + '}';
+      etapes = '<p><b>1.</b> Au numérateur, un produit devient une somme d\'exposants : \\(' + expTex(a) + ' \\times ' + expTex(b) + ' = \\mathrm{e}^{' + a + ' + ' + par(b) + '} = ' + expTex(a + b) + '.\\)</p>' +
+        '<p><b>2.</b> Un quotient devient une différence : \\(\\dfrac{' + expTex(a + b) + '}{' + expTex(c) + '} = \\mathrm{e}^{' + (a + b) + ' - ' + par(c) + '} = ' + expTex(p) + '.\\)</p>';
+    } else if (v === 'pow') {
+      p = a * n + b;
+      expr = '\\left(' + expTex(a) + '\\right)^{' + n + '} \\times ' + expTex(b);
+      etapes = '<p><b>1.</b> Une puissance d\'exponentielle multiplie l\'exposant : \\(\\left(' + expTex(a) + '\\right)^{' + n + '} = \\mathrm{e}^{' + n + ' \\times ' + par(a) + '} = ' + expTex(a * n) + '.\\)</p>' +
+        '<p><b>2.</b> Puis le produit ajoute les exposants : \\(' + expTex(a * n) + ' \\times ' + expTex(b) + ' = \\mathrm{e}^{' + (a * n) + ' + ' + par(b) + '} = ' + expTex(p) + '.\\)</p>';
+    } else if (v === 'quotpow') {
+      p = a - b * n;
+      expr = '\\dfrac{' + expTex(a) + '}{\\left(' + expTex(b) + '\\right)^{' + n + '}}';
+      etapes = '<p><b>1.</b> Au dénominateur : \\(\\left(' + expTex(b) + '\\right)^{' + n + '} = ' + expTex(b * n) + '.\\)</p>' +
+        '<p><b>2.</b> Le quotient soustrait les exposants : \\(\\dfrac{' + expTex(a) + '}{' + expTex(b * n) + '} = \\mathrm{e}^{' + a + ' - ' + par(b * n) + '} = ' + expTex(p) + '.\\)</p>';
+    } else {
+      p = a - b + c * n;
+      expr = expTex(a) + ' \\times \\dfrac{1}{' + expTex(b) + '} \\times \\left(' + expTex(c) + '\\right)^{' + n + '}';
+      etapes = '<p><b>1.</b> L\'inverse change le signe de l\'exposant : \\(\\dfrac{1}{' + expTex(b) + '} = ' + expTex(-b) + '.\\)</p>' +
+        '<p><b>2.</b> La puissance multiplie l\'exposant : \\(\\left(' + expTex(c) + '\\right)^{' + n + '} = ' + expTex(c * n) + '.\\)</p>' +
+        '<p><b>3.</b> Le produit ajoute tout : \\(' + a + ' + ' + par(-b) + ' + ' + par(c * n) + ' = ' + p + ',\\) donc \\(A = ' + expTex(p) + '.\\)</p>';
+    }
+    return {
+      p: p,
+      enonce: '<p>Écris l\'expression \\(A\\) sous la forme \\(\\mathrm{e}^{p}.\\) Donne la valeur de \\(p.\\)</p>\\[A = ' + expr + '\\]',
+      correction: etapes + '<div class="ok"><p>Donc \\(A = ' + expTex(p) + '\\) et \\(p = ' + p + '.\\)</p></div>'
+    };
+  }
+
+  wireEx(1, ['ex1-rep'], genEx1, function (e) {
+    var v = parseNum($('ex1-rep').value);
+    if (isNaN(v)) return { ok: false, msg: 'Écris un nombre entier.' };
+    if (Math.abs(v - e.p) < 1e-9) return { ok: true, msg: 'Exact : \\(A = ' + expTex(e.p) + '.\\)' };
+    if (Math.abs(v + e.p) < 1e-9) return { ok: false, msg: 'Presque : tu as inversé un signe. Attention aux quotients et aux inverses.' };
+    return { ok: false, msg: 'Non. Additionne les exposants des facteurs, soustrais ceux des dénominateurs, et multiplie l\'exposant par l\'indice d\'une puissance.' };
+  });
+
+  /* ----- Exercice 2 : équation ou inéquation e^{ax+b} = e^{cx+d} ----- */
+  function genEx2() {
+    var a = rndNonZero(-4, 4), c = rndNonZero(-4, 4), guard = 0;
+    while (a === c && guard++ < 30) { c = rndNonZero(-4, 4); }
+    if (a === c) { c = a + 1; }
+    var b = rnd(-6, 6);
+    var m = a - c;
+    var x0 = rnd(-4, 4);
+    if (Math.abs(m) % 2 === 0 && Math.random() < 0.4) { x0 = x0 + 0.5; }
+    var d = b + m * x0;
+    var type = pick(['eq', 'ineq', 'ineq']);
+    var sens = pick(['le', 'ge']);          // symbole écrit dans l'énoncé
+    var sym = sens === 'le' ? '\\leqslant' : '\\geqslant';
+    var rep;                                 // forme de l'ensemble solution
+    if (type === 'eq') rep = 'eq';
+    else if (m > 0) rep = sens;              // on divise par m > 0 : sens conservé
+    else rep = (sens === 'le' ? 'ge' : 'le');
+
+    var gA = linTex(a, b), gB = linTex(c, d);
+    var relTex = type === 'eq' ? '=' : sym;
+    var enonce = '<p>Résous dans \\(\\mathbb{R}\\) ' + (type === 'eq' ? 'l\'équation' : 'l\'inéquation') + ' suivante.</p>' +
+      '\\[\\mathrm{e}^{' + gA + '} ' + relTex + ' \\mathrm{e}^{' + gB + '}\\]' +
+      '<p>Indique la forme de l\'ensemble des solutions, puis la borne.</p>';
+
+    var repTex = rep === 'eq' ? 'x = ' + texNum(x0, 2) : (rep === 'le' ? 'x \\leqslant ' + texNum(x0, 2) : 'x \\geqslant ' + texNum(x0, 2));
+    var corr = '<p><b>1. La stricte croissance.</b> La fonction exponentielle est strictement croissante sur \\(\\mathbb{R},\\) donc on peut ' +
+      (type === 'eq' ? 'identifier les exposants' : 'comparer les exposants en gardant le même sens') + ' :</p>' +
+      '\\[' + gA + ' ' + relTex + ' ' + gB + '.\\]' +
+      '<p><b>2. On regroupe.</b> On passe les termes en \\(x\\) à gauche et les constantes à droite :</p>' +
+      '\\[' + (m === 1 ? 'x' : (m === -1 ? '-x' : m + 'x')) + ' ' + relTex + ' ' + (d - b) + '.\\]' +
+      '<p><b>3. On divise par \\(' + m + '.\\)</b> ' +
+      (type === 'eq' ? 'On obtient directement la solution.' :
+        (m > 0 ? 'Ce nombre est <b>positif</b> : le sens de l\'inégalité est conservé.' : 'Ce nombre est <b>négatif</b> : le sens de l\'inégalité <b>change</b>.')) + '</p>' +
+      '<div class="ok">\\[' + repTex + '\\]' +
+      '<p>Ensemble des solutions : ' + (rep === 'eq' ? '\\(\\{' + texNum(x0, 2) + '\\}.\\)' :
+        (rep === 'le' ? '\\(]-\\infty\\,;' + texNum(x0, 2) + ']. \\)' : '\\([' + texNum(x0, 2) + '\\,;+\\infty[.\\)')) + '</p></div>' +
+      '<p style="color:#6b7280;font-size:.9rem">Vérification : pour \\(x = ' + texNum(x0, 2) + ',\\) les deux exposants valent \\(' + texNum(a * x0 + b, 2) + '\\) : les deux membres sont égaux.</p>';
+
+    return { x0: x0, rep: rep, enonce: enonce, correction: corr };
+  }
+
+  wireEx(2, ['ex2-rep', 'ex2-type'], genEx2, function (e) {
+    var t = $('ex2-type').value, v = parseNum($('ex2-rep').value);
+    if (!t) return { ok: false, msg: 'Choisis d\'abord la forme de l\'ensemble des solutions.' };
+    if (isNaN(v)) return { ok: false, msg: 'Écris la borne sous forme de nombre (par exemple 1,5).' };
+    var okT = (t === e.rep), okV = Math.abs(v - e.x0) < 1e-6;
+    if (okT && okV) return { ok: true, msg: 'Exact.' };
+    if (!okT && okV) {
+      return { ok: false, msg: 'La borne est bonne, mais pas le sens. Rappelle-toi : l\'exponentielle conserve le sens, et c\'est la division par un nombre négatif qui le change.' };
+    }
+    if (okT && !okV) return { ok: false, msg: 'Le sens est bon, la borne non. Regroupe bien les \\(x\\) d\'un côté et les constantes de l\'autre.' };
+    return { ok: false, msg: 'Non. Commence par écrire l\'égalité (ou l\'inégalité) entre les deux exposants.' };
+  });
+
+  /* ----- Exercice 3 : modélisation par une exponentielle ----- */
+  function genEx3() {
+    var kind = pick(['capital', 'bacteries', 'radio']);
+    var N0, k, t1, S, uni, tUni, nom, sens, dec, sujet;
+    if (kind === 'capital') {
+      N0 = pick([1500, 2000, 2500, 3000, 4000, 5000]);
+      k = pick([0.02, 0.025, 0.03, 0.035, 0.04, 0.05]);
+      t1 = rnd(6, 15);
+      S = Math.round(N0 * pick([1.2, 1.4, 1.6, 2]) / 100) * 100;
+      uni = 'euros'; tUni = 'années'; nom = 'C'; dec = 2;
+      sujet = '<p>Un capital de \\(' + grp(String(N0)) + '\\) € est placé. Sa valeur, en euros, au bout de \\(t\\) années est modélisée par</p>' +
+        '\\[C(t) = ' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k, 3) + 't}.\\]';
+      sens = 'up';
+    } else if (kind === 'bacteries') {
+      N0 = pick([200, 400, 500, 800]);
+      k = pick([0.1, 0.15, 0.2, 0.25, 0.3]);
+      t1 = rnd(4, 12);
+      S = N0 * pick([2, 3, 4]);
+      uni = 'milliers de bactéries'; tUni = 'heures'; nom = 'N'; dec = 2;
+      sujet = '<p>Une culture contient \\(' + grp(String(N0)) + '\\) milliers de bactéries. Leur nombre, en milliers, au bout de \\(t\\) heures est modélisé par</p>' +
+        '\\[N(t) = ' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k, 3) + 't}.\\]';
+      sens = 'up';
+    } else {
+      N0 = pick([40, 60, 80, 100, 120, 150]);
+      k = -pick([0.03, 0.04, 0.05, 0.08, 0.1]);
+      t1 = rnd(6, 18);
+      S = Math.round(N0 * pick([0.5, 0.4, 0.3]));
+      uni = 'grammes'; tUni = 'années'; nom = 'N'; dec = 2;
+      sujet = '<p>Un échantillon radioactif a une masse initiale de \\(' + grp(String(N0)) + '\\) g. Sa masse, en grammes, au bout de \\(t\\) années est modélisée par</p>' +
+        '\\[N(t) = ' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k, 3) + 't}.\\]';
+      sens = 'down';
+    }
+    var f = function (t) { return N0 * Math.exp(k * t); };
+    var val = f(t1);
+    var taux = (Math.exp(k) - 1) * 100;
+    var seuil = 0, t;
+    for (t = 0; t <= 3000; t++) {
+      if (sens === 'up' ? f(t) > S : f(t) < S) { seuil = t; break; }
+    }
+    var qSeuil = sens === 'up'
+      ? 'le plus petit entier \\(t\\) pour lequel \\(' + nom + '(t)\\) <b>dépasse</b> \\(' + grp(String(S)) + '\\)'
+      : 'le plus petit entier \\(t\\) pour lequel \\(' + nom + '(t)\\) <b>passe sous</b> \\(' + grp(String(S)) + '\\)';
+
+    var enonce = sujet +
+      '<ol><li>Calculer \\(' + nom + '(' + t1 + '),\\) arrondi à \\(0{,}01\\) près.</li>' +
+      '<li>Donner le taux d\'évolution sur un pas de \\(1\\) ' + (tUni === 'années' ? 'an' : 'heure') + ', en pourcentage arrondi à \\(0{,}1\\ \\%\\) près (négatif si c\'est une baisse).</li>' +
+      '<li>À l\'aide d\'un tableau de valeurs, déterminer ' + qSeuil + '.</li></ol>';
+
+    // tableau de valeurs autour du seuil, pour la correction
+    var t0 = Math.max(0, seuil - 3), tab = '<div class="tvwrap"><table class="tv"><tr><th>\\(t\\)</th>';
+    var i;
+    for (i = t0; i <= seuil + 2; i++) { tab += '<th>' + i + '</th>'; }
+    tab += '</tr><tr><th>\\(' + nom + '(t)\\)</th>';
+    for (i = t0; i <= seuil + 2; i++) { tab += '<td' + (i === seuil ? ' class="hi"' : '') + '>' + fmt(f(i), 2) + '</td>'; }
+    tab += '</tr></table></div>';
+
+    var corr = '<p><b>1. La valeur en \\(t = ' + t1 + '.\\)</b> On remplace \\(t\\) par \\(' + t1 + ' :\\)</p>' +
+      '\\[' + nom + '(' + t1 + ') = ' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k, 3) + ' \\times ' + t1 + '} = ' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k * t1, 3) + '} \\approx ' + texNumG(val, 2) + '.\\]' +
+      '<p>Soit environ \\(' + texNumG(val, 2) + '\\) ' + uni + '.</p>' +
+      '<p><b>2. Le taux d\'évolution.</b> Quand \\(t\\) augmente de \\(1 :\\)</p>' +
+      '\\[\\dfrac{' + nom + '(t+1)}{' + nom + '(t)} = \\dfrac{' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k, 3) + '(t+1)}}{' + grp(String(N0)) + '\\,\\mathrm{e}^{' + texNum(k, 3) + 't}} = \\mathrm{e}^{' + texNum(k, 3) + '} \\approx ' + texNum(Math.exp(k), 5) + '.\\]' +
+      '<p>Le coefficient multiplicateur est constant : la suite des valeurs entières est <b>géométrique</b> de raison \\(\\mathrm{e}^{' + texNum(k, 3) + '}.\\) Le taux vaut</p>' +
+      '\\[\\left(\\mathrm{e}^{' + texNum(k, 3) + '} - 1\\right) \\times 100 \\approx ' + texNum(taux, 1) + '\\ \\%.\\]' +
+      '<p><b>3. Le seuil, par tableau de valeurs.</b> On calcule de proche en proche :</p>' + tab +
+      '<div class="ok"><p>Le premier entier qui convient est \\(t = ' + seuil + '\\) : ' +
+      '\\(' + nom + '(' + (seuil - 1) + ') \\approx ' + texNumG(f(Math.max(0, seuil - 1)), 2) + '\\) ' + (sens === 'up' ? 'ne dépasse pas encore' : 'n\'est pas encore sous') + ' \\(' + grp(String(S)) + ',\\) alors que \\(' + nom + '(' + seuil + ') \\approx ' + texNumG(f(seuil), 2) + '\\) ' + (sens === 'up' ? 'le dépasse' : 'l\'est') + '.</p></div>' +
+      '<p style="color:#6b7280;font-size:.9rem">La date exacte du franchissement se calculera avec le <b>logarithme népérien</b> (fiche 5C) ; en Première, le tableau de valeurs suffit.</p>';
+
+    return {
+      val: val, taux: taux, seuil: seuil, uni: uni, nom: nom, t1: t1,
+      labels: ['\\(' + nom + '(' + t1 + ')\\) en ' + uni + ' :', 'Taux d\'évolution par ' + (tUni === 'années' ? 'an' : 'heure') + ', en % :', 'Plus petit entier \\(t\\) convenant :'],
+      enonce: enonce, correction: corr
+    };
+  }
+
+  wireEx(3, ['ex3-rep', 'ex3-rep2', 'ex3-rep3'], genEx3, function (e) {
+    var v1 = parseNum($('ex3-rep').value), v2 = parseNum($('ex3-rep2').value), v3 = parseNum($('ex3-rep3').value);
+    if (isNaN(v1) || isNaN(v2) || isNaN(v3)) return { ok: false, msg: 'Remplis les trois réponses avec des nombres.' };
+    var tol1 = Math.max(0.05, Math.abs(e.val) * 0.004);
+    var o1 = Math.abs(v1 - e.val) <= tol1;
+    var o2 = Math.abs(v2 - e.taux) <= 0.15;
+    var o3 = Math.abs(v3 - e.seuil) < 1e-9;
+    if (o1 && o2 && o3) return { ok: true, msg: 'Les trois réponses sont bonnes.' };
+    var mauvaises = [];
+    if (!o1) mauvaises.push('la valeur de \\(' + e.nom + '(' + e.t1 + ')\\) (remplace \\(t\\) par \\(' + e.t1 + '\\) dans la formule)');
+    if (!o2) mauvaises.push('le taux (c\'est \\(\\left(\\mathrm{e}^{k} - 1\\right) \\times 100,\\) pas \\(k \\times 100\\))');
+    if (!o3) mauvaises.push('le seuil (calcule les valeurs entières une par une jusqu\'à franchir la limite)');
+    return { ok: false, msg: 'À revoir : ' + mauvaises.join(' ; ') + '.' };
+  });
+
+  /* ============================================================
+     QCM — banque de questions
+     ============================================================ */
+  function build(q, options, correctIdx, expl) {
+    var idx = shuffle([0, 1, 2, 3]);
+    return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
+  }
+
+  var qcmBank = [
+    function () {
+      var a = rnd(2, 8), b = rnd(3, 9);
+      return build('Quelle est la forme simplifiée de \\(' + expTex(a) + ' \\times ' + expTex(b) + '\\) ?',
+        ['\\(' + expTex(a + b) + '\\)', '\\(' + expTex(a * b) + '\\)', '\\(' + expTex(a) + ' + ' + expTex(b) + '\\)', '\\(2' + expTex(a + b) + '\\)'], 0,
+        'L\'exponentielle transforme une somme en produit : \\(\\mathrm{e}^{x}\\mathrm{e}^{y} = \\mathrm{e}^{x+y}.\\)');
+    },
+    function () {
+      return build('La fonction exponentielle est l\'unique fonction dérivable sur \\(\\mathbb{R}\\) vérifiant :',
+        ['\\(f\' = f\\) et \\(f(0) = 1\\)', '\\(f\' = f\\) et \\(f(0) = 0\\)', '\\(f\' = \\dfrac{1}{f}\\) et \\(f(0) = 1\\)', '\\(f\' = f\\) et \\(f(1) = 1\\)'], 0,
+        'C\'est la définition : la dérivée est égale à la fonction, et la courbe passe par \\((0\\,;1).\\)');
+    },
+    function () {
+      var a = rnd(-5, 5);
+      return build('Pour le réel \\(x = ' + a + ',\\) le nombre \\(\\mathrm{e}^{x}\\) est :',
+        ['strictement positif', 'du signe de \\(x\\)', 'nul si \\(x = 0\\)', 'négatif si \\(x < 0\\)'], 0,
+        'Pour tout réel \\(x,\\) \\(\\mathrm{e}^{x} > 0 :\\) ici \\(\\mathrm{e}^{' + a + '} \\approx ' + texNum(Math.exp(a), 4) + '.\\)');
+    },
+    function () {
+      var a = rndNonZero(2, 6);
+      return build('Quelle est la dérivée de \\(f(x) = \\mathrm{e}^{' + a + 'x}\\) ?',
+        ['\\(' + a + '\\mathrm{e}^{' + a + 'x}\\)', '\\(\\mathrm{e}^{' + a + 'x}\\)', '\\(' + a + 'x\\,\\mathrm{e}^{' + a + 'x}\\)', '\\(\\mathrm{e}^{' + a + '}\\)'], 0,
+        'La dérivée de \\(\\mathrm{e}^{ax+b}\\) est \\(a\\,\\mathrm{e}^{ax+b} :\\) le coefficient de \\(x\\) sort en facteur.');
+    },
+    function () {
+      return build('Quelle est l\'équation de la tangente à la courbe de \\(\\exp\\) au point d\'abscisse \\(0\\) ?',
+        ['\\(y = x + 1\\)', '\\(y = x\\)', '\\(y = \\mathrm{e}x\\)', '\\(y = 1\\)'], 0,
+        'Le coefficient directeur est \\(\\exp\'(0) = \\exp(0) = 1\\) et la courbe passe par \\((0\\,;1).\\)');
+    },
+    function () {
+      var a = rnd(2, 7);
+      return build('\\(\\mathrm{e}^{-' + a + '}\\) est égal à :',
+        ['\\(\\dfrac{1}{' + expTex(a) + '}\\)', '\\(-' + expTex(a) + '\\)', '\\(' + expTex(a) + '\\)', '\\(0\\)'], 0,
+        'Un exposant négatif donne l\'inverse : \\(\\mathrm{e}^{-x} = \\dfrac{1}{\\mathrm{e}^{x}},\\) qui reste positif.');
+    },
+    function () {
+      var a = pick([0.1, 0.2, 0.3, 0.5, 1.5]);
+      return build('La suite définie par \\(u_n = \\mathrm{e}^{' + texNum(a, 2) + 'n}\\) est :',
+        ['géométrique de raison \\(\\mathrm{e}^{' + texNum(a, 2) + '}\\)', 'arithmétique de raison \\(' + texNum(a, 2) + '\\)',
+          'géométrique de raison \\(' + texNum(a, 2) + '\\)', 'ni arithmétique ni géométrique'], 0,
+        '\\(\\dfrac{u_{n+1}}{u_n} = \\mathrm{e}^{' + texNum(a, 2) + '} \\approx ' + texNum(Math.exp(a), 4) + ',\\) constant : c\'est une suite géométrique.');
+    },
+    function () {
+      var c = rnd(2, 8);
+      return build('Résoudre \\(\\mathrm{e}^{2x} = \\mathrm{e}^{x + ' + c + '}.\\)',
+        ['\\(x = ' + c + '\\)', '\\(x = ' + texNum(c / 2, 2) + '\\)', '\\(x = -' + c + '\\)', 'aucune solution'], 0,
+        'L\'exponentielle est strictement croissante : \\(2x = x + ' + c + ',\\) donc \\(x = ' + c + '.\\)');
+    },
+    function () {
+      var k = pick([0.2, 0.5, 1.2, 2]);
+      return build('Pour \\(k = -' + texNum(k, 2) + ',\\) la fonction \\(t \\mapsto \\mathrm{e}^{kt}\\) est :',
+        ['strictement décroissante', 'strictement croissante', 'constante', 'croissante puis décroissante'], 0,
+        'La dérivée vaut \\(k\\,\\mathrm{e}^{kt},\\) du signe de \\(k :\\) ici \\(k < 0,\\) donc décroissance exponentielle.');
+    },
+    function () {
+      return build('Une valeur approchée du nombre \\(\\mathrm{e}\\) est :',
+        ['\\(2{,}718\\)', '\\(3{,}141\\)', '\\(1{,}618\\)', '\\(2{,}302\\)'], 0,
+        '\\(\\mathrm{e} = \\exp(1) \\approx 2{,}718\\,281\\,8.\\)');
+    },
+    function () {
+      var n = rnd(2, 5);
+      return build('\\(\\left(\\mathrm{e}^{x}\\right)^{' + n + '}\\) est égal à :',
+        ['\\(\\mathrm{e}^{' + n + 'x}\\)', '\\(' + n + '\\mathrm{e}^{x}\\)', '\\(\\mathrm{e}^{x^{' + n + '}}\\)', '\\(\\mathrm{e}^{x + ' + n + '}\\)'], 0,
+        'Une puissance multiplie l\'exposant : \\(\\left(\\mathrm{e}^{x}\\right)^{n} = \\mathrm{e}^{nx}.\\) Attention à ne pas confondre avec \\(' + n + '\\mathrm{e}^{x}.\\)');
+    },
+    function () {
+      var b = rnd(2, 9);
+      return build('L\'inéquation \\(\\mathrm{e}^{x} \\leqslant \\mathrm{e}^{' + b + '}\\) équivaut à :',
+        ['\\(x \\leqslant ' + b + '\\)', '\\(x \\geqslant ' + b + '\\)', '\\(x \\leqslant \\dfrac{1}{' + b + '}\\)', '\\(x = ' + b + '\\)'], 0,
+        'L\'exponentielle est strictement croissante : elle <b>conserve</b> le sens de l\'inégalité entre les exposants.');
+    },
+    function () {
+      return build('Quelle est la dérivée de \\(f(x) = x\\,\\mathrm{e}^{x}\\) ?',
+        ['\\((x + 1)\\mathrm{e}^{x}\\)', '\\(\\mathrm{e}^{x}\\)', '\\(x\\,\\mathrm{e}^{x}\\)', '\\(\\mathrm{e}^{x} + x\\)'], 0,
+        'Dérivée d\'un produit : \\(1 \\times \\mathrm{e}^{x} + x \\times \\mathrm{e}^{x} = (x+1)\\mathrm{e}^{x}.\\)');
+    },
+    function () {
+      var a = rnd(5, 9), b = rnd(1, 4);
+      return build('\\(\\dfrac{' + expTex(a) + '}{' + expTex(b) + '}\\) est égal à :',
+        ['\\(' + expTex(a - b) + '\\)', '\\(' + expTex(a * b) + '\\)', '\\(' + expTex(a + b) + '\\)', '\\(\\dfrac{' + a + '}{' + b + '}\\)'], 0,
+        'Un quotient soustrait les exposants : \\(\\dfrac{\\mathrm{e}^{x}}{\\mathrm{e}^{y}} = \\mathrm{e}^{x-y}.\\)');
+    },
+    function () {
+      var k = pick([0.02, 0.03, 0.05]);
+      var q = Math.exp(k);
+      return build('Une population suit \\(N(t) = N_0\\,\\mathrm{e}^{' + texNum(k, 2) + 't}.\\) Le taux d\'évolution par unité de temps est environ :',
+        ['\\(' + texNum((q - 1) * 100, 2) + '\\ \\%\\)', '\\(' + texNum(k * 100, 2) + '\\ \\%\\)', '\\(' + texNum(q * 100, 2) + '\\ \\%\\)', '\\(' + texNum(k, 2) + '\\ \\%\\)'], 0,
+        'Le coefficient multiplicateur est \\(\\mathrm{e}^{' + texNum(k, 2) + '} \\approx ' + texNum(q, 5) + ' :\\) le taux est \\(\\left(\\mathrm{e}^{k} - 1\\right) \\times 100.\\)');
+    },
+    function () {
+      return build('Dans la méthode d\'Euler appliquée à \\(f\' = f\\) et \\(f(0) = 1,\\) avec un pas \\(h,\\) la relation entre deux valeurs successives est :',
+        ['\\(y_{n+1} = y_n(1 + h)\\)', '\\(y_{n+1} = y_n + h\\)', '\\(y_{n+1} = y_n \\times h\\)', '\\(y_{n+1} = \\mathrm{e}^{y_n}\\)'], 0,
+        'On avance le long de la tangente : \\(y_{n+1} = y_n + h\\,f\'(x_n) = y_n + h\\,y_n.\\)');
+    },
+    function () {
+      return build('Pour tous réels \\(x\\) et \\(y,\\) \\(\\mathrm{e}^{x+y}\\) est égal à :',
+        ['\\(\\mathrm{e}^{x}\\mathrm{e}^{y}\\)', '\\(\\mathrm{e}^{x} + \\mathrm{e}^{y}\\)', '\\(\\mathrm{e}^{xy}\\)', '\\(\\dfrac{\\mathrm{e}^{x}}{\\mathrm{e}^{y}}\\)'], 0,
+        'C\'est la relation fonctionnelle. Vérification : \\(\\mathrm{e}^{1+1} = \\mathrm{e}^{2} \\approx 7{,}39,\\) alors que \\(\\mathrm{e} + \\mathrm{e} \\approx 5{,}44.\\)');
+    },
+    function () {
+      return build('Combien l\'équation \\(\\mathrm{e}^{x} = -2\\) a-t-elle de solutions ?',
+        ['aucune', 'une', 'deux', 'une infinité'], 0,
+        '\\(\\mathrm{e}^{x} > 0\\) pour tout réel \\(x :\\) l\'exponentielle ne prend jamais de valeur négative.');
+    }
+  ];
+
+  var qcmMap = {}, answered = 0, score = 0;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  function renderQcm() {
+    var box = $('qcm-container');
+    box.innerHTML = ''; $('qcm-score').textContent = '';
+    qcmMap = {}; answered = 0; score = 0;
+    shuffle(qcmBank).slice(0, 4).forEach(function (gen, i) {
+      var item = gen(), guard = 0;
+      while (guard++ < 30 && new Set(item.options).size < 4) { item = gen(); }
+      qcmMap[i] = { correct: item.correct, expl: item.expl, done: false };
+      var q = document.createElement('div'); q.className = 'qcm-q';
+      var st = document.createElement('div'); st.className = 'question';
+      st.innerHTML = (i + 1) + '. ' + item.q; q.appendChild(st);
+      var ch = document.createElement('div'); ch.className = 'choices';
+      item.options.forEach(function (opt, j) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'choice';
+        b.innerHTML = '<span class="letter">' + LETTERS[j] + '</span>' + opt;
+        b.addEventListener('click', function () { answer(i, j, ch); });
+        ch.appendChild(b);
+      });
+      q.appendChild(ch);
+      var ex = document.createElement('div'); ex.className = 'expl'; ex.id = 'qcm-expl-' + i;
+      q.appendChild(ex); box.appendChild(q);
+    });
+    typeset(box);
+  }
+
+  function answer(i, j, choicesEl) {
+    var info = qcmMap[i];
+    if (!info || info.done) return;
+    info.done = true;
+    var btns = choicesEl.querySelectorAll('button');
+    btns.forEach(function (b, k) {
+      b.disabled = true;
+      if (k === info.correct) b.classList.add('correct');
+      else if (k === j) b.classList.add('wrong');
+    });
+    var ok = (j === info.correct);
+    if (ok) score++;
+    answered++;
+    var ex = $('qcm-expl-' + i);
+    ex.innerHTML = '<b style="color:' + (ok ? 'var(--green)' : 'var(--coral)') + '">' +
+      (ok ? 'Bonne réponse !' : 'Faux. La bonne réponse est ' + LETTERS[info.correct] + '.') + '</b> ' + info.expl;
+    ex.classList.add('show');
+    typeset(ex);
+    if (answered === 4) {
+      var s = $('qcm-score');
+      s.textContent = 'Score : ' + score + ' / 4' +
+        (score === 4 ? ' — parfait !' : (score >= 2 ? ' — relis les explications des erreurs.' : ' — relis le cours puis refais un QCM.'));
+      s.style.color = score >= 3 ? 'var(--green)' : (score === 2 ? 'var(--amber)' : 'var(--coral)');
+    }
+  }
+  $('qcm-new').addEventListener('click', renderQcm);
+
+  /* ---------- démarrage ---------- */
+  draw1();
+  draw2();
+  renderQcm();
+
+  // Le contenu est injecté avant le chargement de MathJax : on retente au chargement.
+  var tries = 0;
+  (function wait() {
+    if (window.MathJax && window.MathJax.typesetPromise) { typeset(); return; }
+    if (tries++ < 100) setTimeout(wait, 200);
+  })();
+})();
+</script>
+
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+<script>
+(function(){
+  var b = document.getElementById('toTop');
+  if (!b) return;
+  function maj(){ b.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+</body>
+</html>
