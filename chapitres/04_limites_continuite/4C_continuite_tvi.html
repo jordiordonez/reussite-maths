@@ -387,7 +387,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <p>Sans la stricte monotonie, on n'a <b>aucun</b> droit de parler d'unicité. Sur \([-2\,;2],\) la fonction \(f(x) = x^3-3x\) est continue, \(f(-2) = -2\) et \(f(2) = 2 :\) la valeur \(0\) est bien comprise entre \(f(-2)\) et \(f(2),\) donc le TVI s'applique. Et pourtant l'équation \(f(x) = 0,\) c'est-à-dire \(x(x^2-3) = 0,\) a <b>trois</b> solutions dans \([-2\,;2]:\) \(-\sqrt3,\) \(0\) et \(\sqrt3.\) Ici \(f\) n'est pas monotone (elle décroît sur \([-1\,;1]\)).</p>
     </div>
     <h4>Avec un tableau de variations</h4>
-    <p>En pratique on découpe l'intervalle en morceaux sur lesquels \(f\) est strictement monotone, et on applique le corollaire sur <b>chaque</b> morceau. Le nombre de solutions de \(f(x)=k\) est alors le nombre de morceaux « traversés » par la valeur \(k.\)</p>
+    <p>En pratique on découpe l'intervalle en morceaux sur lesquels \(f\) est strictement monotone, et on applique le corollaire sur <b>chaque</b> morceau : sur un morceau, \(f\) prend une fois et une seule chaque valeur <b>strictement comprise</b> entre ses deux valeurs extrêmes. Le nombre de solutions de \(f(x)=k\) est la somme des solutions trouvées morceau par morceau.</p>
     <div class="tablewrap">
       <table>
         <tr><th>\(x\)</th><th>\(-3\)</th><th></th><th>\(1\)</th><th></th><th>\(4\)</th></tr>
@@ -395,6 +395,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       </table>
     </div>
     <p>Avec ce tableau (\(f\) continue sur \([-3\,;4]\)) : pour \(k = 4,\) il y a <b>une</b> solution sur \([-3\,;1]\) (car \(-5 &lt; 4 &lt; 7\)) et <b>une</b> sur \([1\,;4]\) (car \(2 &lt; 4 &lt; 7\)), soit <b>2 solutions</b>. Pour \(k = -1,\) il y en a <b>une seule</b> (sur \([-3\,;1]\) uniquement). Pour \(k = 9,\) il n'y en a <b>aucune</b>.</p>
+    <div class="warn">
+      <p><b>Cas limite : \(k\) égal à une valeur du tableau.</b> La règle « une solution par morceau traversé » ne vaut que pour une valeur \(k\) strictement comprise entre les valeurs extrêmes du morceau. Quand \(k\) est exactement l'une des valeurs du tableau, on conclut directement.</p>
+      <p>• \(k = 7\) (le <b>maximum</b>, atteint en \(x = 1\)) : la valeur \(7\) est la borne commune des deux morceaux, et \(f\) ne la prend qu'<b>une</b> fois, en \(x = 1.\) Il y a donc <b>1</b> solution, et non \(2.\)</p>
+      <p>• \(k = 2 = f(4)\) : sur \([-3\,;1],\) \(2\) est strictement compris entre \(-5\) et \(7,\) d'où une solution ; sur \([1\,;4],\) \(f\) décroît de \(7\) à \(2\) et atteint \(2\) à la <b>borne</b> \(x = 4,\) ce qui donne une seconde solution. Total : <b>2</b> solutions, alors que l'inégalité stricte \(2 &lt; 2 &lt; 7\) est fausse.</p>
+    </div>
   </div>
 
   <div class="card coral">
@@ -657,6 +662,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   }
   // Un nombre négatif s'écrit entre parenthèses dans un produit ou avant un exposant.
   function par(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  // Somme de deux nombres écrite correctement : « a + b » devient « a - |b| » si b est négatif.
+  function sumTex(a, b, d) {
+    return texNum(a, d) + (b < 0 ? ' - ' + texNum(-b, d) : ' + ' + texNum(b, d));
+  }
   function parseNum(s) {
     if (s === null || s === undefined) return NaN;
     s = String(s).trim().replace(',', '.').replace(/\s/g, '');
@@ -1131,14 +1140,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var tab = '<div class="tablewrap"><table><tr><th>étape</th><th>\\([a\\,;b]\\)</th><th>\\(m\\)</th><th>\\(f(m)\\)</th><th>nouvel intervalle</th></tr>';
     det.forEach(function (s, i2) {
       tab += '<tr><td>' + (i2 + 1) + '</td><td>[' + fmt(s.a, 3) + ' ; ' + fmt(s.b, 3) + ']</td><td>' + fmt(s.m, 3) + '</td>' +
-        '<td style="color:' + (s.fm < 0 ? '#f97362' : '#22a06b') + '">' + fmt(s.fm, 3) + '</td>' +
+        '<td style="color:' + (s.fm < 0 ? '#f97362' : '#22a06b') + '">' + (Math.abs(texVal(s.fm, 3) - s.fm) <= 1e-12 ? '' : '≈ ') + fmt(s.fm, 3) + '</td>' +
         '<td>[' + fmt(s.na, 3) + ' ; ' + fmt(s.nb, 3) + ']</td></tr>';
     });
     tab += '</table></div>';
 
     var expl2 = '';
     det.forEach(function (s, i2) {
-      expl2 += '<p><b>Étape ' + (i2 + 1) + '.</b> \\(m = \\dfrac{' + texNum(s.a, 3) + ' + ' + texNum(s.b, 3) + '}{2} = ' + texNum(s.m, 3) + '\\) et \\(f(' + texNum(s.m, 3) + ')' + eqNum(s.fm, 3) + ' ' +
+      expl2 += '<p><b>Étape ' + (i2 + 1) + '.</b> \\(m = \\dfrac{' + sumTex(s.a, s.b, 3) + '}{2} = ' + texNum(s.m, 3) + '\\) et \\(f(' + texNum(s.m, 3) + ')' + eqNum(s.fm, 3) + ' ' +
         (s.fm < 0 ? '&lt; 0' : '&gt; 0') + '.\\) Comme \\(f\\) est croissante, la solution est ' +
         (s.fm < 0 ? 'à <b>droite</b> de \\(m\\)' : 'à <b>gauche</b> de \\(m\\)') + ' : on garde \\([' + texNum(s.na, 3) + '\\,;' + texNum(s.nb, 3) + '].\\)</p>';
     });
