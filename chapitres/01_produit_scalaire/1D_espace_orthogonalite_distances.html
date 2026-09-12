@@ -514,10 +514,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3>Exercice 1 <span class="level">Niveau 1</span> · Équation cartésienne d'un plan</h3>
     <div class="enonce" id="ex1enonce"></div>
     <div class="inputs">
-      <label>a <input type="number" id="ex1a" step="any"></label>
-      <label>b <input type="number" id="ex1b" step="any"></label>
-      <label>c <input type="number" id="ex1c" step="any"></label>
-      <label>d <input type="number" id="ex1d" step="any"></label>
+      <label>a <input type="text" inputmode="text" id="ex1a" step="any"></label>
+      <label>b <input type="text" inputmode="text" id="ex1b" step="any"></label>
+      <label>c <input type="text" inputmode="text" id="ex1c" step="any"></label>
+      <label>d <input type="text" inputmode="text" id="ex1d" step="any"></label>
     </div>
     <div class="row">
       <button id="ex1check">Vérifier</button>
@@ -532,9 +532,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3>Exercice 2 <span class="level l2">Niveau 2</span> · Intersection d'une droite et d'un plan</h3>
     <div class="enonce" id="ex2enonce"></div>
     <div class="inputs">
-      <label>x<sub>I</sub> <input type="number" id="ex2x" step="any"></label>
-      <label>y<sub>I</sub> <input type="number" id="ex2y" step="any"></label>
-      <label>z<sub>I</sub> <input type="number" id="ex2z" step="any"></label>
+      <label>x<sub>I</sub> <input type="text" inputmode="text" id="ex2x" step="any"></label>
+      <label>y<sub>I</sub> <input type="text" inputmode="text" id="ex2y" step="any"></label>
+      <label>z<sub>I</sub> <input type="text" inputmode="text" id="ex2z" step="any"></label>
     </div>
     <div class="row">
       <button id="ex2check">Vérifier</button>
@@ -549,10 +549,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3>Exercice 3 <span class="level l3">Niveau 3</span> · Projeté orthogonal et distance d'un point à un plan</h3>
     <div class="enonce" id="ex3enonce"></div>
     <div class="inputs">
-      <label>x<sub>H</sub> <input type="number" id="ex3x" step="any"></label>
-      <label>y<sub>H</sub> <input type="number" id="ex3y" step="any"></label>
-      <label>z<sub>H</sub> <input type="number" id="ex3z" step="any"></label>
-      <label>MH <input type="number" id="ex3d" step="any"></label>
+      <label>x<sub>H</sub> <input type="text" inputmode="text" id="ex3x" step="any"></label>
+      <label>y<sub>H</sub> <input type="text" inputmode="text" id="ex3y" step="any"></label>
+      <label>z<sub>H</sub> <input type="text" inputmode="text" id="ex3z" step="any"></label>
+      <label>MH <input type="text" inputmode="text" id="ex3d" step="any"></label>
     </div>
     <div class="row">
       <button id="ex3check">Vérifier</button>
@@ -612,7 +612,7 @@ function fr(x,n){
 }
 /* lecture d'un champ numérique en acceptant la virgule */
 function val(id){
-  var raw = ($(id).value || '').trim().replace(',', '.');
+  var raw = ($(id).value || '').trim().replace(',', '.').replace(/[−–—]/g, '-');
   if(raw==='') return NaN;
   var v = parseFloat(raw);
   return isNaN(v) ? NaN : v;

@@ -39,7 +39,8 @@ Ces quatre règles viennent de défauts réellement constatés en production. Le
 1. **MathJax en local, jamais par CDN** : `<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>`, avec `svg: { fontCache: 'local' }`. C'est ce qui fait fonctionner la fiche en mode avion.
 2. **Aucune règle CSS globale `svg { … }`.** MathJax produit des balises `<svg>` : une règle globale étire chaque formule à la largeur de la carte et l'encadre. Styler les figures par la classe `.figure` uniquement.
 3. **Conserver le bloc responsive du squelette sans le modifier** (entre les commentaires « Bloc responsive obligatoire » et « fin du bloc responsive »). Il empêche les formules de sortir de leur carte, neutralise la copie MathML qui élargit la page, et laisse les étiquettes passer à la ligne.
-4. **La ponctuation de fin de phrase se place à l'intérieur de la formule** : écrire `\(x = 5.\)` et non `\(x = 5\).`, sinon le point est rejeté seul à la ligne quand la formule dépasse la largeur du bloc.
+4. **Les champs de réponse utilisent un clavier complet.** Écrire `type="text" inputmode="text"`, jamais `type="number"` ni `inputmode="decimal"` ou `"numeric"` : sur téléphone, ces derniers affichent un pavé numérique **sans touche moins**, ce qui rend toute réponse négative impossible à saisir. La fonction de lecture doit accepter la virgule décimale et le tiret typographique que certains claviers insèrent à la place du signe moins.
+5. **La ponctuation de fin de phrase se place à l'intérieur de la formule** : écrire `\(x = 5.\)` et non `\(x = 5\).`, sinon le point est rejeté seul à la ligne quand la formule dépasse la largeur du bloc.
 
 ## Notation mathématique
 

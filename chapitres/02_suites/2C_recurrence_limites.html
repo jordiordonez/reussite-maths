@@ -651,8 +651,8 @@ print(seuil(<span class="n">1000</span>))     <span class="c"># affiche 6</span>
     <div id="ex2Stmt"></div>
     <div class="box"><strong>a.</strong> On suppose \(P(n)\) vraie. En remplaçant \(u_n\) par son expression dans la relation de récurrence, on obtient \(u_{n+1}\) sous la forme <span id="ex2Form"></span>. Donne \(\alpha\) et \(\beta\).</div>
     <div class="ex-fields">
-      <div class="field"><span class="lab">α =</span><input type="text" id="ex2A" inputmode="decimal" style="max-width:110px"></div>
-      <div class="field"><span class="lab">β =</span><input type="text" id="ex2B" inputmode="decimal" style="max-width:110px"></div>
+      <div class="field"><span class="lab">α =</span><input type="text" id="ex2A" inputmode="text" style="max-width:110px"></div>
+      <div class="field"><span class="lab">β =</span><input type="text" id="ex2B" inputmode="text" style="max-width:110px"></div>
     </div>
     <div class="box"><strong>b.</strong> <span id="ex2QStem"></span></div>
     <div class="field"><select id="ex2Sel"></select></div>
@@ -679,7 +679,7 @@ print(seuil(<span class="n">1000</span>))     <span class="c"># affiche 6</span>
           <option value="none">uₙ n'a pas de limite</option>
         </select>
       </div>
-      <div class="field" id="ex3LWrap" hidden><span class="lab">ℓ =</span><input type="text" id="ex3Lim" inputmode="decimal" style="max-width:110px"></div>
+      <div class="field" id="ex3LWrap" hidden><span class="lab">ℓ =</span><input type="text" id="ex3Lim" inputmode="text" style="max-width:110px"></div>
     </div>
     <div class="row">
       <button type="button" id="ex3Check">Vérifier</button>
@@ -1341,7 +1341,7 @@ function ex3New(){
     stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 1\\) par</p><p style="text-align:center">\\(u_n = '+texNum(a)+' + \\dfrac{'+(b===1?'':texNum(b))+'(-1)^n}{n}\\)</p>'
       + '<p><strong>1.</strong> Encadre \\(u_n\\) en utilisant \\(-1 \\leq (-1)^n \\leq 1\\) : complète \\(A\\) et \\(B\\) ci-dessous.<br><strong>2.</strong> Conclus sur la limite.</p>';
     fields.innerHTML = '<div class="field"><span class="lab">Encadrement :</span><span>\\(A - \\dfrac{B}{n} \\leq u_n \\leq A + \\dfrac{B}{n}\\)</span></div>'
-      + '<div class="field"><span class="lab">A =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F2" inputmode="decimal" style="max-width:110px"></div>';
+      + '<div class="field"><span class="lab">A =</span><input type="text" id="ex3F1" inputmode="text" style="max-width:110px"><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F2" inputmode="text" style="max-width:110px"></div>';
     corr = '<p><strong>1. Encadrement.</strong> Pour tout \\(n \\geq 1,\\) \\(-1 \\leq (-1)^n \\leq 1.\\) En multipliant par \\(\\dfrac{'+texNum(b)+'}{n} > 0\\) (le sens est conservé) :</p>'
       + '<p>\\(-\\dfrac{'+texNum(b)+'}{n} \\leq \\dfrac{'+texNum(b)+'(-1)^n}{n} \\leq \\dfrac{'+texNum(b)+'}{n}\\)</p>'
       + '<p>puis en ajoutant \\('+texNum(a)+'\\) : \\('+texNum(a)+' - \\dfrac{'+texNum(b)+'}{n} \\leq u_n \\leq '+texNum(a)+' + \\dfrac{'+texNum(b)+'}{n}.\\) Donc \\(A = '+fmt(a)+'\\) et \\(B = '+fmt(b)+'.\\)</p>'
@@ -1353,7 +1353,7 @@ function ex3New(){
     ex3.type='compP'; ex3.B=b2; ex3.kind='pinf'; ex3.l=null;
     stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 0\\) par</p><p style="text-align:center">\\(u_n = n + '+texNum(b2)+'(-1)^n\\)</p>'
       + '<p><strong>1.</strong> Minore \\(u_n\\) par une suite simple : \\(u_n \\geq n - B.\\) Donne \\(B.\\)<br><strong>2.</strong> Conclus sur la limite.</p>';
-    fields.innerHTML = '<div class="field"><span class="lab">Minorant :</span><span>\\(u_n \\geq n - B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"></div>';
+    fields.innerHTML = '<div class="field"><span class="lab">Minorant :</span><span>\\(u_n \\geq n - B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="text" style="max-width:110px"></div>';
     corr = '<p><strong>1. Minoration.</strong> Pour tout \\(n,\\) \\((-1)^n \\geq -1,\\) donc \\('+texNum(b2)+'(-1)^n \\geq -'+texNum(b2)+',\\) donc</p>'
       + '<p>\\(u_n = n + '+texNum(b2)+'(-1)^n \\geq n - '+texNum(b2)+',\\) c\'est-à-dire \\(B = '+fmt(b2)+'.\\)</p>'
       + '<p><strong>2. Limite.</strong> La suite \\(v_n = n - '+texNum(b2)+'\\) est arithmétique de raison \\(1 > 0\\) : \\(\\lim v_n = +\\infty.\\)</p>'
@@ -1364,7 +1364,7 @@ function ex3New(){
     ex3.type='compM'; ex3.B=b3; ex3.kind='minf'; ex3.l=null;
     stmt = '<p>Soit \\((u_n)\\) définie pour tout \\(n \\geq 0\\) par</p><p style="text-align:center">\\(u_n = -n + '+texNum(b3)+'(-1)^n\\)</p>'
       + '<p><strong>1.</strong> Majore \\(u_n\\) par une suite simple : \\(u_n \\leq -n + B.\\) Donne \\(B.\\)<br><strong>2.</strong> Conclus sur la limite.</p>';
-    fields.innerHTML = '<div class="field"><span class="lab">Majorant :</span><span>\\(u_n \\leq -n + B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="decimal" style="max-width:110px"></div>';
+    fields.innerHTML = '<div class="field"><span class="lab">Majorant :</span><span>\\(u_n \\leq -n + B\\)</span><span class="lab" style="min-width:40px">B =</span><input type="text" id="ex3F1" inputmode="text" style="max-width:110px"></div>';
     corr = '<p><strong>1. Majoration.</strong> Pour tout \\(n,\\) \\((-1)^n \\leq 1,\\) donc \\('+texNum(b3)+'(-1)^n \\leq '+texNum(b3)+',\\) donc</p>'
       + '<p>\\(u_n \\leq -n + '+texNum(b3)+',\\) c\'est-à-dire \\(B = '+fmt(b3)+'.\\)</p>'
       + '<p><strong>2. Limite.</strong> \\(\\lim(-n + '+texNum(b3)+') = -\\infty.\\)</p>'

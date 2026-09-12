@@ -507,9 +507,9 @@ print(u(<span class="n">4</span>))            <span class="c"># affiche 83</span
     <h3>Exercice 2 — Suite récurrente <span class="tag">niveau 2</span></h3>
     <div id="ex2Stmt"></div>
     <div class="ex-fields">
-      <div class="field"><span class="lab">u<sub>1</sub> =</span><input type="text" id="ex2In1" inputmode="decimal"></div>
-      <div class="field"><span class="lab">u<sub>2</sub> =</span><input type="text" id="ex2In2" inputmode="decimal"></div>
-      <div class="field"><span class="lab">u<sub>3</sub> =</span><input type="text" id="ex2In3" inputmode="decimal"></div>
+      <div class="field"><span class="lab">u<sub>1</sub> =</span><input type="text" id="ex2In1" inputmode="text"></div>
+      <div class="field"><span class="lab">u<sub>2</sub> =</span><input type="text" id="ex2In2" inputmode="text"></div>
+      <div class="field"><span class="lab">u<sub>3</sub> =</span><input type="text" id="ex2In3" inputmode="text"></div>
     </div>
     <div class="row">
       <button type="button" id="ex2Check">Vérifier</button>
@@ -969,7 +969,7 @@ function ex3New(){
     if(s===1) kind = (k>=-1)?'up':'none'; else kind = (k<=1)?'down':'none';
     ex3.type='poly'; ex3.A=A; ex3.B=B; ex3.kind=kind;
     stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = '+polyTex(s,k,0)+'.\\)<br>1. Exprimer \\(u_{n+1} - u_n\\) sous la forme \\(\\alpha n + \\beta.\\)<br>2. En déduire le sens de variation de \\((u_n)\\) sur \\(\\mathbb N.\\)';
-    fields.innerHTML='<div class="field"><span class="lab">u<sub>n+1</sub> − u<sub>n</sub> =</span><input type="text" id="ex3A" inputmode="decimal" placeholder="α" style="max-width:90px"> <span>· n +</span> <input type="text" id="ex3B" inputmode="decimal" placeholder="β" style="max-width:90px"></div>';
+    fields.innerHTML='<div class="field"><span class="lab">u<sub>n+1</sub> − u<sub>n</sub> =</span><input type="text" id="ex3A" inputmode="text" placeholder="α" style="max-width:90px"> <span>· n +</span> <input type="text" id="ex3B" inputmode="text" placeholder="β" style="max-width:90px"></div>';
     var u0=0, u1=s+k, u2=4*s+2*k;
     corr='<p>\\(u_{n+1} = '+coef(s,true)+'(n+1)^2 '+coef(k,false)+'(n+1) = '+coef(s,true)+'(n^2+2n+1) '+coef(k,false)+'n '+fmtSigned(k)+'\\)</p>'
       +'<p>\\(u_{n+1} - u_n = '+polyTex(s,2*s+k,s+k)+' - ('+polyTex(s,k,0)+') = '+linTex(A,B)+'\\)</p>';
@@ -982,7 +982,7 @@ function ex3New(){
     // u_n = (a n + b)/(n+1) ; u_{n+1}-u_n = (a-b)/((n+1)(n+2))
     ex3.type='quot'; ex3.A=a-b; ex3.kind=(a>b)?'up':'down';
     stmt='La suite \\((u_n)\\) est définie pour tout \\(n \\geq 0\\) par \\(u_n = \\dfrac{'+linTex(a,b)+'}{n+1}.\\)<br>1. Montrer que \\(u_{n+1} - u_n = \\dfrac{K}{(n+1)(n+2)}\\) et donner \\(K.\\)<br>2. En déduire le sens de variation de \\((u_n).\\)';
-    fields.innerHTML='<div class="field"><span class="lab">K =</span><input type="text" id="ex3A" inputmode="decimal" style="max-width:90px"></div>';
+    fields.innerHTML='<div class="field"><span class="lab">K =</span><input type="text" id="ex3A" inputmode="text" style="max-width:90px"></div>';
     corr='<p>\\(u_{n+1} = \\dfrac{'+(a===1?'':a)+'(n+1)'+(b===0?'':' '+fmtSigned(b))+'}{n+2} = \\dfrac{'+linTex(a,a+b)+'}{n+2}\\)</p>'
       +'<p>\\(u_{n+1} - u_n = \\dfrac{('+linTex(a,a+b)+')(n+1) - ('+linTex(a,b)+')(n+2)}{(n+1)(n+2)}\\)</p>'
       +'<p>Numérateur : \\('+polyTex(a,2*a+b,a+b)+' - ('+polyTex(a,2*a+b,2*b)+') = '+fmt(a-b)+',\\) donc \\(K = '+fmt(a-b)+'.\\)</p>'
