@@ -118,6 +118,15 @@ Le [dossier du chapitre 8](chapitres/08_combinatoire_denombrement/README.md) pr�
 
 Le [dossier du chapitre 9](chapitres/09_loi_binomiale/README.md) décrit les démonstrations, les tests indépendants des probabilités et des arrondis, ainsi que la génération ciblée.
 
+**Chapitre 10 — Fonctions trigonométriques**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [10A](chapitres/10_trigonometrie/10A_cercle_trigonometrique.html) | Première | Cercle, radians, valeurs remarquables, angles associés, parité et périodicité |
+| [10B](chapitres/10_trigonometrie/10B_derivation_trigonometrie.html) | Terminale | Dérivées, variations, limites en zéro, équations, inéquations et optimisation |
+
+Le [dossier du chapitre 10](chapitres/10_trigonometrie/README.md) décrit les conventions de réponse, les tests indépendants, les contrôles aux bornes et la génération ciblée.
+
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
