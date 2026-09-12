@@ -318,7 +318,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p>De même avec trois vecteurs : \(\vec t = a\,\vec u + b\,\vec v + c\,\vec w.\) Les réels \(a\), \(b\), \(c\) s'appellent les <b>coefficients</b>.</p>
     <div class="key">
       <p><b>Exemple numérique.</b> Avec \(\vec u(1;2;-1)\) et \(\vec v(3;0;2)\) :</p>
-      <p>\[2\vec u - \vec v = (2\times 1 - 3\,;\,2\times 2\,;\,-2-2)\]</p>
+      <p>\[2\vec u\ (2\,;\,4\,;\,-2),\qquad \vec v\ (3\,;\,0\,;\,2),\]</p>
+      <p>\[2\vec u - \vec v\ (2-3\,;\,4-0\,;\,-2-2),\]</p>
       <p>\[2\vec u - \vec v \;=\; (-1\,;\,4\,;\,-4).\]</p>
     </div>
   </div>
@@ -382,7 +383,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <tr><th>Produit par un réel</th><td>\(k\vec u\ (kx\,;\,ky\,;\,kz)\)</td></tr>
       <tr><th>Vecteur \(\overrightarrow{AB}\)</th><td>\((x_B - x_A\,;\,y_B - y_A\,;\,z_B - z_A)\)</td></tr>
       <tr><th>Milieu de \([AB]\)</th><td>\(\left(\dfrac{x_A+x_B}{2}\,;\,\dfrac{y_A+y_B}{2}\,;\,\dfrac{z_A+z_B}{2}\right)\)</td></tr>
-      <tr><th>Colinéarité</th><td>\(\vec u\) et \(\vec v\) colinéaires \(\iff\) il existe \(k\) tel que \(x' = kx\), \(y' = ky\), \(z' = kz.\)</td></tr>
+      <tr><th>Colinéarité</th><td>si \(\vec u \neq \vec 0\) : \(\vec u\) et \(\vec v\) colinéaires \(\iff\) il existe \(k\) tel que \(x' = kx\), \(y' = ky\), \(z' = kz.\) (Le vecteur nul, lui, est colinéaire à tout vecteur.)</td></tr>
     </table>
     <div class="key">
       <p><b>Exemple numérique.</b> \(A(1;-2;3)\) et \(B(4;0;-1)\) donnent \(\overrightarrow{AB}\,(3\,;2\,;-4)\), et le milieu de \([AB]\) est \(I\left(\tfrac52\,;-1\,;1\right).\)</p>
@@ -392,7 +393,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <p>\[A(0;0;0),\quad B(1;0;0),\quad C(1;1;0),\]</p>
       <p>\[D(0;1;0),\quad E(0;0;1),\quad F(1;0;1),\]</p>
       <p>\[G(1;1;1),\quad H(0;1;1).\]</p>
-      <p>Le centre du cube, milieu de \([AG]\), a pour coordonnées \(\left(\tfrac12;\tfrac12;\tfrac12\right)\), donc \(\overrightarrow{AK} = \tfrac12\overrightarrow{AB} + \tfrac12\overrightarrow{AD} + \tfrac12\overrightarrow{AE}.\)</p>
+      <p>Le centre \(K\) du cube, milieu de \([AG]\), a pour coordonnées \(\left(\tfrac12;\tfrac12;\tfrac12\right)\), donc \(\overrightarrow{AK} = \tfrac12\overrightarrow{AB} + \tfrac12\overrightarrow{AD} + \tfrac12\overrightarrow{AE}.\)</p>
     </div>
     <p class="small">Attention : ce repère n'est ni orthogonal ni normé en général (il l'est sur un cube d'arête 1, pas sur un pavé quelconque). Pour les longueurs et le produit scalaire, il faut un repère <b>orthonormé</b> : c'est l'objet de la fiche 1D.</p>
   </div>
@@ -432,9 +433,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       </li>
     </ol>
     <div class="key">
-      <p><b>Exemple.</b> \(\vec u(2;1;0)\), \(\vec v(1;-1;3)\), \(\vec w(5;-1;6).\) On résout</p>
-      <p>\[\begin{cases} 2a + b = 5 \\ a - b = -1 \\ 3b = 6 \end{cases}\]</p>
-      <p>La troisième ligne donne \(b = 2\), la deuxième \(a = 1\), et la première est vérifiée : \(2\times 1 + 2 = 5.\) Donc \(\vec w = \vec u + 2\vec v\) : les trois vecteurs sont coplanaires.</p>
+      <p><b>Exemple.</b> \(\vec u(2;1;0)\), \(\vec v(1;-1;3)\), \(\vec w(4;-1;6).\) On résout</p>
+      <p>\[\begin{cases} 2a + b = 4 \\ a - b = -1 \\ 3b = 6 \end{cases}\]</p>
+      <p>La troisième ligne donne \(b = 2\), la deuxième \(a = 1\), et la première est vérifiée : \(2\times 1 + 2 = 4.\) Donc \(\vec w = \vec u + 2\vec v\) : les trois vecteurs sont coplanaires.</p>
     </div>
   </div>
 
@@ -579,7 +580,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <section id="qcm">
   <h2>QCM</h2>
   <div class="card">
-    <p>Quatre questions tirées au hasard dans une banque de treize. Une seule bonne réponse par question.</p>
+    <p>Quatre questions tirées au hasard dans une banque de quatorze. Une seule bonne réponse par question.</p>
     <div id="qcm-container"></div>
     <div class="score" id="qcm-score"></div>
     <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
@@ -946,10 +947,18 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       s += '<p><b>Repère choisi :</b> \\((' + base.S + '\\,;\\,' + base.names.join(',\\,') + ').\\)</p>';
       if (isMid) {
         var m = EXTRA[T.b].mid;
+        /* on part de l'extrémité du segment qui coïncide avec le point de départ,
+           pour ne jamais écrire un vecteur nul comme \overrightarrow{AA} */
+        if (T.a === m[1]) m = [m[1], m[0]];
         s += '<p><b>Étape 1 — atteindre le milieu.</b> \\(' + T.b + '\\) est le ' + EXTRA[T.b].desc + ', donc</p>';
-        s += '\\[' + vt(lbl) + ' = ' + vt(T.a + m[0]) + ' + \\tfrac12' + vt(m[0] + m[1]) + '.\\]';
+        if (T.a === m[0]) {
+          s += '\\[' + vt(lbl) + ' = \\tfrac12' + vt(m[0] + m[1]) + '.\\]';
+        } else {
+          s += '\\[' + vt(lbl) + ' = ' + vt(T.a + m[0]) + ' + \\tfrac12' + vt(m[0] + m[1]) + '.\\]';
+        }
         var ch1 = edgeChain(T.a, m[0]), ch2 = edgeChain(m[0], m[1]);
-        if (chainTex(ch1)) s += '<p><b>Étape 2 — Chasles le long des arêtes.</b></p>\\[' + vt(T.a + m[0]) + ' = ' + chainTex(ch1) + '.\\]';
+        if (chainTex(ch1) || chainTex(ch2)) s += '<p><b>Étape 2 — Chasles le long des arêtes.</b></p>';
+        if (chainTex(ch1)) s += '\\[' + vt(T.a + m[0]) + ' = ' + chainTex(ch1) + '.\\]';
         if (chainTex(ch2)) s += '\\[' + vt(m[0] + m[1]) + ' = ' + chainTex(ch2) + '.\\]';
       } else {
         var ch = edgeChain(T.a, T.b);
@@ -1303,6 +1312,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       P = pick(VNAMES); Q = pick(VNAMES);
       while (Q === P) Q = pick(VNAMES);
       X = pick(VNAMES);
+      /* si le point de départ est une extrémité du segment, on le met en premier :
+         la correction n'aura jamais à écrire un vecteur nul du type XX. */
+      if (X === Q) { var sw = P; P = Q; Q = sw; }
       target = vSub(vMul(0.5, vAdd(CUBE[P], CUBE[Q])), CUBE[X]);
       lbl = X + 'I';
       extra = 'On note \\(I\\) le milieu de \\([' + P + Q + '].\\) ';
@@ -1317,12 +1329,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var corr = '<p><b>1. La base.</b> ' + baseDef + ' : ce sont trois arêtes issues du sommet \\(' + S + '\\), elles ne sont pas coplanaires, donc \\((\\vec i,\\vec j,\\vec k)\\) est bien une base de l\'espace.</p>';
     if (isMid) {
-      corr += '<p><b>2. Atteindre le milieu.</b> Comme \\(I\\) est le milieu de \\([' + P + Q + ']\\), on a \\(' + vt(P + 'I') + ' = \\tfrac12' + vt(P + Q) + '\\), donc par Chasles</p>' +
-        '\\[' + vt(lbl) + ' = ' + vt(X + P) + ' + \\tfrac12' + vt(P + Q) + '.\\]';
+      corr += '<p><b>2. Atteindre le milieu.</b> Comme \\(I\\) est le milieu de \\([' + P + Q + ']\\), on a \\(' + vt(P + 'I') + ' = \\tfrac12' + vt(P + Q) + '\\), donc' + (X === P ? '</p>' : ' par Chasles</p>');
+      if (X === P) corr += '\\[' + vt(lbl) + ' = \\tfrac12' + vt(P + Q) + '.\\]';
+      else corr += '\\[' + vt(lbl) + ' = ' + vt(X + P) + ' + \\tfrac12' + vt(P + Q) + '.\\]';
       var ch1 = edgeChain(X, P), ch2 = edgeChain(P, Q);
-      corr += '<p><b>3. Chasles le long des arêtes.</b></p>';
-      if (X === P) corr += '\\[' + vt(X + P) + ' = \\vec 0.\\]';
-      else if (chainTex(ch1)) corr += '\\[' + vt(X + P) + ' = ' + chainTex(ch1) + '.\\]';
+      if (chainTex(ch1) || chainTex(ch2)) corr += '<p><b>3. Chasles le long des arêtes.</b></p>';
+      if (chainTex(ch1)) corr += '\\[' + vt(X + P) + ' = ' + chainTex(ch1) + '.\\]';
       if (chainTex(ch2)) corr += '\\[' + vt(P + Q) + ' = ' + chainTex(ch2) + '.\\]';
       var legs = legsTex(ch1, base, IJK).concat(legsTex(ch2, base, IJK));
       if (legs.length) corr += '<p><b>4. Chaque arête dans la base :</b></p>\\[' + legs.join(',\\qquad ') + '.\\]';
@@ -1381,15 +1393,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'On va de \\(A\\) à \\(G\\) par \\(A \\to B \\to C \\to G\\) : \\(' + vt('BC') + ' = ' + vt('AD') + '\\) et \\(' + vt('CG') + ' = ' + vt('AE') + '.\\)');
     },
     function () {
-      return build('Trois vecteurs \\(\\vec u\\), \\(\\vec v\\), \\(\\vec w\\) sont coplanaires lorsque :',
+      return build('Trois vecteurs \\(\\vec u\\), \\(\\vec v\\), \\(\\vec w\\) sont coplanaires <b>si et seulement si</b> :',
         ['l\'un des trois est une combinaison linéaire des deux autres',
          'ils sont deux à deux colinéaires',
          'ils ont la même norme',
          'ils sont tous les trois non nuls'], 0,
-        'Coplanaires signifie « de directions contenues dans un même plan », ce qui se traduit par \\(\\vec w = a\\vec u + b\\vec v.\\)');
+        'Coplanaires signifie « de directions contenues dans un même plan », ce qui équivaut à ce que l\'un des trois s\'écrive en fonction des deux autres. Être deux à deux colinéaires entraîne bien la coplanarité, mais n\'est pas nécessaire : ce n\'est donc pas une caractérisation.');
     },
     function () {
-      return build('\\((\\vec u,\\vec v,\\vec w)\\) est une base de l\'espace lorsque :',
+      return build('\\((\\vec u,\\vec v,\\vec w)\\) est une base de l\'espace <b>si et seulement si</b> :',
         ['les trois vecteurs ne sont pas coplanaires',
          'les trois vecteurs sont coplanaires',
          'les trois vecteurs sont deux à deux orthogonaux',
@@ -1447,12 +1459,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'Les arêtes \\([AE]\\), \\([BF]\\), \\([CG]\\) et \\([DH]\\) sont parallèles, de même longueur et de même sens.');
     },
     function () {
-      return build('En cherchant \\(a\\) et \\(b\\) tels que \\(\\vec w = a\\vec u + b\\vec v\\), on obtient un système <b>sans solution</b>. On en déduit :',
+      return build('\\(\\vec u\\) et \\(\\vec v\\) ne sont <b>pas colinéaires</b>. En cherchant \\(a\\) et \\(b\\) tels que \\(\\vec w = a\\vec u + b\\vec v\\), on obtient un système <b>sans solution</b>. On en déduit :',
         ['\\(\\vec u\\), \\(\\vec v\\), \\(\\vec w\\) ne sont pas coplanaires',
          '\\(\\vec u\\), \\(\\vec v\\), \\(\\vec w\\) sont coplanaires',
          '\\(\\vec u\\) et \\(\\vec v\\) sont colinéaires',
          'on ne peut rien conclure'], 0,
-        'L\'absence de solution est une démonstration : aucun plan ne contient les trois directions, donc le triplet est une base.');
+        'Comme \\(\\vec u\\) et \\(\\vec v\\) ne sont pas colinéaires, ils dirigent un plan ; l\'absence de solution prouve que \\(\\vec w\\) n\'est pas dans ce plan, donc le triplet est une base. Sans cette hypothèse on ne pourrait rien conclure : deux vecteurs colinéaires donnent un système sans solution alors que le triplet est coplanaire.');
     },
     function () {
       return build('\\((\\vec i,\\vec j,\\vec k)\\) est une base de l\'espace. L\'écriture \\(\\vec u = x\\vec i + y\\vec j + z\\vec k\\) :',

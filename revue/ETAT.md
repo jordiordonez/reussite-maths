@@ -25,5 +25,5 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 5B | Fonctions avec exponentielle | ⬜ | |
 | 5C | Logarithme népérien | ✅ | 17 (dont 600 000 égalités fausses affichées) |
 | 6A | Calcul vectoriel dans le plan | ✅ | 8 (dont 1 égalité fausse dans 57 % des configurations) |
-| 6B | Vecteurs de l'espace | ⬜ | |
+| 6B | Vecteurs de l'espace | ✅ | 10 (dont 1 exemple du cours concluant le contraire de la vérité) |
 | 6C | Droites et plans de l'espace | ⬜ | |
