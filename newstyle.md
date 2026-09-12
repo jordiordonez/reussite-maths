@@ -1,4 +1,4 @@
-# Navigation et style — Réussite Maths
+# Navigation et style — Réussite Spé Maths
 
 ## Intention
 
@@ -8,7 +8,7 @@ est conservé. Toutes les pages partagent les mêmes repères.
 
 ## Navigation appliquée
 
-- Bandeau commun : Réussite Maths, Accueil, Chapitres, Méthode, Mes progrès,
+- Bandeau commun : Réussite Spé Maths en toutes lettres, sans pastille ni logo, Accueil, Chapitres, Méthode, Mes progrès,
   recherche et accès au suivi de l’appareil.
 - Ordinateur à partir de 1 100 px : programme latéral de 264 px, chapitre actuel
   déplié, fiche active indiquée. Première et Terminale sont regroupées séparément.

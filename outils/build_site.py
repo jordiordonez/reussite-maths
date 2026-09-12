@@ -107,7 +107,7 @@ def shell(chapters, prefix, active, current=None):
     return f'''<a class="site-skip" href="#site-main">Aller au contenu</a>
 <div class="site-header" role="banner">
  <button class="site-icon site-menu-button" id="site-menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="site-sidebar">{icon('menu')}</button>
- <a class="site-brand" href="{prefix}index.html"><span class="site-mark" aria-hidden="true">∑</span>Réussite Maths</a>
+ <a class="site-brand" href="{prefix}index.html">Réussite Spé Maths</a>
  <nav class="site-global" aria-label="Navigation principale">{global_links(prefix, active)}</nav>
  <div class="site-actions"><button class="site-search-trigger" id="site-search-open" aria-label="Rechercher une notion">{icon('search')}<span>Rechercher</span><kbd>/</kbd></button>
  <a class="site-icon" href="{prefix}progres.html#sauvegarde" aria-label="Mon suivi sur cet appareil" title="Mon suivi sur cet appareil">{icon('user')}</a></div>
@@ -171,7 +171,7 @@ def build():
         active = 'catalog' if kind in ('lesson', 'template') else kind
         if kind in ('home', 'catalog', 'progress'):
             title = {'home': 'Accueil', 'catalog': 'Chapitres', 'progress': 'Mes progrès'}[kind]
-            source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Cours et exercices interactifs de mathématiques en Terminale, bases de Première et suivi personnel sans compte.">\n<title>{title} · Réussite Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Maths · Terminale spécialité · Programme 2019, année 2026–2027<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
+            source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Cours et exercices interactifs de mathématiques en Terminale, bases de Première et suivi personnel sans compte.">\n<title>{title} · Réussite Spé Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Spé Maths · Terminale spécialité · Programme 2019, année 2026–2027<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
         else:
             source = strip_blocks(path.read_text())
             # One-time migration of the guide: the original journal is imported
