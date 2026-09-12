@@ -6,7 +6,7 @@ import re, subprocess, sys, tempfile, os
 
 REQUIRED = [
     ("<!DOCTYPE html>", "doctype"),
-    ("mathjax", "MathJax CDN"),
+    ("mathjax", "MathJax local"),
     ("qcmMap", "objet qcmMap pour le QCM"),
     ("Nouvel exercice", "bouton Nouvel exercice"),
     ("Nouveau QCM", "bouton Nouveau QCM"),
@@ -30,7 +30,7 @@ def check(path):
     for sec in ["Cours", "Méthode", "Visualisation", "Exercices", "QCM"]:
         if sec.lower() not in low:
             print(f"  ✗ section absente : {sec}"); ok = False
-    scripts = re.findall(r"<script(?![^>]*src=)[^>]*>(.*?)</script>", html, flags=re.S)
+    scripts = re.findall(r'<script(?![^>]*src=)(?![^>]*type="application/json")[^>]*>(.*?)</script>', html, flags=re.S)
     for i, s in enumerate(scripts):
         if "MathJax" in s and "tex" in s and len(s) < 800:
             continue  # bloc de config MathJax

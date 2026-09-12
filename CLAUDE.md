@@ -17,7 +17,8 @@ Langue de travail : le contenu destiné à l'élève est en **français** (vocab
 - `chapitres/NN_nom/` : un dossier par chapitre. Chaque chapitre est découpé en **partie Première** (révisable dès maintenant) et **partie Terminale**. Ordre de travail décidé : `01_produit_scalaire`, puis `02_suites`, puis les autres.
 - `strategie/` : document HTML autonome « comment réussir l'année » (méthode d'apprentissage, usage de ChatGPT gratuit, gestion de la frustration).
 - `outils/` : `prompt_fiche_html.md` (spécification des fiches), `prompts_chatgpt_eleve.md` (source des prompts ChatGPT du guide), `check_fiche.py` (vérification automatique d'une fiche).
-- `index.html` : page d'accueil (liens vers le guide et toutes les fiches). Ajouter chaque nouvelle fiche ici et dans le `README.md` de son chapitre.
+- `index.html` : accueil personnel généré ; `chapitres.html` : catalogue généré ; `progres.html` : suivi local généré. Après ajout d’une fiche, lancer `python3 outils/build_site.py` et mettre à jour le `README.md` de son chapitre. Ne pas éditer les pages générées à la main.
+- `outils/site.css`, `outils/site.js`, `outils/build_site.py` : interface commune, navigation et stockage local. Les blocs `SITE:*` des HTML sont générés ; éditer leurs sources puis régénérer. Le contenu pédagogique hors de ces blocs est préservé. Les choix de produit sont documentés dans `newstyle.md`.
 - `vendor/mathjax/` : MathJax 3 (build SVG autonome, polices incluses). Les fiches y font référence en chemin relatif `../../vendor/mathjax/tex-mml-svg.js`, jamais par CDN : c'est ce qui rend le hors connexion réel.
 - `prompt_eines_html.docx` : spécification d'origine (en catalan) des fiches HTML interactives, non publiée. Son contenu est repris dans `outils/prompt_fiche_html.md`.
 
@@ -29,7 +30,7 @@ Partir de `outils/fiche_squelette.html` : le copier dans le dossier du chapitre 
 
 Chaque fiche est **un seul fichier `.html` autonome**, ouvrable hors connexion sur mobile, qui couvre une partie d'un chapitre (ou un chapitre entier si simple). Structure imposée, dans cet ordre :
 
-1. En-tête avec titre animé et sous-titre « Première · Mathématiques » ou « Terminale · Mathématiques ».
+1. En-tête avec titre serif aligné à gauche et sous-titre « Première · Mathématiques » ou « Terminale · Mathématiques ». L’interface commune désactive l’animation répétée du titre.
 2. Navigation sticky entre sections.
 3. Section « Cours » : 5 à 7 points clés avec exemples numériques concrets.
 4. Section « Visualisation » : la visualisation la plus riche possible (sliders, zones colorées, grandeurs recalculées en temps réel), en SVG inline ou canvas.
@@ -54,6 +55,13 @@ open chapitres/01_produit_scalaire/xx.html                            # ouvre da
 
 Vérifier manuellement : rendu MathJax, sliders, régénération des exercices, QCM (aucune question figée, score affiché), affichage en largeur mobile (outils de développement du navigateur).
 
+Après chaque ajout de fiche, lancer d’abord `python3 outils/build_site.py` pour
+actualiser le catalogue et intégrer la navigation commune. Le navigateur n’a
+pas besoin d’un serveur de build : les CSS/JS restent intégrés dans les HTML.
+Le suivi utilise `localStorage` ; ne jamais ajouter de résultats personnels au
+dépôt. Tests de navigation/suivi : `node outils/test_site.cjs` avec Playwright
+disponible et le serveur local `python3 -m http.server 8765 --bind 127.0.0.1`.
+
 ## Principes pédagogiques à respecter
 
 - Difficulté croissante à l'intérieur d'une fiche et d'une fiche à l'autre ; exercices d'abord proches du cours puis de plus en plus éloignés.
@@ -73,4 +81,4 @@ Ce fichier est régénéré à partir du guide public : le modifier directement 
 
 ## Publication
 
-Le site est publié sur GitHub Pages depuis la branche `main`, à la racine. Toute fiche ajoutée doit être référencée dans `index.html` et dans le `README.md` de son chapitre, puis vérifiée avec `outils/check_fiche.py` avant d'être envoyée.
+Le site est publié sur GitHub Pages depuis la branche `main`, à la racine. Toute fiche ajoutée doit être référencée dans le `README.md` de son chapitre ; lancer `outils/build_site.py` pour actualiser le catalogue et l’interface, puis vérifier avec `outils/check_fiche.py` avant l’envoi.

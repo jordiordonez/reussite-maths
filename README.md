@@ -6,6 +6,29 @@ Conçu pour un élève qui a eu des difficultés en Première et qui garde la sp
 
 👉 **[Ouvrir le site](https://jordiordonez.github.io/reussite-maths/)**
 
+## Navigation et suivi personnel
+
+Le site propose un accueil pour reprendre sa dernière fiche, un catalogue des
+chapitres avec recherche et filtres Première/Terminale, le guide de méthode et une
+page **Mes progrès**. Le programme reste accessible dans une colonne sur ordinateur
+et dans le menu sur téléphone. Les fiches ont des liens précédent/suivant et une
+navigation commune entre Cours, Méthode, Explorer, Exercices et QCM.
+
+Les résultats d’exercices et de QCM, les états des fiches et le carnet sont
+enregistrés dans le navigateur, **sans compte**. La lecture ne valide pas une
+fiche : l’élève choisit lui-même de la marquer validée. L’ancien carnet du guide
+est repris automatiquement et sa sauvegarde d’origine est conservée.
+
+Depuis `progres.html`, exporter le suivi en JSON permet de conserver une copie
+ou de le transférer sur un autre navigateur/appareil. L’import fusionne les
+données. Le suivi peut disparaître si les données du site sont effacées ; en
+navigation privée, il est temporaire. Un stockage partagé entre les fiches
+ouvertes directement en `file://` dépend du navigateur : utiliser le site hébergé
+pour un suivi commun fiable.
+
+Les choix de navigation, de style et l’évolution envisagée vers des comptes et
+une offre payante sont décrits dans [`newstyle.md`](newstyle.md).
+
 ## Ce que contient chaque fiche
 
 Un fichier HTML unique, avec dans l'ordre :
@@ -95,6 +118,32 @@ Le dossier `programmes/` contient les annexes du Bulletin officiel de 2019 pour 
 ## Contribuer ou adapter
 
 La méthode de fabrication d'une fiche est décrite dans `outils/prompt_fiche_html.md`, et `outils/check_fiche.py` vérifie qu'une fiche respecte la structure attendue et que son JavaScript est valide.
+
+Après ajout d’une fiche ou modification de l’interface commune :
+
+```bash
+python3 outils/build_site.py
+python3 outils/check_fiche.py chapitres/*/*.html
+python3 outils/check_site.py
+```
+
+Le générateur découvre les fiches et le programme depuis les HTML et `ordre.md`,
+puis intègre les sources `outils/site.css` et `outils/site.js` dans chaque page.
+Les fiches restent autonomes ; aucun téléchargement supplémentaire n’est requis
+pour la navigation. Les blocs `SITE:*` sont générés, le contenu pédagogique situé
+en dehors de ces blocs reste éditable normalement.
+
+Pour la vérification dans un navigateur (Playwright doit être disponible) :
+
+```bash
+python3 -m http.server 8765 --bind 127.0.0.1
+# Dans un autre terminal :
+node outils/test_site.cjs
+```
+
+Les tests couvrent les 21 fiches présentes, le rendu des formules, les résultats,
+la reprise, l’export/import, la migration du carnet, les onglets et le mobile.
+Les captures de contrôle sont écrites dans `/tmp/reussite-maths-qa`.
 
 ## Licence
 
