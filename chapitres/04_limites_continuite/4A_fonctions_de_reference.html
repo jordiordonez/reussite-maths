@@ -306,7 +306,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3><span class="num">2</span>La fonction inverse et la fonction racine carrée</h3>
     <p><strong>Inverse :</strong> \(f(x) = \dfrac{1}{x},\) définie sur \(\mathbb{R}^* = \left]-\infty\,;0\right[ \cup \left]0\,;+\infty\right[.\) La valeur \(x = 0\) est <strong>interdite</strong> : on ne divise pas par zéro.</p>
     <p>Elle est décroissante sur \(]-\infty\,;0[\) et décroissante sur \(]0\,;+\infty[,\) mais <em>pas</em> sur la réunion des deux : \(f(-1) = -1\) est plus petit que \(f(1) = 1.\) Son signe est celui de \(x.\)</p>
-    <p><strong>Exemple.</strong> \(\dfrac{1}{0{,}01} = 100\) : plus \(x\) est proche de \(0,\) plus \(\dfrac{1}{x}\) est grand.</p>
+    <p><strong>Exemple.</strong> \(\dfrac{1}{0{,}01} = 100\) : plus \(x\) est proche de \(0\) <em>en restant positif</em>, plus \(\dfrac{1}{x}\) est grand. Du côté négatif c'est le contraire : \(\dfrac{1}{-0{,}01} = -100.\)</p>
     <p><strong>Racine carrée :</strong> \(g(x) = \sqrt{x},\) définie seulement sur \([0\,;+\infty[.\) Elle est croissante et positive, avec \(\sqrt{0} = 0.\)</p>
     <p><strong>Exemple.</strong> \(\sqrt{9} = 3,\) \(\sqrt{2} \approx 1{,}414,\) et \(\sqrt{-4}\) <strong>n'existe pas</strong>.</p>
     <div class="key">Pour \(0 < x < 1,\) la racine carrée <em>agrandit</em> : \(\sqrt{0{,}25} = 0{,}5 > 0{,}25.\) Pour \(x > 1,\) elle rapetisse : \(\sqrt{100} = 10 < 100.\)</div>
@@ -442,7 +442,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <li><strong>Calculer quelques valeurs</strong> aux bornes de la zone qui t'intéresse : elles donnent l'ordre de grandeur de \(y.\)</li>
       <li><strong>Régler \(y_{\min}\) et \(y_{\max}\)</strong> autour de ces valeurs, en gardant un peu de marge. Pour \(x^2\) sur \([-5\,;5],\) prendre \(y\) jusqu'à \(25\) au moins.</li>
       <li><strong>Se méfier des valeurs interdites</strong> : près de \(x = 0,\) la courbe de \(\dfrac{1}{x}\) part vers le haut de l'écran. On borne \(y\) volontairement, sinon la courbe devient un trait vertical illisible.</li>
-      <li><strong>Changer d'échelle pour observer le long terme</strong> : pour comparer \(x^2\) et \(\mathrm{e}^x,\) il faut aller jusqu'à \(x = 10\) ou plus — sur \([0\,;2]\) on croirait à tort que \(x^2\) l'emporte.</li>
+      <li><strong>Changer d'échelle pour observer le long terme</strong> : pour comparer \(x^5\) et \(\mathrm{e}^x,\) il faut aller jusqu'à \(x = 13\) ou plus — sur \([0\,;10]\) on croirait à tort que \(x^5\) l'emporte, car \(10^5 = 100\,000\) alors que \(\mathrm{e}^{10} \approx 22\,000.\)</li>
     </ol>
   </div>
 
@@ -665,6 +665,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     return texNum(v, a >= 100 ? 0 : (a >= 1 ? 2 : 4));
   }
+  // la valeur réellement affichée par texSci (même arrondi, au chiffre près)
+  function sciRound(v) {
+    if (!isFinite(v)) return v;
+    var a = Math.abs(v), p;
+    if (a !== 0 && (a >= 1e5 || a < 1e-4)) {
+      var e = Math.floor(Math.log(a) / Math.LN10), pe = Math.pow(10, e);
+      return (Math.round(v / pe * 100) / 100) * pe;
+    }
+    p = Math.pow(10, a >= 100 ? 0 : (a >= 1 ? 2 : 4));
+    return Math.round(v * p) / p;
+  }
+  // « = » seulement si l'écriture de texSci est exacte, « ≈ » sinon
+  function eqSci(v) {
+    return Math.abs(sciRound(v) - v) <= 1e-12 * Math.max(1, Math.abs(v)) ? ' = ' : ' \\approx ';
+  }
   // « 2x - 6 », « x + 3 », « -x + 1 »
   function linTex(a, b) {
     var s = (a === 1 ? 'x' : (a === -1 ? '-x' : a + 'x'));
@@ -674,9 +689,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   }
   // « 6 - 2x »
   function linTexRev(a, c) {
-    var s = String(c);
-    s += ' - ' + (a === 1 ? 'x' : a + 'x');
-    return s;
+    var ax = (a === 1 ? 'x' : a + 'x');
+    return c === 0 ? '-' + ax : String(c) + ' - ' + ax;
   }
   function niceStep(v) {
     if (!(v > 0)) return 1;
@@ -792,9 +806,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var Y = function (v) { return B - (v - ya) / (yb - ya) * (B - T); };
     var s = '<svg class="figure' + (opt.mini ? ' mini' : '') + '" viewBox="0 0 ' + W + ' ' + H +
       '" aria-label="' + (opt.aria || ('courbe de ' + R.uni)) + '">';
-    var i;
-    for (i = Math.ceil(xa); i <= xb; i++) {
-      s += '<line x1="' + n1(X(i)) + '" y1="' + T + '" x2="' + n1(X(i)) + '" y2="' + B + '" stroke="#eef0f3" stroke-width="1"/>';
+    var i, gx = opt.xstep || 1;
+    for (i = Math.ceil(xa / gx); i * gx <= xb; i++) {
+      s += '<line x1="' + n1(X(i * gx)) + '" y1="' + T + '" x2="' + n1(X(i * gx)) + '" y2="' + B + '" stroke="#eef0f3" stroke-width="1"/>';
     }
     var gy = niceStep((yb - ya) / 5);
     for (i = Math.ceil(ya / gy); i * gy <= yb; i++) {
@@ -803,9 +817,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (ya <= 0 && yb >= 0) s += '<line x1="' + L + '" y1="' + n1(Y(0)) + '" x2="' + Rr + '" y2="' + n1(Y(0)) + '" stroke="#9ca3af" stroke-width="1.4"/>';
     if (xa <= 0 && xb >= 0) s += '<line x1="' + n1(X(0)) + '" y1="' + T + '" x2="' + n1(X(0)) + '" y2="' + B + '" stroke="#9ca3af" stroke-width="1.4"/>';
     if (opt.ticks !== false) {
-      for (i = Math.ceil(xa); i <= xb; i++) {
+      for (i = Math.ceil(xa / gx); i * gx <= xb; i++) {
         if (i === 0 || (Math.abs(i) % (opt.tickEvery || 1)) !== 0) continue;
-        s += '<text x="' + n1(X(i)) + '" y="' + n1(Math.min(Y(0) + 13, B - 1)) + '" text-anchor="middle" font-size="10" fill="#6b7280">' + i + '</text>';
+        s += '<text x="' + n1(X(i * gx)) + '" y="' + n1(Math.min(Y(0) + 13, B - 1)) + '" text-anchor="middle" font-size="10" fill="#6b7280">' + fmt(i * gx, 2) + '</text>';
       }
       for (i = Math.ceil(ya / gy); i * gy <= yb; i++) {
         if (Math.abs(i * gy) < 1e-9) continue;
@@ -862,7 +876,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('gsel1').innerHTML = html;
     $('gsel2').innerHTML = html;
     $('fsel').value = 'carre';
-    $('gsel1').value = 'carre';
+    $('gsel1').value = 'cube';   // cube contre exponentielle : le croisement est visible au zoom
     $('gsel2').value = 'exp';
   })();
 
@@ -973,9 +987,11 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     // point mobile
     var defini = R.ok(x) && isFinite(R.f(x)) ;
+    var pointVu = false;
     if (defini) {
       var y = R.f(x);
       if (y >= ya && y <= yb) {
+        pointVu = true;
         svg.appendChild(mk('line', { x1: X(x), y1: Y(0), x2: X(x), y2: Y(y), stroke: '#d97706', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
         svg.appendChild(mk('line', { x1: X(0), y1: Y(y), x2: X(x), y2: Y(y), stroke: '#d97706', 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
         svg.appendChild(mk('circle', { cx: X(x), cy: Y(y), r: 6, fill: '#d97706', stroke: '#fff', 'stroke-width': 2 }));
@@ -987,25 +1003,31 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     svg.appendChild(mk('text', { x: PR, y: PB + 20, 'text-anchor': 'end', 'font-size': 11, fill: '#6b7280' }, 'x'));
 
     // lecture chiffrée
-    var txt = '<p>\\(f(x) = ' + R.tex + '\\) est définie sur \\(' + R.domTex + '\\) ; elle est ' + R.par +
-      ', et ' + R.variations + '.</p>';
+    var txt = '<p>\\(f(x) = ' + R.tex + '\\) est définie sur \\(' + R.domTex + '\\) ; ' +
+      (R.par.indexOf('ni ') === 0 ? 'elle n\'est ' : 'elle est ') + R.par + ', et ' + R.variations + '.</p>';
     if (!defini) {
       txt += '<p><b>Point mobile :</b> \\(x = ' + texNum(x, 2) + '\\) n\'appartient pas à l\'ensemble de définition : \\(f(' + texNum(x, 2) + ')\\) n\'existe pas.</p>';
     } else {
-      txt += '<p><b>Point mobile :</b> l\'image de \\(' + texNum(x, 2) + '\\) est \\(f(' + texNum(x, 2) + ')' + eqTex(R.f(x)) + texSci(R.f(x)) + '.\\)</p>';
+      txt += '<p><b>Point mobile :</b> l\'image de \\(' + texNum(x, 2) + '\\) est \\(f(' + texNum(x, 2) + ')' + eqSci(R.f(x)) + texSci(R.f(x)) + '.\\)' +
+        (pointVu ? '' : ' <em>Le point sort du cadre : élargis la fenêtre pour le voir.</em>') + '</p>';
     }
     var nomSol = sols.length === 0 ? 'aucune solution' : (sols.length === 1 ? 'une seule solution' : sols.length + ' solutions');
     txt += '<p><b>Équation</b> \\(' + R.tex + ' = ' + texNum(k, 2) + '\\) : ' + nomSol;
     if (sols.length > 0) {
       txt += ', à savoir ' + sols.map(function (s) { return '\\(x' + eqTex(s, 3) + texNum(s, 3) + '\\)'; }).join(' et ');
-      if (vus < sols.length) txt += ' (certaines sont hors de la fenêtre)';
+      if (vus < sols.length) txt += (sols.length - vus > 1 || sols.length > 1 ? ' (certaines sont hors de la fenêtre)' : ' (elle est hors de la fenêtre)');
     }
     txt += '.</p>';
     if (runs.length === 0) {
       txt += '<p><b>Inéquation</b> \\(f(x) \\le ' + texNum(k, 2) + '\\) : aucune valeur de \\(x\\) ne convient dans la fenêtre.</p>';
     } else {
-      txt += '<p><b>Inéquation</b> \\(f(x) \\le ' + texNum(k, 2) + '\\) (zone bleutée) : \\(x \\in ' +
-        runs.map(function (r) { return interTex(r[0], r[1], !!r.openA, !!r.openB); }).join(' \\cup ') + '\\) sur la fenêtre affichée.</p>';
+      var arrondiBorne = false;
+      var listeI = runs.map(function (r) {
+        if (eqTex(r[0], 2) !== ' = ' || eqTex(r[1], 2) !== ' = ') arrondiBorne = true;
+        return interTex(r[0], r[1], !!r.openA, !!r.openB);
+      }).join(' \\cup ');
+      txt += '<p><b>Inéquation</b> \\(f(x) \\le ' + texNum(k, 2) + '\\) (zone bleutée) : \\(x \\in ' + listeI +
+        '\\) sur la fenêtre affichée' + (arrondiBorne ? ', bornes lues au centième' : '') + '.</p>';
     }
     $('read1').innerHTML = txt;
     typeset($('read1'));
@@ -1066,13 +1088,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     svg.appendChild(mk('text', { x: GL + 3, y: GT + 26, 'font-size': 12, fill: '#d97706' }, B2.uni));
 
     var fa = A.ok(XM) ? A.f(XM) : NaN, fb = B2.ok(XM) ? B2.f(XM) : NaN;
-    var txt = '<p>En \\(x = ' + texNum(XM, 1) + '\\) : \\(' + A.tex + eqTex(fa) + texSci(fa) + '\\) et \\(' + B2.tex + eqTex(fb) + texSci(fb) + '.\\)</p>';
+    var txt = '<p>En \\(x = ' + texNum(XM, 1) + '\\) : \\(' + A.tex + eqSci(fa) + texSci(fa) + '\\) et \\(' + B2.tex + eqSci(fb) + texSci(fb) + '.\\)</p>';
     if (k1 === k2) {
       txt += '<p>Les deux courbes sont confondues : choisis deux fonctions différentes.</p>';
     } else if (isFinite(fa) && isFinite(fb)) {
       var gr = fa > fb ? A : B2, pt = fa > fb ? B2 : A;
       var q = Math.max(fa, fb) / Math.min(fa, fb);
-      txt += '<p>Au bout de la fenêtre, \\(' + gr.tex + '\\) est ' + (isFinite(q) ? texSci(q) : '\\text{beaucoup}') +
+      txt += '<p>Au bout de la fenêtre, \\(' + gr.tex + '\\) est ' + (isFinite(q) ? (eqSci(q) === ' = ' ? '' : 'environ ') + texSci(q) : '\\text{beaucoup}') +
         ' fois plus grande que \\(' + pt.tex + '.\\)</p>';
     }
     txt += '<p style="color:#6b7280">Fais glisser le zoom jusqu\'au bout : sur une petite fenêtre une puissance peut sembler l\'emporter, mais <b>l\'exponentielle finit toujours par écraser toutes les autres</b>. C\'est ce qu\'on appellera en Terminale la <em>croissance comparée</em>.</p>';
@@ -1166,7 +1188,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     } else if (kind === 'inv') {
       a = pick([2, 4, 5, 8, 10, 20, 25, -2, -4, -5, -8, -10]); res = 1 / a;
       ftex = '\\dfrac{1}{x}'; nom = 'la fonction inverse';
-      detail = 'f(' + a + ') = \\dfrac{1}{' + a + '} = ' + texNum(res, 6);
+      detail = 'f(' + a + ') = \\dfrac{1}{' + a + '}' + (a < 0 ? ' = -\\dfrac{1}{' + (-a) + '}' : '') + ' = ' + texNum(res, 6);
       note = 'Rappel : l\'inverse de \\(a\\) est \\(\\dfrac{1}{a}\\) ; il garde le signe de \\(a\\) et n\'existe pas pour \\(a = 0.\\)';
     } else if (kind === 'rac') {
       n = rnd(1, 13); a = n * n; res = n; ftex = '\\sqrt{x}'; nom = 'la fonction racine carrée';
@@ -1190,17 +1212,23 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     } else if (kind === 'powneg') {
       n = rnd(1, 3); a = pick([2, -2, 5, -5, 10, -10]); res = Math.pow(a, -n);
       ftex = 'x^{-' + n + '}'; nom = 'la fonction \\(x \\mapsto x^{-' + n + '}\\)';
-      detail = 'f(' + a + ') = ' + par(a) + '^{-' + n + '} = \\dfrac{1}{' + par(a) + '^{' + n + '}} = \\dfrac{1}{' + Math.pow(a, n) + '} = ' + texNum(res, 6);
+      var pn = Math.pow(a, n);
+      detail = 'f(' + a + ') = ' + par(a) + '^{-' + n + '} = \\dfrac{1}{' + par(a) + (n === 1 ? '' : '^{' + n + '}') + '}' +
+        (n === 1 ? '' : ' = \\dfrac{1}{' + pn + '}') +
+        (pn < 0 ? ' = -\\dfrac{1}{' + (-pn) + '}' : '') + ' = ' + texNum(res, 6);
       note = 'Rappel : un exposant négatif veut dire « inverse » : \\(x^{-n} = \\dfrac{1}{x^n}.\\)';
     } else {
       a = pick([0, 1, 2, 3, -1, -2]); res = Math.exp(a);
       ftex = '\\mathrm{e}^x'; nom = 'la fonction exponentielle';
-      tol = Math.max(0.01, Math.abs(res) * 0.005);
+      // arrondi au millième demandé : un demi-rang, pas davantage (et valeur exacte si a = 0)
+      tol = (a === 0) ? 1e-6 : 5e-4 + 1e-9;
       detail = a === 0 ? 'f(0) = \\mathrm{e}^0 = 1 \\text{ (c\'est la définition)}'
-        : 'f(' + a + ') = \\mathrm{e}^{' + a + '} \\approx ' + texNum(res, 3);
+        : 'f(' + a + ') = \\mathrm{e}^{' + a + '}' + (a === 1 ? ' = \\mathrm{e}' : '') + ' \\approx ' + texNum(res, 3);
       note = 'Rappel : \\(\\mathrm{e}^x\\) n\'est ni \\(\\mathrm{e} \\times x\\) ni \\(x^{\\mathrm{e}}\\) ; c\'est l\'exponentielle, toujours strictement positive.';
     }
     var arrondi = (kind === 'exp' && a !== 0) ? ' <em>(valeur arrondie au millième)</em>' : '';
+    // la remarque sur les parenthèses n'a de sens que si l'on élève vraiment le nombre à une puissance
+    var puissance = (kind === 'carre' || kind === 'cube' || kind === 'pow' || kind === 'powneg' || kind === 'inv2');
     return {
       res: res, tol: tol,
       labels: ['Valeur de \\(f(' + a + ')\\) :' + arrondi],
@@ -1209,7 +1237,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       correction: '<p>On remplace \\(x\\) par \\(' + a + '\\) dans \\(f(x) = ' + ftex + '\\) :</p>' +
         '<p>\\(' + detail + '.\\)</p>' +
         (note ? '<p>' + note + '</p>' : '') +
-        (a < 0 ? '<p>Attention aux parenthèses : on élève \\(' + a + '\\) tout entier, pas seulement \\(' + (-a) + '.\\)</p>' : '')
+        (a < 0 && puissance ? '<p>Attention aux parenthèses : on élève \\(' + a + '\\) tout entier, pas seulement \\(' + (-a) + '.\\)</p>' : '')
     };
   }
 
@@ -1226,11 +1254,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var R = REF[key];
     var big = 2;
     sols.forEach(function (s) { big = Math.max(big, Math.abs(s)); });
-    var m = Math.min(12, Math.max(2, Math.ceil(big * 1.35)));
+    // la fenêtre doit contenir les points d'intersection annoncés : pas de plafond sur m,
+    // le pas de graduation s'adapte pour que la figure reste lisible.
+    var m = Math.max(2, Math.ceil(big * 1.35));
     var xd = R.xdom(m), yl = R.ylim(m);
     var ya = Math.min(yl[0], k - Math.abs(k) * 0.25 - 0.5);
     var yb = Math.max(yl[1], k + Math.abs(k) * 0.25 + 0.5);
-    return miniSvg(key, { xa: xd[0], xb: xd[1], ya: ya, yb: yb, kline: k, mini: true, tickEvery: m > 6 ? 2 : 1, aria: 'courbe de ' + R.uni + ' et droite horizontale' });
+    return miniSvg(key, { xa: xd[0], xb: xd[1], ya: ya, yb: yb, kline: k, mini: true, xstep: niceStep((xd[1] - xd[0]) / 8), tickEvery: 1, aria: 'courbe de ' + R.uni + ' et droite horizontale' });
   }
 
   function genEx2() {
@@ -1306,7 +1336,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
           '<p>\\[f(x) = \\dfrac{' + numTex + '}{' + denTex + '}.\\]</p>' +
           '<p>Donne la plus petite valeur de \\(x\\) acceptée, puis la valeur interdite.</p>',
         correction:
-          '<p><b>1. La racine carrée.</b> Il faut \\(' + linTex(p, -p * a) + ' \\ge 0,\\) c\'est-à-dire \\(' + (p === 1 ? '' : p + '') + 'x \\ge ' + (p * a) + ',\\) donc \\(x \\ge ' + a + '.\\)</p>' +
+          '<p><b>1. La racine carrée.</b> Il faut \\(' + linTex(p, -p * a) + ' \\ge 0,\\) ' +
+          (p === 1 ? '' : 'c\'est-à-dire \\(' + p + 'x \\ge ' + (p * a) + ',\\) ') + 'donc \\(x \\ge ' + a + '.\\)</p>' +
           '<p><b>2. Le dénominateur.</b> Il faut \\(' + denTex + ' \\neq 0,\\) c\'est-à-dire \\(x \\neq ' + b + '.\\)</p>' +
           '<p><b>3. On croise les deux conditions.</b> On garde les \\(x \\ge ' + a + '\\) en retirant \\(' + b + '\\) (qui est bien \\(\\ge ' + a + '\\)) :</p>' +
           '<p>\\[D_f = \\left[' + a + '\\,;' + b + '\\right[ \\ \\cup \\ \\left]' + b + '\\,;+\\infty\\right[.\\]</p>' +
@@ -1415,14 +1446,16 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     },
     function () {
       var a = rndNonZero(-5, 5);
-      return build('Quel est le signe de \\(\\mathrm{e}^{' + a + '}\\) ?',
+      return build('Quel est le signe de \\(\\mathrm{e}' + (a === 1 ? '' : '^{' + a + '}') + '\\) ?',
         ['strictement positif', 'strictement négatif', 'nul', 'cela dépend du signe de \\(' + a + '\\)'], 0,
         'L\'exponentielle est strictement positive sur \\(\\mathbb{R}\\) tout entier : sa courbe ne touche jamais l\'axe des abscisses.');
     },
     function () {
       var a = rnd(2, 6), b = rnd(2, 6);
+      // a = b = 2 rendrait le distracteur \(\mathrm{e}^{ab}\) égal à la bonne réponse
+      while (a * b === a + b) { b = rnd(2, 6); }
       return build('À quoi est égal \\(\\mathrm{e}^{' + a + '} \\times \\mathrm{e}^{' + b + '}\\) ?',
-        ['\\(\\mathrm{e}^{' + (a + b) + '}\\)', '\\(\\mathrm{e}^{' + (a * b) + '}\\)', '\\(2\\mathrm{e}^{' + (a + b) + '}\\)', '\\(\\mathrm{e}^{' + Math.abs(a - b) + '}\\)'], 0,
+        ['\\(\\mathrm{e}^{' + (a + b) + '}\\)', '\\(\\mathrm{e}^{' + (a * b) + '}\\)', '\\(2\\mathrm{e}^{' + (a + b) + '}\\)', '\\(\\mathrm{e}' + (Math.abs(a - b) === 1 ? '' : '^{' + Math.abs(a - b) + '}') + '\\)'], 0,
         'Un produit d\'exponentielles additionne les exposants : \\(\\mathrm{e}^{a} \\times \\mathrm{e}^{b} = \\mathrm{e}^{a+b}.\\)');
     },
     function () {
@@ -1430,7 +1463,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       return build('Quand \\(x\\) devient très grand, comment se comparent \\(x^{' + n + '}\\) et \\(\\mathrm{e}^x\\) ?',
         ['\\(\\mathrm{e}^x\\) finit par dépasser \\(x^{' + n + '}\\)', '\\(x^{' + n + '}\\) finit par dépasser \\(\\mathrm{e}^x\\)',
          'elles restent toujours égales', 'les deux se rapprochent de \\(0\\)'], 0,
-        'L\'exponentielle l\'emporte sur toute puissance de \\(x\\) : pour \\(x = 100,\\) \\(x^3 = 10^6\\) alors que \\(\\mathrm{e}^{100} \\approx 2{,}7 \\times 10^{43}.\\)');
+        'L\'exponentielle l\'emporte sur toute puissance de \\(x\\) : pour \\(x = 100,\\) \\(x^{' + n + '} = 10^{' + (2 * n) + '}\\) alors que \\(\\mathrm{e}^{100} \\approx 2{,}7 \\times 10^{43}.\\)');
     },
     function () {
       var a = rnd(2, 8);
@@ -1477,14 +1510,16 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         'On compte les points d\'intersection : ' + sc.why + '.');
     },
     function () {
+      // « bad » est fixé pour chaque cas : avec |x| et avec 1/x, les distracteurs génériques
+      // (l'abscisse, l'opposé de l'image, 2y+1) coïncideraient deux à deux.
       var sc = pick([
-        { key: 'carre', x: 2, y: 4 }, { key: 'carre', x: -3, y: 9 },
-        { key: 'abs', x: -2, y: 2 }, { key: 'rac', x: 4, y: 2 },
-        { key: 'rac', x: 9, y: 3 }, { key: 'inv', x: 2, y: 0.5 }
+        { key: 'carre', x: 2, y: 4, bad: [2, -4, 9] }, { key: 'carre', x: -3, y: 9, bad: [-3, -9, 19] },
+        { key: 'abs', x: -2, y: 2, bad: [-2, 4, -4] }, { key: 'rac', x: 4, y: 2, bad: [4, -2, 5] },
+        { key: 'rac', x: 9, y: 3, bad: [9, -3, 7] }, { key: 'inv', x: 2, y: 0.5, bad: [2, -0.5, 4] }
       ]);
       return build('Lis sur le graphique l\'image de \\(' + sc.x + '\\) par \\(f\\) (le point mobile est marqué en orange).' +
         figQ(sc.key, { point: sc.x, label: false }),
-        ['\\(' + texNum(sc.y, 2) + '\\)', '\\(' + sc.x + '\\)', '\\(' + texNum(-sc.y, 2) + '\\)', '\\(' + texNum(2 * sc.y + 1, 2) + '\\)'], 0,
+        ['\\(' + texNum(sc.y, 2) + '\\)', '\\(' + texNum(sc.bad[0], 2) + '\\)', '\\(' + texNum(sc.bad[1], 2) + '\\)', '\\(' + texNum(sc.bad[2], 2) + '\\)'], 0,
         'On monte depuis \\(x = ' + sc.x + '\\) jusqu\'à la courbe, puis on lit l\'ordonnée : \\(f(' + sc.x + ') = ' + texNum(sc.y, 2) + '.\\)');
     },
     function () {
