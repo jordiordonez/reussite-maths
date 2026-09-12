@@ -569,6 +569,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     return s.replace('.', ',');
   }
   function fmtSigned(x) { return x < 0 ? '(' + x + ')' : String(x); }
+  // Même convention pour les décimaux : un facteur négatif s'écrit entre parenthèses
+  function fmtDecSigned(x) { var s = fmt(x, 1); return x < 0 ? '(' + s + ')' : s; }
+  // Coefficient de k : on n'écrit ni « 1k » ni « -1k »
+  function coefK(b) { return b === 1 ? 'k' : (b === -1 ? '-k' : b + 'k'); }
   function parseNum(str) {
     if (str === null || str === undefined) return NaN;
     var s = String(str).trim().replace(/\s+/g, '').replace(',', '.').replace('−', '-');
@@ -737,7 +741,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
 
     // Bilan des formules
-    $('calcCoord').textContent = fmt(ux, 1) + ' × ' + fmt(vx, 1) + ' + ' + fmt(uy, 1) + ' × ' + fmt(vy, 1);
+    $('calcCoord').textContent = fmt(ux, 1) + ' × ' + fmtDecSigned(vx) + ' + ' + fmtDecSigned(uy) + ' × ' + fmtDecSigned(vy);
     $('resCoord').textContent = fmt(dot);
     if (angleDeg !== null) {
       $('calcCos').textContent = nuTxt + ' × ' + nvTxt + ' × cos(' + fmt(angleDeg, 1) + '°)';
@@ -844,14 +848,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var k = -a * m; // k*b + a*c = 0  =>  k = -a*c/b = -a*m
     var enonce = '<p>Dans un repère orthonormé, on donne \\(\\vec u\\,(k\\,;\\,' + a + ')\\) et \\(\\vec v\\,' + coord(b, c) + ',\\) où \\(k\\) est un nombre réel.</p><p>Déterminer la valeur de \\(k\\) pour laquelle \\(\\vec u\\) et \\(\\vec v\\) sont orthogonaux.</p>';
     var correction = '<p><strong>Étape 1 :</strong> \\(\\vec u\\perp\\vec v \\iff \\vec u\\cdot\\vec v = 0.\\)</p>' +
-      '<p><strong>Étape 2 :</strong> \\(\\vec u\\cdot\\vec v = k\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + b + 'k + ' + fmtSigned(a * c) + '.\\)</p>' +
-      '<p><strong>Étape 3 :</strong> on résout \\(' + b + 'k + ' + fmtSigned(a * c) + ' = 0,\\) soit \\(' + b + 'k = ' + (-a * c) + ',\\) donc \\(k = \\dfrac{' + (-a * c) + '}{' + b + '} = ' + k + '.\\)</p>' +
+      '<p><strong>Étape 2 :</strong> \\(\\vec u\\cdot\\vec v = k\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + coefK(b) + ' + ' + fmtSigned(a * c) + '.\\)</p>' +
+      '<p><strong>Étape 3 :</strong> on résout \\(' + coefK(b) + ' + ' + fmtSigned(a * c) + ' = 0,\\) ' + (b === 1 ? 'donc \\(k = ' + k + '.\\)' : 'soit \\(' + coefK(b) + ' = ' + (-a * c) + ',\\) donc ' + (b === -1 ? '\\(k = ' + k + '.\\)' : '\\(k = \\dfrac{' + (-a * c) + '}{' + b + '} = ' + k + '.\\)')) + '</p>' +
       '<p><strong>Vérification :</strong> \\(' + k + '\\times' + fmtSigned(b) + ' + ' + fmtSigned(a) + '\\times' + fmtSigned(c) + ' = ' + (k * b) + ' + ' + fmtSigned(a * c) + ' = 0.\\) ✓</p>';
     return { a: a, b: b, c: c, k: k, enonce: enonce, correction: correction };
   }, function (e, val) {
     if (Math.abs(val - e.k) < 0.01) return { ok: true, msg: 'Correct ! Pour k = ' + e.k + ', le produit scalaire vaut 0.' };
-    if (Math.abs(val + e.k) < 0.01) return { ok: false, msg: 'Erreur de signe : reprends la résolution de ' + e.b + 'k + ' + fmtSigned(e.a * e.c) + ' = 0.' };
-    return { ok: false, msg: 'Non. Écris u · v = 0 sous la forme ' + e.b + 'k + (…) = 0 puis isole k.' };
+    if (Math.abs(val + e.k) < 0.01) return { ok: false, msg: 'Erreur de signe : reprends la résolution de ' + coefK(e.b) + ' + ' + fmtSigned(e.a * e.c) + ' = 0.' };
+    return { ok: false, msg: 'Non. Écris u · v = 0 sous la forme ' + coefK(e.b) + ' + (…) = 0 puis isole k.' };
   });
 
   // Exercice 3 : angle BAC au degré près
@@ -958,7 +962,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var a = rndNonZero(-4, 4), m = rndNonZero(-3, 3), b = rndNonZero(-3, 3), c = b * m, k = -a * m;
       var opts = [String(k), String(-k), String(a * c), String(b)];
       return build('Pour quelle valeur de \\(k\\) les vecteurs \\(\\vec u\\,(k\\,;\\,' + a + ')\\) et \\(\\vec v\\,' + coord(b, c) + '\\) sont-ils orthogonaux ?', opts, 0,
-        'u · v = ' + b + 'k + ' + fmtSigned(a * c) + ' = 0 ⇔ k = ' + (-a * c) + '/' + b + ' = ' + k + '.');
+        'u · v = ' + coefK(b) + ' + ' + fmtSigned(a * c) + ' = 0 ⇔ k = ' + (-a * c) + '/' + fmtSigned(b) + ' = ' + k + '.');
     },
     function () {
       return build('Quand a-t-on \\(\\vec u\\cdot\\vec v = \\|\\vec u\\|\\times\\|\\vec v\\|\\) (vecteurs non nuls) ?', ['quand \\(\\vec u\\) et \\(\\vec v\\) sont colinéaires de même sens', 'toujours', 'quand \\(\\vec u\\perp\\vec v\\)', 'quand \\(\\vec u\\) et \\(\\vec v\\) sont de sens contraires'], 0,

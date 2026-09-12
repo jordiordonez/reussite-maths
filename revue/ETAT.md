@@ -6,7 +6,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 
 | Fiche | Titre | Statut | Anomalies corrigées |
 |---|---|---|---|
-| 1A | Définitions du produit scalaire | ⬜ | |
+| 1A | Définitions du produit scalaire | ✅ | 3 (notation dans du texte généré) |
 | 1B | Applications du produit scalaire | ⬜ | |
 | 1C | Géométrie repérée | ⬜ | |
 | 1D | Espace : orthogonalité et distances | ⬜ | |
