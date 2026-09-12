@@ -307,7 +307,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <section id="cours">
   <h2>Cours</h2>
 
-  <p class="small">Toute cette fiche se passe de repère : on raisonne avec des <b>vecteurs</b>. La version « avec coordonnées » (représentation paramétrique d'une droite, équation cartésienne d'un plan) est traitée dans la fiche <a class="ref" href="../01_produit_scalaire/1D_espace_orthogonalite_distances.html">1D · plans, droites, projetés et distances</a>. Le cube \(ABCDEFGH\) et le tétraèdre servent de terrain d'exercice permanent.</p>
+  <p class="small">Le <b>cours</b> de cette fiche se passe de repère : on raisonne avec des <b>vecteurs</b>. Les exercices, eux, se placent dans un repère et traduisent la configuration par un <b>système linéaire</b>, comme le demande le programme. La version « équation cartésienne et représentation paramétrique » est traitée dans la fiche <a class="ref" href="../01_produit_scalaire/1D_espace_orthogonalite_distances.html">1D · plans, droites, projetés et distances</a>. Le cube \(ABCDEFGH\) et le tétraèdre servent de terrain d'exercice permanent.</p>
 
   <div class="card blue">
     <h3><span class="num">1</span>Une droite : un point et une direction</h3>
@@ -399,7 +399,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <ul>
         <li>\((ABC)\) et \((EFG)\) : les deux faces horizontales, <b>strictement parallèles</b>.</li>
         <li>\((ABF)\) et \((BCG)\) : deux faces voisines, <b>sécantes</b> selon la droite \((BF).\)</li>
-        <li>\((ABG)\) et \((CDE)\) : les deux plans diagonaux, <b>sécants</b> selon la droite qui joint les centres des faces \(ABFE\) et \(DCGH.\)</li>
+        <li>\((ABG)\) et \((CDE)\) : les deux plans diagonaux, <b>sécants</b> selon la droite qui joint les centres des faces \(ADHE\) et \(BCGF\) (elle passe par le centre du cube et est parallèle à \((AB)\)).</li>
       </ul>
     </div>
   </div>
@@ -505,7 +505,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <h3>E. Traduire une configuration par un système et interpréter</h3>
     <ol class="steps">
       <li><b>Choisir un repère ou une base</b> adaptée à la figure : sur un cube \(ABCDEFGH,\) on prend presque toujours \((A\,;\overrightarrow{AB},\overrightarrow{AD},\overrightarrow{AE}).\) Les huit sommets ont alors des coordonnées valant \(0\) ou \(1.\)</li>
-      <li><b>Traduire l'énoncé</b> : « \(M,\) \(N,\) \(P\) alignés » devient « \(\overrightarrow{MN}\) et \(\overrightarrow{MP}\) colinéaires » ; « \(M,\) \(N,\) \(P,\) \(Q\) coplanaires » devient « \(\overrightarrow{MQ} = s\,\overrightarrow{MN} + t\,\overrightarrow{MP}\) » ; « les droites se coupent » devient un système en \(t\) et \(s.\)</li>
+      <li><b>Traduire l'énoncé</b> : « \(M,\) \(N,\) \(P\) alignés » devient « \(\overrightarrow{MN}\) et \(\overrightarrow{MP}\) colinéaires » ; « \(M,\) \(N,\) \(P,\) \(Q\) coplanaires » devient « \(\overrightarrow{MQ} = s\,\overrightarrow{MN} + t\,\overrightarrow{MP}\) » <b>à condition que \(\overrightarrow{MN}\) et \(\overrightarrow{MP}\) ne soient pas colinéaires</b> (sinon \(M,\) \(N,\) \(P\) sont alignés et les quatre points sont toujours coplanaires) ; « les droites se coupent » devient un système en \(t\) et \(s.\)</li>
       <li><b>Résoudre</b> proprement, en gardant toutes les équations.</li>
       <li><b>Interpréter</b> : pas de solution, une solution, une infinité — et traduire en langage géométrique (voir le point 7 du cours).</li>
     </ol>
@@ -763,6 +763,20 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   /* ---------- écriture mathématique ---------- */
   function nb(x) { return String(Math.round(x * 1000) / 1000).replace('.', ','); }
+  // écriture EXACTE d'un rationnel, en texte simple (les verdicts ne sont pas composés par MathJax)
+  function frTxt(num, den) {
+    if (den < 0) { num = -num; den = -den; }
+    var g = gcd(num, den);
+    num = num / g; den = den / g;
+    if (den === 1) return String(num).replace('.', ',');
+    return num + '/' + den;
+  }
+  // coordonnées exactes du point A + (num/den)·u, A et u étant à coordonnées entières
+  function plainFr(A, u, num, den) {
+    var out = [], k;
+    for (k = 0; k < 3; k++) out.push(frTxt(A[k] * den + num * u[k], den));
+    return '(' + out.join(' ; ') + ')';
+  }
   function co(u) { return '(' + nb(u[0]) + '\\,;' + nb(u[1]) + '\\,;' + nb(u[2]) + ')'; }
   function pt(name, P) { return name + co(P); }
   function vecTeX(name, u) { return '\\vec{' + name + '}\\,' + co(u); }
@@ -772,6 +786,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (d === 1) return String(n);
     return (n < 0 ? '-' : '') + '\\dfrac{' + Math.abs(n) + '}{' + d + '}';
   }
+  // coefficient devant un vecteur : rien pour 1, « - » pour -1
+  function coefV(k) { return k === 1 ? '' : (k === -1 ? '-' : nb(k) + '\\,'); }
   // terme « coefficient × lettre » lisible : 3t, -t, t …
   function coefT(c, letter) {
     if (c === 0) return '0';
@@ -925,12 +941,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     return (t0 > t1) ? null : [t0, t1];
   }
-  /* segment 3D représentant la droite (A ; u) */
-  function lineSeg(A, u) {
+  /* segment 3D représentant la droite (A ; u).
+     `extra` est un point de la droite que le tracé doit obligatoirement
+     atteindre (le point d'intersection, souvent hors du pavé) : sans lui
+     la figure montrerait deux droites qui ne se rejoignent pas alors que
+     le verdict les annonce sécantes. */
+  function lineSeg(A, u, extra) {
     if (isZero(u)) return null;
-    var L = Math.sqrt(n2(u)), c = clipLine(A, u), t0, t1;
+    var L = Math.sqrt(n2(u)), c = clipLine(A, u), t0, t1, te;
     if (c) { t0 = c[0] - 0.45 / L; t1 = c[1] + 0.45 / L; }
     else { t0 = -2.6 / L; t1 = 2.6 / L; }
+    if (extra) {
+      te = dot(sub(extra, A), u) / n2(u);
+      if (te - 0.45 / L < t0) t0 = te - 0.45 / L;
+      if (te + 0.45 / L > t1) t1 = te + 0.45 / L;
+    }
     return [add(A, mul(u, t0)), add(A, mul(u, t1))];
   }
   /* section du pavé par le plan n·X + d = 0 : polygone convexe ordonné */
@@ -986,9 +1011,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     if (Math.abs(det3(AB, u, v)) > 1e-9) return { code: 'noncoplanaires' };
     var c = cross(u, v), k = n2(c);
-    var t = dot(cross(AB, v), c) / k;
-    var s = dot(cross(AB, u), c) / k;
-    return { code: 'secantes', t: t, s: s, I: add(A, mul(u, t)) };
+    var tn = dot(cross(AB, v), c), sn = dot(cross(AB, u), c);
+    var t = tn / k, s = sn / k;
+    return { code: 'secantes', t: t, s: s, tn: tn, sn: sn, den: k, I: add(A, mul(u, t)) };
   }
   function relLinePlane(A, u, C, w1, w2) {
     if (isZero(u)) return { code: 'deg' };
@@ -998,8 +1023,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (Math.abs(den) < 1e-9) {
       return Math.abs(dot(n, sub(A, C))) < 1e-9 ? { code: 'incluse', n: n } : { code: 'paralleles', n: n };
     }
-    var t = dot(n, sub(C, A)) / den;
-    return { code: 'secants', t: t, I: add(A, mul(u, t)), n: n };
+    var tn = dot(n, sub(C, A));
+    var t = tn / den;
+    return { code: 'secants', t: t, tn: tn, den: den, I: add(A, mul(u, t)), n: n };
   }
 
   /* ============================================================
@@ -1025,7 +1051,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     $('v1vxO').textContent = 'α′ = ' + v[0]; $('v1vyO').textContent = 'β′ = ' + v[1]; $('v1vzO').textContent = 'γ′ = ' + v[2];
 
     var r = relLines(A, u, B, v);
-    var s1 = lineSeg(A, u), s2 = lineSeg(B, v);
+    var vise = (r.code === 'secantes') ? r.I : null;
+    var s1 = lineSeg(A, u, vise), s2 = lineSeg(B, v, vise);
     var pts = VERT.slice();
     if (s1) { pts.push(s1[0]); pts.push(s1[1]); }
     if (s2) { pts.push(s2[0]); pts.push(s2[1]); }
@@ -1057,9 +1084,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       vb.className = 'stat good'; vb.innerHTML = '<b>Droites strictement parallèles.</b> Aucun point commun.';
       db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs sont colinéaires, mais B n\u2019appartient pas à D. Les droites sont coplanaires.';
     } else if (r.code === 'secantes') {
-      vb.className = 'stat good'; vb.innerHTML = '<b>Droites sécantes</b> en I ' + plain(r.I) + '.';
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droites sécantes</b> en I ' + plainFr(A, u, r.tn, r.den) + '.';
       db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs ne sont pas colinéaires, et le système A + t·u = B + s·v a une solution : t = ' +
-        fmt(r.t) + ' et s = ' + fmt(r.s) + '. Les droites sont coplanaires.';
+        frTxt(r.tn, r.den) + ' et s = ' + frTxt(r.sn, r.den) + '. Les droites sont coplanaires.';
     } else {
       vb.className = 'stat bad'; vb.innerHTML = '<b>Droites non coplanaires.</b> Aucun point commun, et pourtant elles ne sont pas parallèles.';
       db.className = 'stat'; db.innerHTML = 'Les vecteurs directeurs ne sont pas colinéaires et les vecteurs AB, u, v ne sont pas coplanaires : aucun plan ne contient les deux droites. C\u2019est le cas qui n\u2019existe pas dans le plan.';
@@ -1084,7 +1111,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var r = relLinePlane(A, u, C, w1, w2);
     var poly = (r.n && !isZero(r.n)) ? planePolygon(r.n, -dot(r.n, C)) : [];
-    var s1 = lineSeg(A, u);
+    var s1 = lineSeg(A, u, (r.code === 'secants') ? r.I : null);
     var pts = VERT.slice();
     if (s1) { pts.push(s1[0]); pts.push(s1[1]); }
     if (r.code === 'secants') pts.push(r.I);
@@ -1119,8 +1146,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       vb.className = 'stat good'; vb.innerHTML = '<b>Droite strictement parallèle au plan.</b> Aucun point commun.';
       db.className = 'stat'; db.innerHTML = 'Le vecteur u appartient à la direction du plan (il est combinaison de w₁ et w₂), mais A n\u2019est pas dans le plan.';
     } else {
-      vb.className = 'stat good'; vb.innerHTML = '<b>Droite et plan sécants</b> en I ' + plain(r.I) + '.';
-      db.className = 'stat'; db.innerHTML = 'Le vecteur u n\u2019est pas combinaison linéaire de w₁ et w₂ : il existe un unique point commun, obtenu pour t = ' + fmt(r.t) + '.';
+      vb.className = 'stat good'; vb.innerHTML = '<b>Droite et plan sécants</b> en I ' + plainFr(A, u, r.tn, r.den) + '.';
+      db.className = 'stat'; db.innerHTML = 'Le vecteur u n\u2019est pas combinaison linéaire de w₁ et w₂ : il existe un unique point commun, obtenu pour t = ' + frTxt(r.tn, r.den) + '.';
     }
   }
 
@@ -1187,8 +1214,25 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       db.textContent = '';
       return;
     }
+    // un côté porté par une arête du cube appartient à DEUX faces : on compte
+    // les faces réellement rencontrées au lieu de les confondre avec les côtés.
+    var faceset = {}, nedge = 0, kf, cnt;
+    for (var jf = 0; jf < poly.length; jf++) {
+      var af = poly[jf], bf = poly[(jf + 1) % poly.length];
+      cnt = 0;
+      for (kf = 0; kf < 3; kf++) {
+        if (Math.abs(af[kf] - bf[kf]) < 1e-6 && (Math.abs(af[kf] - LO) < 1e-6 || Math.abs(af[kf] - HI) < 1e-6)) {
+          faceset[kf + ':' + af[kf]] = 1; cnt++;
+        }
+      }
+      if (cnt > 1) nedge++;
+    }
+    var nfaces = Object.keys(faceset).length;
     vb.className = 'stat good';
-    vb.innerHTML = '<b>La section est ' + (POLYNAME[poly.length] || 'un polygone à ' + poly.length + ' côtés') + '</b> (' + poly.length + ' côtés, donc ' + poly.length + ' faces coupées).';
+    vb.innerHTML = '<b>La section est ' + (POLYNAME[poly.length] || 'un polygone à ' + poly.length + ' côtés') + '</b> (' + poly.length + ' côtés, donc ' + poly.length +
+      (nfaces === poly.length ? ' faces coupées).'
+        : ' faces coupées selon un segment — mais ' + nfaces + ' faces rencontrées, car ' +
+          (nedge === 1 ? 'un côté est porté par une arête du cube, donc contenu dans deux faces).' : nedge + ' côtés sont portés par des arêtes du cube, donc contenus chacun dans deux faces).'));
     var noms = poly.map(function (s) { return edgeName(s) || 'une arête'; });
     var pairs = {}, kk;
     for (var j = 0; j < poly.length; j++) {
@@ -1200,8 +1244,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       if (pairs[idx] === 2) par.push('les deux côtés portés par les faces ' + ax + ' = 0 et ' + ax + ' = 4 sont parallèles');
     });
     db.className = 'stat';
-    db.innerHTML = 'Sommets de la section, dans l\u2019ordre : ' + noms.join(', ') + '. ' +
-      (par.length ? par.join(' ; ') + ' — c\u2019est le théorème 3.' : 'Aucune paire de faces opposées n\u2019est coupée deux fois ici.');
+    db.innerHTML = 'Les sommets de la section sont, dans l\u2019ordre, sur : ' + noms.join(', ') + '. ' +
+      (par.length ? 'Côtés parallèles : ' + par.join(' ; ') + ' — c\u2019est le théorème 3.' : 'Aucune paire de faces opposées n\u2019est coupée deux fois ici.');
   }
 
   /* --- onglets --- */
@@ -1289,6 +1333,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   }
   var AXE = ['première', 'deuxième', 'troisième'];
 
+  // équation i du système A + t·u = C + s·w1 + r·w2
+  function eqLine3(A, u, C, w1, w2, i) {
+    var g = A[i] + (u[i] === 0 ? '' : signed(u[i], 't')) + ' = ' + C[i] +
+      (w1[i] === 0 ? '' : signed(w1[i], 's')) + (w2[i] === 0 ? '' : signed(w2[i], 'r'));
+    return g.replace(/\s+/g, ' ');
+  }
   function eqLine(A, u, B, v, i) {
     var g = A[i] + ' ' + (u[i] === 0 ? '' : signed(u[i], 't')) + ' = ' + B[i] + (v[i] === 0 ? '' : signed(v[i], 's'));
     return g.replace(/\s+/g, ' ');
@@ -1329,12 +1379,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (r.code === 'confondues' || r.code === 'paralleles') {
       var k = 0, idx;
       for (idx = 0; idx < 3; idx++) { if (u[idx] !== 0) { k = v[idx] / u[idx]; break; } }
-      corr = '<p><b>Étape 1 — vecteurs directeurs.</b> On a \\(' + vecTeX('v', v) + ' = ' + nb(k) + '\\,' + vecTeX('u', u) + '\\) : les vecteurs sont colinéaires, donc les droites sont parallèles.</p>' +
+      corr = '<p><b>Étape 1 — vecteurs directeurs.</b> On a \\(' + vecTeX('v', v) + ' = ' + coefV(k) + '\\vec u\\) : les vecteurs sont colinéaires, donc les droites sont parallèles.</p>' +
         '<p><b>Étape 2 — le point \\(B\\) est-il sur \\(\\mathcal D\\) ?</b> On calcule \\(\\overrightarrow{AB}' + co(AB) + '.\\) ';
       if (r.code === 'confondues') {
         var kk = 0;
         for (idx = 0; idx < 3; idx++) { if (u[idx] !== 0) { kk = AB[idx] / u[idx]; break; } }
-        corr += 'Or \\(\\overrightarrow{AB} = ' + nb(kk) + '\\,\\vec u,\\) donc \\(\\overrightarrow{AB}\\) est colinéaire à \\(\\vec u\\) et \\(B \\in \\mathcal D.\\)</p>' +
+        corr += 'Or \\(\\overrightarrow{AB} = ' + coefV(kk) + '\\vec u,\\) donc \\(\\overrightarrow{AB}\\) est colinéaire à \\(\\vec u\\) et \\(B \\in \\mathcal D.\\)</p>' +
           '<p><b>Conclusion.</b> Les droites sont <b>confondues</b> : elles ont une infinité de points communs.</p>';
       } else {
         corr += 'Ce vecteur n\u2019est pas colinéaire à \\(\\vec u\\) : \\(' + croixTeX(AB, u, 'a', 'u') + ' \\neq 0\\) (en notant \\(a_i\\) les coordonnées de \\(\\overrightarrow{AB}\\)). Donc \\(B \\notin \\mathcal D.\\)</p>' +
@@ -1405,9 +1455,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var corr = '<p><b>Étape 1 — la droite n\u2019est pas parallèle au plan.</b> Un vecteur normal au plan est \\(' + vecTeX('n', n) + '\\) : on vérifie \\(\\vec n\\cdot\\vec{w_1} = ' + dot(n, w1) + '\\) et \\(\\vec n\\cdot\\vec{w_2} = ' + dot(n, w2) + '.\\) Or \\(\\vec n\\cdot\\vec u = ' + den + ' \\neq 0,\\) donc \\(\\vec u\\) n\u2019appartient pas à la direction du plan : il y a un unique point d\u2019intersection.</p>' +
       '<p><b>Étape 2 — équation du plan.</b> Le plan passe par \\(' + pt('C', C) + '\\) et a pour vecteur normal \\(\\vec n,\\) donc son équation est \\(' + eqPlan + '.\\)</p>' +
       '<p><b>Étape 3 — représentation paramétrique de la droite.</b> \\[' + param + '\\]</p>' +
-      '<p><b>Étape 4 — substitution.</b> En remplaçant dans l\u2019équation du plan, on obtient \\(' + den + 't = ' + num + ',\\) donc \\(t = ' + fracTeX(num, den) + '.\\)</p>' +
+      '<p><b>Étape 4 — substitution.</b> En remplaçant dans l\u2019équation du plan, on obtient ' +
+        (den === 1 ? '\\(t = ' + fracTeX(num, den) + '.\\)' : '\\(' + coefT(den, 't') + ' = ' + num + ',\\) donc \\(t = ' + fracTeX(num, den) + '.\\)') + '</p>' +
       '<p><b>Conclusion.</b> Le point d\u2019intersection est \\(' + pt('I', I) + '.\\)</p>' +
-      '<p><b>Vérification vectorielle.</b> \\(\\overrightarrow{CI}' + co(sub(I, C)) + ' = ' + s0 + '\\,\\vec{w_1} ' + (r0 < 0 ? '- ' + Math.abs(r0) : '+ ' + r0) + '\\,\\vec{w_2},\\) donc \\(I\\) est bien dans le plan ; et \\(\\overrightarrow{AI} = ' + t0 + '\\,\\vec u,\\) donc \\(I\\) est bien sur la droite.</p>';
+      '<p><em>Autre rédaction, sans produit scalaire (méthode C).</em> On écrit directement \\(A + t\\,\\vec u = C + s\\,\\vec{w_1} + r\\,\\vec{w_2},\\) ce qui donne trois équations à trois inconnues :</p>' +
+      '<p>\\[\\left\\{\\begin{array}{l} ' + eqLine3(A, u, C, w1, w2, 0) + ' \\\\ ' + eqLine3(A, u, C, w1, w2, 1) + ' \\\\ ' + eqLine3(A, u, C, w1, w2, 2) + ' \\end{array}\\right.\\]</p>' +
+      '<p>Sa solution est \\(t = ' + t0 + ',\\) \\(s = ' + s0 + '\\) et \\(r = ' + r0 + ',\\) et \\(A ' + (t0 < 0 ? '- ' + coefV(-t0) : '+ ' + coefV(t0)) + '\\vec u\\) redonne bien \\(' + pt('I', I) + '.\\)</p>' +
+      '<p><b>Vérification vectorielle.</b> \\(\\overrightarrow{CI}' + co(sub(I, C)) + ' = ' + coefV(s0) + '\\vec{w_1} ' + (r0 < 0 ? '-' : '+') + ' ' + coefV(Math.abs(r0)) + '\\vec{w_2},\\) donc \\(I\\) est bien dans le plan ; et \\(\\overrightarrow{AI} = ' + coefV(t0) + '\\vec u,\\) donc \\(I\\) est bien sur la droite.</p>';
 
     return {
       I: I,
@@ -1452,7 +1506,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (r.code === 'paralleles') {
       var k = 0, i;
       for (i = 0; i < 3; i++) { if (u[i] !== 0) { k = v[i] / u[i]; break; } }
-      corr += '<p><b>Colinéarité.</b> On a \\(\\overrightarrow{' + P3 + P4 + '} = ' + nb(k) + '\\,\\overrightarrow{' + P1 + P2 + '}\\) : les vecteurs directeurs sont colinéaires, donc les droites sont parallèles.</p>' +
+      corr += '<p><b>Colinéarité.</b> On a \\(\\overrightarrow{' + P3 + P4 + '} = ' + coefV(k) + '\\overrightarrow{' + P1 + P2 + '}\\) : les vecteurs directeurs sont colinéaires, donc les droites sont parallèles.</p>' +
         '<p><b>Sont-elles confondues ?</b> \\(\\overrightarrow{' + P1 + P3 + '}' + co(AB) + '\\) n\u2019est pas colinéaire à \\(\\overrightarrow{' + P1 + P2 + '},\\) donc \\(' + P3 + ' \\notin ' + d1 + '.\\)</p>' +
         '<p><b>Conclusion.</b> ' + d1 + ' et ' + d2 + ' sont <b>strictement parallèles</b> : elles sont coplanaires et n\u2019ont aucun point commun.</p>';
     } else {
