@@ -407,9 +407,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <div class="tablewrap">
       <table>
         <tr><th>\(\lim f\) \ \(\lim g\)</th><th>\(\ell'\neq0\)</th><th>\(0\)</th><th>\(\pm\infty\)</th></tr>
-        <tr><td class="lab">\(\ell\neq 0\)</td><td>\(\frac{\ell}{\ell'}\)</td><td>\(\pm\infty\) (signe de \(g\))</td><td>\(0\)</td></tr>
+        <tr><td class="lab">\(\ell\neq 0\)</td><td>\(\frac{\ell}{\ell'}\)</td><td>\(\pm\infty\) (signe de \(\ell\) <em>et</em> de \(g\))</td><td>\(0\)</td></tr>
         <tr><td class="lab">\(0\)</td><td>\(0\)</td><td class="fi">F.I.</td><td>\(0\)</td></tr>
-        <tr><td class="lab">\(\pm\infty\)</td><td>\(\pm\infty\) (règle des signes)</td><td>\(\pm\infty\) (signe de \(g\))</td><td class="fi">F.I.</td></tr>
+        <tr><td class="lab">\(\pm\infty\)</td><td>\(\pm\infty\) (règle des signes)</td><td>\(\pm\infty\) (règle des signes)</td><td class="fi">F.I.</td></tr>
       </table>
     </div>
     <div class="warn">
@@ -486,6 +486,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <tr><td class="lab">\(\mathrm e^{x}\)</td><td>\(148\)</td><td>\(22\,026\)</td><td>\(4{,}85\times10^{8}\)</td><td>\(1{,}07\times10^{13}\)</td></tr>
         <tr><td class="lab">\(\frac{\mathrm e^{x}}{x^3}\)</td><td>\(1{,}2\)</td><td>\(22\)</td><td>\(60\,600\)</td><td>\(4\times10^{8}\)</td></tr>
       </table>
+      <p style="font-size:.85rem;color:var(--muted);margin:.3rem 0 0">Seule la ligne \(x^3\) est exacte : les deux dernières sont <strong>arrondies</strong> (\(\mathrm e^{5}\approx148{,}4\), \(\frac{\mathrm e^{5}}{125}\approx1{,}19\)).</p>
     </div>
     <div class="ok">
       <strong>Démonstration : \(\lim_{x\to+\infty}\frac{\mathrm e^{x}}{x^{n}}=+\infty\)</strong><span class="tag demo">démonstration exigible</span><br>
@@ -499,7 +500,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <em>Conséquence :</em> \(\frac{x^{n}}{\mathrm e^{x}}\) est l'inverse d'une quantité qui tend vers \(+\infty\), donc \(\frac{x^{n}}{\mathrm e^{x}}\to0.\)
     </div>
     <div class="warn">
-      <strong>La croissance comparée ne vaut qu'en \(+\infty\), et dans ce sens-là.</strong> « \(\mathrm e^{x}\) l'emporte » ne veut pas dire « \(\mathrm e^{x}\geq x^{n}\) pour tout \(x\) » : pour \(n=5\), on a \(x^{5}&gt;\mathrm e^{x}\) jusqu'à \(x\approx 12{,}7\) seulement. Le théorème décrit le comportement <em>au bout</em>, quand \(x\) devient très grand, pas ce qui se passe pour les petites valeurs.
+      <strong>La croissance comparée ne vaut qu'en \(+\infty\), et dans ce sens-là.</strong> « \(\mathrm e^{x}\) l'emporte » ne veut pas dire « \(\mathrm e^{x}\geq x^{n}\) pour tout \(x\) » : pour \(n=5\), on a \(x^{5}&gt;\mathrm e^{x}\) <strong>seulement entre</strong> \(x\approx 1{,}3\) et \(x\approx 12{,}7\) (avant \(1{,}3\), c'est déjà l'exponentielle qui est au-dessus, puisque \(\mathrm e^{0}=1&gt;0=0^{5}\)). Le théorème décrit le comportement <em>au bout</em>, quand \(x\) devient très grand, pas ce qui se passe pour les petites valeurs.
     </div>
   </div>
 </section>
@@ -722,7 +723,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <section id="qcm">
   <h2><span>5.</span> QCM</h2>
   <div class="card">
-    <p>Quatre questions tirées au hasard dans une banque de 16. Une seule bonne réponse par question.</p>
+    <p>Quatre questions tirées au hasard dans une banque de 17. Une seule bonne réponse par question.</p>
     <div id="qcm-container"></div>
     <div class="score" id="qcm-score"></div>
     <div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div>
@@ -773,6 +774,23 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     return fmt(x, ax < 1 ? 4 : (ax < 100 ? 2 : 1));
   }
+  /* Valeur réellement écrite par fmt / fmtBig : sert à choisir « = » ou « ≈ »
+     pour qu'aucune égalité affichée ne soit fausse. */
+  function fmtVal(x, d) {
+    var p = Math.pow(10, d === undefined ? 3 : d);
+    return Math.round(x * p) / p;
+  }
+  function bigVal(x) {
+    var ax = Math.abs(x);
+    if (ax !== 0 && (ax >= 1e5 || ax < 1e-3)) {
+      var e = Math.floor(Math.log(ax) / Math.LN10);
+      return fmtVal(x / Math.pow(10, e), 2) * Math.pow(10, e);
+    }
+    return fmtVal(x, ax < 1 ? 4 : (ax < 100 ? 2 : 1));
+  }
+  function same(a, b) { return Math.abs(a - b) <= 1e-12 * Math.max(1, Math.abs(b)); }
+  function eqFmt(x, d) { return (isFinite(x) && same(fmtVal(x, d), x)) ? '=' : '≈'; }
+  function eqBig(x) { return (isFinite(x) && same(bigVal(x), x)) ? '=' : '≈'; }
   function parseNum(s) {
     if (s === null || s === undefined) return NaN;
     s = String(s).trim().replace(/\s+/g, '').replace(',', '.').replace(/−/g, '-');
@@ -856,7 +874,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var o = HFUNS[parseInt($('hSel').value, 10) || 0];
     var eps = parseFloat($('hEps').value);
     $('hEpsOut').textContent = fmt(eps, 2);
-    var x0 = seuilH(o, eps);
+    /* seuilH majore le vrai seuil à 0,005 près ; on arrondit **par excès** au
+       centième pour que « dès que x ≥ x₀ » reste vrai pour la valeur affichée. */
+    var x0 = Math.ceil(seuilH(o, eps) * 100) / 100;
     var xmax = Math.max(6, Math.min(2000, x0 * 1.35 + 1));
     var xmin = o.xmin;
     var svg = $('figH'); clearSvg(svg);
@@ -899,9 +919,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     $('hInfo').innerHTML = 'Fonction : \\(' + o.tex + '\\) &nbsp;·&nbsp; limite \\(\\ell=' + o.l + '.\\)';
     typeset($('hInfo'));
-    var fx = o.f(x0 + 1);
+    var xe = x0 + 1, fx = o.f(xe);
     $('hConc').innerHTML = 'Avec ε = ' + fmt(eps, 2) + ' : dès que <b>x ≥ ' + fmt(x0, 2) + '</b>, la courbe ne sort plus de la bande ' +
-      '[' + fmt(o.l - eps, 2) + ' ; ' + fmt(o.l + eps, 2) + ']. Par exemple f(' + fmt(x0 + 1, 2) + ') = ' + fmt(fx, 4) +
+      '[' + fmt(o.l - eps, 2) + ' ; ' + fmt(o.l + eps, 2) + ']. Par exemple f(' + fmt(xe, 2) + ') ' + eqFmt(fx, 4) + ' ' + fmt(fx, 4) +
       '. Diminue ε : le seuil recule, mais il existe toujours — c\'est la définition de \\(\\lim_{x\\to+\\infty}f(x)=' + o.l + '.\\)';
     typeset($('hConc'));
   }
@@ -929,7 +949,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var op = document.createElement('option'); op.value = String(i); op.textContent = o.label; sel.appendChild(op);
     });
   })();
-  function vGap() { return Math.pow(10, -(0.3 + parseInt($('vH').value, 10) * 0.022)); }
+  /* L'écart est arrondi au cent-millième : c'est exactement le nombre affiché,
+     donc les abscisses a ± h lues à l'écran sont celles où f est réellement évaluée. */
+  function vGap() { return Math.round(Math.pow(10, -(0.3 + parseInt($('vH').value, 10) * 0.022)) * 1e5) / 1e5; }
 
   function drawV() {
     var o = VFUNS[parseInt($('vSel').value, 10) || 0];
@@ -979,13 +1001,13 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     txt(svg, L + pw, T + ph + 16, fmt(xmax, 1), { 'text-anchor': 'end' });
     txt(svg, L - 4, Y(0) + 4, '0', { 'text-anchor': 'end' });
 
-    var fg = o.f(a - h, a), fd = o.f(a + h, a);
+    var xg = a - h, xd = a + h, fg = o.f(xg, a), fd = o.f(xd, a);
     $('vVals').innerHTML = '<b>Écart à a :</b> ' + fmt(h, 5) + '<br>' +
-      'f(' + fmt(a - h, 5) + ') = <b>' + fmtBig(fg) + '</b> &nbsp;(à gauche)<br>' +
-      'f(' + fmt(a + h, 5) + ') = <b>' + fmtBig(fd) + '</b> &nbsp;(à droite)';
+      'f(' + fmt(xg, 5) + ') ' + eqBig(fg) + ' <b>' + fmtBig(fg) + '</b> &nbsp;(à gauche)<br>' +
+      'f(' + fmt(xd, 5) + ') ' + eqBig(fd) + ' <b>' + fmtBig(fd) + '</b> &nbsp;(à droite)';
     var conc;
     if (o.sq) {
-      conc = 'Le dénominateur \\((x-a)^2\\) est <b>positif des deux côtés</b> : les deux limites valent \\(+\\infty\\), donc \\(\\lim_{x\\to a}f(x)=+\\infty\\) (sans distinguer les côtés). La droite \\(x=' + mfmt(a, 1) + '\\) est asymptote verticale.';
+      conc = 'Le dénominateur \\((x-a)^2\\) est <b>positif des deux côtés</b> : les deux limites valent \\(+\\infty\\), donc \\(\\lim_{x\\to ' + mfmt(a, 1) + '}f(x)=+\\infty\\) (sans distinguer les côtés). La droite \\(x=' + mfmt(a, 1) + '\\) est asymptote verticale.';
     } else {
       var n = o.num(a);
       conc = 'Le numérateur tend vers ' + fmt(n, 2) + ' (non nul) et le dénominateur vers \\(0\\), <b>négatif à gauche</b> et <b>positif à droite</b> : ' +
@@ -1012,12 +1034,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   /* ----- Onglet 3 : croissances comparées ----- */
   var cMode = 'full';
-  function croisement(n) {
-    var last = null, x;
+  /* Racines de x^n = e^x sur ]0 ; +∞[, c.-à-d. de n·ln(x) = x.
+     Il y en a deux dès que n ≥ 3, aucune pour n = 1 et n = 2 : entre les deux
+     racines x^n est au-dessus de e^x, avant et après c'est l'exponentielle. */
+  function croisements(n) {
+    var first = null, last = null, x;
     for (x = 0.2; x <= 120; x += 0.01) {
-      if (n * Math.log(x) >= x) last = x;
+      if (n * Math.log(x) >= x) { if (first === null) first = x; last = x; }
     }
-    return last;
+    return (first === null) ? null : [first, last];
   }
   function drawC() {
     var n = parseInt($('cN').value, 10), xmax = parseInt($('cX').value, 10);
@@ -1025,7 +1050,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var svg = $('figC'); clearSvg(svg);
     var L = 54, R = 12, T = 16, B = 28, W = 440, H = 300;
     var pw = W - L - R, ph = H - T - B;
-    var xc = croisement(n);
+    var cr = croisements(n);
+    var xc = cr ? cr[1] : null, x1 = cr ? cr[0] : null;
     var M;
     if (cMode === 'zoom') {
       M = (xc !== null) ? Math.exp(xc) * 2.4 : Math.max(Math.exp(3), Math.pow(3, n)) * 1.8;
@@ -1050,11 +1076,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     }
     curve(function (x) { return Math.pow(x, n); }, '#d97706');
     curve(function (x) { return Math.exp(x); }, '#2563eb');
-    if (xc !== null && xc <= xmax) {
-      mk('circle', { cx: X(xc), cy: Y(Math.min(Math.exp(xc), M)), r: 5, fill: '#22a06b' }, svg);
-      mk('line', { x1: X(xc), y1: T, x2: X(xc), y2: T + ph, stroke: '#22a06b', 'stroke-width': 1, 'stroke-dasharray': '4 3' }, svg);
-      txt(svg, Math.min(X(xc) + 5, W - 90), T + 12, 'x ≈ ' + fmt(xc, 2), { fill: '#22a06b', 'font-weight': '700' });
-    }
+    [x1, xc].forEach(function (xk, k) {
+      if (xk === null || xk > xmax) return;
+      mk('circle', { cx: X(xk), cy: Y(Math.min(Math.exp(xk), M)), r: 5, fill: '#22a06b' }, svg);
+      mk('line', { x1: X(xk), y1: T, x2: X(xk), y2: T + ph, stroke: '#22a06b', 'stroke-width': 1, 'stroke-dasharray': '4 3' }, svg);
+      if (k === 1) txt(svg, Math.min(X(xk) + 5, W - 90), T + 12, 'x ≈ ' + fmt(xk, 2), { fill: '#22a06b', 'font-weight': '700' });
+    });
     txt(svg, L, T + ph + 16, '0');
     txt(svg, L + pw, T + ph + 16, String(xmax), { 'text-anchor': 'end' });
     var lab = mk('text', { x: L - 4, y: T + 10, 'font-size': 11, fill: '#6b7280', 'text-anchor': 'end', 'font-family': 'system-ui,sans-serif' }, svg);
@@ -1063,16 +1090,18 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     txt(svg, L - 4, T + ph, '0', { 'text-anchor': 'end' });
 
     var ex = Math.exp(xmax), xn = Math.pow(xmax, n);
-    $('cVals').innerHTML = 'En x = ' + xmax + ' : &nbsp; x<sup>' + n + '</sup> = ' + fmtBig(xn) +
-      ' &nbsp;·&nbsp; e<sup>x</sup> = ' + fmtBig(ex) +
-      '<br><b>rapport e<sup>x</sup> / x<sup>' + n + '</sup> = ' + fmtBig(ex / xn) + '</b>';
+    var xnHtml = (n === 1) ? 'x' : ('x<sup>' + n + '</sup>');   // pas de « x¹ »
+    var xnTex = (n === 1) ? 'x' : ('x^{' + n + '}');   // pw() est masqué ici par la largeur du graphique
+    $('cVals').innerHTML = 'En x = ' + xmax + ' : &nbsp; ' + xnHtml + ' ' + eqBig(xn) + ' ' + fmtBig(xn) +
+      ' &nbsp;·&nbsp; e<sup>x</sup> ' + eqBig(ex) + ' ' + fmtBig(ex) +
+      '<br><b>rapport e<sup>x</sup> / ' + xnHtml + ' ' + eqBig(ex / xn) + ' ' + fmtBig(ex / xn) + '</b>';
     var c;
     if (xc === null) {
-      c = 'Pour n = ' + n + ', la courbe de \\(\\mathrm e^{x}\\) est au-dessus de celle de \\(x^{' + n + '}\\) dès le départ.';
+      c = 'Pour n = ' + n + ', la courbe de \\(\\mathrm e^{x}\\) est au-dessus de celle de \\(' + xnTex + '\\) sur tout \\([0\\,;+\\infty[\\) : elles ne se croisent jamais.';
     } else {
-      c = 'Pour n = ' + n + ', \\(x^{' + n + '}\\) reste au-dessus de \\(\\mathrm e^{x}\\) jusqu\'à \\(x\\approx ' + mfmt(xc, 2) + '\\)… puis l\'exponentielle passe devant <b>et ne repasse jamais derrière</b>.';
+      c = 'Pour n = ' + n + ', \\(\\mathrm e^{x}\\) est d\'abord au-dessus (en \\(x=0\\) : \\(1&gt;0\\)) ; \\(' + xnTex + '\\) ne passe devant qu\'entre \\(x\\approx ' + mfmt(x1, 2) + '\\) et \\(x\\approx ' + mfmt(xc, 2) + '\\), puis l\'exponentielle repasse devant <b>et ne revient plus jamais derrière</b>.';
     }
-    c += ' Le rapport \\(\\frac{\\mathrm e^{x}}{x^{' + n + '}}\\) tend vers \\(+\\infty\\) : c\'est la croissance comparée.';
+    c += ' Le rapport \\(\\frac{\\mathrm e^{x}}{' + xnTex + '}\\) tend vers \\(+\\infty\\) : c\'est la croissance comparée.';
     $('cConc').innerHTML = c; typeset($('cConc'));
   }
   $('cN').addEventListener('input', drawC);
@@ -1148,7 +1177,15 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var g = pgcd(p, q), a = p / g, b = q / g;
     if (b < 0) { a = -a; b = -b; }
     if (b === 1) return String(a);
-    return '\\frac{' + a + '}{' + b + '}';
+    return (a < 0 ? '-' : '') + '\\frac{' + Math.abs(a) + '}{' + b + '}';
+  }
+  /* Écriture décimale d'un rationnel, précédée du bon symbole : rien si le
+     quotient est déjà entier, « = » si le décimal est exact (3/2 = 1,5),
+     « ≈ » seulement en cas de véritable arrondi (5/6 ≈ 0,8333). */
+  function decTex(p, q) {
+    var v = p / q;
+    if (p % q === 0) return '';
+    return same(fmtVal(v, 6), v) ? (' = ' + mfmt(v, 6)) : (' \\approx ' + mfmt(v, 4));
   }
   var KIND_LABEL = { reel: 'un réel', pinf: '\\(+\\infty\\)', minf: '\\(-\\infty\\)' };
 
@@ -1169,6 +1206,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       if (dn >= 1) { var k1 = rnd(0, dn - 1); num[k1] = rnd(-6, 6); }
       if (dd >= 1) { var k2 = rnd(0, dd - 1); den[k2] = rnd(-6, 6); }
     }
+    /* Il faut au moins un terme de degré inférieur non nul de chaque côté :
+       sans cela l'énoncé se réduit à un quotient de monômes (\(3x/x\)) et la
+       factorisation affiche « \(f(x)=\frac{3}{1}\) » ou « \(x^{3}\left(1\right)\) ». */
+    function allZero(t, d) { for (var j = 0; j < d; j++) { if (t[j] !== 0) return false; } return true; }
+    if (allZero(num, dn)) num[rnd(0, dn - 1)] = rndNonZero(-6, 6);
+    if (allZero(den, dd)) den[rnd(0, dd - 1)] = rndNonZero(-6, 6);
     var kind, val = null;
     if (dn < dd) { kind = 'reel'; val = 0; }
     else if (dn === dd) { kind = 'reel'; val = a / b; }
@@ -1180,7 +1223,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (dn === dd) {
       corr += '<p><b>Étape 3.</b> On simplifie par \\(' + pw(dn) + '\\) : \\(f(x)=\\frac{' + factorTex(num) + '}{' + factorTex(den) + '}.\\)</p>' +
         '<p><b>Étape 4.</b> Chaque terme \\(\\frac{c}{x^{k}}\\) tend vers \\(0.\\) Le numérateur tend vers \\(' + a + '\\), le dénominateur vers \\(' + b + '\\neq0\\), donc par quotient :</p>' +
-        '<p>\\(\\lim_{x\\to+\\infty}f(x)=' + ratTex(a, b) + ' = ' + mfmt(a / b, 4) + '.\\)</p>' +
+        '<p>\\(\\lim_{x\\to+\\infty}f(x)=' + ratTex(a, b) + decTex(a, b) + '.\\)</p>' +
         '<p>La droite d\'équation \\(y=' + ratTex(a, b) + '\\) est asymptote horizontale à \\(\\mathcal C_f\\) en \\(+\\infty.\\)</p>';
     } else {
       var fac = (dn > dd) ? pw(dn - dd) : ('\\frac{1}{' + pw(dd - dn) + '}');
@@ -1198,6 +1241,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     return {
       kind: kind, val: val,
+      valTex: (kind !== 'reel') ? null : (dn === dd ? ratTex(a, b) : '0'),
       enonce: '<p>Soit \\(f(x)=\\frac{' + polyTex(num) + '}{' + polyTex(den) + '}.\\) Déterminer \\(\\lim_{x\\to+\\infty}f(x).\\)</p>',
       correction: corr
     };
@@ -1215,7 +1259,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       return { ok: false, msg: 'Non. Compare le degré du numérateur et celui du dénominateur, puis factorise le terme de plus haut degré.' };
     }
     if (e.kind === 'reel') {
-      if (Math.abs(ans.val - e.val) < 0.011) return { ok: true, msg: 'Correct : la limite est \\(' + mfmt(e.val, 4) + '.\\)' };
+      /* La limite est un rationnel exact : on exige l'égalité, la tolérance
+         n'absorbe que le bruit des flottants. Les fractions sont acceptées. */
+      if (Math.abs(ans.val - e.val) <= 1e-9 * Math.max(1, Math.abs(e.val))) {
+        return { ok: true, msg: 'Correct : la limite est \\(' + e.valTex + '.\\)' };
+      }
+      if (e.val % 1 !== 0 && Math.abs(ans.val - e.val) <= 5e-3) {
+        return { ok: false, msg: 'Presque : ta valeur n\'est qu\'un <b>arrondi</b>. La limite est le quotient exact des coefficients dominants — écris-le sous forme de fraction (par exemple <code>5/6</code>).' };
+      }
       return { ok: false, msg: 'Le type est bon, mais pas la valeur : après simplification, il reste le quotient des coefficients dominants.' };
     }
     return { ok: true, msg: 'Correct.' };
@@ -1235,7 +1286,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     if (m === 2) { left = right = (Lnum > 0) ? 'pinf' : 'minf'; }
     else { left = (Lnum > 0) ? 'minf' : 'pinf'; right = (Lnum > 0) ? 'pinf' : 'minf'; }
     var h = 0.01;
-    var fg = (p * (a - h) + q) / Math.pow(-h, m), fd = (p * (a + h) + q) / Math.pow(h, m);
+    /* f(a∓0,01) vaut exactement ces entiers : on écrit « = », pas « ≈ ».
+       m = 1 : (L ∓ p/100)/(∓1/100) ; m = 2 : (L ∓ p/100)/(1/10000). */
+    var fg = (m === 1) ? (p - 100 * Lnum) : (10000 * Lnum - 100 * p);
+    var fd = (m === 1) ? (100 * Lnum + p) : (10000 * Lnum + 100 * p);
     var corr = '<p><b>Étape 1 — le numérateur.</b> \\(\\lim_{x\\to' + a + '}(' + numTex + ')=' + Lnum + '\\), qui est <b>non nul</b> : ce n\'est donc pas une forme indéterminée \\(\\frac00.\\)</p>' +
       '<p><b>Étape 2 — le signe du dénominateur.</b> ';
     if (m === 2) {
@@ -1249,7 +1303,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '<p>Les deux limites sont différentes : \\(f\\) <b>n\'a pas de limite</b> en \\(' + a + '.\\)</p>';
     }
     corr += '<p><b>Étape 4 — asymptote.</b> La droite d\'équation \\(x=' + a + '\\) est asymptote verticale à \\(\\mathcal C_f.\\)</p>' +
-      '<p class="ok"><b>Contrôle numérique :</b> \\(f(' + mfmt(a - h, 2) + ')\\approx ' + mfmt(fg, 1) + '\\) et \\(f(' + mfmt(a + h, 2) + ')\\approx ' + mfmt(fd, 1) + '.\\)</p>';
+      '<p class="ok"><b>Contrôle numérique :</b> \\(f(' + mfmt(a - h, 2) + ')=' + fg + '\\) et \\(f(' + mfmt(a + h, 2) + ')=' + fd + '.\\)</p>';
     return {
       left: left, right: right,
       enonce: '<p>Soit \\(f(x)=\\frac{' + numTex + '}{' + denTex + '}.\\) Déterminer la limite de \\(f\\) en \\(' + a + '\\) <b>à gauche</b> puis <b>à droite</b>.</p>',
@@ -1304,8 +1358,17 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       for (i = 0; i <= p; i++) co.push(0);
       co[p] = a; co[q] = b; co[0] = c;
       enonce = '<p>Déterminer \\(\\lim_{x\\to' + (sens === 1 ? '+' : '-') + '\\infty}f(x)\\) où \\(f(x)=' + polyTex(co) + '.\\)</p>';
-      corr = '<p><b>Étape 1.</b> Les termes n\'ont pas tous la même limite : on reconnaît une forme indéterminée \\(\\infty-\\infty.\\)</p>' +
-        '<p><b>Étape 2 — on factorise par le terme prépondérant \\(' + (a === 1 ? '' : (a === -1 ? '-' : a)) + 'x^{' + p + '}\\), c\'est-à-dire par \\(x^{' + p + '}\\) :</b></p>' +
+      /* Signe de la limite de chacun des deux termes dominants : il n'y a
+         forme indéterminée que si les deux partent en sens contraires. */
+      var sA = Math.sign(a) * ((sens === 1 || p % 2 === 0) ? 1 : -1);
+      var sB = Math.sign(b) * ((sens === 1 || q % 2 === 0) ? 1 : -1);
+      var tA = (a === 1 ? '' : (a === -1 ? '-' : a)) + pw(p);
+      var tB = (b === 1 ? '' : (b === -1 ? '-' : b)) + pw(q);
+      corr = '<p><b>Étape 1.</b> \\(' + tA + '\\to' + (sA > 0 ? '+' : '-') + '\\infty\\) et \\(' + tB + '\\to' + (sB > 0 ? '+' : '-') + '\\infty\\) : ' +
+        (sA === sB
+          ? 'les deux termes vont dans le même sens, il n\'y a donc <b>pas</b> de forme indéterminée, mais factorisons quand même pour rédiger proprement.'
+          : 'on reconnaît la forme indéterminée \\(\\infty-\\infty.\\)') + '</p>' +
+        '<p><b>Étape 2 — le terme prépondérant est \\(' + tA + '\\) : on factorise par \\(x^{' + p + '}\\) :</b></p>' +
         '<p>\\(f(x)=x^{' + p + '}\\left(' + factorTex(co) + '\\right)\\)</p>' +
         '<p><b>Étape 3.</b> Chaque \\(\\frac{c}{x^{k}}\\) tend vers \\(0\\), donc la parenthèse tend vers \\(' + a + '.\\)</p>' +
         '<p><b>Étape 4.</b> \\(\\lim_{x\\to' + (sens === 1 ? '+' : '-') + '\\infty}x^{' + p + '}=' + ((sens === 1 || p % 2 === 0) ? '+\\infty' : '-\\infty') + '\\) (exposant ' + (p % 2 === 0 ? 'pair' : 'impair') + '), et la parenthèse tend vers \\(' + a + '\\) : par produit (règle des signes), \\(\\lim f(x)=' + (kind === 'pinf' ? '+\\infty' : '-\\infty') + '.\\)</p>';
@@ -1323,7 +1386,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   }, function (e, ans) {
     if (ans.kind !== e.kind) return { ok: false, msg: 'Non. Factorise par le terme prépondérant (\\(\\mathrm e^{x}\\) ou la plus grande puissance de \\(x\\)) et utilise la croissance comparée.' };
     if (e.kind === 'reel') {
-      if (Math.abs(ans.val - e.val) < 0.011) return { ok: true, msg: 'Correct : la limite vaut \\(' + mfmt(e.val, 3) + '.\\)' };
+      /* La limite attendue vaut exactement 0 : pas de tolérance décimale. */
+      if (Math.abs(ans.val - e.val) <= 1e-9) return { ok: true, msg: 'Correct : la limite vaut \\(0.\\)' };
       return { ok: false, msg: 'Le type est bon, mais pas la valeur. Rappelle-toi : \\(\\frac{x^{n}}{\\mathrm e^{x}}\\to0.\\)' };
     }
     return { ok: true, msg: 'Correct.' };
@@ -1421,7 +1485,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var k = rnd(2, 40), p = rnd(2, 4);
       return build('\\(\\lim_{x\\to+\\infty}\\left(x^{' + p + '}-' + k + 'x\\right)=\\) ?',
         ['\\(+\\infty\\)', '\\(-\\infty\\)', '\\(0\\)', '\\(-' + k + '\\)'], 0,
-        'F.I. \\(\\infty-\\infty.\\) On factorise : \\(x^{' + p + '}\\left(1-\\frac{' + k + '}{x^{' + (p - 1) + '}}\\right)\\), la parenthèse tend vers \\(1\\), donc la limite est \\(+\\infty.\\)');
+        'F.I. \\(\\infty-\\infty.\\) On factorise : \\(x^{' + p + '}\\left(1-\\frac{' + k + '}{' + pw(p - 1) + '}\\right)\\), la parenthèse tend vers \\(1\\), donc la limite est \\(+\\infty.\\)');
     },
     // 11 — x^n en −∞
     function () {
@@ -1437,7 +1501,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var a = rnd(2, 9), b = rnd(2, 9), p = rnd(2, 3);
       return build('\\(\\lim_{x\\to+\\infty}\\frac{' + a + 'x+1}{' + b + 'x^{' + p + '}-3}=\\) ?',
         ['\\(0\\)', '\\(+\\infty\\)', ratWrap(a, b), '\\(' + a + '\\)'], 0,
-        'Le degré du dénominateur est le plus grand : après factorisation il reste \\(\\frac{1}{x^{' + (p - 1) + '}}\\times\\frac{' + a + '}{' + b + '}\\to0.\\) La droite \\(y=0\\) est asymptote horizontale.');
+        'Le degré du dénominateur est le plus grand : après factorisation il reste \\(\\frac{1}{' + pw(p - 1) + '}\\times' + fmtRat(a, b) + '\\to0.\\) La droite \\(y=0\\) est asymptote horizontale.');
     },
     // 13 — gendarmes
     function () {

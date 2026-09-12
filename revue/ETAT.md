@@ -19,7 +19,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 3D | Dérivée d'une composée | ✅ | 18 (dont 1 égalité fausse entre valeurs arrondies) |
 | 3E | Convexité | ✅ | 10 (dont 1 verdict faux dans 57 % des réglages) |
 | 4A | Fonctions de référence | ✅ | 18 (dont 1 tolérance relative et 1 figure contredisant sa solution) |
-| 4B | Limites de fonctions | ⬜ | |
+| 4B | Limites de fonctions | ✅ | 20 (dont 1 égalité fausse affichée en direct) |
 | 4C | Continuité et valeurs intermédiaires | ⬜ | |
 | 5A | Fonction exponentielle | ⬜ | |
 | 5B | Fonctions avec exponentielle | ⬜ | |
