@@ -11,7 +11,7 @@ Statut : ⬜ à faire · 🔨 en cours · ✅ relue
 | 1C | Géométrie repérée | ✅ | 7 (dont 2 tolérances qui acceptaient une réponse fausse) |
 | 1D | Espace : orthogonalité et distances | ✅ | 6 (dont 1 tolérance et 1 vérification trop permissive) |
 | 2A | Suites : génération et variations | ⬜ | |
-| 2B | Suites arithmétiques et géométriques | ⬜ | |
+| 2B | Suites arithmétiques et géométriques | ✅ | 5 (dont 1 tolérance sur 3 exercices) |
 | 2C | Récurrence et limites | ⬜ | |
 | 3A | Nombre dérivé et tangente | ⬜ | |
 | 3B | Calculer une dérivée | ⬜ | |

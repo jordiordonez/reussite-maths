@@ -412,7 +412,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       </div>
     </details>
     <div class="box">
-      <span class="lbl">Somme de termes consécutifs d'une suite géométrique</span>
+      <span class="lbl">Somme de termes consécutifs d'une suite géométrique (pour \(q \ne 1\))</span>
       \[S = \text{premier terme}\times\frac{1 - q^{\,\text{nombre de termes}}}{1 - q}\]
       Par exemple \(u_0 + u_1 + \dots + u_n = u_0\,\dfrac{1 - q^{\,n+1}}{1-q}\) (on met \(u_0\) en facteur).
     </div>
@@ -457,7 +457,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       <tr><td>Récurrence</td><td>\(u_{n+1} = u_n + r\)</td><td>\(u_{n+1} = q\,u_n\)</td></tr>
       <tr><td>Terme général</td><td>\(u_n = u_0 + n r = u_p + (n-p) r\)</td><td>\(u_n = u_0 q^n = u_p q^{\,n-p}\)</td></tr>
       <tr><td>Test</td><td>\(u_{n+1} - u_n\) constant</td><td>\(u_{n+1}/u_n\) constant</td></tr>
-      <tr><td>Somme de \(N\) termes</td><td>\(N\times\dfrac{\text{premier}+\text{dernier}}{2}\)</td><td>\(\text{premier}\times\dfrac{1-q^N}{1-q}\)</td></tr>
+      <tr><td>Somme de \(N\) termes</td><td>\(N\times\dfrac{\text{premier}+\text{dernier}}{2}\)</td><td>\(\text{premier}\times\dfrac{1-q^N}{1-q}\) (si \(q \ne 1\))</td></tr>
       <tr><td>Modèle</td><td>linéaire (points alignés)</td><td>exponentiel (taux constant)</td></tr>
       <tr><td>Variation</td><td>signe de \(r\)</td><td>\(q\) par rapport à 1 (si \(u_0>0\))</td></tr>
     </table>
@@ -507,7 +507,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <ol>
       <li><strong>Compter le nombre de termes</strong> : de \(u_a\) à \(u_b\), il y en a \(b - a + 1\).</li>
       <li>Arithmétique : \(S = N\times\dfrac{u_a + u_b}{2}\). Calculer d'abord \(u_a\) et \(u_b\).</li>
-      <li>Géométrique : \(S = u_a\times\dfrac{1 - q^{N}}{1 - q}\).</li>
+      <li>Géométrique : \(S = u_a\times\dfrac{1 - q^{N}}{1 - q}\) si \(q \ne 1\) (si \(q = 1\), tous les termes sont égaux et \(S = N\,u_a\)).</li>
       <li>Vérifier l'ordre de grandeur (par exemple avec les deux ou trois premiers termes).</li>
     </ol>
     <div class="box">
@@ -711,8 +711,10 @@ function parseNum(s){
   if(!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
   return parseFloat(s);
 }
-/* tolérance numérique : petite marge absolue + marge relative pour les grands nombres */
-function approx(a,b){ if(!isFinite(a)) return false; return Math.abs(a-b) <= Math.max(0.011, Math.abs(b)*1e-6); }
+/* tolérance numérique : toutes les réponses attendues de cette fiche sont des entiers exacts
+   (terme d'une suite, nombre de termes, somme, nombre d'années) ; la marge ne sert qu'à absorber
+   le bruit des flottants, surtout pas à accepter un arrondi voisin. */
+function approx(a,b){ if(!isFinite(a)) return false; return Math.abs(a-b) <= Math.max(1e-6, Math.abs(b)*1e-9); }
 function setFb(el, ok, msg){ el.className = 'fb ' + (ok?'ok':'ko'); el.innerHTML = msg; typeset(el); }
 /* écriture LaTeX d'un nombre décimal à la française : 1{,}03 */
 function tex(x, dec){
@@ -723,6 +725,17 @@ function tex(x, dec){
   return (x<0?'-':'') + pp[0] + (pp[1] ? '{,}' + pp[1] : '');
 }
 function texSigned(x){ return (x<0 ? '- ' : '+ ') + tex(Math.abs(x)); }
+/* somme LaTeX de deux nombres, sans « + (-3) » ni « + -3 » : 14 + 35, ou -19 - 44 */
+function sumTex(x, y){ return tex(x) + ' ' + texSigned(y); }
+/* facteur LaTeX : un nombre négatif placé après un « × » est mis entre parenthèses */
+function facTex(x){ return x < 0 ? '(' + tex(x) + ')' : tex(x); }
+/* liste de termes additionnés, en écriture française : −19 − 24 − 29 */
+function joinSum(vals){
+  return vals.map(function(v, i){
+    if(i === 0) return nf(v);
+    return (v < 0 ? ' − ' : ' + ') + nf(Math.abs(v));
+  }).join('');
+}
 var SVGNS = 'http://www.w3.org/2000/svg';
 
 /* ================= navigation sticky : onglet actif ================= */
@@ -824,18 +837,25 @@ function drawCmp(){
   var SA = N*(A[0]+A[N-1])/2;
   var SG = (Math.abs(q-1)<1e-9) ? N*u0 : u0*(1-Math.pow(q,N))/(1-q);
   document.getElementById('cmpSumA').innerHTML =
-    '\\[S_A = u_0+\\dots+u_{'+(N-1)+'} = '+N+'\\times\\frac{'+tex(A[0])+' + '+tex(A[N-1])+'}{2} = '+tex(SA)+'\\]';
+    '\\[S_A = u_0+\\dots+u_{'+(N-1)+'} = '+N+'\\times\\frac{'+sumTex(A[0], A[N-1])+'}{2} = '+tex(SA)+'\\]';
   document.getElementById('cmpSumG').innerHTML = (Math.abs(q-1)<1e-9)
     ? '\\[S_G = '+N+'\\times '+tex(u0)+' = '+tex(SG)+'\\quad (q=1)\\]'
     : '\\[S_G = u_0\\,\\frac{1-q^{'+N+'}}{1-q} = '+tex(u0)+'\\times\\frac{1-'+tex(q)+'^{'+N+'}}{1-'+tex(q)+'} = '+tex(SG,2)+'\\]';
 
   var note;
-  if(q > 1.0001 && r > 0){
-    note = 'Après '+N+' termes, la géométrique atteint '+nf(G[N-1],2)+' contre '+nf(A[N-1])+' pour l\'arithmétique, soit '+nf(G[N-1]/A[N-1],2)+' fois plus. Sa somme est '+nf(SG/SA,2)+' fois celle de la suite arithmétique.';
-  } else if(q < 0.9999){
-    note = 'Avec \\(0\\lt q\\lt 1,\\) la géométrique se rapproche de 0 : ses bandes rétrécissent et sa somme se stabilise (ici '+nf(SG,2)+').';
-  } else {
+  if(Math.abs(q-1) < 1e-9){
     note = 'Avec \\(q = 1,\\) la suite géométrique est constante : toutes ses bandes ont la même hauteur.';
+  } else if(q > 1){
+    note = 'Avec \\(q = '+tex(q)+' \\gt 1,\\) la géométrique atteint '+nf(G[N-1],2)+' au rang '+(N-1)+', contre '+nf(A[N-1])+' pour l\'arithmétique';
+    if(r > 0){
+      note += ', soit '+nf(G[N-1]/A[N-1],2)+' fois plus. Sa somme est '+nf(SG/SA,2)+' fois celle de la suite arithmétique.';
+    } else if(r < 0){
+      note += ' : ici l\'arithmétique décroît (\\(r\\lt 0\\)) pendant que la géométrique croît, donc l\'écart se creuse dans les deux sens.';
+    } else {
+      note += ' : ici l\'arithmétique est constante (\\(r = 0\\)) pendant que la géométrique croît.';
+    }
+  } else {
+    note = 'Avec \\(0\\lt q\\lt 1,\\) la géométrique se rapproche de 0 : ses bandes rétrécissent et sa somme se stabilise (ici '+nf(SG,2)+').';
   }
   note += ' Les deux suites sont dessinées à la même échelle : quand \\(q\\) grandit, la bleue paraît écrasée, c\'est normal.';
   document.getElementById('cmpNote').innerHTML = note;
@@ -950,9 +970,9 @@ function ex1New(){
     ans = u0 + n*r;
     gen = 'u_n = ' + u0 + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n');
     distr = [
-      'u_n = ' + u0 + ' × ' + r + '^n',
+      'u_n = ' + u0 + ' × ' + (r<0 ? '(' + nf(r) + ')' : r) + '^n',
       'u_n = ' + u0 + (r>0 ? ' + ' : ' − ') + '(n − 1) × ' + Math.abs(r),
-      'u_n = ' + (u0+r) + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n')
+      'u_n = ' + nf(u0+r) + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n')
     ];
     ex1 = { type:'a', u0:u0, r:r, n:n, ans:ans, gen:gen };
   } else {
@@ -1089,20 +1109,20 @@ function ex2Check(){
 function ex2BuildCorr(){
   var c = document.getElementById('ex2CorrBox'), h, k, liste = [];
   for(k=ex2.a; k<=ex2.b; k++){
-    liste.push(nf(ex2.type==='a' ? ex2.u0 + k*ex2.r : ex2.u0*Math.pow(ex2.q,k)));
+    liste.push(ex2.type==='a' ? ex2.u0 + k*ex2.r : ex2.u0*Math.pow(ex2.q,k));
   }
   h = '<p><strong>Étape 1 — nombre de termes.</strong> De \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) : \\(N = '+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'\\) termes.</p>';
   if(ex2.type === 'a'){
     h += '<p><strong>Étape 2 — premier et dernier terme.</strong> \\(u_n = '+ex2.u0+' '+texSigned(ex2.r)+'\\,n,\\) donc</p>'
       + '\\[u_{'+ex2.a+'} = '+ex2.u0+' '+texSigned(ex2.a*ex2.r)+' = '+tex(ex2.ua)+',\\qquad u_{'+ex2.b+'} = '+ex2.u0+' '+texSigned(ex2.b*ex2.r)+' = '+tex(ex2.ub)+'\\]'
       + '<p><strong>Étape 3 — formule de la somme arithmétique.</strong></p>'
-      + '\\[S = N\\times\\frac{u_{'+ex2.a+'} + u_{'+ex2.b+'}}{2} = '+ex2.N+'\\times\\frac{'+tex(ex2.ua)+' + '+tex(ex2.ub)+'}{2} = '+ex2.N+'\\times '+tex((ex2.ua+ex2.ub)/2)+' = '+tex(ex2.S)+'\\]';
+      + '\\[S = N\\times\\frac{u_{'+ex2.a+'} + u_{'+ex2.b+'}}{2} = '+ex2.N+'\\times\\frac{'+sumTex(ex2.ua, ex2.ub)+'}{2} = '+ex2.N+'\\times '+facTex((ex2.ua+ex2.ub)/2)+' = '+tex(ex2.S)+'\\]';
   } else {
     h += '<p><strong>Étape 2 — premier terme de la somme.</strong> \\(u_n = '+ex2.u0+'\\times '+ex2.q+'^{\\,n},\\) donc \\(u_{'+ex2.a+'} = '+ex2.u0+'\\times '+ex2.q+'^{'+ex2.a+'} = '+tex(ex2.ua)+'.\\)</p>'
       + '<p><strong>Étape 3 — formule de la somme géométrique.</strong> L\'exposant est le <em>nombre de termes</em> \\(N = '+ex2.N+',\\) pas le dernier indice :</p>'
       + '\\[S = u_{'+ex2.a+'}\\times\\frac{1-q^{N}}{1-q} = '+tex(ex2.ua)+'\\times\\frac{1-'+ex2.q+'^{'+ex2.N+'}}{1-'+ex2.q+'} = '+tex(ex2.ua)+'\\times '+tex((Math.pow(ex2.q,ex2.N)-1)/(ex2.q-1))+' = '+tex(ex2.S)+'\\]';
   }
-  h += '<p><strong>Vérification.</strong> Les termes sont : '+liste.join(' + ')+' = '+nf(ex2.S)+'. ✓</p>';
+  h += '<p><strong>Vérification.</strong> Les termes sont : '+joinSum(liste)+' = '+nf(ex2.S)+'. ✓</p>';
   c.innerHTML = h; c.classList.add('show'); typeset(c);
 }
 document.getElementById('ex2Check').addEventListener('click', ex2Check);

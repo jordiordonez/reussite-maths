@@ -440,7 +440,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       Pour tout réel \(a\geq 0\) et tout entier \(n\geq0\) : \((1+a)^n\geq 1+na\).<br>
       <em>Récurrence sur \(n\), à \(a\) fixé.</em> \(P(n)\) : « \((1+a)^n\geq1+na\) ».<br>
       <em>Initialisation :</em> \((1+a)^0=1\) et \(1+0\times a=1\) : \(1\geq1\), \(P(0)\) est vraie.<br>
-      <em>Hérédité :</em> supposons \((1+a)^n\geq1+na\). Comme \(1+a&gt;0\), on peut multiplier les deux membres par \(1+a\) sans changer le sens :
+      <em>Hérédité :</em> soit \(n\in\mathbb N\) ; supposons \((1+a)^n\geq1+na\). Comme \(1+a&gt;0\), on peut multiplier les deux membres par \(1+a\) sans changer le sens :
       \[(1+a)^{n+1}\geq(1+na)(1+a)=1+(n+1)a+na^2\geq 1+(n+1)a,\]
       car \(na^2\geq0\). Donc \(P(n+1)\) est vraie.<br>
       <em>Conclusion :</em> l'inégalité est vraie pour tout \(n\in\mathbb N\). ∎
@@ -695,7 +695,7 @@ print(seuil(<span class="n">1000</span>))     <span class="c"># affiche 6</span>
 <section id="qcm">
   <h2><span>5.</span> QCM</h2>
   <div class="card">
-    <p>Quatre questions tirées au hasard dans une banque de 16. Une seule bonne réponse par question.</p>
+    <p>Quatre questions tirées au hasard dans une banque de 18. Une seule bonne réponse par question.</p>
     <div id="qcmBox"></div>
     <div class="score" id="qcmScore"></div>
     <div class="row"><button type="button" id="qcmNew">Nouveau QCM</button></div>
@@ -728,7 +728,10 @@ function parseNum(s){
   if(!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
   return parseFloat(s);
 }
-function close(a,b){ return Math.abs(a-b) <= 0.011 + 1e-9*Math.abs(b); }
+/* Toutes les réponses attendues de la fiche (limite, alpha, beta, A, B) sont des
+   entiers exacts : la tolérance ne doit absorber que le bruit des flottants,
+   jamais un centième d'écart — sinon on félicite l'élève pour une réponse fausse. */
+function close(a,b){ return Math.abs(a-b) <= 1e-9 + 1e-9*Math.abs(b); }
 function shuffle(arr){ var a = arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function setFb(el, ok, msg){ el.className = 'feedback ' + (ok?'ok':'ko'); el.innerHTML = msg; typeset(el); }
 function coef(a, first){ var s = a<0 ? '-' : (first?'':'+'); var v = Math.abs(a); return s + (v===1?'':fmt(v)); }
@@ -997,7 +1000,7 @@ var COB_F = [
    fixTex:'\\ell = 0{,}25\\ell^2 + 1 \\iff \\ell^2 - 4\\ell + 4 = 0 \\iff (\\ell-2)^2 = 0 \\iff \\ell = 2'},
   {id:'heron', label:'f(x) = 0,5(x + 2/x)   (méthode de Héron)', tex:'f(x) = \\dfrac12\\left(x + \\dfrac{2}{x}\\right)', f:function(x){return (x>0)?0.5*(x+2/x):NaN;},
    view:[0,5], u0:[0.25,5,0.25,3], fixv:Math.SQRT2,
-   fixTex:'\\ell = \\dfrac12\\left(\\ell + \\dfrac{2}{\\ell}\\right) \\iff 2\\ell = \\ell + \\dfrac{2}{\\ell} \\iff \\ell^2 = 2 \\iff \\ell = \\sqrt 2'}
+   fixTex:'\\ell = \\dfrac12\\left(\\ell + \\dfrac{2}{\\ell}\\right) \\iff 2\\ell = \\ell + \\dfrac{2}{\\ell} \\iff \\ell^2 = 2 \\iff \\ell = \\sqrt 2 \\text{ (ou } -\\sqrt2 \\text{, exclu car } u_n > 0)'}
 ];
 var cobSel = document.getElementById('cobSel');
 COB_F.forEach(function(o){ var e=document.createElement('option'); e.value=o.id; e.textContent=o.label; cobSel.appendChild(e); });
@@ -1098,7 +1101,10 @@ function cobDraw(){
   var diag;
   if(conv) diag='<strong>La suite semble converger vers \\(\\ell = '+fmt2(o.fixv)+'.\\)</strong> ';
   else if(!isFinite(last)) diag='<strong>La suite diverge</strong> (les termes explosent ou sortent du domaine de \\(f\\)). ';
-  else diag='<strong>Les termes ne se stabilisent pas encore</strong> vers le point fixe. ';
+  /* si la distance au point fixe a AUGMENTÉ, les termes s'en éloignent :
+     dire « pas encore » laisserait croire qu'ils finiront par s'y stabiliser. */
+  else if(Math.abs(last-o.fixv) > Math.abs(t[0]-o.fixv)) diag='<strong>Les termes s\'éloignent du point fixe</strong> : avec ce \\(u_0,\\) la suite ne converge pas vers \\(\\ell.\\) ';
+  else diag='<strong>Les termes ne se stabilisent pas encore</strong> vers le point fixe (la convergence est lente : essaie d\'ajouter des étapes). ';
   fx.className='stat'+(conv?' good':'');
   fx.innerHTML = diag + 'Point fixe : \\('+o.fixTex+'.\\)<br><em>Attention : écrire \\(\\ell = f(\\ell)\\) suppose que \\(f\\) est continue — notion vue plus tard dans l\'année. Et cela ne donne la limite que si l\'on a déjà démontré que la suite converge.</em>';
   typeset(fx);
@@ -1136,14 +1142,16 @@ function ex1New(){
     kind='reel'; l=k;
     corr = '<p>Le numérateur et le dénominateur tendent tous les deux vers \\(\\pm\\infty\\) : c\'est une forme indéterminée \\(\\frac{\\infty}{\\infty}.\\) On <strong>factorise par \\(n\\)</strong> en haut et en bas :</p>'
       + '<p>\\(u_n = \\dfrac{n\\left('+texNum(a)+plusFrac(b,'n')+'\\right)}{n\\left('+texNum(c)+plusFrac(d,'n')+'\\right)} = \\dfrac{'+texNum(a)+plusFrac(b,'n')+'}{'+texNum(c)+plusFrac(d,'n')+'}\\)</p>'
-      + '<p>Or \\(\\frac{'+texNum(b)+'}{n} \\to 0\\) et \\(\\frac{'+texNum(d)+'}{n} \\to 0.\\) Par quotient de limites : \\(\\lim u_n = \\dfrac{'+texNum(a)+'}{'+texNum(c)+'} = '+texNum(k)+'.\\)</p>';
+      + '<p>Or \\(\\frac{'+texNum(b)+'}{n} \\to 0\\) et \\(\\frac{'+texNum(d)+'}{n} \\to 0.\\) Par quotient de limites : \\(\\lim u_n = '+(c===1? texNum(k) : '\\dfrac{'+texNum(a)+'}{'+texNum(c)+'} = '+texNum(k))+'.\\)</p>';
   } else if(type==='ratInf'){
     var a = pick([-3,-2,-1,1,2,3]), b = rnd(-4,4), cc = rnd(-4,4), d = pick([1,2,3]), e = pick([1,2,3,4]);
     tex = '\\dfrac{'+polyTex(a,b,cc)+'}{'+linTex(d,e)+'}';
     kind = (a>0)?'pinf':'minf';
     corr = '<p>Forme indéterminée \\(\\frac{\\infty}{\\infty}\\) : on factorise par le terme de plus haut degré de chaque partie, \\(n^2\\) en haut et \\(n\\) en bas.</p>'
       + '<p>\\(u_n = \\dfrac{n^2\\left('+texNum(a)+plusFrac(b,'n')+''+plusFrac(cc,'n^2')+'\\right)}{n\\left('+texNum(d)+plusFrac(e,'n')+'\\right)} = n \\times \\dfrac{'+texNum(a)+plusFrac(b,'n')+''+plusFrac(cc,'n^2')+'}{'+texNum(d)+plusFrac(e,'n')+'}\\)</p>'
-      + '<p>Le quotient tend vers \\(\\frac{'+texNum(a)+'}{'+texNum(d)+'} = '+texNum(a/d)+'\\) et \\(n \\to +\\infty.\\) Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty.\\)</p>';
+      /* n'écrire « = valeur décimale » que si le quotient tombe juste :
+         sinon on afficherait l'égalité fausse \(\frac13 = 0{,}3333\). */
+      + '<p>Le quotient tend vers \\('+(d===1? texNum(a) : '\\frac{'+texNum(a)+'}{'+texNum(d)+'}'+((Math.round(a/d*10000)/10000===a/d)?' = '+texNum(a/d):''))+'\\) (un réel non nul) et \\(n \\to +\\infty.\\) Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty.\\)</p>';
   } else if(type==='ratZero'){
     var a = pick([-4,-3,-2,-1,1,2,3,4]), b = rnd(-4,4), c2 = pick([1,2,3]), d2 = pick([1,2,3,4]);
     tex = '\\dfrac{'+linTex(a,b)+'}{'+polyTex(c2,0,d2)+'}';
@@ -1155,16 +1163,24 @@ function ex1New(){
     var a = pick([-3,-2,-1,1,2,3]), b = pick([-6,-5,-4,-3,3,4,5,6]), c3 = rnd(-5,5);
     tex = polyTex(a,b,c3);
     kind = (a>0)?'pinf':'minf';
-    corr = '<p>Ici \\(n^2 \\to +\\infty\\) et \\('+texNum(b)+'n \\to '+(b>0?'+':'-')+'\\infty\\) : sans précaution on tomberait sur une forme \\(\\infty - \\infty.\\) On <strong>factorise par le terme dominant \\(n^2\\)</strong> :</p>'
+    /* il n'y a réellement une F.I. \(\infty-\infty\) que si les deux termes
+       de plus haut degré tendent vers des infinis de signes contraires. */
+    corr = '<p>'+((a*b<0)
+        ? 'Ici \\('+coef(a,true)+'n^2 \\to '+(a>0?'+':'-')+'\\infty\\) et \\('+coef(b,true)+'n \\to '+(b>0?'+':'-')+'\\infty\\) : sans précaution on tomberait sur une forme \\(\\infty - \\infty.\\) On <strong>factorise par le terme dominant \\(n^2\\)</strong> :'
+        : 'Ici \\('+coef(a,true)+'n^2\\) et \\('+coef(b,true)+'n\\) tendent tous les deux vers \\('+(a>0?'+':'-')+'\\infty\\) : il n\'y a pas de forme indéterminée, mais on <strong>factorise quand même par le terme dominant \\(n^2\\)</strong> pour rédiger la conclusion :')+'</p>'
       + '<p>\\(u_n = n^2\\left('+texNum(a)+plusFrac(b,'n')+''+plusFrac(c3,'n^2')+'\\right)\\)</p>'
       + '<p>La parenthèse tend vers \\('+texNum(a)+'\\) et \\(n^2 \\to +\\infty.\\) Par produit : \\(\\lim u_n = '+(a>0?'+':'-')+'\\infty.\\)</p>';
   } else if(type==='geoConv'){
     var q = pick([0.5,0.25,0.8,-0.5,-0.75]), a = rnd(-4,6), bq = pick([-4,-3,-2,-1,1,2,3,4]);
-    tex = texNum(a)+' '+(bq<0?'-':'+')+' '+(Math.abs(bq)===1?'':texNum(Math.abs(bq)))+texPow(q);
+    /* le coefficient doit être séparé de la puissance par un « x » : sans lui,
+       « 2 » suivi de « 0{,}5^n » se lit « 20,5^n ». */
+    var gTerm = (Math.abs(bq)===1?'':texNum(Math.abs(bq))+'\\times ')+texPow(q);
+    tex = (a===0) ? (bq<0?'-':'')+gTerm
+                  : texNum(a)+' '+(bq<0?'-':'+')+' '+gTerm;
     kind='reel'; l=a;
     corr = '<p>On reconnaît une suite géométrique de raison \\(q = '+texNum(q)+'.\\)</p>'
       + '<p>Comme \\(-1 < '+texNum(q)+' < 1,\\) on a \\(\\lim '+texPow(q)+' = 0\\)'+(q<0?' (les termes changent de signe mais leur valeur absolue s\'écrase)':'')+'.</p>'
-      + '<p>Par produit puis par somme : \\(\\lim u_n = '+texNum(a)+' + '+texNum(bq)+' \\times 0 = '+texNum(a)+'.\\) La suite <strong>converge vers '+fmt(a)+'</strong>.</p>';
+      + '<p>Par produit puis par somme : \\(\\lim u_n = '+texNum(a)+(Math.abs(bq)===1?' + 0':(bq<0?' - ':' + ')+texNum(Math.abs(bq))+' \\times 0')+' = '+texNum(a)+'.\\) La suite <strong>converge vers '+fmt(a)+'</strong>.</p>';
   } else if(type==='alt'){
     var a = rnd(-3,5), b = pick([1,2,3,4]);
     tex = texNum(a)+' + '+(b===1?'':texNum(b))+'(-1)^n';
@@ -1174,10 +1190,11 @@ function ex1New(){
       + '<p>Donc la suite <strong>n\'a pas de limite</strong> (elle est divergente, mais pas vers \\(\\pm\\infty\\)). Attention : \\((-1)^n\\) n\'a pas de limite, on ne peut pas « passer à la limite » dessus.</p>';
   } else {
     var q2 = pick([1.5,2,3]), a2 = pick([-3,-2,-1,1,2,3]), b2 = rnd(-5,5);
-    tex = (Math.abs(a2)===1?(a2<0?'-':''):texNum(a2))+texPow(q2)+' '+(b2<0?'-':'+')+' '+texNum(Math.abs(b2));
+    tex = (Math.abs(a2)===1?(a2<0?'-':''):texNum(a2)+'\\times ')+texPow(q2)
+        + (b2===0?'':' '+(b2<0?'-':'+')+' '+texNum(Math.abs(b2)));
     kind = (a2>0)?'pinf':'minf';
     corr = '<p>Comme \\('+texNum(q2)+' > 1,\\) on a \\(\\lim '+texPow(q2)+' = +\\infty\\) (théorème sur \\((q^n),\\) démontré grâce à l\'inégalité de Bernoulli).</p>'
-      + '<p>En multipliant par \\('+texNum(a2)+'\\)'+(a2<0?' (négatif, la limite change de signe)':'')+' puis en ajoutant \\('+texNum(b2)+'\\) : \\(\\lim u_n = '+(a2>0?'+':'-')+'\\infty.\\)</p>';
+      + '<p>En multipliant par \\('+texNum(a2)+'\\)'+(a2<0?' (négatif, la limite change de signe)':'')+(b2===0?'':' puis en ajoutant \\('+texNum(b2)+'\\)')+' : \\(\\lim u_n = '+(a2>0?'+':'-')+'\\infty.\\)</p>';
   }
   ex1.kind=kind; ex1.l=l;
   var s=document.getElementById('ex1Stmt');
@@ -1250,8 +1267,11 @@ var EX2_QS = [
     expl:'La conclusion rappelle les deux ingrédients (initialisation + hérédité) et énonce le résultat pour tout n.' }
 ];
 var ex2 = {};
+/* Le coefficient doit être séparé de la puissance par un « x » : sans lui,
+   « 3 » suivi de « 5^{n} » se lit « 35^n ». */
+function ex2Coef(d){ return (d===1?'':(d===-1?'-':texNum(d)+'\\times ')); }
 function ex2Tex(d,a,c,pow){
-  var s = (d===1?'':(d===-1?'-':texNum(d))) + texNum(a) + '^{' + pow + '}';
+  var s = ex2Coef(d) + texNum(a) + '^{' + pow + '}';
   if(c!==0) s += (c<0? ' - '+texNum(-c) : ' + '+texNum(c));
   return s;
 }
@@ -1283,10 +1303,10 @@ function ex2New(){
   document.getElementById('ex2Fb').className='feedback';
   var corr = '<p><strong>Rédaction complète (type bac).</strong></p>'
     + '<p>Pour tout \\(n \\in \\mathbb N,\\) on note \\(P(n)\\) la propriété : « \\('+pn+'\\) ».</p>'
-    + '<p><strong>Initialisation.</strong> Pour \\(n = 0\\) : d\'une part \\(u_0 = '+fmt(u0)+'\\) (donné par l\'énoncé) ; d\'autre part \\('+ex2Tex(d,a,c,'0')+' = '+texNum(d)+' \\times 1 '+(c<0?'- '+texNum(-c):'+ '+texNum(c))+' = '+fmt(u0)+'.\\) Les deux valeurs sont égales, donc \\(P(0)\\) est vraie.</p>'
+    + '<p><strong>Initialisation.</strong> Pour \\(n = 0\\) : d\'une part \\(u_0 = '+fmt(u0)+'\\) (donné par l\'énoncé) ; d\'autre part, comme \\('+texNum(a)+'^{0} = 1,\\) \\('+ex2Tex(d,a,c,'0')+' = '+texNum(d)+(c<0?' - '+texNum(-c):' + '+texNum(c))+' = '+fmt(u0)+'.\\) Les deux valeurs sont égales, donc \\(P(0)\\) est vraie.</p>'
     + '<p><strong>Hérédité.</strong> Soit \\(n \\in \\mathbb N.\\) Supposons \\(P(n)\\) vraie, c\'est-à-dire \\('+pn+'.\\) Montrons que \\(P(n+1)\\) est vraie, c\'est-à-dire \\('+pn1+'.\\)</p>'
     + '<p>\\(u_{n+1} = '+texNum(a)+'u_n'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)))+' = '+texNum(a)+'\\left('+ex2Tex(d,a,c,'n')+'\\right)'+(b===0?'':(b<0?' - '+texNum(-b):' + '+texNum(b)))+'\\)</p>'
-    + '<p>\\(u_{n+1} = '+texNum(d)+' \\times '+texNum(a)+'^{\\,n+1} + '+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+ex2Tex(d,a,c,'n+1')+'\\)</p>'
+    + '<p>\\(u_{n+1} = '+ex2Coef(d)+texNum(a)+'^{\\,n+1}'+(a*c<0?' - '+texNum(-a*c):' + '+texNum(a*c))+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+ex2Tex(d,a,c,'n+1')+'\\)</p>'
     + '<p>car \\('+texNum(a*c)+' '+(b<0?'- '+texNum(-b):'+ '+texNum(b))+' = '+texNum(c)+'.\\) Donc \\(P(n+1)\\) est vraie : \\(\\alpha = '+fmt(d)+'\\) et \\(\\beta = '+fmt(c)+'.\\)</p>'
     + '<p><strong>Conclusion.</strong> \\(P(0)\\) est vraie et \\(P\\) est héréditaire ; d\'après le principe de récurrence, pour tout \\(n \\in \\mathbb N,\\) \\('+pn+'.\\)</p>'
     + '<p><em>Bonus :</em> comme \\('+texNum(a)+' > 1,\\) \\('+texNum(a)+'^{\\,n} \\to +\\infty,\\) donc \\(\\lim u_n = '+(d>0?'+':'-')+'\\infty.\\)</p>';
@@ -1398,7 +1418,7 @@ var QCM_BANK = [
     opts:['« Supposons que \\(P(n)\\) est vraie pour tout \\(n.\\) »','« Soit \\(n\\in\\mathbb N.\\) Supposons \\(P(n)\\) vraie. »','« Montrons que \\(P(n+1)\\) est vraie. »','« \\(P(0)\\) est vraie et \\(P\\) est héréditaire. »'],
     correct:0, expl:'Supposer la propriété vraie pour tout \\(n,\\) c\'est supposer ce qu\'on veut démontrer : le raisonnement est circulaire.' },
   { q:'On a montré : \\(P(0)\\) vraie, et « si \\(P(n)\\) alors \\(P(n+1)\\) ». On peut conclure que :',
-    opts:['\\(P(n)\\) est vraie pour tout \\(n\\in\\mathbb N\\)','\\(P(n)\\) est vraie pour \\(n\\) assez grand','\\(P(n)\\) est vraie seulement pour \\(n\\leq 10\\)','on ne peut rien conclure'],
+    opts:['\\(P(n)\\) est vraie pour tout \\(n\\in\\mathbb N\\)','\\(P(n)\\) est vraie pour tout \\(n\\geq1,\\) mais pas forcément \\(P(0)\\)','\\(P(n)\\) est vraie seulement pour \\(n\\leq 10\\)','on ne peut rien conclure'],
     correct:0, expl:'C\'est exactement le principe de récurrence : initialisation + hérédité donnent le résultat pour tout \\(n.\\)' },
   { q:'\\(u_0=1,\\) \\(u_{n+1}=2u_n+3.\\) Dans l\'hérédité de « \\(u_n=2^{n+2}-3\\) », on part de :',
     opts:['\\(u_{n+1}=2u_n+3\\) et on remplace \\(u_n\\) par \\(2^{n+2}-3\\)','\\(u_{n+1}=2^{n+3}-3\\) qu\'on simplifie','\\(u_0=1\\)','\\(u_n=2^{n+2}-3\\) qu\'on dérive'],
