@@ -2,7 +2,7 @@
 
 Ressources libres pour l'enseignement de spécialité mathématiques en Terminale générale (programme officiel français de 2019). Tout est en HTML autonome : les fiches s'ouvrent sur un téléphone ou un iPad, **sans connexion internet**, et s'enregistrent comme un simple fichier.
 
-Conçu pour un élève qui a eu des difficultés en Première et qui garde la spécialité en Terminale. Chaque chapitre est donc traité en deux étages : ce qui relève de la Première, à réviser d'abord, et ce qui relève de la Terminale.
+Le programme officiel prévoit que la Terminale consolide les acquis de Première. Le site suit cette logique : chaque chapitre est traité en deux étages, ce qui relève de la Première à réviser d'abord, puis ce qui relève de la Terminale.
 
 👉 **[Ouvrir le site](https://jordiordonez.github.io/reussite-maths/)**
 

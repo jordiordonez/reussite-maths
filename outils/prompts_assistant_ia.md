@@ -1,4 +1,6 @@
-# Tirer le meilleur de ChatGPT (version gratuite) en tant qu'élève de Terminale spé maths
+# Tirer le meilleur d'un assistant IA en tant qu'élève de Terminale spé maths
+
+Ces prompts fonctionnent avec ChatGPT, Claude, Gemini, Le Chat de Mistral ou Copilot. Le principe ne dépend pas de l'assistant.
 
 Ce document est la source du chapitre « ChatGPT » de `strategie/reussir_lannee.html`. Il est écrit pour l'élève.
 
@@ -12,7 +14,7 @@ Ce document est la source du chapitre « ChatGPT » de `strategie/reussir_lannee
 ## Les 5 règles
 
 1. **Jamais la solution d'abord.** Demander un indice, une question, un rappel de méthode. La solution complète seulement après ton essai écrit.
-2. **Toujours vérifier.** ChatGPT se trompe dans les calculs et parfois dans les théorèmes. Refaire le calcul à la main ou à la calculatrice ; vérifier qu'un théorème cité est bien dans `programmes/`. Si deux réponses diffèrent, le cours du professeur a raison.
+2. **Toujours vérifier.** un assistant se trompe dans les calculs et parfois dans les théorèmes. Refaire le calcul à la main ou à la calculatrice ; vérifier qu'un théorème cité est bien dans `programmes/`. Si deux réponses diffèrent, le cours du professeur a raison.
 3. **Une conversation par chapitre**, commencée par le prompt tuteur.
 4. **Envoyer ta copie, pas seulement l'énoncé.** Le meilleur usage : « voici ce que j'ai fait, où est l'erreur ? ».
 5. **Pas pour les DM et devoirs notés** (sauf pour comprendre après coup). L'objectif est de réussir seule le jour de l'épreuve.
@@ -22,7 +24,7 @@ Ce document est la source du chapitre « ChatGPT » de `strategie/reussir_lannee
 ### P1. Prompt tuteur (début de chaque conversation)
 
 ```
-Tu es mon tuteur de mathématiques. Je suis en Terminale, enseignement de spécialité mathématiques, en France (programme officiel 2019, Bulletin officiel spécial n°8 du 25 juillet 2019 ; les nouveaux programmes 2026-2027 ne me concernent pas). J'ai eu des difficultés en Première, je veux progresser en comprenant.
+Tu es mon tuteur de mathématiques. Je suis en Terminale, enseignement de spécialité mathématiques, en France (programme officiel 2019, Bulletin officiel spécial n°8 du 25 juillet 2019 ; les nouveaux programmes 2026-2027 ne me concernent pas). Mon objectif : [progresser en comprenant / reprendre des bases fragiles / aller plus loin sur les exercices difficiles].
 Règles pour toute la conversation :
 1. Ne me donne jamais la solution complète d'un exercice tant que je n'ai pas proposé au moins une tentative écrite.
 2. Quand je bloque, donne UN seul indice à la fois (une question, un rappel de définition ou la première étape), puis attends ma réponse.
@@ -103,7 +105,7 @@ Je ne comprends pas cette phrase de mon cours : « [PHRASE] ». Explique-la avec
 - Photographier à plat, bonne lumière, une page par photo.
 - Écrire dans le message : « exercice [numéro] page [page] du manuel [nom], chapitre [chapitre] » pour donner le contexte.
 - Après correction, noter dans le carnet de suivi (dans `strategie/reussir_lannee.html`) : fiche, exercice, OK / à revoir, date.
-- Copier le bilan du carnet et le coller dans ChatGPT avec le prompt P4 pour obtenir des exercices ciblés sur ce qui est « à revoir ».
+- Copier le bilan du carnet et le coller dans l'assistant avec le prompt P4 pour obtenir des exercices ciblés sur ce qui est « à revoir ».
 
 ## Quand envisager un abonnement (ChatGPT Plus, ou Claude Pro)
 

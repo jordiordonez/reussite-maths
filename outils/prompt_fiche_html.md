@@ -11,7 +11,7 @@ Une fiche = **un seul fichier `.html`**, autonome, qui s'ouvre hors connexion su
 5. **Visualisation** : la visualisation **la plus riche possible** : sliders, zones colorées illustrant les relations, animations, plusieurs grandeurs recalculées en temps réel. SVG inline ou canvas. Pas de bibliothèque externe.
 6. **Exercices** : 3 exercices **génératifs** (valeurs aléatoires à chaque clic sur « Nouvel exercice »), de difficulté croissante (niveau 1 : application directe ; niveau 2 : deux étapes ; niveau 3 : problème). Chaque exercice a un champ de réponse (ou plusieurs), une vérification avec tolérance numérique, et un bouton « Voir la correction » qui déplie une correction rédigée étape par étape.
 7. **QCM** : 4 questions A/B/C/D, feedback immédiat vert/rouge, explication brève (1 à 2 phrases), score final quand tout est répondu, bouton « Nouveau QCM » qui pioche/génère de nouvelles questions.
-8. **Pied de page** : rappel « Si tu bloques : relis la méthode, refais l'exercice de niveau inférieur, puis demande à ChatGPT une indication (pas la solution) ».
+8. **Pied de page** : rappel « Si tu bloques : relis la méthode, refais l'exercice de niveau inférieur, puis demande à un assistant IA une indication (pas la solution) ».
 
 ## Design
 
