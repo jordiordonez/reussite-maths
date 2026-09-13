@@ -43,3 +43,13 @@ python3 outils/build_site.py --only \
 ```
 
 Le sommaire et les nouvelles fiches disposent du catalogue actualisé. Les anciens menus embarqués et le lien suivant de 9A restent inchangés pour ne pas écrire dans des fiches en relecture. Une génération globale attendra la fin des travaux parallèles. Aucun commit de ce chapitre ne doit embarquer les fichiers de relecture de Claude.
+
+## Lacune signalée pour les élèves de Première
+
+La fiche 10A a d'abord été écrite comme socle de la dérivation des fonctions trigonométriques en Terminale. Pour un élève de **Première**, trois éléments du programme n'y figurent pas encore :
+
+- l'**enroulement de la droite** sur le cercle trigonométrique, construction qui donne son sens au cosinus d'un nombre réel ;
+- la **démonstration exigible** du calcul du sinus de π/4, du cosinus et du sinus de π/3 ;
+- l'approximation de π par la méthode d'Archimède, citée comme exemple d'algorithme, donc facultative.
+
+Voir `PLAN_PREMIERE.md`. À compléter dans 10A, sans créer de nouvelle fiche : le contrat de navigation interdit de déplacer une fiche publiée.

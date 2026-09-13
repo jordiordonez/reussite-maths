@@ -28,6 +28,18 @@ def signature():
             ' · Contenu pédagogique sous licence CC BY-SA 4.0</div>')
 
 
+def public(lessons):
+    """Qui ce chapitre concerne, déduit du niveau réel de ses fiches."""
+    niveaux = {x['level'] for x in lessons}
+    if niveaux == {'premiere'}:
+        return ('premiere', 'Première')
+    if niveaux == {'terminale'}:
+        return ('terminale', 'Terminale')
+    if niveaux:
+        return ('deux', 'Première et Terminale')
+    return ('', '')
+
+
 def block(name, text):
     return f'<!-- SITE:{name}:START -->\n{text}\n<!-- SITE:{name}:END -->'
 
@@ -99,7 +111,7 @@ def sidebar(chapters, prefix, active, current=None):
             text += f'<summary><span class="site-side-number">{c["number"]:02}</span>{esc(c["title"])}</summary>'
             if not c['lessons']:
                 text += '<p class="site-soon">À venir</p>'
-            for level, label in [('premiere', 'Réactiver les bases · Première'), ('terminale', 'Approfondir · Terminale')]:
+            for level, label in [('premiere', 'Programme de Première'), ('terminale', 'Programme de Terminale')]:
                 lessons = [x for x in c['lessons'] if x['level'] == level]
                 if lessons:
                     text += f'<div class="site-side-group">{label}</div>'
@@ -135,9 +147,9 @@ def lesson_row(l, prefix=''):
 
 def hub_content(kind, chapters):
     if kind == 'home':
-        return """<div class="site-eyebrow">Terminale · Enseignement de spécialité · Programme 2019</div>
-<h1>Les maths, à ton rythme.</h1>
-<p class="site-lead">Reprendre les bases de Première, comprendre, puis s’entraîner sur le programme de Terminale.<br>Gratuit, sans compte, et utilisable sans connexion.</p>
+        return """<div class="site-eyebrow">Première et Terminale · Enseignement de spécialité · Programme 2019</div>
+<h1>Réussir sa spé maths.</h1>
+<p class="site-lead">Le cours, la méthode et des exercices qui se renouvellent, pour la Première et pour la Terminale.<br>Gratuit, sans compte, et utilisable sans connexion.</p>
 
 <div class="site-hero"><div><div class="site-eyebrow" id="site-resume-label">Ta prochaine séance</div><h2 id="site-resume-title">Par quoi commence-t-on ?</h2><p id="site-resume-description">Choisis le chapitre que tu travailles en classe. Chaque parcours commence par les bases de Première avant d’aborder la Terminale.</p><div class="site-hero-actions"><a class="site-btn" id="site-resume-link" href="chapitres.html">Choisir mon chapitre <span aria-hidden="true">&#8594;</span></a><a href="strategie/reussir_lannee.html#depart" style="font-size:12px">Comment bien démarrer</a></div></div>
 <div class="site-hero-art" aria-hidden="true"><svg viewBox="0 0 200 200" fill="none"><rect x="10" y="10" width="180" height="180" rx="90" fill="#e3ebfa"/><path d="M38 146H173M63 170V32" stroke="#a6bde5"/><path d="M40 144C80 144 95 134 114 110S150 65 164 40" stroke="#2563eb" stroke-width="3"/><path d="m86 146 60-80" stroke="#88a6d9" stroke-width="1.5" stroke-dasharray="4 5"/><circle cx="114" cy="110" r="5" fill="#2563eb"/><circle cx="63" cy="142" r="4" fill="#faf8f5" stroke="#2563eb" stroke-width="2"/><text x="168" y="166" fill="#8299bd" font-family="Georgia" font-size="14">x</text><text x="45" y="37" fill="#8299bd" font-family="Georgia" font-size="14">y</text></svg></div></div>
@@ -147,8 +159,8 @@ def hub_content(kind, chapters):
 <div class="site-section-title"><h2>Comment ça marche</h2></div>
 <p class="site-lead" style="font-size:15px;max-width:70ch">Chaque chapitre est traité en deux temps. C’est la seule chose à comprendre pour s’en servir.</p>
 <div class="site-grid site-steps">
-  <div class="site-tile"><span class="site-step-num">1</span><span class="site-eyebrow">Avant le cours</span><h3>Réactiver les bases</h3><p>Les fiches marquées <b>Première</b> reprennent ce dont le chapitre a besoin. À travailler <b>avant</b> que le professeur le commence. C’est ce qui évite d’être perdue dès la première heure.</p></div>
-  <div class="site-tile"><span class="site-step-num">2</span><span class="site-eyebrow">Pendant le cours</span><h3>Aborder la nouveauté</h3><p>Les fiches marquées <b>Terminale</b> traitent ce qui est nouveau cette année, en s’appuyant sur les bases que tu viens de revoir.</p></div>
+  <div class="site-tile"><span class="site-step-num">1</span><span class="site-eyebrow">En Première</span><h3>Poser les bases</h3><p>Les fiches marquées <b>Première</b> couvrent le programme de l’année. En Terminale, ce sont exactement les notions à réactiver avant que le chapitre commence en classe.</p></div>
+  <div class="site-tile"><span class="site-step-num">2</span><span class="site-eyebrow">En Terminale</span><h3>Aborder la nouveauté</h3><p>Les fiches marquées <b>Terminale</b> traitent ce qui est nouveau, en s’appuyant sur les bases du dessous. Chaque chapitre relie les deux, sans te faire repartir de zéro.</p></div>
 </div>
 
 <div class="site-section-title"><h2>Un exercice, tout de suite</h2></div>
@@ -182,10 +194,10 @@ def hub_content(kind, chapters):
 
 <p class="site-hint"><span class="site-local-note" data-storage-note>Ton suivi reste dans ce navigateur, sur cet appareil.</span><a href="progres.html#sauvegarde">Garder une copie de mon suivi</a></p>"""
     if kind == 'catalog':
-        content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">Commence par les bases de Première, puis poursuis en Terminale. Tu peux suivre l’ordre de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Bases de Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
+        content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">En Première, travaille les fiches de ton niveau. En Terminale, commence par les bases de Première du chapitre, puis poursuis. Dans les deux cas, tu peux suivre l’ordre de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
         for c in chapters:
             count = len(c['lessons'])
-            content += f'<details class="site-chapter" id="ch{c["number"]}" data-catalog-chapter="{c["number"]}"><summary><span class="site-number">{c["number"]:02}</span><span class="site-chapter-title">{esc(c["title"])}<span class="site-chapter-meta">{str(count) + " fiches disponibles" if count else "À venir"}</span></span></summary><div class="site-chapter-content"><div class="site-chapter-intro"><p><strong>Au programme :</strong> {esc(c["goal"])}.</p><p><strong>Les bases utiles :</strong> {esc(c["prerequisites"])}.</p></div>'
+            content += f'<details class="site-chapter" id="ch{c["number"]}" data-catalog-chapter="{c["number"]}"><summary><span class="site-number">{c["number"]:02}</span><span class="site-chapter-title">{esc(c["title"])}<span class="site-chapter-meta">{(f'<b class="site-public site-public-{public(c["lessons"])[0]}">{public(c["lessons"])[1]}</b> · ' + str(count) + (" fiche" if count == 1 else " fiches")) if count else "À venir"}</span></span></summary><div class="site-chapter-content"><div class="site-chapter-intro"><p><strong>Au programme :</strong> {esc(c["goal"])}.</p><p><strong>Les bases utiles :</strong> {esc(c["prerequisites"])}.</p></div>'
             for level, title in [('premiere', 'Réactiver les bases · Première'), ('terminale', 'Approfondir · Terminale')]:
                 rows = [x for x in c['lessons'] if x['level'] == level]
                 if rows:
@@ -219,7 +231,7 @@ def build(only=None):
         active = 'catalog' if kind in ('lesson', 'template') else kind
         if kind in ('home', 'catalog', 'progress'):
             title = {'home': 'Accueil', 'catalog': 'Chapitres', 'progress': 'Mes progrès'}[kind]
-            source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Cours et exercices interactifs de mathématiques en Terminale, bases de Première et suivi personnel sans compte.">\n<title>{title} · Réussite Spé Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Spé Maths · Terminale spécialité · Programme 2019, année 2026–2027<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
+            source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Cours et exercices interactifs de spécialité mathématiques, en Première et en Terminale, avec un suivi personnel sans compte.">\n<title>{title} · Réussite Spé Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Spé Maths · Spécialité mathématiques, Première et Terminale · Programme 2019<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
         else:
             source = strip_blocks(path.read_text())
             # One-time migration of the guide: the original journal is imported
