@@ -56,3 +56,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 .site-public-premiere{background:#e8efff;color:#2563eb}
 .site-public-terminale{background:#fef3c7;color:#92400e}
 .site-public-deux{background:#e3f5ec;color:#1c7a52}
+
+/* badge dans le menu latéral : sur sa propre ligne, plus petit */
+.site-side-titre{display:flex;flex-direction:column;gap:4px;min-width:0}
+.site-side-chapter>summary .site-public{font-size:10px;padding:1px 6px;align-self:flex-start}

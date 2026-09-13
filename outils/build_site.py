@@ -104,11 +104,13 @@ def sidebar(chapters, prefix, active, current=None):
                           ('bloque', 'Quand je bloque'), ('chatgpt', 'Utiliser une IA'), ('abonnement', 'Choisir son outil IA')]:
             text += f'<a class="site-side-link" href="#{id_}">{name}</a>'
     else:
-        text += '<p class="site-side-label">Le programme · Terminale spé</p>'
+        text += '<p class="site-side-label">Le programme · Première et Terminale</p>'
         for c in chapters:
             opened = current and any(x['id'] == current['id'] for x in c['lessons'])
             text += f'<details class="site-side-chapter" data-chapter="{c["number"]}"' + (' open' if opened else '') + '>'
-            text += f'<summary><span class="site-side-number">{c["number"]:02}</span>{esc(c["title"])}</summary>'
+            pub = public(c['lessons'])
+            badge = f'<span class="site-public site-public-{pub[0]}">{pub[1]}</span>' if pub[0] else ''
+            text += f'<summary><span class="site-side-number">{c["number"]:02}</span><span class="site-side-titre">{esc(c["title"])}{badge}</span></summary>'
             if not c['lessons']:
                 text += '<p class="site-soon">À venir</p>'
             for level, label in [('premiere', 'Programme de Première'), ('terminale', 'Programme de Terminale')]:
