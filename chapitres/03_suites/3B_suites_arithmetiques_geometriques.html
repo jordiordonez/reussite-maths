@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3B · Suites arithmétiques et géométriques</title>
+<script>
+window.MathJax = {
+  svg: { fontCache: 'local' },
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="../../vendor/mathjax/tex-mml-svg.js" async></script>
+<style>
+  :root {
+    --bg: #faf8f5; --card: #ffffff; --ink: #1f2933; --muted: #5b6672;
+    --blue: #2563eb; --blue-soft: #e8efff; --coral: #f97362; --coral-soft: #ffe9e5;
+    --green: #22a06b; --green-soft: #e3f6ec; --amber: #d97706; --amber-soft: #fff3df;
+    --violet: #7c3aed; --violet-soft: #f0e9ff; --line: #e6e1da;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55; font-size: 16px; }
+  h1, h2, h3, h4 { font-family: Georgia, "Times New Roman", serif; margin: 0 0 .5em; line-height: 1.2; }
+  h2 { font-size: 1.6rem; color: var(--blue); margin-bottom: .8em; }
+  h3 { font-size: 1.15rem; margin-top: .2em; }
+  p { margin: .4em 0 .8em; }
+  header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #60a5fa 100%); color: #fff; padding: 2.4rem 1.2rem 2rem; text-align: center; overflow: hidden; }
+  header h1 { font-size: clamp(1.6rem, 6vw, 2.6rem); margin: 0; opacity: 0; transform: translateY(18px); animation: rise .9s ease-out forwards; }
+  header .sub { margin-top: .5rem; font-size: 1rem; letter-spacing: .08em; text-transform: uppercase; opacity: 0; animation: fade 1.2s ease-out .5s forwards; }
+  header .chip { display: inline-block; margin-top: 1rem; padding: .3rem .9rem; border-radius: 999px; background: rgba(255,255,255,.18); font-size: .9rem; opacity: 0; animation: fade 1.2s ease-out .9s forwards; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @keyframes fade { to { opacity: 1; } }
+  nav { position: sticky; top: 0; z-index: 50; background: rgba(250,248,245,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); display: flex; overflow-x: auto; gap: .4rem; padding: .5rem .8rem; }
+  nav a { flex: 0 0 auto; text-decoration: none; color: var(--blue); font-weight: 600; padding: .6rem .9rem; min-height: 44px; display: flex; align-items: center; border-radius: 10px; border: 1px solid transparent; }
+  nav a:hover, nav a.active { background: var(--blue-soft); border-color: #c7d7ff; }
+  main { max-width: 900px; margin: 0 auto; padding: 1rem .9rem 3rem; }
+  section { margin-top: 2.2rem; scroll-margin-top: 70px; }
+  .card { background: var(--card); border-radius: 16px; box-shadow: 0 4px 18px rgba(31,41,51,.07); padding: 1.1rem 1.1rem; margin-bottom: 1rem; }
+  .card h3 { display: flex; align-items: center; gap: .5rem; }
+  .num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; font-family: system-ui, sans-serif; font-size: .95rem; font-weight: 700; flex-shrink: 0; }
+  .box { border-left: 4px solid var(--blue); background: var(--blue-soft); padding: .7rem .9rem; border-radius: 8px; margin: .7rem 0; }
+  .box.green { border-color: var(--green); background: var(--green-soft); }
+  .box.coral { border-color: var(--coral); background: var(--coral-soft); }
+  .box.amber { border-color: var(--amber); background: var(--amber-soft); }
+  .box.violet { border-color: var(--violet); background: var(--violet-soft); }
+  .box .lbl { font-weight: 700; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: .2rem; }
+  .box.green .lbl { color: var(--green); } .box.coral .lbl { color: #c2410c; } .box.amber .lbl { color: var(--amber); } .box.violet .lbl { color: var(--violet); } .box .lbl { color: var(--blue); }
+  details { margin: .6rem 0; }
+  summary { cursor: pointer; font-weight: 600; color: var(--blue); padding: .5rem .2rem; min-height: 44px; display: flex; align-items: center; }
+  .demo { border: 1px dashed var(--violet); border-radius: 10px; padding: .6rem .9rem; background: #fcfaff; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+  table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+  th, td { border: 1px solid var(--line); padding: .35rem .5rem; text-align: center; }
+  th { background: #f3f0eb; }
+  .tablewrap { overflow-x: auto; margin: .5rem 0; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre { background: #1f2933; color: #f5f1ea; padding: .8rem 1rem; border-radius: 10px; overflow-x: auto; font-size: .9rem; line-height: 1.5; }
+  ul { padding-left: 1.2rem; } li { margin: .25rem 0; }
+  button { font: inherit; cursor: pointer; min-height: 44px; padding: .55rem 1.1rem; border-radius: 12px; border: none; background: var(--blue); color: #fff; font-weight: 600; transition: transform .1s, background .2s; }
+  button:hover { background: #1d4ed8; } button:active { transform: scale(.97); }
+  button.ghost { background: #fff; color: var(--blue); border: 2px solid var(--blue); }
+  button.ghost:hover { background: var(--blue-soft); }
+  .btnrow { display: flex; flex-wrap: wrap; gap: .6rem; margin: .6rem 0; }
+  .tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .8rem; }
+  .tabs button { background: #fff; color: var(--blue); border: 2px solid var(--line); }
+  .tabs button.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .ctrl { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .6rem .9rem; margin: .6rem 0; }
+  .ctrl label { display: block; font-size: .92rem; font-weight: 600; }
+  .ctrl input[type=range] { width: 100%; height: 44px; accent-color: var(--blue); }
+  .ctrl input[type=number] { width: 100%; font: inherit; padding: .5rem; border: 1px solid var(--line); border-radius: 8px; min-height: 44px; }
+  .val { font-weight: 700; color: var(--blue); }
+  svg { width: 100%; height: auto; display: block; }
+  .svgwrap { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: .5rem 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: .8rem; font-size: .9rem; margin: .4rem 0; }
+  .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; }
+  .legend .la::before { background: var(--blue); } .legend .lg::before { background: var(--coral); } .legend .lc::before { background: var(--green); }
+  .info { background: #f3f0eb; border-radius: 10px; padding: .6rem .9rem; margin: .5rem 0; font-size: .95rem; }
+  .exo .enonce { font-size: 1.02rem; }
+  .answer { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .5rem 0; }
+  .answer input { font: inherit; padding: .55rem .7rem; border: 2px solid var(--line); border-radius: 10px; min-height: 44px; width: 150px; }
+  .answer input:focus { outline: none; border-color: var(--blue); }
+  .fb { margin: .4rem 0; padding: .55rem .8rem; border-radius: 10px; font-weight: 600; display: none; }
+  .fb.ok { display: block; background: var(--green-soft); color: var(--green); }
+  .fb.ko { display: block; background: var(--coral-soft); color: #c2410c; }
+  .corr { display: none; margin-top: .6rem; border-top: 1px solid var(--line); padding-top: .6rem; }
+  .corr.show { display: block; }
+  .diff { font-size: .8rem; font-weight: 700; padding: .15rem .6rem; border-radius: 999px; background: var(--amber-soft); color: var(--amber); margin-left: auto; }
+  .qcm-q { margin-bottom: 1rem; }
+  .opts { display: grid; gap: .5rem; margin-top: .5rem; }
+  .opts button { background: #fff; color: var(--ink); border: 2px solid var(--line); text-align: left; font-weight: 500; padding: .6rem .9rem; }
+  .opts button:hover { border-color: var(--blue); background: var(--blue-soft); }
+  .opts button.right { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 700; }
+  .opts button.wrong { background: var(--coral-soft); border-color: var(--coral); color: #c2410c; }
+  .opts button:disabled { cursor: default; }
+  .qexpl { margin-top: .4rem; font-size: .95rem; display: none; }
+  .score { font-size: 1.2rem; font-weight: 700; text-align: center; padding: .8rem; border-radius: 12px; display: none; }
+  .score.show { display: block; background: var(--blue-soft); color: var(--blue); }
+  footer { text-align: center; padding: 1.6rem 1rem 2.5rem; color: var(--muted); font-size: .95rem; border-top: 1px solid var(--line); margin-top: 2rem; }
+  .small { font-size: .88rem; color: var(--muted); }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin: .6rem 0; }
+  .cmp > div { border-radius: 10px; padding: .6rem .8rem; }
+  .cmp .a { background: var(--blue-soft); } .cmp .g { background: var(--coral-soft); }
+  .cmp h4 { margin-bottom: .3rem; }
+  @media (max-width: 520px) { .cmp { grid-template-columns: 1fr; } }
+  .py { background: #0f172a; }
+</style>
+
+<style>
+/* ===== Débordement des formules sur petit écran =====
+   Une formule LaTeX ne peut pas être coupée en fin de ligne. Sur un écran
+   étroit, elle sortait de sa carte. Chaque bloc qui en contient défile
+   maintenant horizontalement à l'intérieur de ses propres bordures. */
+/* Les formules gardent leur taille normale : elles doivent rester lisibles.
+   Le conteneur MathJax garde donc sa largeur naturelle ; c'est le bloc
+   parent qui défile horizontalement quand la formule est plus large. */
+
+/* Certaines fiches stylent toutes les balises <svg> pour leurs figures
+   (largeur 100 %, cadre, fond blanc). MathJax produit lui aussi des <svg> :
+   sans cette remise à zéro, chaque formule serait étirée et encadrée. */
+mjx-container svg {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  display: inline !important;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding-bottom: 3px; }
+
+/* MathJax ajoute une copie MathML pour les lecteurs d'écran. Elle doit rester
+   invisible et sans largeur, sinon elle élargit la page sur mobile. */
+mjx-assistive-mml,
+mjx-container > mjx-assistive-mml {
+  position: absolute !important;
+  top: 0 !important; left: 0 !important;
+  width: 1px !important; height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  padding: 0 !important; border: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Conteneurs connus de cette fiche (fonctionne sur tous les navigateurs) */
+.correction, .corr, .enonce, .feedback, .expl, .stem, .question,
+.correction p, .corr p, .enonce p, .expl p,
+.correction ul, .correction ol, .corr ul, .corr ol,
+.enonce ul, .enonce ol, .expl ul, .expl ol {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;   /* défilement souple au doigt sur iOS */
+}
+
+/* Règle générale : tout élément dont un enfant direct est une formule */
+p:has(> mjx-container),
+ul:has(> li > mjx-container), ol:has(> li > mjx-container),
+td:has(> mjx-container),
+th:has(> mjx-container),
+dd:has(> mjx-container),
+summary:has(> mjx-container),
+div:has(> mjx-container) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Titres construits en flex : l'étiquette passe à la ligne au lieu de dépasser */
+h1, h2, h3, h4 { flex-wrap: wrap; }
+.tag, .badge, .chip, .pill { max-width: 100%; }
+
+/* Tableaux et blocs de code : défilement local plutôt que débordement.
+   On fait défiler le conteneur, sans toucher au rendu du tableau lui-même. */
+div:has(> table) { max-width: 100%; overflow-x: auto; }
+pre { max-width: 100%; overflow-x: auto; }
+
+/* Barre de défilement discrète mais visible au doigt */
+.correction::-webkit-scrollbar, .corr::-webkit-scrollbar,
+p::-webkit-scrollbar, ul::-webkit-scrollbar { height: 4px; }
+.correction::-webkit-scrollbar-thumb, .corr::-webkit-scrollbar-thumb,
+p::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb {
+  background: #d7d2ca; border-radius: 4px;
+}
+</style>
+
+<style>
+/* ===== Navigation compacte (ajout) =====
+   Les cinq onglets tiennent sur un écran de téléphone, sans défilement
+   horizontal, et un bouton ramène à la liste des fiches. */
+.navbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:.25rem;
+  padding:.4rem .45rem;background:rgba(250,248,245,.95);backdrop-filter:blur(8px);
+  border-bottom:1px solid #e5e7eb;
+}
+.navbar > nav{
+  position:static;flex:1;min-width:0;display:flex;gap:.25rem;margin:0;padding:0;
+  background:none;border:0;box-shadow:none;overflow:visible;white-space:normal;backdrop-filter:none;
+}
+.navbar nav a{
+  flex:1 1 0;min-width:0;margin:0;padding:0 .3rem;text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.nav-home{
+  flex:0 0 42px;display:inline-block;min-height:44px;line-height:44px;text-align:center;
+  border-radius:999px;background:#fff;color:#2563eb;text-decoration:none;font-size:1.1rem;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.nshort{display:none}
+@media (max-width:600px){
+  .nlong{display:none}
+  .nshort{display:inline}
+  .navbar nav a{font-size:.84rem;padding:0 .2rem}
+}
+/* Bouton de remontée en haut de page */
+.to-top{
+  position:fixed;right:.85rem;bottom:.85rem;width:48px;height:48px;border-radius:50%;border:0;
+  background:#2563eb;color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;
+}
+.to-top.show{opacity:1;pointer-events:auto}
+.retour-fiches{display:inline-block;margin-top:.6rem;color:#2563eb;text-decoration:none;font-weight:600;min-height:44px;line-height:44px}
+</style>
+<!-- SITE:STYLE:START -->
+<style>
+/* Source commune, intégrée dans les HTML par build_site.py. */
+:root{--bg:#faf8f5;--ink:#1f2937;--muted:#647084;--blue:#2563eb;--blue-soft:#e8efff;--line:#e4e5e7;--header-h:64px;--side-w:264px;--shadow:0 3px 14px rgba(31,41,55,.045)}
+html{scroll-padding-top:0}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding-top:var(--header-h)}
+*{box-sizing:border-box}[hidden]{display:none!important}a{color:var(--blue)}button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid #1d4ed8!important;outline-offset:4px}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.22}p{margin:.5em 0 1em}button,.site-btn{min-height:44px}
+.site-skip{position:fixed;left:16px;top:-100px;z-index:200;background:white;padding:12px}.site-skip:focus{top:8px}
+.site-header{position:fixed;inset:0 0 auto;height:var(--header-h);z-index:70;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:24px;padding:0 32px}
+.site-brand{color:var(--ink);font-family:Georgia,serif;font-weight:700;font-size:21px;display:flex;gap:10px;align-items:center;text-decoration:none;white-space:nowrap}
+.site-global{position:static!important;display:flex;align-items:center;gap:4px;flex:1;background:none!important;border:0!important;padding:0!important;overflow:visible!important;backdrop-filter:none!important;white-space:nowrap}
+.site-global a{display:flex;align-items:center;min-height:44px;padding:0 13px;color:#566174;text-decoration:none;background:none;box-shadow:none;border-radius:8px;margin:0;font-size:14px;line-height:1.3}
+.site-global a[aria-current=page]{color:#1d4ed8;background:#eff4ff;font-weight:650}.site-actions{margin-left:auto;display:flex;gap:8px;align-items:center}.site-icon{width:44px;height:44px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);box-shadow:none;display:grid;place-items:center;text-decoration:none}.site-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.site-search-trigger{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:#fafafa;color:#596477;padding:0 12px;border-radius:9px;box-shadow:none;font-size:13px;font-weight:400}.site-search-trigger svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}.site-search-trigger kbd{font:11px system-ui;border:1px solid var(--line);border-radius:4px;padding:0 4px;background:#fff}
+.site-menu-button{display:none}.site-sidebar{position:fixed;left:0;top:var(--header-h);bottom:0;width:var(--side-w);overflow:auto;background:#f5f3ef;border-right:1px solid var(--line);padding:25px 18px;z-index:60}.site-side-label,.site-eyebrow{font:600 11px/1.5 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#647084}.site-side-label{margin:2px 10px 17px}.site-side-mobile{display:none}.site-side-chapter{margin:4px 0}.site-side-chapter>summary{list-style:none;display:flex;gap:10px;align-items:center;min-height:48px;line-height:1.4;font-size:13px;font-weight:550;cursor:pointer;padding:8px;border-radius:8px}.site-side-chapter>summary::-webkit-details-marker{display:none}.site-side-chapter>summary:after{content:'›';margin-left:auto}.site-side-chapter[open]>summary:after{transform:rotate(90deg)}.site-side-number{font:14px Georgia;color:#647084;min-width:19px}.site-side-group{color:#738093;font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin:12px 9px 5px}.site-side-link{display:flex;gap:8px;color:#596477;text-decoration:none;font-size:12px;line-height:1.4;padding:10px 10px 10px 14px;min-height:44px;border-left:2px solid transparent;border-radius:0 7px 7px 0}.site-side-link span:first-child{color:#7a8494;font-size:11px;min-width:21px}.site-side-link[aria-current=page]{background:#e6edfb;color:#1d4ed8;border-left-color:var(--blue);font-weight:650}.site-side-link:hover,.site-side-chapter>summary:hover{background:#ebeae6}.site-side-link[aria-current=page]:hover{background:#e6edfb}.site-soon{font-size:12px;color:#78808c;margin:8px 10px}.site-side-footer{border-top:1px solid var(--line);margin-top:24px;padding:18px 8px;font-size:12px;color:#647084}.site-side-footer a{display:block;margin-top:8px}.site-shade{position:fixed;inset:var(--header-h) 0 0;background:#18233766;z-index:55;border:0;border-radius:0;padding:0;box-shadow:none}.site-drawer-open{overflow:hidden}
+.site-breadcrumb{max-width:820px;margin:24px auto 0;padding:0 16px;color:#77808f;font-size:12px;display:flex;flex-wrap:wrap;gap:8px}.site-breadcrumb a{color:#647084;text-decoration:none}.site-chapter-button{display:none}
+body>header{max-width:820px;margin:0 auto;padding:27px 16px 23px;text-align:left;background:none}body>header h1{font-size:clamp(26px,3vw,36px);opacity:1;transform:none;animation:none;margin:0 0 10px;letter-spacing:-.025em}body>header .sub,body>header .who{opacity:1;animation:none;transform:none;font-size:13px;color:var(--muted)}body>header .who{margin-top:10px}
+body>.navbar,body>nav#nav{top:var(--header-h);z-index:40;background:rgba(250,248,245,.98);padding:8px max(16px,calc((100% - 788px)/2));border-bottom:1px solid var(--line);backdrop-filter:none;position:sticky}
+body>.navbar>.nav-home{display:none}body>.navbar>nav,body>nav#nav{display:flex;gap:4px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+body>.navbar>nav{position:static;background:none;border:0;min-width:0;padding:0;flex:1}body>.navbar nav a,body>nav#nav a{flex:0 0 auto;display:block;padding:0 15px;margin:0;min-height:44px;line-height:44px;border-radius:8px;font-size:13px;background:transparent;color:#5d6778;box-shadow:none;text-decoration:none;overflow:visible}
+body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8;font-weight:650}.navbar .nlong{display:inline}.navbar .nshort{display:none}body>main{max-width:820px;margin:0 auto;padding:14px 16px 48px;min-width:0}section{scroll-margin-top:136px}.card{border:1px solid #e8e8e8;box-shadow:var(--shadow);border-radius:14px;padding:22px;margin:16px 0;background:white}.card.blue,.card.green,.card.coral,.card.amber{border-left-width:3px}body>.to-top{display:none!important}body>footer{max-width:820px;margin:0 auto;text-align:left;padding:20px 16px 35px;color:#748092;font-size:12px}body>footer .retour-fiches{display:none}
+.site-lesson-tools{border-bottom:1px solid var(--line);padding:0 0 18px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:#687386}.site-lesson-tools label{font-size:12px;color:#596477}.site-lesson-tools select{min-height:44px;width:auto;padding:5px 30px 5px 10px;border:1px solid var(--line);border-radius:8px;background:white;font-size:12px;color:var(--ink)}.site-local-note{display:flex;gap:6px;align-items:center}.site-local-note:before{content:'';width:6px;height:6px;border-radius:50%;background:#22a06b;flex-shrink:0}.site-storage-failed:before{background:#b45309}.site-storage-failed{color:#92400e}
+.site-pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid var(--line);padding-top:26px;margin-top:34px}.site-pager a{padding:16px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink);background:white;line-height:1.5}.site-pager a:last-child{text-align:right}.site-pager small{display:block;color:#647084;font-size:11px;margin-bottom:6px}.site-pager strong{font-size:14px;font-weight:600}.site-page-top{display:block;text-align:center;font-size:12px;margin-top:22px;padding:12px}
+.site-hub>main{max-width:1100px;padding:48px 30px 72px}.site-hub>footer{max-width:1100px;padding-inline:30px}.site-hub h1{font-size:clamp(32px,5vw,46px);letter-spacing:-.035em;font-weight:400;margin:8px 0 14px}.site-lead{color:#647084;max-width:620px;font-size:15px}.site-hub h2{font-size:24px;font-weight:400;margin:0 0 8px}.site-hub h3{color:var(--ink);font-size:19px;font-weight:400;margin:0 0 8px}.site-hub a{text-decoration:none}.site-section-title{display:flex;align-items:baseline;gap:12px;justify-content:space-between;margin:35px 0 16px}.site-section-title a{font-size:12px}.site-hero{display:grid;grid-template-columns:1fr 210px;background:#eff3fb;border:1px solid #dce5f5;border-radius:18px;padding:32px;margin:28px 0 0;position:relative;overflow:hidden}.site-hero h2{font-size:30px;max-width:580px;margin:12px 0}.site-hero p{color:#596a85;font-size:14px;max-width:510px}.site-hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px}.site-btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;background:var(--blue);color:#fff!important;border:1px solid var(--blue);border-radius:9px;padding:10px 18px;text-decoration:none;font-size:13px;font-weight:600;box-shadow:none}.site-btn.secondary{background:#fff;color:#1d4ed8!important;border:1px solid #d7dfed}.site-btn.subtle{background:transparent;color:#596477!important;border-color:var(--line)}.site-hero-art{align-self:center;justify-self:center;width:185px;height:185px;color:#2563eb}.site-hero-art svg{width:100%;height:100%}.site-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.site-tile{display:block;border:1px solid var(--line);border-radius:14px;background:white;padding:24px;color:var(--ink)}.site-tile p{font-size:13px;color:#647084;margin-bottom:0}.site-tile .site-eyebrow{display:block;margin-bottom:12px}.site-tile-link{display:block;color:#2563eb;font-size:13px;margin-top:18px}.site-tile:hover{border-color:#b7c9e9}.site-empty{border:1px dashed #cfd5df;border-radius:12px;padding:26px;color:#647084;font-size:14px;background:#ffffff70}.site-hint{font-size:12px;color:#758093;margin-top:24px}.site-hint a{text-decoration:underline}
+.site-catalog-tools{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:28px 0 20px}.site-input{width:100%;min-height:46px;border:1px solid #d6dce5;border-radius:9px;padding:10px 13px;background:white;color:var(--ink);font-size:14px}.site-catalog-tools>.site-input{width:270px}.site-filters{display:flex;flex-wrap:wrap;gap:5px}.site-filters button{font-size:12px;padding:9px 12px;min-height:44px;background:transparent;color:#647084;border:1px solid transparent;border-radius:8px;box-shadow:none;font-weight:500}.site-filters button[aria-pressed=true]{background:white;border-color:#d6dce5;color:#1d4ed8}.site-chapter{background:white;border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}.site-chapter>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:16px;padding:20px;min-height:76px;line-height:1.4}.site-chapter>summary::-webkit-details-marker{display:none}.site-chapter>summary:after{content:'+';font-size:23px;font-weight:300;margin-left:auto;color:#647084}.site-chapter[open]>summary:after{content:'−'}.site-number{font:22px Georgia;color:#2563eb;background:#eff4ff;min-width:44px;height:44px;display:grid;place-items:center;border-radius:11px}.site-chapter-title{font-size:15px;font-weight:600}.site-chapter-meta{font-size:12px;font-weight:400;color:#748092;display:block;margin-top:5px}.site-chapter-content{padding:0 20px 20px}.site-chapter-intro{font-size:13px;color:#647084;border-top:1px solid var(--line);padding-top:16px}.site-chapter-content h3{font-family:system-ui;font-size:11px;font-weight:600;letter-spacing:.04em;color:#647084;margin:20px 0 10px;text-transform:uppercase}.site-lesson-row{display:flex;gap:14px;align-items:center;color:var(--ink);border-radius:9px;padding:13px 12px;min-height:56px;background:#fafafa;margin:6px 0;border:1px solid #eceef1}.site-lesson-row:hover{background:#f0f4fc;border-color:#c8d7f0}.site-lesson-code{font-size:12px;color:#647084;min-width:25px}.site-lesson-name{font-size:14px;flex:1}.site-lesson-state{font-size:10px;border-radius:5px;padding:3px 7px;color:#647084;background:#edeff2;white-space:nowrap}.site-lesson-state[data-state=review]{background:#fef3c7;color:#854d0e}.site-lesson-state[data-state=validated]{background:#e3f5ec;color:#166534}.site-lesson-state[data-state=started]{background:#e8efff;color:#1d4ed8}.site-count{font-size:12px;color:#748092}
+.site-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}.site-stat{border:1px solid var(--line);background:white;border-radius:12px;padding:22px}.site-stat strong{display:block;font:34px Georgia;color:var(--ink)}.site-stat span{font-size:12px;color:#647084}.site-progress-list{display:grid;gap:10px}.site-progress-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:white;border:1px solid var(--line);border-radius:10px;padding:17px}.site-progress-row a{color:var(--ink);font-size:14px}.site-progress-row small{font-size:12px;color:#647084;display:block;margin-top:5px}.site-progress-row select{font-size:12px;min-height:44px;border:1px solid var(--line);border-radius:8px;background:white;padding:5px;max-width:140px}.site-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.site-form-grid label{font-size:12px;color:#596477;display:block}.site-form-grid input,.site-form-grid select{margin-top:5px}.site-form-wide{grid-column:1/-1}.site-journal-row{border-top:1px solid var(--line);padding:16px 0;display:flex;justify-content:space-between;gap:16px;font-size:13px}.site-journal-row p{margin:5px 0;color:#647084}.site-journal-row small{color:#647084}.site-journal-actions{display:flex;align-items:flex-start;gap:5px;flex-shrink:0}.site-journal-actions button{font-size:11px;padding:6px 9px}.site-backup{border-top:1px solid var(--line);padding-top:26px;margin-top:35px}.site-backup-actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.site-message{font-size:13px;color:#166534;min-height:24px}.site-message[data-error=true]{color:#9f301c}.site-warning{padding:12px 16px;border:1px solid #ead5aa;background:#fffbef;border-radius:9px;color:#854d0e;font-size:12px;margin:16px 0}
+.site-dialog{border:1px solid #dce2ec;border-radius:16px;background:var(--bg);color:var(--ink);width:min(660px,calc(100% - 28px));max-height:80vh;padding:24px;box-shadow:0 20px 80px #17233740}.site-dialog::backdrop{background:#17233766}.site-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}.site-dialog h2{font-size:25px;margin:0;font-weight:400}.site-search-results{overflow:auto;max-height:48vh;padding-top:14px}.site-search-results a{display:block;min-height:56px;padding:12px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:14px}.site-search-results a:hover{background:#e8efff}.site-search-results small{display:block;color:#647084;font-size:11px;margin-top:3px}.site-search-results p{font-size:13px;color:#647084}.site-announcement{font-size:12px;color:#647084}
+@media(min-width:1100px){body.site-with-sidebar{padding-left:var(--side-w)}body.site-with-sidebar>.navbar{padding-inline:max(16px,calc((100% - 788px)/2))}body.site-with-sidebar.site-guide>nav#nav{display:none}.site-guide .site-sidebar .site-side-link{font-size:13px;padding-block:14px}}
+@media(max-width:1099px){.site-header{padding:0 18px;gap:12px}.site-menu-button{display:grid}.site-global{display:none}.site-sidebar{transform:translateX(-100%);transition:transform .18s;visibility:hidden;width:min(320px,88vw)}.site-drawer-open .site-sidebar{transform:none;visibility:visible}.site-side-mobile{display:block;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:20px}.site-side-mobile a{display:block;color:#596477;padding:12px;text-decoration:none;font-size:14px;border-radius:8px}.site-side-mobile a[aria-current=page]{background:#e8efff;color:#1d4ed8}.site-chapter-button{display:block;background:none;color:#647084;border:0;box-shadow:none;font-size:12px;padding:0;min-height:44px;font-weight:500}.site-breadcrumb{margin-top:10px}.site-breadcrumb .site-desktop-crumb{display:none}.site-hub>main{padding-top:35px}}
+@media(max-width:600px){:root{--header-h:56px}.site-header{padding:0 12px;gap:9px}.site-brand{font-size:17px;gap:7px}.site-actions{gap:5px}.site-icon{border:0;width:40px;padding:9px}.site-search-trigger{width:40px;padding:10px;justify-content:center;border:0;background:white}.site-search-trigger span,.site-search-trigger kbd{display:none}.site-hub>main{padding:28px 18px 42px}.site-hub>footer{padding:20px 18px}.site-hub h1{font-size:34px}.site-lead{font-size:14px}.site-hero{grid-template-columns:1fr;padding:24px}.site-hero h2{font-size:27px}.site-hero-art{display:none}.site-grid{grid-template-columns:1fr}.site-tile{padding:22px}.site-section-title{margin-top:28px}.site-section-title h2{font-size:22px}.site-catalog-tools{gap:12px}.site-catalog-tools>.site-input{width:100%}.site-filters{gap:2px}.site-filters button{padding:8px 10px}.site-chapter>summary{padding:16px;gap:12px}.site-chapter-title{font-size:14px}.site-chapter-content{padding-inline:14px}.site-lesson-row{gap:8px;padding-inline:10px;flex-wrap:wrap}.site-lesson-name{font-size:13px;min-width:130px}.site-lesson-state{margin-left:auto}.site-stats{gap:8px}.site-stat{padding:15px 11px}.site-stat strong{font-size:28px}.site-stat span{font-size:11px}.site-form-grid{grid-template-columns:1fr}.site-form-wide{grid-column:auto}.site-progress-row{grid-template-columns:1fr}.site-progress-row select{max-width:none;width:100%}.site-journal-row{flex-wrap:wrap}.site-journal-actions{width:100%}.site-pager{gap:8px}.site-pager a{padding:12px}.site-pager strong{font-size:12px}.site-pager small{font-size:10px}body>header{padding:16px 16px 20px}body>.navbar,body>nav#nav{padding:6px 10px}body>.navbar nav a,body>nav#nav a{font-size:12px;padding:0 12px;min-height:44px;line-height:44px}.card{padding:17px}body>main{padding-top:12px}.site-dialog{padding:18px}.site-breadcrumb{margin-top:0}.site-lesson-tools{gap:8px}}
+.site-side-link[aria-current=location]{background:#e6edfb;color:#1d4ed8;border-left-color:var(--blue);font-weight:650}
+#site-main{scroll-margin-top:136px}.site-chapter{scroll-margin-top:80px}
+@media(max-width:600px){.site-icon,.site-search-trigger{width:44px;min-width:44px}}
+@media(max-width:360px){.site-brand{font-size:16px}.site-header{gap:6px}.site-actions{gap:2px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+@media print{body{padding:0!important}.site-header,.site-sidebar,.site-shade,.site-breadcrumb,.navbar,body>nav#nav,.site-lesson-tools,.site-pager,.site-page-top,.site-dialog,.site-backup{display:none!important}body>main,body>header{max-width:none}.card{box-shadow:none;break-inside:avoid}}
+.site-sign{max-width:820px;margin:0 auto;padding:14px 16px 34px;color:#8a93a1;font-size:12px;text-align:center;font-family:system-ui,-apple-system,sans-serif;line-height:1.6}
+.site-sign a{color:#6b7280;text-decoration:underline;text-underline-offset:2px}
+.site-sign a:hover{color:var(--blue)}
+
+/* --- page d'accueil : les deux étages, la démonstration, les limites --- */
+.site-steps .site-tile{position:relative;padding-top:26px}
+.site-step-num{position:absolute;top:-14px;left:22px;width:30px;height:30px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:Georgia,serif;font-weight:700;font-size:15px}
+.site-demo{margin-top:6px}
+.site-demo-statement{font-size:16px;line-height:1.7;margin:0 0 16px}
+.site-demo-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.site-demo-label{font-size:12px;color:#6b7280;flex:0 0 auto}
+.site-demo-input{max-width:190px;min-height:46px}
+.site-demo-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.site-demo-solution{margin-top:14px;background:#f4f2ee;border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.7}
+.site-demo-solution p{margin:.35em 0}
+.site-limits ul{margin:0;padding-left:1.15rem}
+.site-limits li{margin:.5rem 0;line-height:1.65}
+@media(max-width:600px){.site-demo-input{max-width:100%;width:100%}.site-demo-row{gap:8px}}
+
+/* --- badge de public d'un chapitre : Première, Terminale, ou les deux --- */
+.site-public{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;padding:2px 8px;border-radius:999px;vertical-align:middle}
+.site-public-premiere{background:#e8efff;color:#2563eb}
+.site-public-terminale{background:#fef3c7;color:#92400e}
+.site-public-deux{background:#e3f5ec;color:#1c7a52}
+
+/* badge dans le menu latéral : sur sa propre ligne, plus petit */
+.site-side-titre{display:flex;flex-direction:column;gap:4px;min-width:0}
+.site-side-chapter>summary .site-public{font-size:10px;padding:1px 6px;align-self:flex-start}
+
+</style>
+<!-- SITE:STYLE:END -->
+</head>
+<body class="site-with-sidebar">
+<!-- SITE:SHELL:START -->
+<a class="site-skip" href="#site-main">Aller au contenu</a>
+<div class="site-header" role="banner">
+ <button class="site-icon site-menu-button" id="site-menu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="site-sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+ <a class="site-brand" href="../../index.html">Réussite Spé Maths</a>
+ <nav class="site-global" aria-label="Navigation principale"><a href="../../index.html">Accueil</a><a href="../../chapitres.html" aria-current="page">Chapitres</a><a href="../../strategie/reussir_lannee.html">Méthode</a><a href="../../progres.html">Mes progrès</a></nav>
+ <div class="site-actions"><button class="site-search-trigger" id="site-search-open" aria-label="Rechercher une notion"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>Rechercher</span><kbd>/</kbd></button>
+ <a class="site-icon" href="../../progres.html#sauvegarde" aria-label="Mon suivi sur cet appareil" title="Mon suivi sur cet appareil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></a></div>
+</div>
+<button class="site-shade" id="site-shade" aria-label="Fermer le menu" hidden tabindex="-1"></button>
+<aside class="site-sidebar" id="site-sidebar" aria-label="Programme et fiches"><div class="site-side-mobile"><a href="../../index.html">Accueil</a><a href="../../chapitres.html" aria-current="page">Chapitres</a><a href="../../strategie/reussir_lannee.html">Méthode</a><a href="../../progres.html">Mes progrès</a></div><p class="site-side-label">Le programme · Première et Terminale</p><details class="site-side-chapter" data-chapter="1"><summary><span class="site-side-number">01</span><span class="site-side-titre">Équations et fonctions polynômes du second degré<span class="site-public site-public-premiere">Première</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/01_second_degre/1A_second_degre.html"><span>1A</span><span>Second degré : les trois formes</span></a></details><details class="site-side-chapter" data-chapter="2"><summary><span class="site-side-number">02</span><span class="site-side-titre">Produit scalaire et géométrie<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/02_produit_scalaire/2A_produit_scalaire_definitions.html"><span>2A</span><span>Produit scalaire : les définitions</span></a><a class="site-side-link" href="../../chapitres/02_produit_scalaire/2B_produit_scalaire_applications.html"><span>2B</span><span>Produit scalaire : applications</span></a><a class="site-side-link" href="../../chapitres/02_produit_scalaire/2C_geometrie_reperee.html"><span>2C</span><span>Géométrie repérée</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/02_produit_scalaire/2D_espace_orthogonalite_distances.html"><span>2D</span><span>Orthogonalité et distances dans l&#x27;espace</span></a></details><details class="site-side-chapter" data-chapter="3" open><summary><span class="site-side-number">03</span><span class="site-side-titre">Suites<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/03_suites/3A_suites_generation_variations.html"><span>3A</span><span>Suites numériques : génération et variations</span></a><a class="site-side-link" href="../../chapitres/03_suites/3B_suites_arithmetiques_geometriques.html" aria-current="page"><span>3B</span><span>Suites arithmétiques et géométriques</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/03_suites/3C_recurrence_limites.html"><span>3C</span><span>Récurrence et limites de suites</span></a></details><details class="site-side-chapter" data-chapter="4"><summary><span class="site-side-number">04</span><span class="site-side-titre">Dérivation et convexité<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/04_derivation_convexite/4A_nombre_derive_tangente.html"><span>4A</span><span>Nombre dérivé et tangente</span></a><a class="site-side-link" href="../../chapitres/04_derivation_convexite/4B_calcul_de_derivees.html"><span>4B</span><span>Calcul de dérivées</span></a><a class="site-side-link" href="../../chapitres/04_derivation_convexite/4C_variations_extremums.html"><span>4C</span><span>Variations, extremums et optimisation</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/04_derivation_convexite/4D_derivee_composee.html"><span>4D</span><span>Dérivée d&#x27;une fonction composée</span></a><a class="site-side-link" href="../../chapitres/04_derivation_convexite/4E_convexite.html"><span>4E</span><span>Convexité</span></a></details><details class="site-side-chapter" data-chapter="5"><summary><span class="site-side-number">05</span><span class="site-side-titre">Limites de fonctions et continuité<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/05_limites_continuite/5A_fonctions_de_reference.html"><span>5A</span><span>Les fonctions de référence</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/05_limites_continuite/5B_limites_de_fonctions.html"><span>5B</span><span>Limites de fonctions</span></a><a class="site-side-link" href="../../chapitres/05_limites_continuite/5C_continuite_tvi.html"><span>5C</span><span>Continuité et valeurs intermédiaires</span></a></details><details class="site-side-chapter" data-chapter="6"><summary><span class="site-side-number">06</span><span class="site-side-titre">Exponentielle et logarithme<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/06_exponentielle_logarithme/6A_fonction_exponentielle.html"><span>6A</span><span>La fonction exponentielle</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/06_exponentielle_logarithme/6B_fonctions_avec_exponentielle.html"><span>6B</span><span>Fonctions avec une exponentielle</span></a><a class="site-side-link" href="../../chapitres/06_exponentielle_logarithme/6C_logarithme_neperien.html"><span>6C</span><span>Logarithme népérien</span></a></details><details class="site-side-chapter" data-chapter="7"><summary><span class="site-side-number">07</span><span class="site-side-titre">Géométrie dans l&#x27;espace<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/07_geometrie_espace/7A_calcul_vectoriel_plan.html"><span>7A</span><span>Calcul vectoriel dans le plan</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/07_geometrie_espace/7B_vecteurs_espace.html"><span>7B</span><span>Vecteurs de l&#x27;espace</span></a><a class="site-side-link" href="../../chapitres/07_geometrie_espace/7C_droites_plans_espace.html"><span>7C</span><span>Droites et plans de l’espace</span></a></details><details class="site-side-chapter" data-chapter="8"><summary><span class="site-side-number">08</span><span class="site-side-titre">Probabilités conditionnelles et variables aléatoires<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/08_probabilites/8A_probabilites_conditionnelles.html"><span>8A</span><span>Probabilités conditionnelles et indépendance</span></a><a class="site-side-link" href="../../chapitres/08_probabilites/8B_variables_aleatoires.html"><span>8B</span><span>Variables aléatoires, espérance et variance</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/08_probabilites/8C_epreuves_independantes_bernoulli.html"><span>8C</span><span>Épreuves indépendantes et schéma de Bernoulli</span></a></details><details class="site-side-chapter" data-chapter="9"><summary><span class="site-side-number">09</span><span class="site-side-titre">Combinatoire et dénombrement<span class="site-public site-public-terminale">Terminale</span></span></summary><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/09_combinatoire_denombrement/9A_combinatoire_denombrement.html"><span>9A</span><span>Combinatoire et dénombrement</span></a></details><details class="site-side-chapter" data-chapter="10"><summary><span class="site-side-number">10</span><span class="site-side-titre">Loi binomiale<span class="site-public site-public-terminale">Terminale</span></span></summary><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/10_loi_binomiale/10A_loi_binomiale.html"><span>10A</span><span>Loi binomiale</span></a></details><details class="site-side-chapter" data-chapter="11"><summary><span class="site-side-number">11</span><span class="site-side-titre">Fonctions trigonométriques<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/11_trigonometrie/11A_cercle_trigonometrique.html"><span>11A</span><span>Cercle trigonométrique</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/11_trigonometrie/11B_derivation_trigonometrie.html"><span>11B</span><span>Fonctions trigonométriques</span></a></details><details class="site-side-chapter" data-chapter="12"><summary><span class="site-side-number">12</span><span class="site-side-titre">Primitives et équations différentielles<span class="site-public site-public-terminale">Terminale</span></span></summary><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/12_primitives_equadiff/12A_primitives.html"><span>12A</span><span>Primitives d&#x27;une fonction</span></a><a class="site-side-link" href="../../chapitres/12_primitives_equadiff/12B_equations_differentielles.html"><span>12B</span><span>Équations différentielles</span></a></details><details class="site-side-chapter" data-chapter="13"><summary><span class="site-side-number">13</span><span class="site-side-titre">Calcul intégral<span class="site-public site-public-terminale">Terminale</span></span></summary><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/13_calcul_integral/13A_integrales_aires.html"><span>13A</span><span>Intégrales, aires et valeur moyenne</span></a><a class="site-side-link" href="../../chapitres/13_calcul_integral/13B_integration_methodes.html"><span>13B</span><span>Intégration par parties et approximations</span></a></details><details class="site-side-chapter" data-chapter="14"><summary><span class="site-side-number">14</span><span class="site-side-titre">Sommes de variables aléatoires et loi des grands nombres<span class="site-public site-public-terminale">Terminale</span></span></summary><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/14_sommes_variables/14A_sommes_variables.html"><span>14A</span><span>Sommes de variables aléatoires</span></a><a class="site-side-link" href="../../chapitres/14_sommes_variables/14B_concentration_grands_nombres.html"><span>14B</span><span>Concentration et loi des grands nombres</span></a></details><details class="site-side-chapter" data-chapter="15"><summary><span class="site-side-number">15</span><span class="site-side-titre">Algorithmique et programmation<span class="site-public site-public-deux">Première et Terminale</span></span></summary><div class="site-side-group">Programme de Première</div><a class="site-side-link" href="../../chapitres/15_algorithmique/15A_listes_python.html"><span>15A</span><span>Listes et programmation en Python</span></a><div class="site-side-group">Programme de Terminale</div><a class="site-side-link" href="../../chapitres/15_algorithmique/15B_algorithmes_du_programme.html"><span>15B</span><span>Les algorithmes du programme</span></a></details><div class="site-side-footer">Un peu, régulièrement.<br>Un chapitre à la fois.<a href="../../progres.html#sauvegarde">Sauvegarder mon suivi</a></div></aside>
+<dialog class="site-dialog" id="site-search-dialog" aria-labelledby="site-search-title">
+ <div class="site-dialog-head"><h2 id="site-search-title">Une notion à retrouver ?</h2><button class="site-icon" id="site-search-close" aria-label="Fermer la recherche"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+ <label for="site-search-input" class="site-eyebrow">Fiche, notion ou méthode</label>
+ <input id="site-search-input" class="site-input" type="search" placeholder="Tangente, suites, récurrence…" autocomplete="off">
+ <p class="site-announcement" id="site-search-count" role="status"></p><div class="site-search-results" id="site-search-results"></div>
+</dialog>
+<!-- SITE:SHELL:END -->
+<!-- SITE:CRUMBS:START -->
+<div class="site-breadcrumb"><button class="site-chapter-button" data-open-program>Chapitre 3 · Voir les fiches ↓</button><span class="site-desktop-crumb"><a href="../../chapitres.html">Chapitres</a> › <a href="../../chapitres.html#ch3">Suites</a> › Suites arithmétiques et géométriques</span></div>
+<!-- SITE:CRUMBS:END -->
+<header>
+  <h1>Suites arithmétiques et géométriques</h1>
+  <div class="sub">Première · Mathématiques</div>
+  <div class="chip">Fiche 2B · Reconnaître, terme général, sommes, modélisation</div>
+</header>
+<div class="navbar">
+  <a class="nav-home" href="../../index.html" title="Toutes les fiches" aria-label="Toutes les fiches">←</a>
+  <nav id="nav">
+    <a href="#cours">Cours</a>
+    <a href="#methode"><span class="nlong">Méthode</span><span class="nshort">Méth.</span></a>
+    <a href="#visu"><span class="nlong">Visualisation</span><span class="nshort">Visu</span></a>
+    <a href="#exos"><span class="nlong">Exercices</span><span class="nshort">Exos</span></a>
+    <a href="#qcm">QCM</a>
+  </nav>
+</div>
+<main id="site-main" tabindex="-1">
+<!-- SITE:TOOLS:START -->
+<div class="site-lesson-tools"><span class="site-local-note" data-storage-note>Suivi enregistré sur cet appareil</span><label for="site-lesson-status">Cette fiche : <select id="site-lesson-status"><option value="started">En cours</option><option value="review">À revoir</option><option value="validated">Validé par moi</option></select></label></div>
+<!-- SITE:TOOLS:END -->
+<!-- ===================== COURS ===================== -->
+<section id="cours">
+  <h2>Cours</h2>
+  <p class="small">Tout ce qui suit est au programme de <strong>Première</strong> (BO 2019). Les quatre démonstrations encadrées en violet sont <strong>exigibles</strong> : il faut savoir les refaire.</p>
+
+  <div class="card">
+    <h3><span class="num">1</span>Suite arithmétique : on ajoute toujours le même nombre</h3>
+    <div class="box">
+      <span class="lbl">Définition</span>
+      Une suite \((u_n)\) est <strong>arithmétique de raison \(r\)</strong> si, pour tout entier \(n\) : \(u_{n+1} = u_n + r\).<br>
+      Chaque terme s'obtient en ajoutant le même nombre \(r\) au précédent (\(r\) peut être négatif).
+    </div>
+    <p><strong>Exemple.</strong> \(u_0 = 5\), \(r = 3\) : \(5,\ 8,\ 11,\ 14,\ 17,\ \dots\) — on ajoute 3 à chaque fois.<br>
+    <strong>Exemple.</strong> Une salle de cinéma vend 200 places le premier jour et 15 de moins chaque jour : \(u_0 = 200\), \(r = -15\) : \(200,\ 185,\ 170,\ \dots\)</p>
+    <div class="box green">
+      <span class="lbl">Terme général</span>
+      \(u_n = u_0 + n\,r\) &nbsp;&nbsp; et plus généralement &nbsp; \(u_n = u_p + (n-p)\,r\).
+    </div>
+    <p>Avec \(u_0 = 5\), \(r = 3\) : \(u_{10} = 5 + 10\times 3 = 35\). Si on connaît \(u_4 = 17\) : \(u_{10} = 17 + (10-4)\times 3 = 35\). Même résultat.</p>
+    <details><summary>Démonstration à savoir refaire — terme général d'une suite arithmétique</summary>
+      <div class="demo">
+        <p>On écrit les relations de récurrence successives et on les ajoute membre à membre :</p>
+        \[u_1 = u_0 + r,\quad u_2 = u_1 + r,\quad \dots,\quad u_n = u_{n-1} + r\]
+        <p>En additionnant, tous les \(u_1, u_2, \dots, u_{n-1}\) apparaissent des deux côtés et se simplifient : il reste \(u_n = u_0 + n\,r\) (le nombre \(r\) a été ajouté \(n\) fois, une fois par relation).</p>
+        <p>Pour la version avec \(u_p\) : on part de \(u_{p+1} = u_p + r\) jusqu'à \(u_n = u_{n-1} + r\) ; il y a \(n-p\) relations, donc \(u_n = u_p + (n-p)\,r\).</p>
+      </div>
+    </details>
+    <div class="box amber">
+      <span class="lbl">Lien avec les fonctions affines</span>
+      \(u_n = r\,n + u_0\) est de la forme \(f(n) = a n + b\) avec \(a = r\) et \(b = u_0\). Les points \((n\,;u_n)\) sont donc <strong>alignés</strong> sur une droite de coefficient directeur \(r\) : c'est une <strong>croissance linéaire</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>Suite géométrique : on multiplie toujours par le même nombre</h3>
+    <div class="box">
+      <span class="lbl">Définition</span>
+      Une suite \((u_n)\) est <strong>géométrique de raison \(q\)</strong> si, pour tout entier \(n\) : \(u_{n+1} = q\,u_n\).<br>
+      Chaque terme s'obtient en multipliant le précédent par le même nombre \(q\) (\(q\ne 0\)).
+    </div>
+    <p><strong>Exemple.</strong> \(u_0 = 3\), \(q = 2\) : \(3,\ 6,\ 12,\ 24,\ 48,\ \dots\) — on double à chaque fois.<br>
+    <strong>Exemple.</strong> \(u_0 = 80\), \(q = \tfrac12\) : \(80,\ 40,\ 20,\ 10,\ 5,\ \dots\)</p>
+    <div class="box green">
+      <span class="lbl">Terme général</span>
+      \(u_n = u_0\,q^{\,n}\) &nbsp;&nbsp; et plus généralement &nbsp; \(u_n = u_p\,q^{\,n-p}\).
+    </div>
+    <p>Avec \(u_0 = 3\), \(q = 2\) : \(u_{10} = 3\times 2^{10} = 3\times 1024 = 3072\). Si on connaît \(u_3 = 24\) : \(u_{10} = 24 \times 2^{7} = 24\times 128 = 3072\).</p>
+    <details><summary>Démonstration à savoir refaire — terme général d'une suite géométrique</summary>
+      <div class="demo">
+        <p>Même idée qu'au point 1, mais on <em>multiplie</em> les relations :</p>
+        \[u_1 = q\,u_0,\quad u_2 = q\,u_1,\quad \dots,\quad u_n = q\,u_{n-1}\]
+        <p>Le produit membre à membre donne \(u_1 u_2 \cdots u_n = q^{\,n}\, u_0 u_1 \cdots u_{n-1}\). Si les termes sont non nuls, on simplifie par \(u_1 u_2\cdots u_{n-1}\) : \(u_n = q^{\,n} u_0\). Le facteur \(q\) a été appliqué \(n\) fois.</p>
+        <p>De \(u_p\) à \(u_n\), on applique \(q\) exactement \(n-p\) fois : \(u_n = u_p\,q^{\,n-p}\).</p>
+      </div>
+    </details>
+    <div class="box amber">
+      <span class="lbl">Lien avec les évolutions à taux constant</span>
+      Augmenter de \(t\,\%\) revient à multiplier par \(q = 1 + \dfrac{t}{100}\) ; diminuer de \(t\,\%\), à multiplier par \(q = 1 - \dfrac{t}{100}\).<br>
+      <strong>Capital à 3 % par an</strong> : \(C_0 = 1000\) €, \(q = 1{,}03\), donc \(C_n = 1000\times 1{,}03^{\,n}\). Au bout de 10 ans : \(C_{10} \approx 1343{,}92\) €.<br>
+      <strong>Baisse de 5 %</strong> : \(q = 0{,}95\) (et non \(-0{,}05\) !). Les points \((n\,;u_n)\) ne sont plus alignés : c'est une <strong>croissance exponentielle</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span>Somme des premiers entiers et somme arithmétique</h3>
+    <div class="box green">
+      <span class="lbl">Formule</span>
+      \[1 + 2 + 3 + \dots + n = \frac{n(n+1)}{2}\]
+    </div>
+    <p>\(1 + 2 + \dots + 100 = \dfrac{100\times 101}{2} = 5050\).</p>
+    <details><summary>Démonstration à savoir refaire — \(1+2+\dots+n\)</summary>
+      <div class="demo">
+        <p>On note \(S = 1 + 2 + \dots + n\) et on l'écrit dans les deux sens, puis on ajoute colonne par colonne :</p>
+        \[\begin{array}{rcl} S &=& 1 + 2 + \dots + (n-1) + n \\ S &=& n + (n-1) + \dots + 2 + 1 \\ \hline 2S &=& (n+1) + (n+1) + \dots + (n+1) \end{array}\]
+        <p>Chaque colonne vaut \(n+1\) et il y a \(n\) colonnes : \(2S = n(n+1)\), donc \(S = \dfrac{n(n+1)}{2}\).</p>
+      </div>
+    </details>
+    <div class="box">
+      <span class="lbl">Somme de termes consécutifs d'une suite arithmétique</span>
+      \[S = (\text{nombre de termes})\times\frac{\text{premier terme} + \text{dernier terme}}{2}\]
+      Par exemple \(u_0 + u_1 + \dots + u_n = (n+1)\times\dfrac{u_0 + u_n}{2}\).
+    </div>
+    <p><strong>Exemple.</strong> \(u_n = 5 + 3n\). Calculer \(u_3 + u_4 + \dots + u_{10}\) : il y a \(10 - 3 + 1 = 8\) termes, \(u_3 = 14\), \(u_{10} = 35\), donc \(S = 8\times\dfrac{14+35}{2} = 8\times 24{,}5 = 196\).</p>
+    <p class="small">Pourquoi ça marche : la même astuce « écrire dans les deux sens » ; chaque colonne vaut \(u_{\text{premier}} + u_{\text{dernier}}\).</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span>Somme des puissances et somme géométrique</h3>
+    <div class="box green">
+      <span class="lbl">Formule (pour \(q \ne 1\))</span>
+      \[1 + q + q^2 + \dots + q^n = \frac{1 - q^{\,n+1}}{1 - q}\]
+    </div>
+    <p>\(1 + 2 + 4 + \dots + 2^{10} = \dfrac{1 - 2^{11}}{1 - 2} = \dfrac{1 - 2048}{-1} = 2047\). &nbsp; (Si \(q = 1\), la somme vaut simplement \(n+1\).)</p>
+    <details><summary>Démonstration à savoir refaire — \(1+q+\dots+q^n\)</summary>
+      <div class="demo">
+        <p>On note \(S = 1 + q + q^2 + \dots + q^n\) et on calcule \(qS\) :</p>
+        \[qS = q + q^2 + \dots + q^n + q^{\,n+1}\]
+        <p>En soustrayant, presque tout se simplifie (« télescopage ») : \(S - qS = 1 - q^{\,n+1}\), soit \((1-q)S = 1 - q^{\,n+1}\).</p>
+        <p>Comme \(q \ne 1\), on divise par \(1-q\) : \(S = \dfrac{1-q^{\,n+1}}{1-q}\).</p>
+      </div>
+    </details>
+    <div class="box">
+      <span class="lbl">Somme de termes consécutifs d'une suite géométrique (pour \(q \ne 1\))</span>
+      \[S = \text{premier terme}\times\frac{1 - q^{\,\text{nombre de termes}}}{1 - q}\]
+      Par exemple \(u_0 + u_1 + \dots + u_n = u_0\,\dfrac{1 - q^{\,n+1}}{1-q}\) (on met \(u_0\) en facteur).
+    </div>
+    <p><strong>Exemple.</strong> \(u_n = 3\times 2^n\). \(u_0 + \dots + u_5 = 3\times\dfrac{1-2^6}{1-2} = 3\times 63 = 189\). Vérification : \(3+6+12+24+48+96 = 189\). ✓</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span>Sens de variation</h3>
+    <div class="cmp">
+      <div class="a"><h4>Arithmétique</h4>
+        \(u_{n+1} - u_n = r\), donc :
+        <ul><li>\(r > 0\) : croissante</li><li>\(r < 0\) : décroissante</li><li>\(r = 0\) : constante</li></ul>
+      </div>
+      <div class="g"><h4>Géométrique, \(u_0 > 0\)</h4>
+        \(u_{n+1} - u_n = u_0\,q^{\,n}(q-1)\), donc :
+        <ul><li>\(q > 1\) : croissante</li><li>\(0 < q < 1\) : décroissante</li><li>\(q = 1\) : constante</li><li>\(q < 0\) : ni l'un ni l'autre (signes alternés)</li></ul>
+      </div>
+    </div>
+    <p><strong>Exemples.</strong> \(u_n = 200 - 15n\) est décroissante (\(r = -15 < 0\)). \(C_n = 1000\times 1{,}03^n\) est croissante (\(q = 1{,}03 > 1\)). \(v_n = 80\times 0{,}5^n\) est décroissante. \(w_n = (-2)^n = 1, -2, 4, -8, \dots\) n'est ni croissante ni décroissante.</p>
+    <p class="small">Si \(u_0 < 0\), les variations d'une suite géométrique sont inversées : \(u_n = -5\times 2^n\) est décroissante.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span>Intuition de limite (sans formalisme)</h3>
+    <div class="box amber">
+      <span class="lbl">Comportement de \(q^n\) quand \(n\) devient grand</span>
+      <ul>
+        <li>Si \(0 < q < 1\) : \(q^n\) se rapproche de \(0\). Exemple : \(0{,}5^{10} \approx 0{,}001\), \(0{,}9^{50}\approx 0{,}005\).</li>
+        <li>Si \(q > 1\) : \(q^n\) dépasse n'importe quel nombre, on dit qu'il tend vers \(+\infty\). Exemple : \(1{,}03^{100} \approx 19{,}2\), \(2^{30}\) dépasse un milliard.</li>
+        <li>Si \(q = 1\) : \(q^n = 1\) pour tout \(n\).</li>
+      </ul>
+    </div>
+    <p>Conséquence : une suite arithmétique de raison \(r > 0\) et une suite géométrique de raison \(q > 1\) finissent toutes deux par dépasser tout seuil, mais la géométrique le fait <strong>beaucoup plus vite</strong> : avec \(u_n = 5 + 3n\) et \(v_n = 3\times 2^n\), \(u_{20} = 65\) alors que \(v_{20} = 3\,145\,728\).</p>
+    <p class="small">Aucune formalisation en Première : on observe, on conjecture. La définition rigoureuse de la limite et l'étude complète de \((q^n)\) sont au programme de Terminale (fiche 3C).</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span>Récapitulatif</h3>
+    <div class="tablewrap">
+    <table>
+      <tr><th></th><th>Arithmétique</th><th>Géométrique</th></tr>
+      <tr><td>Récurrence</td><td>\(u_{n+1} = u_n + r\)</td><td>\(u_{n+1} = q\,u_n\)</td></tr>
+      <tr><td>Terme général</td><td>\(u_n = u_0 + n r = u_p + (n-p) r\)</td><td>\(u_n = u_0 q^n = u_p q^{\,n-p}\)</td></tr>
+      <tr><td>Test</td><td>\(u_{n+1} - u_n\) constant</td><td>\(u_{n+1}/u_n\) constant</td></tr>
+      <tr><td>Somme de \(N\) termes</td><td>\(N\times\dfrac{\text{premier}+\text{dernier}}{2}\)</td><td>\(\text{premier}\times\dfrac{1-q^N}{1-q}\) (si \(q \ne 1\))</td></tr>
+      <tr><td>Modèle</td><td>linéaire (points alignés)</td><td>exponentiel (taux constant)</td></tr>
+      <tr><td>Variation</td><td>signe de \(r\)</td><td>\(q\) par rapport à 1 (si \(u_0>0\))</td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+<!-- ===================== MÉTHODE ===================== -->
+<section id="methode">
+  <h2>Méthode</h2>
+
+  <div class="card">
+    <h3><span class="num">A</span>Reconnaître une suite arithmétique ou géométrique</h3>
+    <ol>
+      <li>Calculer \(u_{n+1} - u_n\) <strong>pour tout \(n\)</strong> (avec l'expression générale, pas seulement sur trois valeurs). Si le résultat est une constante \(r\) : arithmétique de raison \(r\).</li>
+      <li>Sinon, calculer \(\dfrac{u_{n+1}}{u_n}\). Si c'est une constante \(q\) : géométrique de raison \(q\).</li>
+      <li>Sinon, la suite n'est ni l'une ni l'autre ; un <strong>contre-exemple numérique</strong> suffit pour le prouver.</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple 1</span>
+      \(u_n = 7 - 4n\). \(u_{n+1} - u_n = 7 - 4(n+1) - (7 - 4n) = -4\). Arithmétique, \(r = -4\), \(u_0 = 7\).
+    </div>
+    <div class="box">
+      <span class="lbl">Exemple 2</span>
+      \(v_n = 5\times 3^{n+1}\). \(\dfrac{v_{n+1}}{v_n} = \dfrac{5\times 3^{n+2}}{5\times 3^{n+1}} = 3\). Géométrique, \(q = 3\), \(v_0 = 15\).
+    </div>
+    <div class="box coral">
+      <span class="lbl">Contre-exemple</span>
+      \(w_n = n^2\) : \(w_0 = 0, w_1 = 1, w_2 = 4\). \(w_1 - w_0 = 1\) mais \(w_2 - w_1 = 3\) : pas arithmétique. \(w_1/w_0\) n'existe même pas : pas géométrique.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">B</span>Trouver le terme général</h3>
+    <ol>
+      <li>Identifier la nature (méthode A) et la raison.</li>
+      <li>Repérer le terme connu : est-ce \(u_0\) ? \(u_1\) ? \(u_p\) ?</li>
+      <li>Appliquer \(u_n = u_p + (n-p)\,r\) ou \(u_n = u_p\,q^{\,n-p}\).</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple</span>
+      Suite géométrique de raison \(q = 3\) avec \(u_2 = 18\). Alors \(u_n = 18\times 3^{\,n-2}\). Pour revenir à \(u_0\) : \(u_0 = 18/9 = 2\), donc aussi \(u_n = 2\times 3^n\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">C</span>Calculer une somme de termes consécutifs</h3>
+    <ol>
+      <li><strong>Compter le nombre de termes</strong> : de \(u_a\) à \(u_b\), il y en a \(b - a + 1\).</li>
+      <li>Arithmétique : \(S = N\times\dfrac{u_a + u_b}{2}\). Calculer d'abord \(u_a\) et \(u_b\).</li>
+      <li>Géométrique : \(S = u_a\times\dfrac{1 - q^{N}}{1 - q}\) si \(q \ne 1\) (si \(q = 1\), tous les termes sont égaux et \(S = N\,u_a\)).</li>
+      <li>Vérifier l'ordre de grandeur (par exemple avec les deux ou trois premiers termes).</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple</span>
+      \(u_n = 2\times 3^n\), calculer \(u_2 + u_3 + \dots + u_6\). Nombre de termes : \(6 - 2 + 1 = 5\). \(u_2 = 18\). \(S = 18\times\dfrac{1-3^5}{1-3} = 18\times\dfrac{-242}{-2} = 18\times 121 = 2178\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">D</span>Modéliser une évolution à taux fixe</h3>
+    <ol>
+      <li>Traduire le taux en coefficient multiplicateur : \(+t\,\% \Rightarrow q = 1 + \frac{t}{100}\) ; \(-t\,\% \Rightarrow q = 1 - \frac{t}{100}\).</li>
+      <li>Poser \(u_0\) = valeur initiale (année de départ = rang 0) et \(u_{n+1} = q\,u_n\).</li>
+      <li>Conclure : \(u_n = u_0\,q^n\), puis calculer ce qui est demandé.</li>
+    </ol>
+    <div class="box">
+      <span class="lbl">Exemple</span>
+      Une ville de 20 000 habitants gagne 2 % par an. \(q = 1{,}02\), \(u_n = 20\,000\times 1{,}02^n\). Dans 15 ans : \(u_{15}\approx 26\,917\) habitants.
+    </div>
+    <div class="box">
+      <span class="lbl">Accroissement constant</span>
+      Si au contraire la ville gagne 400 habitants par an (et non 2 %), la suite est <em>arithmétique</em> : \(u_n = 20\,000 + 400 n\).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">E</span>Chercher un seuil (algorithme)</h3>
+    <p>« À partir de quel rang \(u_n\) dépasse-t-il \(S\) ? » En Première, on <strong>n'utilise pas le logarithme</strong> : on calcule les termes jusqu'à dépasser le seuil, à la main (tableau) ou avec une boucle <code>while</code>.</p>
+<pre class="py">u = 20000      # u_0
+n = 0
+while u &lt;= 30000:
+    u = u * 1.02
+    n = n + 1
+print(n)       # premier rang tel que u_n &gt; 30000</pre>
+    <p>Ici l'algorithme affiche <strong>21</strong> : \(u_{20}\approx 29\,719 < 30\,000\) et \(u_{21}\approx 30\,313 > 30\,000\). Toujours justifier avec les deux valeurs qui encadrent le seuil.</p>
+    <p class="small">Attention à la condition : <code>while u &lt;= S</code> s'arrête au premier rang où \(u_n > S\) ; la suite doit être croissante pour que cela ait un sens.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">!</span>Erreurs fréquentes</h3>
+    <div class="box coral"><span class="lbl">Nombre de termes</span> De \(u_3\) à \(u_{10}\), il y a \(10 - 3 + 1 = 8\) termes, <strong>pas 7</strong>. Compter sur un exemple court : de \(u_3\) à \(u_5\), on a \(u_3, u_4, u_5\) : 3 termes, et \(5-3+1 = 3\).</div>
+    <div class="box coral"><span class="lbl">Premier terme</span> \(u_n = u_0\,q^n\) et non \(u_1\,q^n\). Si la suite commence à \(u_1\), alors \(u_n = u_1\,q^{\,n-1}\).</div>
+    <div class="box coral"><span class="lbl">Taux négatif</span> Une baisse de 5 % donne \(q = 0{,}95\), pas \(q = -0{,}05\) ni \(q = -5\).</div>
+    <div class="box coral"><span class="lbl">Confusion \(+\) / \(\times\)</span> « augmente de 300 par an » : arithmétique ; « augmente de 3 % par an » : géométrique.</div>
+    <div class="box coral"><span class="lbl">Formule de somme</span> \(\dfrac{1-q^{N}}{1-q}\) avec \(N\) = nombre de termes, pas le dernier indice. \(u_0 + \dots + u_n\) a \(n+1\) termes, donc l'exposant est \(n+1\).</div>
+  </div>
+</section>
+<!-- ===================== VISUALISATION ===================== -->
+<section id="visu">
+  <h2>Visualisation</h2>
+  <div class="card">
+    <div class="tabs">
+      <button type="button" id="tabCmp" class="on">Arithmétique vs géométrique</button>
+      <button type="button" id="tabTaux">Évolution à taux constant</button>
+    </div>
+
+    <!-- ---------- Onglet 1 : comparaison ---------- -->
+    <div id="panelCmp">
+      <p>Deux suites de <strong>même premier terme</strong> \(u_0\) : l'une arithmétique de raison \(r\) (on ajoute), l'autre géométrique de raison \(q\) (on multiplie). Bouge les curseurs et regarde l'écart se creuser.</p>
+      <div class="ctrl">
+        <div><label for="vu0">\(u_0\) = <span class="val" id="vu0o">4</span></label><input type="range" id="vu0" min="1" max="10" step="1" value="4"></div>
+        <div><label for="vr">raison \(r\) (arithmétique) = <span class="val" id="vro">3</span></label><input type="range" id="vr" min="-4" max="10" step="1" value="3"></div>
+        <div><label for="vq">raison \(q\) (géométrique) = <span class="val" id="vqo">1,5</span></label><input type="range" id="vq" min="0.5" max="2.5" step="0.25" value="1.5"></div>
+        <div><label for="vn">nombre de termes \(N\) = <span class="val" id="vno">8</span></label><input type="range" id="vn" min="4" max="12" step="1" value="8"></div>
+      </div>
+      <div class="legend">
+        <span class="la">arithmétique \(u_n = u_0 + nr\)</span>
+        <span class="lg">géométrique \(v_n = u_0\,q^n\)</span>
+      </div>
+      <div class="svgwrap"><svg id="svgCmp" viewBox="0 0 420 300" role="img" aria-label="Nuages de points des deux suites"></svg></div>
+      <p class="small">Chaque bande colorée a pour hauteur la valeur d'un terme : l'aire totale des bandes d'une couleur, c'est la <strong>somme</strong> des termes de cette suite.</p>
+      <div class="tablewrap"><table id="cmpTable"></table></div>
+      <div class="box"><span class="lbl">Somme des \(N\) premiers termes — arithmétique</span><div id="cmpSumA"></div></div>
+      <div class="box coral"><span class="lbl">Somme des \(N\) premiers termes — géométrique</span><div id="cmpSumG"></div></div>
+      <div class="info" id="cmpNote"></div>
+    </div>
+
+    <!-- ---------- Onglet 2 : taux constant ---------- -->
+    <div id="panelTaux" hidden>
+      <p>Un capital placé à un taux annuel fixe suit une suite <strong>géométrique</strong> de raison \(q = 1 + \dfrac{t}{100}\). Cherche l'année où il dépasse un seuil : c'est exactement l'algorithme de seuil de la méthode E.</p>
+      <div class="ctrl">
+        <div><label for="tc0">Capital initial \(C_0\) (€)</label><input type="number" id="tc0" min="10" max="100000" step="10" value="1000"></div>
+        <div><label for="tt">Taux annuel \(t\) = <span class="val" id="tto">3</span> %</label><input type="range" id="tt" min="-10" max="15" step="0.5" value="3"></div>
+        <div><label for="tn">Nombre d'années affichées = <span class="val" id="tno">20</span></label><input type="range" id="tn" min="5" max="40" step="1" value="20"></div>
+        <div><label for="ts">Seuil à dépasser (€)</label><input type="number" id="ts" min="10" max="1000000" step="10" value="2000"></div>
+      </div>
+      <div class="legend">
+        <span class="lc">capital \(C_n = C_0\,q^n\)</span>
+        <span class="lg">seuil</span>
+      </div>
+      <div class="svgwrap"><svg id="svgTaux" viewBox="0 0 420 300" role="img" aria-label="Courbe du capital année par année"></svg></div>
+      <div class="box green"><span class="lbl">Formule</span><div id="tauxFormule"></div></div>
+      <div class="tablewrap"><table id="tauxTable"></table></div>
+      <div class="box amber"><span class="lbl">Recherche de seuil</span><div id="tauxSeuil"></div></div>
+    </div>
+  </div>
+</section>
+<!-- ===================== EXERCICES ===================== -->
+<section id="exos">
+  <h2>Exercices</h2>
+  <p class="small">Chaque bouton « Nouvel exercice » tire de nouveaux nombres. Écris les décimaux avec une virgule ou un point, au choix.</p>
+
+  <div class="card exo" id="ex1">
+    <h3><span class="num">1</span>Terme général et calcul d'un terme<span class="diff">niveau 1</span></h3>
+    <div class="enonce" id="ex1Stmt"></div>
+    <div class="answer">
+      <label for="ex1Sel">Terme général :</label>
+      <select id="ex1Sel" style="font:inherit;padding:.55rem .7rem;border:2px solid #e6e1da;border-radius:10px;min-height:44px;max-width:100%"></select>
+    </div>
+    <div class="answer">
+      <span id="ex1Lab"></span>
+      <input type="text" id="ex1In" inputmode="text" placeholder="valeur">
+    </div>
+    <div class="btnrow">
+      <button type="button" id="ex1Check">Vérifier</button>
+      <button type="button" id="ex1Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex1New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="fb" id="ex1Fb"></div>
+    <div class="corr" id="ex1CorrBox"></div>
+  </div>
+
+  <div class="card exo" id="ex2">
+    <h3><span class="num">2</span>Somme de termes consécutifs<span class="diff">niveau 2</span></h3>
+    <div class="enonce" id="ex2Stmt"></div>
+    <div class="answer">
+      <span>Nombre de termes \(N\) =</span>
+      <input type="text" id="ex2InN" inputmode="text" placeholder="N">
+    </div>
+    <div class="answer">
+      <span>\(S\) =</span>
+      <input type="text" id="ex2InS" inputmode="text" placeholder="somme">
+    </div>
+    <div class="btnrow">
+      <button type="button" id="ex2Check">Vérifier</button>
+      <button type="button" id="ex2Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex2New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="fb" id="ex2Fb"></div>
+    <div class="corr" id="ex2CorrBox"></div>
+  </div>
+
+  <div class="card exo" id="ex3">
+    <h3><span class="num">3</span>Modélisation et seuil<span class="diff">niveau 3</span></h3>
+    <div class="enonce" id="ex3Stmt"></div>
+    <div class="answer">
+      <span>Nombre d'années :</span>
+      <input type="text" id="ex3In" inputmode="text" placeholder="entier">
+    </div>
+    <div class="btnrow">
+      <button type="button" id="ex3Check">Vérifier</button>
+      <button type="button" id="ex3Corr" class="ghost">Voir la correction</button>
+      <button type="button" id="ex3New" class="ghost">Nouvel exercice</button>
+    </div>
+    <div class="fb" id="ex3Fb"></div>
+    <div class="corr" id="ex3CorrBox"></div>
+  </div>
+</section>
+<!-- ===================== QCM ===================== -->
+<section id="qcm">
+  <h2>QCM</h2>
+  <div class="card">
+    <p>Quatre questions tirées au hasard dans une banque. Une seule bonne réponse par question ; le score s'affiche à la fin.</p>
+    <div id="qcmBox"></div>
+    <div class="score" id="qcmScore"></div>
+    <div class="btnrow"><button type="button" id="qcmNew">Nouveau QCM</button></div>
+  </div>
+</section>
+<!-- SITE:PAGER:START -->
+<div class="site-pager"><a href="../../chapitres/03_suites/3A_suites_generation_variations.html"><small>← Fiche précédente</small><strong>Suites numériques : génération et variations</strong></a><a href="../../chapitres/03_suites/3C_recurrence_limites.html"><small>Continuer →</small><strong>Récurrence et limites de suites</strong></a></div><a class="site-page-top" href="#site-main">↑ Haut de la fiche</a>
+<!-- SITE:PAGER:END -->
+</main>
+<footer>
+  Si tu bloques : relis la méthode, refais l'exercice de niveau inférieur, puis demande à un assistant IA une <strong>indication</strong> (pas la solution).
+  <p><a class="retour-fiches" href="../../index.html">← Toutes les fiches</a></p>
+</footer>
+
+<script>
+/* ================= utilitaires ================= */
+function typeset(el){ if(window.MathJax && window.MathJax.typesetPromise){ window.MathJax.typesetPromise(el ? [el] : undefined).catch(function(){}); } }
+function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ var a=arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+/* nombre en écriture française : espace fine pour les milliers, virgule décimale */
+function nf(x, dec){
+  if(!isFinite(x)) return '—';
+  if(dec===undefined){ dec = 0; while(dec < 3 && Math.abs(x*Math.pow(10,dec) - Math.round(x*Math.pow(10,dec))) > 1e-9) dec++; }
+  var neg = x < 0; var v = Math.abs(x).toFixed(dec);
+  var parts = v.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (neg ? '−' : '') + parts[0] + (parts[1] ? ',' + parts[1] : '');
+}
+function nfx(x, dec){ return nf(x, dec); }
+/* lecture d'une réponse : virgule, espaces, fractions, signe moins typographique */
+function parseNum(s){
+  if(s===null || s===undefined) return NaN;
+  s = String(s).trim().replace(/[\s  ]/g,'').replace(/−/g,'-').replace(',','.').replace(/€|%/g,'');
+  if(s==='') return NaN;
+  var m = s.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+  if(m){ var d=parseFloat(m[2]); return d===0?NaN:parseFloat(m[1])/d; }
+  if(!/^-?\d*(?:\.\d+)?$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+/* tolérance numérique : toutes les réponses attendues de cette fiche sont des entiers exacts
+   (terme d'une suite, nombre de termes, somme, nombre d'années) ; la marge ne sert qu'à absorber
+   le bruit des flottants, surtout pas à accepter un arrondi voisin. */
+function approx(a,b){ if(!isFinite(a)) return false; return Math.abs(a-b) <= Math.max(1e-6, Math.abs(b)*1e-9); }
+function setFb(el, ok, msg){ el.className = 'fb ' + (ok?'ok':'ko'); el.innerHTML = msg; typeset(el); }
+/* écriture LaTeX d'un nombre décimal à la française : 1{,}03 */
+function tex(x, dec){
+  if(dec===undefined){ dec = 0; while(dec < 4 && Math.abs(x*Math.pow(10,dec) - Math.round(x*Math.pow(10,dec))) > 1e-9) dec++; }
+  var s = Math.abs(x).toFixed(dec);
+  var pp = s.split('.');
+  pp[0] = pp[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\\,');
+  return (x<0?'-':'') + pp[0] + (pp[1] ? '{,}' + pp[1] : '');
+}
+function texSigned(x){ return (x<0 ? '- ' : '+ ') + tex(Math.abs(x)); }
+/* somme LaTeX de deux nombres, sans « + (-3) » ni « + -3 » : 14 + 35, ou -19 - 44 */
+function sumTex(x, y){ return tex(x) + ' ' + texSigned(y); }
+/* facteur LaTeX : un nombre négatif placé après un « × » est mis entre parenthèses */
+function facTex(x){ return x < 0 ? '(' + tex(x) + ')' : tex(x); }
+/* liste de termes additionnés, en écriture française : −19 − 24 − 29 */
+function joinSum(vals){
+  return vals.map(function(v, i){
+    if(i === 0) return nf(v);
+    return (v < 0 ? ' − ' : ' + ') + nf(Math.abs(v));
+  }).join('');
+}
+var SVGNS = 'http://www.w3.org/2000/svg';
+
+/* ================= navigation sticky : onglet actif ================= */
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  function update(){
+    var best = 0, y = window.scrollY || window.pageYOffset;
+    for(var i=0;i<secs.length;i++){
+      if(secs[i] && secs[i].offsetTop - 90 <= y) best = i;
+    }
+    links.forEach(function(a,i){ a.classList.toggle('active', i===best); });
+  }
+  window.addEventListener('scroll', update, { passive:true });
+  window.addEventListener('resize', update);
+  links.forEach(function(a){ a.addEventListener('click', function(){ setTimeout(update, 350); }); });
+  update();
+})();
+
+/* ================= onglets de la visualisation ================= */
+(function(){
+  var tabCmp = document.getElementById('tabCmp'), tabTaux = document.getElementById('tabTaux');
+  var panelCmp = document.getElementById('panelCmp'), panelTaux = document.getElementById('panelTaux');
+  tabCmp.addEventListener('click', function(){
+    tabCmp.classList.add('on'); tabTaux.classList.remove('on');
+    panelCmp.hidden = false; panelTaux.hidden = true; drawCmp();
+  });
+  tabTaux.addEventListener('click', function(){
+    tabTaux.classList.add('on'); tabCmp.classList.remove('on');
+    panelTaux.hidden = false; panelCmp.hidden = true; drawTaux();
+  });
+})();
+</script>
+
+<script>
+/* ================= VISU 1 : arithmétique vs géométrique ================= */
+var vu0 = document.getElementById('vu0'), vr = document.getElementById('vr'),
+    vq  = document.getElementById('vq'),  vn = document.getElementById('vn');
+
+function drawCmp(){
+  var u0 = parseFloat(vu0.value), r = parseFloat(vr.value),
+      q  = parseFloat(vq.value),  N = parseInt(vn.value, 10);
+  document.getElementById('vu0o').textContent = nf(u0);
+  document.getElementById('vro').textContent  = nf(r);
+  document.getElementById('vqo').textContent  = nf(q);
+  document.getElementById('vno').textContent  = String(N);
+
+  var A = [], G = [], k;
+  for(k=0;k<N;k++){ A.push(u0 + k*r); G.push(u0*Math.pow(q,k)); }
+
+  var vmax = 0, vmin = 0;
+  for(k=0;k<N;k++){ vmax = Math.max(vmax, A[k], G[k]); vmin = Math.min(vmin, A[k], G[k]); }
+  if(vmax - vmin < 1e-9) vmax = vmin + 1;
+  vmax = vmin + (vmax - vmin)*1.08;
+
+  var ml=46, mr=10, mt=14, mb=32, W=420, H=300;
+  var pw = W-ml-mr, ph = H-mt-mb;
+  function X(i){ return ml + (i+0.5)*pw/N; }
+  function Y(v){ return H-mb - (v-vmin)/(vmax-vmin)*ph; }
+  var y0 = Y(0);
+  var bw = Math.min(13, pw/N*0.34);
+
+  var s = '';
+  /* fond et graduations horizontales */
+  var g;
+  for(g=0; g<=4; g++){
+    var vg = vmin + (vmax-vmin)*g/4;
+    s += '<line x1="'+ml+'" y1="'+Y(vg).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+Y(vg).toFixed(1)+'" stroke="#eeeae4" stroke-width="1"/>';
+    s += '<text x="'+(ml-5)+'" y="'+(Y(vg)+4).toFixed(1)+'" font-size="10" fill="#5b6672" text-anchor="end">'+nf(vg, (vmax-vmin)<8?1:0)+'</text>';
+  }
+  /* bandes = termes de la somme */
+  for(k=0;k<N;k++){
+    var ya = Y(A[k]), yg = Y(G[k]);
+    s += '<rect x="'+(X(k)-bw-1).toFixed(1)+'" y="'+Math.min(ya,y0).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.abs(y0-ya).toFixed(1)+'" fill="#2563eb" opacity="0.22"/>';
+    s += '<rect x="'+(X(k)+1).toFixed(1)+'" y="'+Math.min(yg,y0).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.abs(y0-yg).toFixed(1)+'" fill="#f97362" opacity="0.28"/>';
+  }
+  /* axes */
+  s += '<line x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(H-mb)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  s += '<line x1="'+ml+'" y1="'+y0.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y0.toFixed(1)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  /* points */
+  for(k=0;k<N;k++){
+    s += '<circle cx="'+(X(k)-bw/2-1).toFixed(1)+'" cy="'+Y(A[k]).toFixed(1)+'" r="4" fill="#2563eb"/>';
+    s += '<circle cx="'+(X(k)+bw/2+1).toFixed(1)+'" cy="'+Y(G[k]).toFixed(1)+'" r="4" fill="#f97362"/>';
+    s += '<text x="'+X(k).toFixed(1)+'" y="'+(H-mb+14)+'" font-size="10" fill="#5b6672" text-anchor="middle">'+k+'</text>';
+  }
+  s += '<text x="'+(W-mr)+'" y="'+(H-6)+'" font-size="10" fill="#5b6672" text-anchor="end">rang n</text>';
+  document.getElementById('svgCmp').innerHTML = s;
+
+  /* tableau des premiers termes */
+  var th = '<tr><th>n</th>', ra = '<tr><th>\\(u_n\\) arith.</th>', rg = '<tr><th>\\(v_n\\) géo.</th>';
+  for(k=0;k<N;k++){
+    th += '<th>'+k+'</th>';
+    ra += '<td>'+nf(A[k])+'</td>';
+    rg += '<td>'+nf(G[k])+'</td>';
+  }
+  document.getElementById('cmpTable').innerHTML = th+'</tr>'+ra+'</tr>'+rg+'</tr>';
+
+  /* sommes instanciées */
+  var SA = N*(A[0]+A[N-1])/2;
+  var SG = (Math.abs(q-1)<1e-9) ? N*u0 : u0*(1-Math.pow(q,N))/(1-q);
+  document.getElementById('cmpSumA').innerHTML =
+    '\\[S_A = u_0+\\dots+u_{'+(N-1)+'} = '+N+'\\times\\frac{'+sumTex(A[0], A[N-1])+'}{2} = '+tex(SA)+'\\]';
+  document.getElementById('cmpSumG').innerHTML = (Math.abs(q-1)<1e-9)
+    ? '\\[S_G = '+N+'\\times '+tex(u0)+' = '+tex(SG)+'\\quad (q=1)\\]'
+    : '\\[S_G = u_0\\,\\frac{1-q^{'+N+'}}{1-q} = '+tex(u0)+'\\times\\frac{1-'+tex(q)+'^{'+N+'}}{1-'+tex(q)+'} = '+tex(SG,2)+'\\]';
+
+  var note;
+  if(Math.abs(q-1) < 1e-9){
+    note = 'Avec \\(q = 1,\\) la suite géométrique est constante : toutes ses bandes ont la même hauteur.';
+  } else if(q > 1){
+    note = 'Avec \\(q = '+tex(q)+' \\gt 1,\\) la géométrique atteint '+nf(G[N-1],2)+' au rang '+(N-1)+', contre '+nf(A[N-1])+' pour l\'arithmétique';
+    if(r > 0){
+      note += ', soit '+nf(G[N-1]/A[N-1],2)+' fois plus. Sa somme est '+nf(SG/SA,2)+' fois celle de la suite arithmétique.';
+    } else if(r < 0){
+      note += ' : ici l\'arithmétique décroît (\\(r\\lt 0\\)) pendant que la géométrique croît, donc l\'écart se creuse dans les deux sens.';
+    } else {
+      note += ' : ici l\'arithmétique est constante (\\(r = 0\\)) pendant que la géométrique croît.';
+    }
+  } else {
+    note = 'Avec \\(0\\lt q\\lt 1,\\) la géométrique se rapproche de 0 : ses bandes rétrécissent et sa somme se stabilise (ici '+nf(SG,2)+').';
+  }
+  note += ' Les deux suites sont dessinées à la même échelle : quand \\(q\\) grandit, la bleue paraît écrasée, c\'est normal.';
+  document.getElementById('cmpNote').innerHTML = note;
+
+  typeset(document.getElementById('panelCmp'));
+}
+[vu0, vr, vq, vn].forEach(function(el){ el.addEventListener('input', drawCmp); });
+
+/* ================= VISU 2 : évolution à taux constant ================= */
+var tc0 = document.getElementById('tc0'), tt = document.getElementById('tt'),
+    tn  = document.getElementById('tn'),  ts = document.getElementById('ts');
+
+function drawTaux(){
+  var C0 = parseFloat(tc0.value); if(!isFinite(C0) || C0 <= 0) C0 = 1000;
+  var t  = parseFloat(tt.value);
+  var N  = parseInt(tn.value, 10);
+  var S  = parseFloat(ts.value); if(!isFinite(S) || S <= 0) S = 2*C0;
+  var q  = 1 + t/100;
+  document.getElementById('tto').textContent = nf(t);
+  document.getElementById('tno').textContent = String(N);
+
+  var C = [], n;
+  for(n=0;n<=N;n++) C.push(C0*Math.pow(q,n));
+
+  var vmax = Math.max(S, C[0], C[N]), vmin = 0;
+  for(n=0;n<=N;n++) vmax = Math.max(vmax, C[n]);
+  vmax = vmax*1.08;
+
+  var ml=52, mr=10, mt=14, mb=32, W=420, H=300;
+  var pw = W-ml-mr, ph = H-mt-mb;
+  function X(i){ return ml + i*pw/N; }
+  function Y(v){ return H-mb - (v-vmin)/(vmax-vmin)*ph; }
+
+  var s = '', g;
+  for(g=0; g<=4; g++){
+    var vg = vmin + (vmax-vmin)*g/4;
+    s += '<line x1="'+ml+'" y1="'+Y(vg).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+Y(vg).toFixed(1)+'" stroke="#eeeae4" stroke-width="1"/>';
+    s += '<text x="'+(ml-5)+'" y="'+(Y(vg)+4).toFixed(1)+'" font-size="10" fill="#5b6672" text-anchor="end">'+nf(vg,0)+'</text>';
+  }
+  /* seuil */
+  if(S >= vmin && S <= vmax){
+    s += '<line x1="'+ml+'" y1="'+Y(S).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+Y(S).toFixed(1)+'" stroke="#f97362" stroke-width="2" stroke-dasharray="6 4"/>';
+    s += '<text x="'+(ml+4)+'" y="'+(Y(S)-5).toFixed(1)+'" font-size="10" fill="#c2410c">seuil '+nf(S,0)+'</text>';
+  }
+  /* axes */
+  s += '<line x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(H-mb)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  s += '<line x1="'+ml+'" y1="'+(H-mb)+'" x2="'+(W-mr)+'" y2="'+(H-mb)+'" stroke="#9aa3ad" stroke-width="1.5"/>';
+  /* courbe */
+  var pts = [];
+  for(n=0;n<=N;n++) pts.push(X(n).toFixed(1)+','+Y(C[n]).toFixed(1));
+  s += '<polyline points="'+pts.join(' ')+'" fill="none" stroke="#22a06b" stroke-width="2"/>';
+  var step = Math.max(1, Math.ceil(N/10));
+  for(n=0;n<=N;n++){
+    s += '<circle cx="'+X(n).toFixed(1)+'" cy="'+Y(C[n]).toFixed(1)+'" r="'+(N>25?2:3)+'" fill="#22a06b"/>';
+    if(n % step === 0 || n === N){
+      s += '<text x="'+X(n).toFixed(1)+'" y="'+(H-mb+14)+'" font-size="10" fill="#5b6672" text-anchor="middle">'+n+'</text>';
+    }
+  }
+  s += '<text x="'+(W-mr)+'" y="'+(H-6)+'" font-size="10" fill="#5b6672" text-anchor="end">années</text>';
+  document.getElementById('svgTaux').innerHTML = s;
+
+  document.getElementById('tauxFormule').innerHTML =
+    '\\[q = 1 '+(t<0?'-':'+')+' \\frac{'+tex(Math.abs(t))+'}{100} = '+tex(q)+',\\qquad C_n = '+tex(C0)+'\\times '+tex(q)+'^{\\,n}\\]'
+    + '<p class="small">Au bout de '+N+' ans : \\(C_{'+N+'} = '+tex(C0)+'\\times '+tex(q)+'^{'+N+'} \\approx '+tex(C[N],2)+'\\) €.</p>';
+
+  var st = Math.max(1, Math.ceil((N+1)/11));
+  var th = '<tr><th>année n</th>', rc = '<tr><th>\\(C_n\\) (€)</th>';
+  for(n=0;n<=N;n+=st){ th += '<th>'+n+'</th>'; rc += '<td>'+nf(C[n],2)+'</td>'; }
+  if((N % st) !== 0){ th += '<th>'+N+'</th>'; rc += '<td>'+nf(C[N],2)+'</td>'; }
+  document.getElementById('tauxTable').innerHTML = th+'</tr>'+rc+'</tr>';
+
+  /* recherche de seuil */
+  var msg;
+  if(Math.abs(q-1) < 1e-12){
+    msg = 'Avec \\(t = 0\\) %, le capital reste égal à '+nf(C0,2)+' € : il ne franchira jamais le seuil.';
+  } else if(q > 1){
+    if(C0 > S){
+      msg = 'Le capital de départ ('+nf(C0,2)+' €) dépasse déjà le seuil : la réponse est \\(n = 0.\\)';
+    } else {
+      var u = C0, k = 0;
+      while(u <= S && k < 3000){ u = u*q; k++; }
+      msg = (k >= 3000)
+        ? 'Le seuil n\'est pas atteint avant 3 000 ans avec ce taux.'
+        : 'Le capital dépasse '+nf(S,0)+' € pour la première fois au bout de <strong>'+k+' ans</strong> : \\(C_{'+(k-1)+'} \\approx '+tex(C0*Math.pow(q,k-1),2)+'\\) €, puis \\(C_{'+k+'} \\approx '+tex(u,2)+'\\) €.'
+          + '<br><span class="small">C\'est ce que fait la boucle <code>while</code> de la méthode E : on multiplie par \\(q = '+tex(q)+'\\) et on compte les tours.</span>';
+    }
+  } else {
+    if(C0 < S){
+      msg = 'Le taux est négatif : le capital diminue à partir de '+nf(C0,2)+' € et ne dépassera jamais '+nf(S,0)+' €.';
+    } else {
+      var v = C0, j = 0;
+      while(v >= S && j < 3000){ v = v*q; j++; }
+      msg = 'Le taux est négatif : le capital <em>descend</em> sous '+nf(S,0)+' € au bout de <strong>'+j+' ans</strong> (\\(C_{'+j+'} \\approx '+tex(v,2)+'\\) €).';
+    }
+  }
+  document.getElementById('tauxSeuil').innerHTML = msg;
+  typeset(document.getElementById('panelTaux'));
+}
+[tc0, tt, tn, ts].forEach(function(el){ el.addEventListener('input', drawTaux); });
+</script>
+
+<script>
+/* ================= EXERCICE 1 : terme général et calcul d'un terme ================= */
+var ex1 = {};
+function ex1New(){
+  var isArith = Math.random() < 0.5;
+  var u0, r, q, n, ans, qStr, gen, distr;
+  if(isArith){
+    u0 = rnd(2,12);
+    r  = pick([-6,-5,-4,-3,-2,2,3,4,5,6,7,8]);
+    n  = rnd(8,20);
+    ans = u0 + n*r;
+    gen = 'u_n = ' + u0 + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n');
+    distr = [
+      'u_n = ' + u0 + ' × ' + (r<0 ? '(' + nf(r) + ')' : r) + '^n',
+      'u_n = ' + u0 + (r>0 ? ' + ' : ' − ') + '(n − 1) × ' + Math.abs(r),
+      'u_n = ' + nf(u0+r) + (r>0 ? ' + ' + r + 'n' : ' − ' + (-r) + 'n')
+    ];
+    ex1 = { type:'a', u0:u0, r:r, n:n, ans:ans, gen:gen };
+  } else {
+    var cas = pick(['q2','q3','qdemi']);
+    if(cas === 'q2'){ q = 2; qStr = '2'; u0 = rnd(2,6); n = rnd(8,16); }
+    else if(cas === 'q3'){ q = 3; qStr = '3'; u0 = rnd(2,5); n = rnd(8,10); }
+    else { q = 0.5; qStr = '0,5'; n = rnd(8,12); u0 = Math.pow(2, n + rnd(0,3)); }
+    ans = u0 * Math.pow(q, n);
+    gen = 'u_n = ' + nf(u0) + ' × ' + qStr + '^n';
+    distr = [
+      'u_n = ' + nf(u0) + ' + ' + qStr + 'n',
+      'u_n = ' + nf(u0) + ' × ' + qStr + '^(n − 1)',
+      'u_n = (' + nf(u0) + ' × ' + qStr + ')^n'
+    ];
+    ex1 = { type:'g', u0:u0, q:q, qStr:qStr, n:n, ans:ans, gen:gen };
+  }
+  var stmt;
+  if(ex1.type === 'a'){
+    stmt = '<p>Soit \\((u_n)\\) la suite <strong>arithmétique</strong> définie par \\(u_0 = ' + ex1.u0 + '\\) et \\(u_{n+1} = u_n ' + texSigned(ex1.r) + '.\\)</p>'
+         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}.\\)</p>';
+  } else {
+    stmt = '<p>Soit \\((u_n)\\) la suite <strong>géométrique</strong> définie par \\(u_0 = ' + tex(ex1.u0) + '\\) et \\(u_{n+1} = ' + tex(ex1.q) + '\\,u_n.\\)</p>'
+         + '<p><strong>a.</strong> Choisis son terme général. &nbsp; <strong>b.</strong> Calcule \\(u_{' + ex1.n + '}.\\)</p>';
+  }
+  document.getElementById('ex1Stmt').innerHTML = stmt;
+  document.getElementById('ex1Lab').innerHTML = '\\(u_{' + ex1.n + '} = \\)';
+  var sel = document.getElementById('ex1Sel');
+  sel.innerHTML = '';
+  var opts = shuffle([gen].concat(distr));
+  ex1.correctOpt = gen;
+  var o0 = document.createElement('option'); o0.value=''; o0.textContent='— choisir —'; sel.appendChild(o0);
+  opts.forEach(function(txt){ var o=document.createElement('option'); o.value=txt; o.textContent=txt; sel.appendChild(o); });
+  document.getElementById('ex1In').value = '';
+  document.getElementById('ex1Fb').className = 'fb';
+  document.getElementById('ex1CorrBox').classList.remove('show');
+  typeset(document.getElementById('ex1'));
+}
+function ex1Check(){
+  var selOk = document.getElementById('ex1Sel').value === ex1.correctOpt;
+  var val = parseNum(document.getElementById('ex1In').value);
+  var numOk = approx(val, ex1.ans);
+  var fb = document.getElementById('ex1Fb');
+  if(selOk && numOk){
+    setFb(fb, true, 'Parfait : terme général correct et \\(u_{'+ex1.n+'} = '+tex(ex1.ans)+'.\\)');
+  } else if(!selOk && numOk){
+    setFb(fb, false, 'La valeur est bonne, mais le terme général choisi ne l\'est pas : attention au décalage d\'indice et au rôle de la raison.');
+  } else if(selOk && !numOk){
+    setFb(fb, false, 'Bon terme général. La valeur numérique n\'y est pas : remplace \\(n\\) par '+ex1.n+' dans la formule que tu viens de choisir.');
+  } else {
+    setFb(fb, false, isNaN(val) ? 'Réponse manquante ou illisible : écris un nombre (virgule ou point).' : 'Ce n\'est pas cela. Repars de la définition : ' + (ex1.type==='a' ? 'on <strong>ajoute</strong> la raison à chaque étape.' : 'on <strong>multiplie</strong> par la raison à chaque étape.'));
+  }
+  ex1BuildCorr();
+}
+function ex1BuildCorr(){
+  var c = document.getElementById('ex1CorrBox'), h;
+  if(ex1.type === 'a'){
+    h = '<p><strong>a. Terme général.</strong> La suite est arithmétique de premier terme \\(u_0 = '+ex1.u0+'\\) et de raison \\(r = '+tex(ex1.r)+'.\\) La formule du cours donne</p>'
+      + '\\[u_n = u_0 + n\\,r = '+ex1.u0+' '+texSigned(ex1.r)+'\\,n\\]'
+      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}.\\)</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
+      + '\\[u_{'+ex1.n+'} = '+ex1.u0+' + '+ex1.n+'\\times '+(ex1.r<0 ? '('+tex(ex1.r)+')' : tex(ex1.r))+' = '+ex1.u0+' '+texSigned(ex1.n*ex1.r)+' = '+tex(ex1.ans)+'\\]'
+      + '<p class="small">Vérification rapide : les trois premiers termes sont '+nf(ex1.u0)+' ; '+nf(ex1.u0+ex1.r)+' ; '+nf(ex1.u0+2*ex1.r)+'. On ajoute bien '+nf(ex1.r)+' à chaque fois.</p>'
+      + '<p class="small">Erreur classique : écrire \\(u_n = u_0 + (n-1)r.\\) Cette formule-là servirait si la suite commençait à \\(u_1.\\)</p>';
+  } else {
+    h = '<p><strong>a. Terme général.</strong> La suite est géométrique de premier terme \\(u_0 = '+tex(ex1.u0)+'\\) et de raison \\(q = '+tex(ex1.q)+'.\\) La formule du cours donne</p>'
+      + '\\[u_n = u_0\\,q^{\\,n} = '+tex(ex1.u0)+'\\times '+tex(ex1.q)+'^{\\,n}\\]'
+      + '<p><strong>b. Calcul de \\(u_{'+ex1.n+'}.\\)</strong> On remplace \\(n\\) par '+ex1.n+' :</p>'
+      + '\\[u_{'+ex1.n+'} = '+tex(ex1.u0)+'\\times '+tex(ex1.q)+'^{'+ex1.n+'} = '+tex(ex1.u0)+'\\times '+(ex1.q<1 ? '\\frac{1}{'+tex(Math.pow(2,ex1.n))+'}' : tex(Math.pow(ex1.q, ex1.n)))+' = '+tex(ex1.ans)+'\\]'
+      + '<p class="small">Vérification rapide : les trois premiers termes sont '+nf(ex1.u0)+' ; '+nf(ex1.u0*ex1.q)+' ; '+nf(ex1.u0*ex1.q*ex1.q)+'. On multiplie bien par '+nf(ex1.q)+' à chaque fois.</p>'
+      + '<p class="small">Erreur classique : confondre \\(u_0\\,q^n\\) et \\((u_0\\,q)^n.\\) Seule la raison est élevée à la puissance \\(n.\\)</p>';
+  }
+  c.innerHTML = h; c.classList.add('show'); typeset(c);
+}
+document.getElementById('ex1Check').addEventListener('click', ex1Check);
+document.getElementById('ex1Corr').addEventListener('click', ex1BuildCorr);
+document.getElementById('ex1New').addEventListener('click', ex1New);
+
+/* ================= EXERCICE 2 : somme de termes consécutifs ================= */
+var ex2 = {};
+function ex2New(){
+  var isArith = Math.random() < 0.5;
+  var u0, r, q, a, b, N, ua, ub, S, k;
+  if(isArith){
+    u0 = rnd(1,10);
+    r  = pick([-5,-4,-3,-2,2,3,4,5,6,7]);
+    a  = rnd(2,6);
+    b  = a + rnd(4,9);
+    N  = b - a + 1;
+    ua = u0 + a*r; ub = u0 + b*r;
+    S  = N*(ua+ub)/2;
+    ex2 = { type:'a', u0:u0, r:r, a:a, b:b, N:N, ua:ua, ub:ub, S:S };
+  } else {
+    q  = pick([2,3]);
+    u0 = rnd(1,4);
+    a  = rnd(0,3);
+    b  = a + rnd(3,6);
+    N  = b - a + 1;
+    ua = u0*Math.pow(q,a); ub = u0*Math.pow(q,b);
+    S  = ua*(Math.pow(q,N)-1)/(q-1);
+    ex2 = { type:'g', u0:u0, q:q, a:a, b:b, N:N, ua:ua, ub:ub, S:S };
+  }
+  var stmt;
+  if(ex2.type === 'a'){
+    stmt = '<p>Soit \\((u_n)\\) la suite arithmétique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(r = '+tex(ex2.r)+'.\\)</p>'
+         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}.\\)</p>'
+         + '<p class="small">Commence par compter le nombre de termes : c\'est là que se cachent la plupart des erreurs.</p>';
+  } else {
+    stmt = '<p>Soit \\((u_n)\\) la suite géométrique de premier terme \\(u_0 = '+ex2.u0+'\\) et de raison \\(q = '+ex2.q+'.\\)</p>'
+         + '<p>Calcule \\(S = u_{'+ex2.a+'} + u_{'+(ex2.a+1)+'} + \\dots + u_{'+ex2.b+'}.\\)</p>'
+         + '<p class="small">Commence par compter le nombre de termes : c\'est l\'exposant qui apparaît dans la formule.</p>';
+  }
+  document.getElementById('ex2Stmt').innerHTML = stmt;
+  document.getElementById('ex2InN').value = '';
+  document.getElementById('ex2InS').value = '';
+  document.getElementById('ex2Fb').className = 'fb';
+  document.getElementById('ex2CorrBox').classList.remove('show');
+  typeset(document.getElementById('ex2'));
+}
+function ex2Check(){
+  var vN = parseNum(document.getElementById('ex2InN').value);
+  var vS = parseNum(document.getElementById('ex2InS').value);
+  var okN = approx(vN, ex2.N), okS = approx(vS, ex2.S);
+  var fb = document.getElementById('ex2Fb');
+  if(okN && okS){
+    setFb(fb, true, 'Exact : '+ex2.N+' termes et \\(S = '+tex(ex2.S)+'.\\)');
+  } else if(!okN && okS){
+    setFb(fb, false, 'La somme est bonne, mais le nombre de termes est faux : de \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) il y en a \\('+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'.\\)');
+  } else if(okN && !okS){
+    setFb(fb, false, 'Bon comptage ('+ex2.N+' termes). Reprends la formule de somme avec ce \\(N\\) : ' + (ex2.type==='a' ? '\\(S = N\\times\\frac{\\text{premier}+\\text{dernier}}{2}.\\)' : '\\(S = \\text{premier}\\times\\frac{1-q^{N}}{1-q}.\\)'));
+  } else {
+    setFb(fb, false, 'Pas encore. Étape 1 : compter les termes (\\('+ex2.b+' - '+ex2.a+' + 1\\)). Étape 2 : calculer le premier et le dernier terme de la somme.');
+  }
+  ex2BuildCorr();
+}
+function ex2BuildCorr(){
+  var c = document.getElementById('ex2CorrBox'), h, k, liste = [];
+  for(k=ex2.a; k<=ex2.b; k++){
+    liste.push(ex2.type==='a' ? ex2.u0 + k*ex2.r : ex2.u0*Math.pow(ex2.q,k));
+  }
+  h = '<p><strong>Étape 1 — nombre de termes.</strong> De \\(u_{'+ex2.a+'}\\) à \\(u_{'+ex2.b+'}\\) : \\(N = '+ex2.b+' - '+ex2.a+' + 1 = '+ex2.N+'\\) termes.</p>';
+  if(ex2.type === 'a'){
+    h += '<p><strong>Étape 2 — premier et dernier terme.</strong> \\(u_n = '+ex2.u0+' '+texSigned(ex2.r)+'\\,n,\\) donc</p>'
+      + '\\[u_{'+ex2.a+'} = '+ex2.u0+' '+texSigned(ex2.a*ex2.r)+' = '+tex(ex2.ua)+',\\qquad u_{'+ex2.b+'} = '+ex2.u0+' '+texSigned(ex2.b*ex2.r)+' = '+tex(ex2.ub)+'\\]'
+      + '<p><strong>Étape 3 — formule de la somme arithmétique.</strong></p>'
+      + '\\[S = N\\times\\frac{u_{'+ex2.a+'} + u_{'+ex2.b+'}}{2} = '+ex2.N+'\\times\\frac{'+sumTex(ex2.ua, ex2.ub)+'}{2} = '+ex2.N+'\\times '+facTex((ex2.ua+ex2.ub)/2)+' = '+tex(ex2.S)+'\\]';
+  } else {
+    h += '<p><strong>Étape 2 — premier terme de la somme.</strong> \\(u_n = '+ex2.u0+'\\times '+ex2.q+'^{\\,n},\\) donc \\(u_{'+ex2.a+'} = '+ex2.u0+'\\times '+ex2.q+'^{'+ex2.a+'} = '+tex(ex2.ua)+'.\\)</p>'
+      + '<p><strong>Étape 3 — formule de la somme géométrique.</strong> L\'exposant est le <em>nombre de termes</em> \\(N = '+ex2.N+',\\) pas le dernier indice :</p>'
+      + '\\[S = u_{'+ex2.a+'}\\times\\frac{1-q^{N}}{1-q} = '+tex(ex2.ua)+'\\times\\frac{1-'+ex2.q+'^{'+ex2.N+'}}{1-'+ex2.q+'} = '+tex(ex2.ua)+'\\times '+tex((Math.pow(ex2.q,ex2.N)-1)/(ex2.q-1))+' = '+tex(ex2.S)+'\\]';
+  }
+  h += '<p><strong>Vérification.</strong> Les termes sont : '+joinSum(liste)+' = '+nf(ex2.S)+'. ✓</p>';
+  c.innerHTML = h; c.classList.add('show'); typeset(c);
+}
+document.getElementById('ex2Check').addEventListener('click', ex2Check);
+document.getElementById('ex2Corr').addEventListener('click', ex2BuildCorr);
+document.getElementById('ex2New').addEventListener('click', ex2New);
+
+/* ================= EXERCICE 3 : modélisation et seuil ================= */
+var ex3 = {};
+function ex3New(){
+  var P0, t, q, seuil, u, n, tries = 0;
+  /* on retire tant que la réponse n'est pas un nombre d'années raisonnable (3 à 30 ans) */
+  do {
+    P0 = rnd(12,45)*1000;
+    t  = pick([1.5, 2, 2.5, 3, 4, 5]);
+    q  = 1 + t/100;
+    seuil = Math.round(P0 * pick([1.2, 1.3, 1.4, 1.5, 1.6, 1.8]) / 500) * 500;
+    if(seuil <= P0) seuil = P0 + 2000;
+    u = P0; n = 0;
+    while(u <= seuil && n < 500){ u = u*q; n++; }
+    tries++;
+  } while((n < 3 || n > 30) && tries < 80);
+  var ville = pick(['Belleville', 'Sainte-Colombe', 'Montclair', 'Villeneuve', 'Roqueville', 'Bourg-les-Pins']);
+  ex3 = { P0:P0, t:t, q:q, seuil:seuil, ans:n, ville:ville, val:u };
+  document.getElementById('ex3Stmt').innerHTML =
+      '<p>En 2025, la commune de <strong>'+ville+'</strong> compte '+nf(P0)+' habitants. Les études prévoient une augmentation de <strong>'+nf(t)+' % par an</strong>.</p>'
+    + '<p>On note \\(u_n\\) le nombre d\'habitants \\(n\\) années après 2025, donc \\(u_0 = '+tex(P0)+'.\\)</p>'
+    + '<p><strong>Au bout de combien d\'années la population dépassera-t-elle '+nf(seuil)+' habitants ?</strong> (réponse : un nombre entier d\'années)</p>'
+    + '<p class="small">Pas de logarithme : on teste les valeurs, à la calculatrice ou avec une boucle.</p>';
+  document.getElementById('ex3In').value = '';
+  document.getElementById('ex3Fb').className = 'fb';
+  document.getElementById('ex3CorrBox').classList.remove('show');
+  typeset(document.getElementById('ex3'));
+}
+function ex3Check(){
+  var v = parseNum(document.getElementById('ex3In').value);
+  var fb = document.getElementById('ex3Fb');
+  if(approx(v, ex3.ans)){
+    setFb(fb, true, 'Exact : au bout de '+ex3.ans+' ans, la population atteint environ '+nf(ex3.val,0)+' habitants et dépasse le seuil.');
+  } else if(isNaN(v)){
+    setFb(fb, false, 'Réponse manquante : donne un nombre entier d\'années.');
+  } else if(Math.abs(v - ex3.ans) === 1){
+    setFb(fb, false, 'Tout près ! Vérifie les deux valeurs qui encadrent le seuil : il faut le <strong>premier</strong> rang où \\(u_n\\) dépasse '+nf(ex3.seuil)+'.');
+  } else {
+    setFb(fb, false, 'Pas encore. Commence par le coefficient multiplicateur \\(q = 1 + \\frac{'+tex(ex3.t)+'}{100},\\) puis calcule \\(u_n = u_0\\,q^n\\) de proche en proche.');
+  }
+  ex3BuildCorr();
+}
+function ex3BuildCorr(){
+  var c = document.getElementById('ex3CorrBox');
+  var start = Math.max(0, ex3.ans - 4), k;
+  var th = '<tr><th>n</th>', rv = '<tr><th>\\(u_n\\)</th>';
+  for(k=start; k<=ex3.ans+1; k++){
+    var val = ex3.P0*Math.pow(ex3.q,k);
+    th += '<th>'+k+'</th>';
+    rv += '<td'+(k===ex3.ans?' style="background:#e3f6ec;font-weight:700"':'')+'>'+nf(val,0)+'</td>';
+  }
+  var h = '<p><strong>Étape 1 — modéliser.</strong> Augmenter de '+nf(ex3.t)+' % par an revient à multiplier par</p>'
+    + '\\[q = 1 + \\frac{'+tex(ex3.t)+'}{100} = '+tex(ex3.q)+'\\]'
+    + '<p>La suite \\((u_n)\\) est donc <strong>géométrique</strong> de raison \\(q = '+tex(ex3.q)+'\\) et de premier terme \\(u_0 = '+tex(ex3.P0)+'.\\)</p>'
+    + '<p><strong>Étape 2 — terme général.</strong></p>'
+    + '\\[u_n = '+tex(ex3.P0)+'\\times '+tex(ex3.q)+'^{\\,n}\\]'
+    + '<p><strong>Étape 3 — chercher le seuil.</strong> On calcule les termes jusqu\'à dépasser '+nf(ex3.seuil)+' :</p>'
+    + '<div class="tablewrap"><table>'+th+'</tr>'+rv+'</tr></table></div>'
+    + '<p>On lit \\(u_{'+(ex3.ans-1)+'} \\approx '+tex(ex3.P0*Math.pow(ex3.q,ex3.ans-1),0)+' \\lt '+tex(ex3.seuil)+'\\) et \\(u_{'+ex3.ans+'} \\approx '+tex(ex3.val,0)+' \\gt '+tex(ex3.seuil)+'.\\)</p>'
+    + '<div class="box green"><span class="lbl">Conclusion</span>La population dépasse '+nf(ex3.seuil)+' habitants au bout de <strong>'+ex3.ans+' ans</strong>, c\'est-à-dire en '+(2025+ex3.ans)+'.</div>'
+    + '<p><strong>Remarque — algorithme de seuil.</strong> Plutôt que de remplir un tableau, on programme la même recherche :</p>'
+    + '<pre class="py">u = '+ex3.P0+'\nn = 0\nwhile u &lt;= '+ex3.seuil+':\n    u = u * '+String(ex3.q)+'\n    n = n + 1\nprint(n)   # affiche '+ex3.ans+'</pre>'
+    + '<p class="small">La boucle s\'arrête au <em>premier</em> rang où la condition \\(u \\le '+tex(ex3.seuil)+'\\) devient fausse : c\'est bien le premier rang où la population dépasse le seuil. En Première on n\'utilise pas le logarithme pour résoudre \\(q^n \\gt k.\\)</p>';
+  c.innerHTML = h; c.classList.add('show'); typeset(c);
+}
+document.getElementById('ex3Check').addEventListener('click', ex3Check);
+document.getElementById('ex3Corr').addEventListener('click', ex3BuildCorr);
+document.getElementById('ex3New').addEventListener('click', ex3New);
+</script>
+
+<script>
+/* ================= QCM ================= */
+var QCM_BANK = [
+  { q:'\\((u_n)\\) est arithmétique de raison \\(r = 4\\) et \\(u_0 = 7.\\) Que vaut \\(u_{10}\\) ?',
+    opts:['\\(47\\)','\\(40\\)','\\(43\\)','\\(28\\)'], correct:0,
+    expl:'\\(u_n = u_0 + nr,\\) donc \\(u_{10} = 7 + 10\\times 4 = 47.\\)' },
+  { q:'\\((u_n)\\) est géométrique de raison \\(q = 3\\) et \\(u_0 = 2.\\) Que vaut \\(u_4\\) ?',
+    opts:['\\(162\\)','\\(54\\)','\\(24\\)','\\(486\\)'], correct:0,
+    expl:'\\(u_4 = 2\\times 3^4 = 2\\times 81 = 162.\\)' },
+  { q:'Une population baisse de \\(5\\,\\%\\) par an. Le coefficient multiplicateur est :',
+    opts:['\\(0{,}95\\)','\\(-0{,}05\\)','\\(1{,}05\\)','\\(-5\\)'], correct:0,
+    expl:'Baisser de \\(t\\,\\%\\) revient à multiplier par \\(1 - \\frac{t}{100} = 0{,}95.\\)' },
+  { q:'Combien y a-t-il de termes dans la somme \\(u_4 + u_5 + \\dots + u_{15}\\) ?',
+    opts:['\\(12\\)','\\(11\\)','\\(15\\)','\\(13\\)'], correct:0,
+    expl:'De \\(u_a\\) à \\(u_b\\) il y a \\(b - a + 1\\) termes : \\(15 - 4 + 1 = 12.\\)' },
+  { q:'Que vaut \\(1 + 2 + 3 + \\dots + 50\\) ?',
+    opts:['\\(1275\\)','\\(1250\\)','\\(2550\\)','\\(1225\\)'], correct:0,
+    expl:'\\(\\frac{n(n+1)}{2} = \\frac{50\\times 51}{2} = 1275.\\)' },
+  { q:'Que vaut \\(1 + 2 + 4 + 8 + \\dots + 2^{6}\\) ?',
+    opts:['\\(127\\)','\\(128\\)','\\(63\\)','\\(126\\)'], correct:0,
+    expl:'\\(\\frac{1-2^{7}}{1-2} = \\frac{1-128}{-1} = 127\\) : il y a 7 termes, donc l\'exposant est 7.' },
+  { q:'Soit \\(u_n = 9 - 2n.\\) La suite \\((u_n)\\) est :',
+    opts:['arithmétique de raison \\(-2\\)','géométrique de raison \\(-2\\)','arithmétique de raison \\(9\\)','ni l\'une ni l\'autre'], correct:0,
+    expl:'\\(u_{n+1} - u_n = 9-2(n+1) - (9-2n) = -2,\\) constante : arithmétique de raison \\(-2.\\)' },
+  { q:'Soit \\(v_n = 5\\times 4^{\\,n}.\\) Alors \\(\\dfrac{v_{n+1}}{v_n}\\) vaut :',
+    opts:['\\(4\\)','\\(5\\)','\\(20\\)','\\(4^n\\)'], correct:0,
+    expl:'\\(\\frac{5\\times 4^{n+1}}{5\\times 4^{n}} = 4\\) : la suite est géométrique de raison 4.' },
+  { q:'\\((u_n)\\) est géométrique avec \\(u_0 \\gt 0\\) et \\(q = 0{,}8.\\) Elle est :',
+    opts:['décroissante et se rapproche de 0','croissante','constante','décroissante puis croissante'], correct:0,
+    expl:'\\(0 \\lt q \\lt 1\\) avec un premier terme positif : les termes diminuent et \\(q^n\\) tend vers 0.' },
+  { q:'\\((u_n)\\) est arithmétique, \\(u_3 = 11\\) et \\(r = 5.\\) Que vaut \\(u_9\\) ?',
+    opts:['\\(41\\)','\\(46\\)','\\(56\\)','\\(36\\)'], correct:0,
+    expl:'\\(u_9 = u_3 + (9-3)\\times 5 = 11 + 30 = 41.\\)' },
+  { q:'Un capital de \\(2000\\) € placé à \\(2\\,\\%\\) par an vaut, au bout de \\(n\\) années :',
+    opts:['\\(2000\\times 1{,}02^{\\,n}\\)','\\(2000 + 0{,}02n\\)','\\(2000\\times 0{,}02^{\\,n}\\)','\\(2000\\times 1{,}2^{\\,n}\\)'], correct:0,
+    expl:'Taux constant \\(\\Rightarrow\\) suite géométrique de raison \\(q = 1{,}02,\\) donc \\(C_n = C_0 q^n.\\)' },
+  { q:'Une entreprise embauche \\(30\\) personnes de plus chaque année. Le nombre d\'employés suit une suite :',
+    opts:['arithmétique de raison 30','géométrique de raison 30','géométrique de raison \\(1{,}30\\)','ni arithmétique ni géométrique'], correct:0,
+    expl:'On <em>ajoute</em> toujours le même nombre : c\'est arithmétique, de raison 30.' },
+  { q:'Pour une suite géométrique commençant à \\(u_1,\\) le terme général est :',
+    opts:['\\(u_n = u_1\\,q^{\\,n-1}\\)','\\(u_n = u_1\\,q^{\\,n}\\)','\\(u_n = u_1 + (n-1)q\\)','\\(u_n = (u_1 q)^{n-1}\\)'], correct:0,
+    expl:'De \\(u_1\\) à \\(u_n\\) on multiplie \\(n-1\\) fois par \\(q\\) : \\(u_n = u_1 q^{\\,n-1}.\\)' },
+  { q:'Pour trouver le premier rang où \\(u_n\\) dépasse un seuil \\(S\\) en Première, on :',
+    opts:['calcule les termes jusqu\'à dépasser \\(S\\) (boucle while)','résout \\(q^n \\gt S\\) avec le logarithme','utilise la dérivée','ne peut pas répondre'], correct:0,
+    expl:'Le logarithme n\'est pas au programme de Première : on procède par essais successifs ou avec un algorithme de seuil.' },
+  { q:'\\(u_n = 6 + 2n.\\) Que vaut \\(u_0 + u_1 + \\dots + u_{10}\\) ?',
+    opts:['\\(176\\)','\\(160\\)','\\(150\\)','\\(186\\)'], correct:0,
+    expl:'11 termes, \\(u_0 = 6,\\) \\(u_{10} = 26\\) : \\(S = 11\\times\\frac{6+26}{2} = 11\\times 16 = 176.\\)' },
+  { q:'Quelle suite finit par croître le plus vite ?',
+    opts:['\\(v_n = 2^{\\,n}\\)','\\(u_n = 100n\\)','\\(w_n = 1000 + 50n\\)','elles croissent pareil'], correct:0,
+    expl:'Une croissance exponentielle finit toujours par dépasser une croissance linéaire : \\(2^{20} \\gt 1\\,000\\,000\\) alors que \\(100\\times 20 = 2000.\\)' }
+];
+var qcmMap = {};
+var qcmState = { answered:0, score:0, total:4 };
+
+function buildQcm(){
+  var box = document.getElementById('qcmBox');
+  box.innerHTML = '';
+  var sc = document.getElementById('qcmScore');
+  sc.className = 'score'; sc.textContent = '';
+  qcmMap = {};
+  qcmState = { answered:0, score:0, total:4 };
+  var chosen = shuffle(QCM_BANK).slice(0, 4);
+  chosen.forEach(function(item, i){
+    var order = shuffle([0,1,2,3]);
+    var correctIdx = order.indexOf(item.correct);
+    qcmMap[i] = { correct: correctIdx, expl: item.expl, done: false };
+    var div = document.createElement('div');
+    div.className = 'qcm-q'; div.id = 'q' + i;
+    var stem = document.createElement('div');
+    stem.innerHTML = '<strong>' + (i+1) + '.</strong> ' + item.q;
+    div.appendChild(stem);
+    var opts = document.createElement('div');
+    opts.className = 'opts';
+    order.forEach(function(oi, pos){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.innerHTML = '<strong>' + 'ABCD'[pos] + '.</strong> ' + item.opts[oi];
+      btn.addEventListener('click', function(){ answerQcm(i, pos); });
+      opts.appendChild(btn);
+    });
+    div.appendChild(opts);
+    var ex = document.createElement('div');
+    ex.className = 'qexpl'; ex.id = 'qexpl' + i;
+    div.appendChild(ex);
+    box.appendChild(div);
+  });
+  typeset(box);
+}
+
+function answerQcm(i, pos){
+  var m = qcmMap[i];
+  if(!m || m.done) return;
+  m.done = true;
+  var q = document.getElementById('q' + i);
+  var buttons = q.querySelectorAll('.opts button');
+  var ok = (pos === m.correct);
+  Array.prototype.forEach.call(buttons, function(b, idx){
+    b.disabled = true;
+    if(idx === m.correct) b.classList.add('right');
+    else if(idx === pos) b.classList.add('wrong');
+  });
+  var ex = document.getElementById('qexpl' + i);
+  ex.innerHTML = (ok ? '<strong style="color:#22a06b">Bravo !</strong> ' : '<strong style="color:#c2410c">Raté.</strong> ') + m.expl;
+  ex.style.display = 'block';
+  typeset(ex);
+  qcmState.answered++;
+  if(ok) qcmState.score++;
+  if(qcmState.answered === qcmState.total){
+    var s = qcmState.score;
+    var sc = document.getElementById('qcmScore');
+    sc.className = 'score show';
+    sc.textContent = 'Score : ' + s + ' / ' + qcmState.total + (s === 4 ? ' — sans faute, bravo !' : (s >= 2 ? ' — relis les explications puis retente un nouveau QCM.' : ' — reprends le cours et la méthode, puis recommence.'));
+  }
+}
+document.getElementById('qcmNew').addEventListener('click', buildQcm);
+
+/* ================= initialisation ================= */
+drawCmp();
+drawTaux();
+ex1New();
+ex2New();
+ex3New();
+buildQcm();
+</script>
+<button class="to-top" id="toTop" type="button" aria-label="Revenir en haut">↑</button>
+<script>
+(function(){
+  var b = document.getElementById('toTop');
+  if (!b) return;
+  function maj(){ b.classList.toggle('show', window.scrollY > 300); }
+  window.addEventListener('scroll', maj); maj();
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+<!-- SITE:SIGN:START -->
+<div class="site-sign">© 2026 <a href="https://joasolucions.com" target="_blank" rel="noopener noreferrer">Solucions Digitals JOA</a> · Contenu pédagogique sous licence CC BY-SA 4.0</div>
+<!-- SITE:SIGN:END -->
+<!-- SITE:SCRIPT:START -->
+<script id="site-config" type="application/json">{"version": 1, "kind": "lesson", "prefix": "../../", "current": "3B", "chapters": [{"number": 1, "title": "Équations et fonctions polynômes du second degré", "goal": "—", "prerequisites": "Formes factorisée et canonique, discriminant, racines, signe, somme et produit des racines", "lessons": [{"id": "1A", "title": "Second degré : les trois formes", "level": "premiere", "path": "chapitres/01_second_degre/1A_second_degre.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Une fonction, trois écritures 2La forme factorisée : racines, signe, somme et produit 3La forme canonique : le sommet et l'extremum 4Le discriminant et les trois cas 5Résoudre \\(ax^{2}+bx+c=0\\) Démonstration exigible 6Le signe : « du signe de \\(a\\), sauf entre les racines » 7Choisir la forme adaptée La capacité centrale"}, {"id": "methode", "title": "2. Méthode", "keywords": "A — Choisir la bonne forme : l'arbre de décision B — Factoriser en diversifiant les stratégies C — Résoudre une inéquation du second degré D — Trouver le sommet E — Déterminer un polynôme connaissant ses deux racines Les cinq erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Factoriser sans discriminant Niveau 1 Exercice 2 — Discriminant, puis racines Niveau 2 Exercice 3 — Signe et optimisation Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 2, "title": "Produit scalaire et géométrie", "goal": "Produit scalaire dans l'espace, vecteur normal à un plan, équation cartésienne d'un plan, représentation paramétrique d'une droite, projeté orthogonal, distances", "prerequisites": "Produit scalaire dans le plan, Al-Kashi, cercle de diamètre [AB], géométrie repérée, vecteur normal à une droite", "lessons": [{"id": "2A", "title": "Produit scalaire : les définitions", "level": "premiere", "path": "chapitres/02_produit_scalaire/2A_produit_scalaire_definitions.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Définition par projection orthogonale 2Définition avec le cosinus 3Expression dans une base orthonormée 4Norme et carré scalaire 5Symétrie et bilinéarité 6Caractérisation de l'orthogonalité 7Le signe renseigne sur l'angle"}, {"id": "methode", "title": "Méthode", "keywords": "Choisir la bonne formule selon les données Démontrer une orthogonalité Calculer un angle Erreurs fréquentes"}, {"id": "visualisation", "title": "Visualisation", "keywords": "Les trois formules donnent le même nombre"}, {"id": "exercices", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 · application directe Exercice 2 Niveau 2 · orthogonalité avec paramètre Exercice 3 Niveau 3 · calcul d'un angle"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "2B", "title": "Produit scalaire : applications", "level": "premiere", "path": "chapitres/02_produit_scalaire/2B_produit_scalaire_applications.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1 Développer une norme au carré 2 Formule de polarisation : calculer avec les normes seules 3 Formule d'Al-Kashi démonstration exigible 4 Transformer \\(\\vec{MA}\\cdot\\vec{MB}\\) avec le milieu \\(I\\) 5 Le cercle de diamètre \\([AB]\\) démonstration exigible 6 Théorème de la médiane approfondissement 7 Choisir la méthode de calcul de \\(\\vec u\\cdot\\vec v\\)"}, {"id": "methode", "title": "Méthode", "keywords": "Calculer une longueur avec Al-Kashi Calculer un angle avec Al-Kashi Montrer qu'un ensemble de points est un cercle Calculer \\(\\vec u\\cdot\\vec v\\) quand on connaît trois normes Erreurs fréquentes"}, {"id": "visualisation", "title": "Visualisation", "keywords": ""}, {"id": "exercices", "title": "Exercices", "keywords": "Produit scalaire avec normes et angle Al-Kashi : calculer le troisième côté Angle d'un triangle dont on connaît les trois côtés"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "2C", "title": "Géométrie repérée", "level": "premiere", "path": "chapitres/02_produit_scalaire/2C_geometrie_reperee.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Vecteur normal à une droite 2Équation cartésienne : un point et un vecteur normal 3Projeté orthogonal d'un point sur une droite 4Distance d'un point à une droite 5Équation d'un cercle 6Reconnaître un cercle : compléter le carré 7Parabole : axe de symétrie et sommet"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Trouver une équation de droite avec un vecteur normal Méthode 2 — Trouver le projeté orthogonal \\(H\\) de \\(M\\) sur \\(d\\) Méthode 3 — Reconnaître un cercle (compléter le carré) Méthode 4 — Équation du cercle de diamètre \\([AB]\\) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "2D", "title": "Orthogonalité et distances dans l'espace", "level": "terminale", "path": "chapitres/02_produit_scalaire/2D_espace_orthogonalite_distances.html", "sections": [{"id": "cours", "title": "1Cours", "keywords": "1. Produit scalaire, norme et distance en repère orthonormé Terminale 2. Propriétés (identiques au plan) Première 3. Orthogonalité : vecteurs, droites, droite et plan Terminale 4. Vecteur normal et équation cartésienne d'un plan Terminale Démonstration exigible 5. Représentation paramétrique d'une droite Terminale 6. Projeté orthogonal et distance d'un point à un plan Terminale Démonstration exigible 7. Projeté orthogonal sur une droite, distance point-droite Terminale"}, {"id": "methode", "title": "2Méthode", "keywords": "Montrer qu'un vecteur \\(\\vec n\\) est normal à un plan Équation cartésienne d'un plan Représentation paramétrique d'une droite Intersection d'une droite et d'un plan Projeté orthogonal et distance d'un point \\(M\\) à un plan Erreurs fréquentes"}, {"id": "visu", "title": "3Visualisation", "keywords": "Vue 1 · Plan \\(ax+by+cz+d=0\\), point \\(M\\) et son projeté \\(H\\) Vue 2 · Droite paramétrée \\(M(t) = A + t\\,\\vec u\\)"}, {"id": "exos", "title": "4Exercices", "keywords": "Exercice 1 Niveau 1 · Équation cartésienne d'un plan Exercice 2 Niveau 2 · Intersection d'une droite et d'un plan Exercice 3 Niveau 3 · Projeté orthogonal et distance d'un point à un plan"}, {"id": "qcm", "title": "5QCM", "keywords": ""}]}]}, {"number": 3, "title": "Suites", "goal": "Raisonnement par récurrence, limites, opérations et comparaison, gendarmes, comportement de qⁿ, convergence monotone", "prerequisites": "Modes de génération, sens de variation, suites arithmétiques et géométriques, sommes", "lessons": [{"id": "3A", "title": "Suites numériques : génération et variations", "level": "premiere", "path": "chapitres/03_suites/3A_suites_generation_variations.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Qu'est-ce qu'une suite ? 2Génération explicite : \\(u_n = f(n)\\) 3Génération par récurrence : \\(u_{n+1} = f(u_n)\\) 4Génération par algorithme et par motif 5Représentation graphique 6Sens de variation 7Intuition de limite (sur exemples)"}, {"id": "methode", "title": "2. Méthode", "keywords": "Pour calculer les premiers termes Pour passer d'un mode de génération à l'autre Pour étudier le sens de variation Pour écrire l'algorithme Python d'une suite récurrente Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Suite explicite niveau 1 Exercice 2 — Suite récurrente niveau 2 Exercice 3 — Sens de variation niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "3B", "title": "Suites arithmétiques et géométriques", "level": "premiere", "path": "chapitres/03_suites/3B_suites_arithmetiques_geometriques.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Suite arithmétique : on ajoute toujours le même nombre 2Suite géométrique : on multiplie toujours par le même nombre 3Somme des premiers entiers et somme arithmétique 4Somme des puissances et somme géométrique 5Sens de variation 6Intuition de limite (sans formalisme) 7Récapitulatif"}, {"id": "methode", "title": "Méthode", "keywords": "AReconnaître une suite arithmétique ou géométrique BTrouver le terme général CCalculer une somme de termes consécutifs DModéliser une évolution à taux fixe EChercher un seuil (algorithme) !Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "1Terme général et calcul d'un termeniveau 1 2Somme de termes consécutifsniveau 2 3Modélisation et seuilniveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "3C", "title": "Récurrence et limites de suites", "level": "terminale", "path": "chapitres/03_suites/3C_recurrence_limites.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Le raisonnement par récurrence 2Limite infinie : \\(+\\infty\\) et \\(-\\infty\\) 3Suite convergente : limite finie \\(\\ell\\) 4Opérations sur les limites et formes indéterminées 5Comparaison et théorème des gendarmes 6Comportement de \\((q^n)\\) et inégalité de Bernoulli 7Suites monotones et étude de \\(u_{n+1}=f(u_n)\\)"}, {"id": "methode", "title": "2. Méthode", "keywords": "Pour rédiger une récurrence — modèle à trous Pour calculer une limite — arbre de décision Pour étudier une suite \\(u_{n+1}=f(u_n)\\) Pour écrire un algorithme de seuil (Python, boucle while) Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Limite d'une suite explicite niveau 1 Exercice 2 — Une récurrence, pas à pas niveau 2 Exercice 3 — Gendarmes et comparaison niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 4, "title": "Dérivation et convexité", "goal": "Dérivée d'une fonction composée, dérivée seconde, convexité, point d'inflexion", "prerequisites": "Nombre dérivé, tangente, dérivées usuelles et opérations, dérivée de g(ax+b), variations et extremums", "lessons": [{"id": "4A", "title": "Nombre dérivé et tangente", "level": "premiere", "path": "chapitres/04_derivation_convexite/4A_nombre_derive_tangente.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Le taux de variation entre \\(a\\) et \\(a+h\\) 2. Le nombre dérivé \\(f'(a)\\) 3. Le calcul complet sur la fonction carré 4. La tangente, position limite des sécantes 5. Équation de la tangente à savoir démontrer 6. Ce que mesure \\(f'(a)\\) dans la vraie vie 7. Lire un nombre dérivé sur un graphique"}, {"id": "methode", "title": "Méthode", "keywords": "A. Calculer un nombre dérivé à partir de la définition B. Déterminer l'équation d'une tangente C. Lire \\(f'(a)\\) sur un graphique D. Construire la tangente connaissant \\(f(a)\\) et \\(f'(a)\\) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "4B", "title": "Calcul de dérivées", "level": "premiere", "path": "chapitres/04_derivation_convexite/4B_calcul_de_derivees.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Fonction dérivable sur un intervalle, fonction dérivée 2Les dérivées de référence 3Somme et multiple par un réel 4Dérivée d'un produit à savoir démontrer 5Dérivée d'un inverse et d'un quotient à savoir démontrer 6Dérivée de \\(x\\mapsto g(ax+b)\\) 7Deux fonctions non dérivables en \\(0\\) à savoir démontrer"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Reconnaître la structure avant de dériver Méthode 2 — Appliquer la formule du produit, pas à pas Méthode 3 — Appliquer la formule du quotient sans se tromper de signe Méthode 4 — Simplifier le résultat et donner l'ensemble de dérivabilité Les cinq erreurs qui coûtent des points"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "4C", "title": "Variations, extremums et optimisation", "level": "premiere", "path": "chapitres/04_derivation_convexite/4C_variations_extremums.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Signe de \\(f'\\) et sens de variation 2Dérivée nulle et fonctions constantes 3Le tableau de variations 4Extremum local et nombre dérivé nul piège classique 5Tangente horizontale en un extremum 6Le second degré vu par la dérivation à savoir refaire 7Inégalités et position de deux courbes à savoir démontrer"}, {"id": "methode", "title": "Méthode", "keywords": "Étudier les variations d'une fonction — 5 étapes Étudier le signe d'une dérivée, selon sa forme Résoudre un problème d'optimisation Démontrer une inégalité par l'étude d'une fonction Comparer deux courbes Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "4D", "title": "Dérivée d'une fonction composée", "level": "terminale", "path": "chapitres/04_derivation_convexite/4D_derivee_composee.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Composer deux fonctions : \\(v \\circ u\\) 2. Où la composée est-elle définie ? 3. La formule de dérivation d'une composée admise 4. Les quatre cas usuels à connaître par cœur 5. Le lien avec \\(g(ax+b)\\) vue en Première 6. Étudier une fonction construite à partir des fonctions de référence 7. Ce qui viendra plus tard"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Reconnaître une composée Méthode 2 — Dériver une composée en 3 étapes Méthode 3 — Produit, quotient ou composée ? L'arbre de décision Méthode 4 — Étudier une fonction construite à partir des fonctions de référence Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "4E", "title": "Convexité", "level": "terminale", "path": "chapitres/04_derivation_convexite/4E_convexite.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1La dérivée seconde \\(f''\\) 2Définition : convexe, c'est « sous ses sécantes » 3Les trois caractérisations équivalentes (admises) 4Le tableau à connaître par cœur 5Point d'inflexion 6Démonstration exigible à savoir refaire 7Démontrer une inégalité avec la convexité"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Étudier la convexité d'une fonction Méthode 2 — Lire la convexité sur un graphique Méthode 3 — Esquisser l'allure de \\(\\mathcal{C}_f\\) à partir d'un tableau Méthode 4 — Démontrer une inégalité par la convexité Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 5, "title": "Limites de fonctions et continuité", "goal": "Limites en l'infini et en un point, asymptotes, opérations, croissances comparées, continuité, théorème des valeurs intermédiaires, dichotomie", "prerequisites": "Fonctions de référence et leurs courbes, lecture graphique, suites et limites (chapitre 2)", "lessons": [{"id": "5A", "title": "Les fonctions de référence", "level": "premiere", "path": "chapitres/05_limites_continuite/5A_fonctions_de_reference.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1La fonction carré et la fonction cube 2La fonction inverse et la fonction racine carrée 3La valeur absolue et les puissances entières \\(x^n\\) 4La fonction exponentielle 5Parité : deux symétries à reconnaître 6Lire une courbe : image, antécédent, équation, inéquation 7Que se passe-t-il quand \\(x\\) devient très grand ? vers la Terminale"}, {"id": "methode", "title": "Méthode", "keywords": "Reconnaître une fonction de référence dans une expression Lire une image, un antécédent, résoudre graphiquement Étudier la parité d'une fonction Choisir une fenêtre d'affichage pertinente Décrire le comportement aux bornes de \\(D_f\\) (sans formalisme) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "5B", "title": "Limites de fonctions", "level": "terminale", "path": "chapitres/05_limites_continuite/5B_limites_de_fonctions.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Limite finie en \\(+\\infty\\) et en \\(-\\infty\\) : asymptote horizontale 2Limite infinie en \\(+\\infty\\) et en \\(-\\infty\\) 3Limite en un point : infinie (asymptote verticale) ou finie 4Limites des fonctions de référence 5Opérations sur les limites admises 6Lever une forme indéterminée : factoriser le terme prépondérant 7Limites et comparaison ; croissances comparées"}, {"id": "methode", "title": "2. Méthode", "keywords": "Déterminer une limite — arbre de décision Lire et justifier une asymptote — dans les deux sens Traiter une limite en un point où le dénominateur s'annule Utiliser le théorème des gendarmes pour une fonction Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Quotient de polynômes en \\(+\\infty\\) Niveau 1 Exercice 2 — Limite en un point où le dénominateur s'annule Niveau 2 Exercice 3 — Croissance comparée et terme prépondérant Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "5C", "title": "Continuité et valeurs intermédiaires", "level": "terminale", "path": "chapitres/05_limites_continuite/5C_continuite_tvi.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Continuité en un point, puis sur un intervalle 2Toute fonction dérivable est continue 3Quelles fonctions sont continues ? 4Image d'une suite convergente par une fonction continue 5Le théorème des valeurs intermédiaires 6Le corollaire : continuité + stricte monotonie \\(\\Rightarrow\\) unicité 7La rédaction type attendue au bac à recopier"}, {"id": "methode", "title": "Méthode", "keywords": "Méthode 1 — Justifier la continuité d'une fonction Méthode 2 — Montrer que \\(f(x) = k\\) a une unique solution sur \\([a\\,;b]\\) Méthode 3 — Encadrer la solution \\(\\alpha\\) Méthode 4 — Limite d'une suite définie par \\(u_{n+1} = f(u_n)\\) Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 6, "title": "Exponentielle et logarithme", "goal": "Limites de l'exponentielle, croissances comparées, fonction logarithme népérien, propriétés algébriques, dérivée, résolution d'équations et d'inéquations", "prerequisites": "Définition et propriétés de l'exponentielle, équation fonctionnelle, variations, modélisation d'une croissance", "lessons": [{"id": "6A", "title": "La fonction exponentielle", "level": "premiere", "path": "chapitres/06_exponentielle_logarithme/6A_fonction_exponentielle.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Une fonction égale à sa propre dérivée 2La relation fonctionnelle approfondissement 3Le nombre \\(\\mathrm{e}\\) et la notation \\(\\mathrm{e}^x\\) 4Une suite géométrique cachée lien fiche 3B 5Signe, variations et courbe 6Les fonctions \\(t \\mapsto \\mathrm{e}^{kt}\\) 7Modéliser avec une exponentielle"}, {"id": "methode", "title": "Méthode", "keywords": "Transformer une expression avec les propriétés algébriques Résoudre \\(\\mathrm{e}^{f(x)} = \\mathrm{e}^{g(x)}\\) ou l'inéquation correspondante Dériver une expression contenant \\(\\mathrm{e}^{x}\\) Modéliser une évolution par une exponentielle Reconnaître une suite géométrique derrière une exponentielle Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "6B", "title": "Fonctions avec une exponentielle", "level": "terminale", "path": "chapitres/06_exponentielle_logarithme/6B_fonctions_avec_exponentielle.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Rappel express : les propriétés algébriques et la stricte croissance 2Équations et inéquations : le principe fondamental 3Limites de l'exponentielle et asymptote 4Croissances comparées : l'exponentielle gagne toujours 5Dérivée de \\(\\mathrm e^{u}\\) 6Conséquence décisive : le signe de \\(f'\\) est celui de \\(u'\\) 7Le plan d'étude complet d'une fonction"}, {"id": "methode", "title": "2. Méthode", "keywords": "Résoudre une équation ou une inéquation avec exponentielle Lever une forme indéterminée contenant une exponentielle Étudier une fonction du type \\(f(x)=(ax+b)\\,\\mathrm e^{cx}\\) — les six étapes Déterminer une tangente, et la position de la courbe par rapport à elle Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Équations et inéquations Niveau 1 Exercice 2 — Dérivée d'un produit avec exponentielle Niveau 2 Exercice 3 — Étude complète guidée Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "6C", "title": "Logarithme népérien", "level": "terminale", "path": "chapitres/06_exponentielle_logarithme/6C_logarithme_neperien.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Définition : la fonction réciproque de l'exponentielle 2Propriétés algébriques 3Dérivée du logarithme à savoir démontrer 4Variations, signe, limites 5Courbe : la symétrie par rapport à la droite \\(y=x\\) 6Croissances comparées une limite à savoir démontrer 7Dérivée de \\(\\ln(u)\\)"}, {"id": "methode", "title": "2. Méthode", "keywords": "ARésoudre une équation avec un logarithme BRésoudre une inéquation avec un logarithme CChercher un seuil dans une suite géométrique le lien avec la fiche 3B DDériver et étudier une fonction contenant \\(\\ln\\) ELever une forme indéterminée avec \\(\\ln\\) !Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Simplifier une expression Niveau 1 Exercice 2 — Équation ou inéquation Niveau 2 Exercice 3 — Recherche de seuil Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 7, "title": "Géométrie dans l'espace", "goal": "Vecteurs de l'espace, combinaisons linéaires, bases et repères, positions relatives de droites et de plans, coplanarité, systèmes linéaires", "prerequisites": "Calcul vectoriel dans le plan, colinéarité, repérage", "lessons": [{"id": "7A", "title": "Calcul vectoriel dans le plan", "level": "premiere", "path": "chapitres/07_geometrie_espace/7A_calcul_vectoriel_plan.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Un vecteur : direction, sens, longueur 2Relation de Chasles 3Somme, vecteur nul, opposé, différence 4Multiplication par un réel 5Colinéarité et déterminant 6Base, repère, coordonnées 7Démontrer sans repère à savoir démontrer"}, {"id": "methode", "title": "Méthode", "keywords": "1. Décomposer un vecteur avec la relation de Chasles 2. Montrer que trois points sont alignés 3. Montrer que deux droites sont parallèles 4. Exprimer un vecteur comme combinaison linéaire, à partir d'une figure 5. Démontrer une propriété géométrique sans repère Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 — Coordonnées, somme, multiple Niveau 1 Exercice 2 — Colinéarité Niveau 2 Exercice 3 — Alignement et parallélogramme Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "7B", "title": "Vecteurs de l'espace", "level": "terminale", "path": "chapitres/07_geometrie_espace/7B_vecteurs_espace.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Un vecteur de l'espace, c'est exactement comme dans le plan 2. Chasles et toutes les règles de calcul se transportent 3. Combinaison linéaire 4. Colinéarité : deux vecteurs, une même direction 5. Coplanarité : la nouveauté de Terminale nouveau 6. Base de l'espace et décomposition unique 7. Repère de l'espace, coordonnées, formules"}, {"id": "methode", "title": "Méthode", "keywords": "A. Exprimer un vecteur comme combinaison linéaire à partir d'une figure B. Montrer que trois vecteurs sont coplanaires C. Montrer que quatre points sont coplanaires D. Montrer que trois vecteurs forment une base E. Lire une décomposition sur une figure Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": "Vue 1 · Décomposer un vecteur du cube Vue 2 · Coplanaires ou base ?"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "7C", "title": "Droites et plans de l’espace", "level": "terminale", "path": "chapitres/07_geometrie_espace/7C_droites_plans_espace.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1Une droite : un point et une direction 2Un plan : un point et deux directions 3Deux droites : quatre cas, dont un nouveau 4Une droite et un plan : trois cas 5Deux plans : trois cas 6Trois théorèmes de parallélisme 7Tout se ramène à un système linéaire"}, {"id": "methode", "title": "Méthode", "keywords": "A. Déterminer la position relative de deux droites B. Montrer qu'une droite est parallèle à un plan C. Déterminer l'intersection d'une droite et d'un plan D. Construire la section d'un cube par un plan très demandée au bac E. Traduire une configuration par un système et interpréter Erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 — Position relative de deux droites Niveau 1 Exercice 2 — Intersection d'une droite et d'un plan Niveau 2 Exercice 3 — Deux droites d'un cube Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 8, "title": "Probabilités conditionnelles et variables aléatoires", "goal": "Succession d'épreuves indépendantes, schéma de Bernoulli", "prerequisites": "Probabilités conditionnelles, arbres pondérés, indépendance, formule des probabilités totales, variable aléatoire, espérance, variance, écart type", "lessons": [{"id": "8A", "title": "Probabilités conditionnelles et indépendance", "level": "premiere", "path": "chapitres/08_probabilites/8A_probabilites_conditionnelles.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. « Sachant A » change la population de référence 2. Sur un arbre : multiplier le long d’un chemin 3. Additionner des chemins incompatibles 4. Inverser le conditionnement 5. Indépendance : une égalité à vérifier 6. Réunion et contrôles de cohérence"}, {"id": "methode", "title": "Méthode", "keywords": "Du texte au calcul Les erreurs fréquentes"}, {"id": "visu", "title": "Visualisation", "keywords": "Un arbre et ses quatre régions"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "8B", "title": "Variables aléatoires, espérance et variance", "level": "premiere", "path": "chapitres/08_probabilites/8B_variables_aleatoires.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Associer un nombre à chaque issue 2. Construire la loi de probabilité 3. Traduire un événement portant sur X 4. Espérance : une moyenne pondérée 5. Variance et écart type : mesurer la dispersion 6. Gain brut, mise et jeu équitable"}, {"id": "methode", "title": "Méthode", "keywords": "Construire une loi, puis calculer Points de vigilance"}, {"id": "visu", "title": "Visualisation", "keywords": "Une loi, sa moyenne et une expérience simulée"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "8C", "title": "Épreuves indépendantes et schéma de Bernoulli", "level": "terminale", "path": "chapitres/08_probabilites/8C_epreuves_independantes_bernoulli.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Modéliser une succession d’épreuves 2. Indépendance : le produit des probabilités 3. Une épreuve de Bernoulli et sa loi 4. Reconnaître un schéma de Bernoulli 5. Un chemin imposé ou plusieurs chemins ? 6. « Au moins un » : passer au contraire"}, {"id": "methode", "title": "Méthode", "keywords": "Choisir la bonne stratégie Les pièges à éviter"}, {"id": "visu", "title": "Visualisation", "keywords": "Explorer tous les chemins de deux ou trois essais"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 Niveau 1 Exercice 2 Niveau 2 Exercice 3 Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 9, "title": "Combinatoire et dénombrement", "goal": "Principes additif et multiplicatif, k-uplets, permutations, combinaisons, coefficients binomiaux et leurs propriétés", "prerequisites": "Dénombrement par arbre vu en Seconde et Première", "lessons": [{"id": "9A", "title": "Combinatoire et dénombrement", "level": "terminale", "path": "chapitres/09_combinatoire_denombrement/9A_combinatoire_denombrement.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. D’abord : quels objets compte-t-on ? 2. Additionner des cas disjoints 3. Multiplier des choix successifs 4. Ordonner sans répétition et permuter 5. Choisir sans ordre : les combinaisons 6. Toutes les parties et tous les mots binaires 7. Relation et triangle de Pascal"}, {"id": "methode", "title": "Méthode", "keywords": "Quatre questions pour choisir le bon calcul Pièges fréquents"}, {"id": "visu", "title": "Visualisation", "keywords": "Les mêmes lettres, trois façons de compter Un sous-ensemble, un mot binaire Pascal : retrouver les deux parents"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Former un identifiant Niveau 1 Exercice 2 · Attribuer des postes distincts Niveau 2 Exercice 3 · Former une équipe sous contrainte Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 10, "title": "Loi binomiale", "goal": "Coefficients binomiaux, loi binomiale, espérance et variance, représentations, échantillonnage", "prerequisites": "Variable aléatoire, espérance (chapitre 7), combinaisons (chapitre 8)", "lessons": [{"id": "10A", "title": "Loi binomiale", "level": "terminale", "path": "chapitres/10_loi_binomiale/10A_loi_binomiale.html", "sections": [{"id": "cours", "title": "Cours", "keywords": "1. Reconnaître une loi binomiale 2. La probabilité d’exactement k succès 3. Traduire « au plus », « au moins » et « entre » 4. Espérance, variance et écart type 5. Chercher un seuil sans se tromper d’inégalité 6. Chercher un intervalle de valeurs 7. Simuler et comparer à la loi"}, {"id": "methode", "title": "Méthode", "keywords": "Résoudre un exercice de loi binomiale Avec une calculatrice ou un tableur Les erreurs à éviter"}, {"id": "visu", "title": "Visualisation", "keywords": "La loi, un événement et un échantillon Un seuil de dépassement"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Exactement k succès Niveau 1 Exercice 2 · Un intervalle, au millième Niveau 2 Exercice 3 · Une capacité minimale Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 11, "title": "Fonctions trigonométriques", "goal": "Dérivées de sinus et cosinus, variations, courbes, limite du taux d'accroissement en 0", "prerequisites": "Cercle trigonométrique, radians, cosinus et sinus d'un réel, parité, périodicité", "lessons": [{"id": "11A", "title": "Cercle trigonométrique", "level": "premiere", "path": "chapitres/11_trigonometrie/11A_cercle_trigonometrique.html", "sections": [{"id": "cours", "title": "Cours · Le cercle donne le sens", "keywords": "1. Un cercle orienté, une mesure en radians 2. Convertir et mesurer un parcours 3. Cosinus : horizontal. Sinus : vertical. 4. Les valeurs remarquables se construisent 5. Retrouver les angles associés 6. Périodicité et lecture des courbes"}, {"id": "methode", "title": "Méthode · Angle, point ou longueur ?", "keywords": ""}, {"id": "visu", "title": "Visualisation · Du cercle aux deux courbes", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Degrés et radians Niveau 1 Exercice 2 · Une valeur au millième Niveau 2 Exercice 3 · Une longueur parcourue Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "11B", "title": "Fonctions trigonométriques", "level": "terminale", "path": "chapitres/11_trigonometrie/11B_derivation_trigonometrie.html", "sections": [{"id": "cours", "title": "Cours · Dériver et résoudre en radians", "keywords": "1. Deux dérivées et la règle de composition 2. Variations et représentation graphique 3. Deux limites comme taux d’accroissement 4. Résoudre cos x = a sur [−π,π] 5. Résoudre cos x ≤ a sur [−π,π] 6. Étudier une fonction, puis optimiser"}, {"id": "methode", "title": "Méthode · Les signes avant les calculs", "keywords": ""}, {"id": "visu", "title": "Visualisations · Pente et ensembles de solutions", "keywords": "Fonction, dérivée et tangente Résoudre avec le cosinus"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Une dérivée en un point Niveau 1 Exercice 2 · Une équation Niveau 2 Exercice 3 · Une aire maximale Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 12, "title": "Primitives et équations différentielles", "goal": "Notion de primitive, primitives des fonctions de référence, équations y′ = f, y′ = ay, y′ = ay + b, problème de Cauchy", "prerequisites": "Dérivation (chapitre 3), exponentielle (chapitre 5)", "lessons": [{"id": "12A", "title": "Primitives d'une fonction", "level": "terminale", "path": "chapitres/12_primitives_equadiff/12A_primitives.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1. L'équation \\(y' = f\\) : une équation dont l'inconnue est une fonction 2. Définition d'une primitive sur un intervalle 3. Existence : un résultat admis, et une limite honnête 4. Deux primitives diffèrent d'une constante à savoir démontrer 5. Le tableau des primitives de référence 6. Les formes composées : \\(u' \\times (v' \\circ u)\\) 7. La primitive qui passe par un point donné : elle est unique"}, {"id": "methode", "title": "2. Méthode", "keywords": "A. Reconnaître la forme avant de chercher B. Lire le tableau des dérivées à l'envers C. Faire apparaître le facteur \\(u'\\) qui manque D. Trouver la primitive qui vaut une valeur donnée en un point E. Vérifier son résultat en le dérivant — le réflexe à installer Les erreurs qui coûtent des points"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Primitive d'un polynôme Niveau 1 Exercice 2 — Une forme composée Niveau 2 Exercice 3 — La primitive qui passe par un point Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "12B", "title": "Équations différentielles", "level": "terminale", "path": "chapitres/12_primitives_equadiff/12B_equations_differentielles.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Une équation dont l'inconnue est une fonction 2L'équation \\(y'=ay\\) Démonstration exigible 3Allure des courbes selon le signe de \\(a\\) 4L'équation \\(y'=ay+b\\) avec \\(a\\neq0\\) 5L'équation \\(y'=ay+f\\) à partir d'une solution particulière 6Condition initiale : une solution et une seule 7Modéliser avec une équation différentielle"}, {"id": "methode", "title": "2. Méthode", "keywords": "A. Résoudre \\(y'=ay\\) B. Résoudre \\(y'=ay+b\\) — les quatre étapes C. Résoudre \\(y'=ay+f\\) quand une solution particulière est donnée D. Traduire un énoncé de modélisation E. Vérifier qu'une fonction est solution — le réflexe Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Condition initiale pour \\(y'=ay\\) Niveau 1 Exercice 2 — Résoudre \\(y'=ay+b\\) Niveau 2 Exercice 3 — Problème de modélisation Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 13, "title": "Calcul intégral", "goal": "Intégrale et aire, propriétés, lien avec les primitives, valeur moyenne, intégration par parties, méthode des rectangles", "prerequisites": "Primitives (chapitre 11), aires vues au collège", "lessons": [{"id": "13A", "title": "Intégrales, aires et valeur moyenne", "level": "terminale", "path": "chapitres/13_calcul_integral/13A_integrales_aires.html", "sections": [{"id": "cours", "title": "Cours · De l’aire au calcul exact", "keywords": "1. Une aire sous une courbe positive 2. Une aire qui varie devient une primitive 3. Calculer grâce au chapitre 11 4. Signe quelconque et orientation 5. Additionner, comparer et encadrer 6. Aire entre deux courbes 7. Une valeur moyenne avec la bonne unité"}, {"id": "methode", "title": "Méthode · Choisir la bonne quantité", "keywords": ""}, {"id": "visu", "title": "Visualisation · Intégrale et aire ne sont pas synonymes", "keywords": ""}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Calculer avec une primitive Niveau 1 Exercice 2 · Une aire entre deux courbes Niveau 2 Exercice 3 · Un débit moyen Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}, {"id": "13B", "title": "Intégration par parties et approximations", "level": "terminale", "path": "chapitres/13_calcul_integral/13B_integration_methodes.html", "sections": [{"id": "cours", "title": "Cours · Transformer, encadrer, approcher", "keywords": "1. L’intégration par parties vient du produit 2. Choisir le facteur à dériver 3. Une suite d’intégrales s’étudie aussi par comparaison 4. Obtenir une récurrence par parties 5. Rectangles : une somme qui approche une intégrale 6. Milieux, trapèzes et contrôle du résultat"}, {"id": "methode", "title": "Méthode · Une technique, un contrôle", "keywords": ""}, {"id": "visu", "title": "Visualisations · Sommes et convergence", "keywords": "Comparer quatre méthodes numériques Une famille de courbes, une suite d’aires"}, {"id": "exos", "title": "Exercices", "keywords": "Exercice 1 · Intégrer par parties Niveau 1 Exercice 2 · Une suite d’intégrales Niveau 2 Exercice 3 · Un encadrement par rectangles Niveau 3"}, {"id": "qcm", "title": "QCM", "keywords": ""}]}]}, {"number": 14, "title": "Sommes de variables aléatoires et loi des grands nombres", "goal": "Somme de variables aléatoires, linéarité de l'espérance, variance d'une somme de variables indépendantes, échantillon, inégalité de Bienaymé-Tchebychev, inégalité de concentration, loi des grands nombres", "prerequisites": "Espérance et variance (chapitre 7), loi binomiale (chapitre 9)", "lessons": [{"id": "14A", "title": "Sommes de variables aléatoires", "level": "terminale", "path": "chapitres/14_sommes_variables/14A_sommes_variables.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Additionner deux variables aléatoires 2Linéarité de l'espérance — sans aucune hypothèse 3Variance : le multiple, puis la somme 4Ne pas confondre les deux propriétés La faute n° 1 du chapitre 5Espérance et variance de la loi binomiale Démonstration exigible 6Échantillon de taille \\(n\\) : la somme et la moyenne 7L'écart type de la moyenne décroît en \\(\\dfrac{1}{\\sqrt n}\\)"}, {"id": "methode", "title": "2. Méthode", "keywords": "A. Décomposer une variable en somme de variables plus simples B. Calculer une espérance par linéarité, sans passer par la loi C. Calculer une variance par décomposition en variables indépendantes D. Traiter un échantillon Erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Espérance d'une somme Niveau 1 Exercice 2 — Variance d'une somme Niveau 2 Exercice 3 — Échantillon Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "14B", "title": "Concentration et loi des grands nombres", "level": "terminale", "path": "chapitres/14_sommes_variables/14B_concentration_grands_nombres.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1L'écart type est l'unité naturelle de dispersion 2L'inégalité de Bienaymé-Tchebychev Énoncé exact 3Lire l'inégalité en nombre d'écarts types 4Cette inégalité est loin d'être optimale Demandé par le programme 5L'inégalité de concentration Énoncé exact 6La loi des grands nombres 7Choisir une taille d'échantillon Capacité attendue"}, {"id": "methode", "title": "2. Méthode", "keywords": "A. Appliquer l'inégalité de Bienaymé-Tchebychev B. Déterminer une taille d'échantillon La méthode centrale C. Comparer la majoration théorique à la probabilité réelle D. Reconnaître l'écart et le risque dans un énoncé Les cinq erreurs fréquentes"}, {"id": "visu", "title": "3. Visualisation", "keywords": ""}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 — Appliquer l'inégalité Niveau 1 Exercice 2 — La moyenne d'un échantillon Niveau 2 Exercice 3 — Quelle taille d'échantillon ? Niveau 3"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}, {"number": 15, "title": "Algorithmique et programmation", "goal": "Écriture de fonctions Python liées aux chapitres : seuils, dichotomie, Newton, simulation, comptage", "prerequisites": "Listes, boucles, fonctions, conditions", "lessons": [{"id": "15A", "title": "Listes et programmation en Python", "level": "premiere", "path": "chapitres/15_algorithmique/15A_listes_python.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "1Variable, type et affectation 2L'instruction conditionnelle 3Boucle bornée, boucle non bornée 4Fonction informatique et programmation modulaire 5Les listes : trois façons de les créer 6Éléments et indices : on compte à partir de zéro 7Parcourir une liste : par indice ou par élément"}, {"id": "methode", "title": "2. Méthode", "keywords": "A — Choisir entre une boucle bornée et une boucle non bornée B — Construire une liste de trois façons, et reconnaître laquelle convient C — Traduire une condition mathématique en compréhension de liste D — Découper un problème en fonctions E — Trouver une erreur d'indice Les cinq erreurs fréquentes"}, {"id": "visu", "title": "3. Explorer", "keywords": "Ce qu'il faut regarder"}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 Niveau 1 · lire un programme Exercice 2 Niveau 2 · compréhension de liste Exercice 3 Niveau 3 · indice et nombre d'itérations"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}, {"id": "15B", "title": "Les algorithmes du programme", "level": "terminale", "path": "chapitres/15_algorithmique/15B_algorithmes_du_programme.html", "sections": [{"id": "cours", "title": "1. Cours", "keywords": "Les sept algorithmes en un coup d'œil 1Recherche de seuil — les suites 2Dichotomie — continuité et valeurs intermédiaires 3Méthode de Newton — dérivation et continuité 4Méthode d'Euler — exponentielle et équations différentielles 5Méthode des rectangles — calcul intégral 6Simulation d'un échantillon, marche aléatoire — probabilités 7Fréquence simulée contre majoration de Bienaymé-Tchebychev"}, {"id": "methode", "title": "2. Méthode", "keywords": "A — Choisir entre boucle bornée et boucle non bornée B — Écrire une condition d'arrêt correcte, et ne pas tourner sans fin C — Programmer par modules : une fonction par tâche D — Contrôler la vraisemblance d'un résultat numérique Les quatre erreurs fréquentes"}, {"id": "visu", "title": "3. Explorer", "keywords": "Ce qu'il faut regarder"}, {"id": "exos", "title": "4. Exercices", "keywords": "Exercice 1 Niveau 1 · nombre d'itérations Exercice 2 Niveau 2 · encadrement par dichotomie Exercice 3 Niveau 3 · rectangles et méthode d'Euler"}, {"id": "qcm", "title": "5. QCM", "keywords": ""}]}]}]}</script>
+<script>
+/* Interface et suivi local. Aucune requête réseau, aucun compte requis. */
+(function () {
+  'use strict';
+  const config = JSON.parse(document.getElementById('site-config').textContent);
+  const $ = (id) => document.getElementById(id);
+  const all = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+  const lessons = config.chapters.flatMap(c => c.lessons.map(l => ({...l, chapter: c.title, chapterNumber: c.number})));
+  const byId = new Map(lessons.map(l => [l.id, l]));
+  const current = byId.get(config.current);
+  const KEY = 'reussite_maths_v1';
+  const LEGACY = 'carnet_maths_v1';
+  const states = {started: 'En cours', review: 'À revoir', validated: 'Validé par moi'};
+  const results = {ok: 'Réussi sans aide', aide: 'Réussi avec aide', ko: 'À revoir'};
+  const normalize = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  const href = (lesson, section = '') => config.prefix + lesson.path + (section ? '#' + encodeURIComponent(section) : '');
+  const empty = () => ({version: 1, lessons: {}, journal: [], last: null, legacyImported: false, tombstones: {}});
+  let state = empty();
+  let storageOK = true;
+  let storageCorrupt = false;
+  const text = (tag, value, className) => {
+    const el = document.createElement(tag);
+    el.textContent = value;
+    if (className) el.className = className;
+    return el;
+  };
+
+  function validate(input) {
+    if (!input || input.version !== 1 || !input.lessons || typeof input.lessons !== 'object' || Array.isArray(input.lessons) || !Array.isArray(input.journal)) throw Error('Format de sauvegarde non reconnu.');
+    if (Object.keys(input.lessons).length > 5000 || input.journal.length > 20000) throw Error('Cette sauvegarde est trop volumineuse.');
+    const out = empty();
+    const validTime = n => typeof n === 'number' && Number.isFinite(n) && n > 0 && n <= Date.now() + 86400000;
+    for (const [id, item] of Object.entries(input.lessons)) {
+      if (!/^\d{1,3}[A-Z]$/.test(id) || !item || !Object.hasOwn(states, item.status) || !validTime(item.updated)) throw Error('Une fiche de la sauvegarde est invalide.');
+      const section = typeof item.section === 'string' && /^[\w-]{0,80}$/.test(item.section) ? item.section : '';
+      out.lessons[id] = {status: item.status, updated: item.updated, section};
+    }
+    out.journal = input.journal.map(row => {
+      if (!row || typeof row.id !== 'string' || !/^[\w-]{1,100}$/.test(row.id) || !validTime(row.ts) || !Object.hasOwn(results, row.res)) throw Error('Une entrée du carnet est invalide.');
+      for (const key of ['chap', 'ex', 'err', 'note']) {
+        if (typeof row[key] !== 'string' || row[key].length > (key === 'note' ? 2000 : 500)) throw Error('Une entrée du carnet est invalide.');
+      }
+      return {id: row.id, ts: row.ts, chap: row.chap, ex: row.ex, res: row.res, err: row.err, note: row.note,
+        lesson: typeof row.lesson === 'string' && /^\d{1,3}[A-Z]$/.test(row.lesson) ? row.lesson : '',
+        updated: validTime(row.updated) ? row.updated : row.ts,
+        source: row.source === 'auto' ? 'auto' : 'manual'};
+    });
+    if (input.last && /^\d{1,3}[A-Z]$/.test(input.last.id) && validTime(input.last.ts)) {
+      out.last = {id: input.last.id, ts: input.last.ts, section: typeof input.last.section === 'string' && /^[\w-]{0,80}$/.test(input.last.section) ? input.last.section : ''};
+    }
+    out.legacyImported = input.legacyImported === true;
+    if (input.tombstones && typeof input.tombstones === 'object') {
+      for (const [id, ts] of Object.entries(input.tombstones)) {
+        if (/^[\w-]{1,100}$/.test(id) && validTime(ts)) out.tombstones[id] = ts;
+      }
+    }
+    return out;
+  }
+
+  function read() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? validate(JSON.parse(raw)) : empty();
+    } catch (e) {
+      storageOK = false;
+      try { storageCorrupt = !!localStorage.getItem(KEY); } catch (_) {}
+      return state;
+    }
+  }
+
+  function merge(a, b) {
+    const out = empty();
+    out.lessons = {...a.lessons};
+    for (const [id, item] of Object.entries(b.lessons)) if (!out.lessons[id] || item.updated >= out.lessons[id].updated) out.lessons[id] = item;
+    out.tombstones = {...a.tombstones};
+    for (const [id, ts] of Object.entries(b.tombstones)) out.tombstones[id] = Math.max(out.tombstones[id] || 0, ts);
+    const rows = new Map(a.journal.map(r => [r.id, r]));
+    b.journal.forEach(r => { if (!rows.has(r.id) || r.updated >= rows.get(r.id).updated) rows.set(r.id, r); });
+    out.journal = [...rows.values()].filter(r => !out.tombstones[r.id]).sort((x, y) => x.ts - y.ts);
+    out.last = !a.last || (b.last && b.last.ts >= a.last.ts) ? b.last : a.last;
+    out.legacyImported = a.legacyImported || b.legacyImported;
+    return out;
+  }
+
+  function storageLabel() {
+    all('[data-storage-note]').forEach(el => {
+      el.textContent = storageOK ? 'Enregistré dans ce navigateur, sur cet appareil.' : (storageCorrupt ? 'Sauvegarde locale illisible : copie conservée. Exporte cette séance avant de partir.' : 'Enregistrement indisponible : exporte ton suivi avant de fermer cette page.');
+      el.classList.toggle('site-storage-failed', !storageOK);
+    });
+    if (!storageOK && !$('site-emergency-export')) {
+      const note = document.querySelector('[data-storage-note]');
+      if (note) {
+        const button = text('button', 'Exporter cette séance', 'site-btn subtle');
+        button.id = 'site-emergency-export'; button.type = 'button';
+        button.addEventListener('click', exportState); note.after(button);
+      }
+    } else if (storageOK) $('site-emergency-export')?.remove();
+  }
+
+  function exportState() {
+    state = merge(state, read());
+    const data = JSON.stringify({...state, exportedAt: new Date().toISOString()}, null, 2);
+    const url = URL.createObjectURL(new Blob([data], {type: 'application/json'}));
+    const a = document.createElement('a'); a.href = url; a.download = 'reussite-maths-suivi-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  function save(change) {
+    state = merge(state, read());
+    if (change) change(state);
+    try {
+      if (storageCorrupt) throw Error('Ne pas écraser une sauvegarde illisible.');
+      localStorage.setItem(KEY, JSON.stringify(state));
+      storageOK = true;
+    } catch (_) { storageOK = false; }
+    storageLabel();
+    paintBadges();
+  }
+
+  function legacyRows(rows) {
+    if (rows.length > 20000) throw Error('Carnet trop volumineux.');
+    const out = empty();
+    out.journal = rows.map((r, index) => {
+      if (!r || typeof r.ts !== 'number' || typeof r.chap !== 'string' || typeof r.ex !== 'string' || !Object.hasOwn(results, r.res)) throw Error('Ancien carnet invalide.');
+      const code = (r.chap.match(/^\d+[A-Z]\b/) || [''])[0];
+      // Stable IDs make repeated imports idempotent, including old entries.
+      const signature = JSON.stringify([r.ts, r.chap, r.ex, r.res, r.err, r.note]);
+      let hash = 2166136261;
+      for (let i = 0; i < signature.length; i++) hash = Math.imul(hash ^ signature.charCodeAt(i), 16777619);
+      return {id: 'legacy-' + r.ts + '-' + (hash >>> 0).toString(36) + '-' + index, ts: r.ts, updated: r.ts, chap: r.chap, ex: r.ex, res: r.res,
+        err: r.err || '', note: r.note || '', lesson: code, source: 'manual'};
+    });
+    out.legacyImported = true;
+    out.journal.forEach(row => {
+      if (!byId.has(row.lesson)) return;
+      const previous = out.lessons[row.lesson];
+      out.lessons[row.lesson] = {status: row.res === 'ko' || previous?.status === 'review' ? 'review' : 'started', section: 'cours', updated: Math.max(row.ts, previous?.updated || 0)};
+    });
+    return validate(out);
+  }
+
+  state = read();
+  if (!state.legacyImported) {
+    try {
+      const legacy = JSON.parse(localStorage.getItem(LEGACY) || '[]');
+      if (Array.isArray(legacy)) {
+        const imported = legacyRows(legacy);
+        save(s => { Object.assign(s, merge(s, imported)); });
+      }
+    } catch (_) { /* Keep the legacy key untouched for manual recovery. */ }
+  }
+  storageLabel();
+
+  function paintBadges() {
+    all('[data-state-for]').forEach(el => {
+      const item = state.lessons[el.dataset.stateFor];
+      el.textContent = item ? states[item.status] : 'À commencer';
+      el.dataset.state = item ? item.status : 'new';
+    });
+  }
+  paintBadges();
+
+  // Desktop programme / mobile drawer. Restore focus, Escape and trap Tab.
+  let drawerOpener = null;
+  function drawer(open, opener) {
+    if (open && window.innerWidth >= 1100) return;
+    document.body.classList.toggle('site-drawer-open', open);
+    $('site-shade').hidden = !open;
+    $('site-menu').setAttribute('aria-expanded', String(open));
+    all('body > main,body > header,body > footer,body > .navbar,body > nav#nav,.site-header .site-brand,.site-actions').forEach(el => { el.inert = open; });
+    if (open) {
+      drawerOpener = opener || $('site-menu');
+      const target = $('site-sidebar').querySelector('a[aria-current="page"]') || $('site-sidebar').querySelector('a');
+      if (target) target.focus();
+    } else if (drawerOpener) { drawerOpener.focus(); drawerOpener = null; }
+  }
+  $('site-menu').addEventListener('click', () => drawer(!document.body.classList.contains('site-drawer-open'), $('site-menu')));
+  $('site-shade').addEventListener('click', () => drawer(false));
+  all('[data-open-program]').forEach(b => b.addEventListener('click', () => drawer(true, b)));
+  $('site-sidebar').addEventListener('click', e => { if (e.target.closest('a')) drawer(false); });
+  window.addEventListener('resize', () => { if (innerWidth >= 1100 && document.body.classList.contains('site-drawer-open')) drawer(false); });
+  document.addEventListener('keydown', e => {
+    if (!document.body.classList.contains('site-drawer-open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); drawer(false); }
+    if (e.key === 'Tab') {
+      const items = [$('site-menu'), ...all('a,button,summary', $('site-sidebar')).filter(x => x.getClientRects().length)];
+      e.preventDefault();
+      const index = items.indexOf(document.activeElement);
+      items[(index + (e.shiftKey ? -1 : 1) + items.length) % items.length].focus();
+    }
+  });
+
+  // Search indexes sections as well as lesson names, with accent-insensitive matching.
+  const searchable = lessons.flatMap(l => [
+    {title: l.title, context: `${l.id} · ${l.level === 'premiere' ? 'Première' : 'Terminale'} · ${l.chapter}`, path: href(l)},
+    ...l.sections.map(s => ({title: `${s.title} — ${l.title}`, context: `${l.id} · ${l.chapter}`, keywords: s.keywords, path: href(l, s.id)}))
+  ]).concat([
+    ['Bien démarrer', 'depart'], ['Comprendre l’apprentissage', 'science'], ['Travailler en autonomie', 'methode'],
+    ['Organiser ma semaine · minuteur', 'semaine'], ['Quand je bloque', 'bloque'], ['Utiliser une IA · prompts', 'chatgpt'], ['Choisir son outil IA', 'abonnement']
+  ].map(([title, id]) => ({title, context: 'Méthode de travail', path: config.prefix + 'strategie/reussir_lannee.html#' + id})));
+  function search() {
+    const query = normalize($('site-search-input').value).trim();
+    const tokens = query.split(/\s+/).filter(Boolean);
+    const found = searchable.filter(x => tokens.every(t => normalize(x.title + ' ' + x.context + ' ' + (x.keywords || '')).includes(t)));
+    const box = $('site-search-results'); box.replaceChildren();
+    $('site-search-count').textContent = query ? `${found.length} résultat${found.length > 1 ? 's' : ''}` : 'Explore les fiches ou saisis une notion.';
+    (query ? found : searchable.filter(x => !x.title.includes(' — '))).slice(0, 40).forEach(x => {
+      const a = text('a', x.title); a.href = x.path; a.append(text('small', x.context)); box.append(a);
+    });
+    if (!found.length) box.append(text('p', 'Aucun résultat. Essaie un mot plus court ou le nom du chapitre.'));
+  }
+  function openSearch() {
+    if (document.body.classList.contains('site-drawer-open')) drawer(false);
+    $('site-search-dialog').showModal(); search(); $('site-search-input').focus();
+  }
+  $('site-search-open').addEventListener('click', openSearch);
+  $('site-search-close').addEventListener('click', () => $('site-search-dialog').close());
+  $('site-search-dialog').addEventListener('click', e => { if (e.target.closest('a')) $('site-search-dialog').close(); });
+  $('site-search-input').addEventListener('input', search);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && $('site-search-dialog').open) {
+      e.preventDefault(); $('site-search-dialog').close(); return;
+    }
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.target.closest('input,textarea,select,[contenteditable="true"]') && !$('site-search-dialog').open) {
+      e.preventDefault(); openSearch();
+    }
+  });
+
+  function changeStatus(id, value) {
+    save(s => { s.lessons[id] = {...s.lessons[id], status: value, section: s.lessons[id]?.section || '', updated: Date.now()}; });
+  }
+  function statusSelect(id) {
+    const select = document.createElement('select');
+    select.setAttribute('aria-label', 'État de la fiche ' + id);
+    Object.entries(states).forEach(([value, label]) => { const option = text('option', label); option.value = value; select.append(option); });
+    select.value = state.lessons[id]?.status || 'started';
+    select.addEventListener('change', () => { changeStatus(id, select.value); if (config.kind === 'progress') renderProgress(); });
+    return select;
+  }
+  function addEntry(row) {
+    save(s => {
+      s.journal.push(row);
+      if (byId.has(row.lesson)) {
+        const previous = s.lessons[row.lesson];
+        s.lessons[row.lesson] = {status: row.res === 'ko' ? 'review' : previous?.status || 'started', section: previous?.section || '', updated: Date.now()};
+      }
+    });
+    if ($('site-lesson-status')) $('site-lesson-status').value = state.lessons[current.id].status;
+  }
+
+  // Anchors keep the complete lesson and all exercise state in the document.
+  const sectionNav = document.querySelector('body > .navbar nav,body > nav#nav');
+  if (sectionNav) {
+    sectionNav.setAttribute('aria-label', 'Sections de la ' + (config.kind === 'method' ? 'méthode' : 'fiche'));
+    const entries = all('a', sectionNav).map(a => ({a, section: document.querySelector(a.getAttribute('href'))})).filter(x => x.section);
+    if (current || config.kind === 'template') entries.forEach(({a}) => {
+      if (/visu/i.test(a.getAttribute('href'))) a.textContent = 'Explorer';
+      else if (/exos|exercices/.test(a.getAttribute('href'))) a.textContent = 'Exercices';
+      else if (/methode/.test(a.getAttribute('href'))) a.textContent = 'Méthode';
+    });
+    let lastSection = '';
+    let scheduled = false;
+    function observeSection() {
+      scheduled = false;
+      let chosen = entries[0];
+      const offset = 140;
+      entries.forEach(x => { if (x.section.getBoundingClientRect().top <= offset) chosen = x; });
+      if (!chosen) return;
+      entries.forEach(x => { x.a.classList.toggle('active', x === chosen); if (x === chosen) x.a.setAttribute('aria-current', 'location'); else x.a.removeAttribute('aria-current'); });
+      if (config.kind === 'method') all('.site-sidebar .site-side-link').forEach(a => {
+        if (a.getAttribute('href') === '#' + chosen.section.id) a.setAttribute('aria-current', 'location');
+        else a.removeAttribute('aria-current');
+      });
+      if (chosen.section.id === lastSection) return;
+      lastSection = chosen.section.id;
+      const a = chosen.a;
+      if (a.offsetLeft < sectionNav.scrollLeft || a.offsetLeft + a.offsetWidth > sectionNav.scrollLeft + sectionNav.clientWidth) sectionNav.scrollLeft = Math.max(0, a.offsetLeft - 20);
+      if (current) save(s => {
+        const ts = Date.now();
+        s.lessons[current.id] = {...s.lessons[current.id], section: lastSection, updated: ts};
+        s.last = {id: current.id, section: lastSection, ts};
+      });
+    }
+    window.addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(observeSection); } }, {passive: true});
+    sectionNav.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      const section = document.querySelector(a.getAttribute('href'));
+      if (section) { section.setAttribute('tabindex', '-1'); section.focus({preventScroll: true}); }
+    });
+    if (current) {
+      save(s => {
+        const ts = Date.now();
+        s.lessons[current.id] = {status: s.lessons[current.id]?.status || 'started', section: s.lessons[current.id]?.section || 'cours', updated: ts};
+        s.last = {id: current.id, section: location.hash.slice(1) || 'cours', ts};
+      });
+      $('site-lesson-status').value = state.lessons[current.id].status;
+      $('site-lesson-status').addEventListener('change', e => changeStatus(current.id, e.target.value));
+    }
+    // Run after the browser's initial fragment navigation, including MathJax layout.
+    window.addEventListener('load', observeSection);
+    if (document.readyState === 'complete') observeSection();
+  }
+
+  if (current) {
+    const signatures = new Map();
+    const helped = new Set();
+    let qcmRecorded = false;
+    function captureExercise(card) {
+      const fb = card.querySelector('.feedback,.fb');
+      if (!fb || !fb.textContent.trim()) return;
+      const fields = all('input,select', card).filter(x => x.type !== 'range' && !x.disabled && x.getClientRects().length);
+      if (fields.some(x => !x.value.trim())) return;
+      const correct = fb.matches('.good,.ok');
+      if (!correct && !fb.matches('.bad,.ko')) return;
+      const signature = fields.map(x => x.value).join('|') + ':' + correct;
+      if (signatures.get(card.id) === signature) return;
+      signatures.set(card.id, signature);
+      const ts = Date.now();
+      addEntry({id: uid(), ts, updated: ts, lesson: current.id, chap: current.id + ' ' + current.title,
+        ex: 'Exercice ' + card.id.replace(/\D/g, ''), res: correct ? (helped.has(card.id) ? 'aide' : 'ok') : 'ko', err: '', note: '', source: 'auto'});
+    }
+    document.addEventListener('click', e => {
+      const button = e.target.closest('button');
+      if (!button) return;
+      const label = normalize(button.textContent);
+      const card = button.closest('.card[id^="ex"]');
+      if (card) {
+        if (/correction/.test(label)) helped.add(card.id);
+        if (/nouvel exercice/.test(label)) { signatures.delete(card.id); helped.delete(card.id); }
+        if (/verifier/.test(label)) setTimeout(() => captureExercise(card), 0);
+      }
+      if (button.closest('#qcm')) {
+        if (/nouveau qcm/.test(label)) qcmRecorded = false;
+        else setTimeout(() => {
+          const score = document.querySelector('#qcm .score, #qcm-score, #qcmScore, #qcmscore');
+          const match = score?.textContent.match(/(\d+)\s*\/\s*(\d+)/);
+          if (!match || qcmRecorded) return;
+          qcmRecorded = true;
+          const ts = Date.now();
+          addEntry({id: uid(), ts, updated: ts, lesson: current.id, chap: current.id + ' ' + current.title,
+            ex: 'QCM · ' + match[1] + ' / ' + match[2], res: match[1] === match[2] ? 'ok' : 'ko', err: '', note: 'Résultat enregistré automatiquement.', source: 'auto'});
+        }, 0);
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const card = e.target.closest('.card[id^="ex"]');
+        if (card) setTimeout(() => captureExercise(card), 0);
+      }
+    });
+  }
+
+  if (config.kind === 'catalog') {
+    let filter = 'all';
+    let remembered = [];
+    try { remembered = JSON.parse(localStorage.getItem('reussite_chapitres_ouverts') || localStorage.getItem('accueil_chapitres_ouverts') || '[]'); } catch (_) {}
+    const chapters = all('[data-catalog-chapter]');
+    chapters.forEach(el => {
+      if (Array.isArray(remembered)) el.open = remembered.includes(el.id);
+      el.addEventListener('toggle', () => {
+        if (!$('site-catalog-query').value && filter === 'all') {
+          try { localStorage.setItem('reussite_chapitres_ouverts', JSON.stringify(chapters.filter(c => c.open).map(c => c.id))); } catch (_) {}
+        }
+      });
+    });
+    function filterCatalog() {
+      const query = normalize($('site-catalog-query').value).trim();
+      let count = 0;
+      chapters.forEach(el => {
+        const chapter = config.chapters.find(c => String(c.number) === el.dataset.catalogChapter);
+        const chapterMatch = normalize(chapter.title + ' ' + chapter.goal).includes(query);
+        let visible = 0;
+        all('[data-lesson]', el).forEach(row => {
+          const l = byId.get(row.dataset.lesson);
+          const matches = (filter === 'all' || l.level === filter) && (chapterMatch || normalize(l.id + ' ' + l.title).includes(query));
+          row.hidden = !matches; if (matches) visible++;
+        });
+        all('[data-level-group]', el).forEach(group => { group.hidden = !all('[data-lesson]', group).some(r => !r.hidden); });
+        el.hidden = !visible && !(filter === 'all' && !chapter.lessons.length && chapterMatch);
+        if (query || filter !== 'all') el.open = !el.hidden;
+        count += visible;
+      });
+      $('site-catalog-count').textContent = count + ' fiche' + (count > 1 ? 's' : '') + ' disponible' + (count > 1 ? 's' : '');
+      $('site-catalog-empty').hidden = chapters.some(c => !c.hidden);
+    }
+    all('[data-filter]').forEach(b => b.addEventListener('click', () => {
+      filter = b.dataset.filter; all('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); filterCatalog();
+    }));
+    $('site-catalog-query').addEventListener('input', filterCatalog);
+    function openFragment() { const el = $(location.hash.slice(1)); if (el?.matches('[data-catalog-chapter]')) { el.open = true; el.scrollIntoView(); } }
+    filterCatalog(); openFragment(); window.addEventListener('hashchange', openFragment);
+  }
+
+  function renderHome() {
+    const last = state.last && byId.get(state.last.id);
+    if (last) {
+      $('site-resume-label').textContent = 'Reprendre là où tu en étais';
+      $('site-resume-title').textContent = last.title;
+      const section = last.sections.find(s => s.id === state.last.section);
+      $('site-resume-description').textContent = `${last.id} · ${last.chapter}${section ? ' · ' + section.title : ''}`;
+      $('site-resume-link').textContent = 'Reprendre ma fiche →';
+      $('site-resume-link').href = href(last, state.last.section);
+    }
+    const review = lessons.filter(l => state.lessons[l.id]?.status === 'review');
+    const today = $('site-today');
+    if (review.length) {
+      today.className = 'site-grid'; today.replaceChildren();
+      review.slice(0, 2).forEach(l => {
+        const a = text('a', '', 'site-tile'); a.href = href(l, l.sections.find(s => /exos|exercices/.test(s.id))?.id || 'cours');
+        a.append(text('span', 'À revoir · ' + l.id, 'site-eyebrow'), text('h3', l.title), text('p', 'Reprends un exercice sans regarder la correction.'), text('span', 'M’entraîner →', 'site-tile-link'));
+        today.append(a);
+      });
+    } else {
+      today.className = 'site-empty'; today.textContent = last ? 'Aucune notion signalée à revoir. Tu peux poursuivre ta dernière fiche ou choisir le chapitre travaillé en classe.' : 'Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.';
+    }
+  }
+
+  // --- exercice de démonstration de l'accueil ---
+  // Produit scalaire à partir des coordonnées, tiré de la fiche 1A.
+  // Les valeurs sont exactes : la vérification exige l'égalité.
+  function renderDemo() {
+    const enonce = $('site-demo-statement'), champ = $('site-demo-answer');
+    const retour = $('site-demo-feedback'), boite = $('site-demo-solution-box');
+    if (!enonce || !champ) return;
+    let ex = null;
+
+    const nonNul = (a, b) => { let v = 0; while (v === 0) v = a + Math.floor(Math.random() * (b - a + 1)); return v; };
+    const par = v => (v < 0 ? '(' + v + ')' : String(v));
+
+    function nouveau() {
+      const x = nonNul(-7, 7), y = nonNul(-7, 7), xp = nonNul(-7, 7), yp = nonNul(-7, 7);
+      ex = {x, y, xp, yp, res: x * xp + y * yp};
+      enonce.innerHTML = 'Dans un repère orthonormé, on donne les vecteurs '
+        + '<b>u</b> de coordonnées (' + x + ' ; ' + y + ') et '
+        + '<b>v</b> de coordonnées (' + xp + ' ; ' + yp + ').<br>'
+        + 'Calculer leur produit scalaire.';
+      champ.value = ''; retour.textContent = ''; retour.removeAttribute('data-error');
+      boite.hidden = true; boite.innerHTML = '';
+      $('site-demo-solution').textContent = 'Voir la correction';
+    }
+
+    function lire(v) {
+      const t = String(v || '').trim().replace(/\s+/g, '').replace(',', '.').replace(/[−–—]/g, '-');
+      return t === '' ? NaN : Number(t);
+    }
+
+    function verifier() {
+      const v = lire(champ.value);
+      if (isNaN(v)) { retour.textContent = 'Écris un nombre.'; retour.setAttribute('data-error', 'true'); return; }
+      if (v === ex.res) {
+        retour.textContent = '✓ Correct. Le produit scalaire vaut ' + ex.res + '.';
+        retour.removeAttribute('data-error');
+      } else if (v === ex.x * ex.xp - ex.y * ex.yp) {
+        retour.textContent = '✗ On additionne les deux produits, on ne les soustrait pas.';
+        retour.setAttribute('data-error', 'true');
+      } else if (v === ex.x * ex.yp + ex.y * ex.xp) {
+        retour.textContent = '✗ On multiplie les abscisses entre elles, puis les ordonnées entre elles.';
+        retour.setAttribute('data-error', 'true');
+      } else {
+        retour.textContent = '✗ Pas encore. Calcule x×x′ + y×y′ en surveillant les signes.';
+        retour.setAttribute('data-error', 'true');
+      }
+    }
+
+    function correction() {
+      if (!boite.hidden) { boite.hidden = true; $('site-demo-solution').textContent = 'Voir la correction'; return; }
+      boite.innerHTML = '<p><b>La formule.</b> En repère orthonormé, le produit scalaire vaut x×x′ + y×y′.</p>'
+        + '<p><b>On remplace.</b> ' + ex.x + ' × ' + par(ex.xp) + ' + ' + par(ex.y) + ' × ' + par(ex.yp)
+        + ' = ' + (ex.x * ex.xp) + ' + ' + par(ex.y * ex.yp) + ' = <b>' + ex.res + '</b>.</p>'
+        + '<p><b>Ce que ça dit.</b> Le produit scalaire est un nombre'
+        + (ex.res > 0 ? ', ici positif : l’angle des deux vecteurs est aigu.'
+          : ex.res < 0 ? ', ici négatif : l’angle des deux vecteurs est obtus.'
+          : ' nul : les deux vecteurs sont orthogonaux.') + '</p>';
+      boite.hidden = false;
+      $('site-demo-solution').textContent = 'Masquer la correction';
+    }
+
+    $('site-demo-check').addEventListener('click', verifier);
+    champ.addEventListener('keydown', e => { if (e.key === 'Enter') verifier(); });
+    $('site-demo-solution').addEventListener('click', correction);
+    $('site-demo-new').addEventListener('click', nouveau);
+    nouveau();
+  }
+
+  if (config.kind === 'home') { renderHome(); renderDemo(); }
+
+  function date(ts) { return new Date(ts).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short', year: 'numeric'}); }
+  function message(id, value, error = false) { $(id).textContent = value; $(id).dataset.error = String(error); }
+  function renderProgress() {
+    const known = Object.entries(state.lessons).filter(([id]) => byId.has(id));
+    $('site-stat-started').textContent = known.length;
+    $('site-stat-review').textContent = known.filter(([, v]) => v.status === 'review').length;
+    $('site-stat-validated').textContent = known.filter(([, v]) => v.status === 'validated').length;
+    const list = $('site-progress-list'); list.replaceChildren();
+    known.sort((a, b) => b[1].updated - a[1].updated).forEach(([id, item]) => {
+      const lesson = byId.get(id), row = text('div', '', 'site-progress-row'), info = document.createElement('div');
+      const a = text('a', id + ' · ' + lesson.title); a.href = href(lesson, item.section);
+      info.append(a, text('small', 'Dernière activité : ' + date(item.updated)));
+      row.append(info, statusSelect(id)); list.append(row);
+    });
+    if (!known.length) list.append(text('div', 'Ton parcours commence avec ta première fiche. Retrouve ensuite ici les notions travaillées.', 'site-empty'));
+    const journal = $('site-journal-list'); journal.replaceChildren();
+    [...state.journal].reverse().forEach(r => {
+      const row = text('div', '', 'site-journal-row'), info = document.createElement('div');
+      info.append(text('small', date(r.ts) + (r.source === 'auto' ? ' · Enregistrement automatique' : '')),
+        text('div', r.chap + ' · ' + r.ex), text('p', results[r.res] + (r.err ? ' · ' + r.err : '') + (r.note ? ' — ' + r.note : '')));
+      const actions = text('div', '', 'site-journal-actions');
+      if (r.res === 'ko') {
+        const done = text('button', 'Refait sans aide', 'site-btn secondary'); done.type = 'button';
+        done.addEventListener('click', () => {
+          const ts = Date.now();
+          save(s => { const original = s.journal.find(x => x.id === r.id); if (original) { original.res = 'ok'; original.updated = ts; } });
+          addEntry({...r, id: uid(), ts, updated: ts, ex: r.ex + ' (refait)', res: 'ok', source: 'manual'});
+          renderProgress();
+        }); actions.append(done);
+      }
+      const remove = text('button', 'Supprimer', 'site-btn subtle'); remove.type = 'button';
+      remove.setAttribute('aria-label', 'Supprimer l’entrée ' + r.ex + ' du ' + date(r.ts));
+      remove.addEventListener('click', () => {
+        if (remove.dataset.armed !== 'true') { remove.dataset.armed = 'true'; remove.textContent = 'Confirmer'; setTimeout(() => { if (remove.isConnected) { remove.dataset.armed = 'false'; remove.textContent = 'Supprimer'; } }, 4000); return; }
+        save(s => { s.tombstones[r.id] = Date.now(); s.journal = s.journal.filter(x => x.id !== r.id); }); renderProgress();
+      }); actions.append(remove); row.append(info, actions); journal.append(row);
+    });
+    if (!state.journal.length) journal.append(text('p', 'Tes résultats d’exercices et de QCM apparaîtront ici. Tu peux aussi noter un exercice fait sur papier.', 'site-hint'));
+  }
+
+  if (config.kind === 'progress') {
+    $('site-file-warning').hidden = location.protocol !== 'file:';
+    lessons.forEach(l => { const option = text('option', l.id + ' · ' + l.title); option.value = l.id; $('site-journal-lesson').append(option); });
+    const other = text('option', 'Autre exercice / manuel'); other.value = ''; $('site-journal-lesson').append(other);
+    $('site-journal-lesson').required = false;
+    if (state.last && byId.has(state.last.id)) $('site-journal-lesson').value = state.last.id;
+    renderProgress();
+    $('site-journal-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const ex = $('site-journal-exercise').value.trim(); if (!ex) return;
+      const lesson = byId.get($('site-journal-lesson').value), ts = Date.now();
+      addEntry({id: uid(), ts, updated: ts, lesson: lesson?.id || '', chap: lesson ? lesson.id + ' ' + lesson.title : 'Autre exercice', ex,
+        res: $('site-journal-result').value, err: $('site-journal-error').value, note: $('site-journal-note').value.trim(), source: 'manual'});
+      $('site-journal-exercise').value = ''; $('site-journal-note').value = ''; $('site-journal-error').value = '';
+      message('site-journal-message', storageOK ? 'Séance ajoutée au carnet.' : 'Séance ajoutée en mémoire. Exporte ton suivi avant de fermer la page.', !storageOK);
+      renderProgress();
+    });
+    $('site-copy-report').addEventListener('click', async () => {
+      const value = ['Mon bilan de travail en mathématiques — Terminale spécialité.', ...state.journal.map(r => `${date(r.ts)} | ${r.chap} | ${r.ex} | ${results[r.res]}${r.err ? ' | ' + r.err : ''}${r.note ? ' | ' + r.note : ''}`), '', 'Propose trois exercices ciblés de difficulté croissante sur mes difficultés. Donne les énoncés, puis attends mes réponses avant de corriger.'].join('\n');
+      try {
+        if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+        else throw Error('clipboard');
+        message('site-journal-message', 'Bilan copié. Tu peux le coller dans ton tuteur IA.');
+      } catch (_) {
+        const area = document.createElement('textarea'); area.value = value; area.setAttribute('aria-label', 'Bilan à copier'); area.className = 'site-input';
+        $('site-copy-report').after(area); area.focus(); area.select();
+        message('site-journal-message', 'Copie le texte sélectionné ci-dessous.');
+      }
+    });
+    $('site-export').addEventListener('click', () => {
+      exportState();
+      message('site-backup-message', 'Export préparé. Conserve le fichier dans un endroit sûr.');
+    });
+    function importText(value) {
+      if (value.length > 8 * 1024 * 1024) throw Error('Fichier trop volumineux (maximum 8 Mo).');
+      const parsed = JSON.parse(value);
+      const imported = Array.isArray(parsed) ? legacyRows(parsed) : validate(parsed);
+      save(s => Object.assign(s, merge(s, imported)));
+      renderProgress();
+      message('site-backup-message', storageOK ? 'Sauvegarde fusionnée avec ton suivi. Les entrées déjà présentes ne sont pas dupliquées.' : 'Import chargé en mémoire. Le navigateur ne peut pas l’enregistrer : exporte une copie avant de partir.', !storageOK);
+    }
+    $('site-import-open').addEventListener('click', () => $('site-import-file').click());
+    $('site-import-file').addEventListener('change', async e => {
+      const file = e.target.files[0]; if (!file) return;
+      try {
+        if (file.size > 8 * 1024 * 1024) throw Error('Fichier trop volumineux (maximum 8 Mo).');
+        importText(await file.text());
+      } catch (err) { message('site-backup-message', 'Import refusé : ' + (err instanceof SyntaxError ? 'ce fichier ne contient pas une sauvegarde JSON valide.' : err.message), true); }
+      e.target.value = '';
+    });
+    $('site-import-text-button').addEventListener('click', () => {
+      try { importText($('site-import-text').value); $('site-import-text').value = ''; }
+      catch (err) { message('site-backup-message', 'Import refusé : ' + (err instanceof SyntaxError ? 'colle exactement les données exportées.' : err.message), true); }
+    });
+  }
+
+  window.addEventListener('storage', e => {
+    if (e.key !== KEY) return;
+    state = merge(state, read()); paintBadges(); storageLabel();
+    if (config.kind === 'home') renderHome();
+    if (config.kind === 'progress') renderProgress();
+    if (current && $('site-lesson-status')) $('site-lesson-status').value = state.lessons[current.id]?.status || 'started';
+  });
+})();
+
+</script>
+<!-- SITE:SCRIPT:END -->
+</body>
+</html>
