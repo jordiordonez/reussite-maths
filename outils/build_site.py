@@ -21,11 +21,12 @@ def esc(value):
     return html.escape(str(value), quote=True)
 
 
-def signature():
+def signature(prefix=''):
     return ('<div class="site-sign">© 2026 '
             '<a href="https://joasolucions.com" target="_blank" rel="noopener noreferrer">'
             'Solucions Digitals JOA</a>'
-            ' · Contenu pédagogique sous licence CC BY-SA 4.0</div>')
+            ' · Contenu pédagogique sous licence CC BY-SA 4.0'
+            f' · <a href="{prefix}soutien.html">Offrir un café</a></div>')
 
 
 def public(lessons):
@@ -214,6 +215,37 @@ def hub_content(kind, chapters):
                 content += '<p class="site-soon">Les fiches de ce chapitre sont en préparation.</p>'
             content += '</div></details>'
         return content + '<p class="site-empty" id="site-catalog-empty" hidden>Aucune fiche ne correspond. Essaie une autre notion ou le filtre « Tout ».</p>'
+    if kind == 'support':
+        return """<div class="site-eyebrow">Facultatif, et sans conséquence</div>
+<h1>Offrir un café.</h1>
+<p class="site-lead">Ce site est gratuit et le restera. Il n’y a rien à débloquer, rien à payer, aucun compte à créer.</p>
+
+<div class="site-tile" style="max-width:66ch">
+  <p>Si ce travail vous a été utile et que vous souhaitez faire un geste, vous pouvez m’offrir un café. C’est un remerciement, rien de plus : cela ne finance aucun projet, n’ouvre aucun accès particulier et ne change rien au site.</p>
+  <p><b>Cette page s’adresse aux adultes</b>, parents ou enseignants. Si vous êtes élève, ne faites rien : le site est fait pour vous et il est gratuit.</p>
+  <p style="margin-top:20px"><a class="site-btn" href="https://www.paypal.com/donate/?business=W2ARKKHJMGEN8&amp;item_name=Un+caf%C3%A9+pour+R%C3%A9ussite+Sp%C3%A9+Maths&amp;currency_code=EUR&amp;locale.x=fr_FR" rel="noopener noreferrer" target="_blank" id="site-tip-link">Offrir un café <span aria-hidden="true">&#8594;</span></a></p>
+  <p class="site-hint">Le paiement se fait sur PayPal, hors de ce site.</p>
+</div>
+
+<div class="site-section-title"><h2>Ce que je vois, et ce que j’en fais</h2></div>
+<div class="site-tile" style="max-width:66ch">
+  <ul>
+    <li><b>Ce site ne collecte rien.</b> Ni compte, ni traçage, ni formulaire. Votre suivi de travail reste dans votre navigateur et ne m’est jamais transmis.</li>
+    <li><b>PayPal, lui, me communique votre nom et votre adresse électronique</b>, ainsi que le montant et la date. C’est le fonctionnement normal d’un paiement.</li>
+    <li><b>Je m’en sers uniquement pour vous remercier</b>, si vous avez laissé un message. Aucune liste de diffusion, aucune sollicitation ultérieure, aucune transmission à qui que ce soit.</li>
+  </ul>
+</div>
+
+<div class="site-section-title"><h2>Pour situer</h2></div>
+<div class="site-tile" style="max-width:66ch">
+  <ul>
+    <li>Le contenu reste sous <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="noopener noreferrer" target="_blank">licence CC BY-SA 4.0</a> : libre de réutilisation, y compris modifiée.</li>
+    <li>Les programmes officiels reproduits sont des actes publics, librement reproductibles.</li>
+    <li>Ce geste est personnel et n’a pas de rapport avec une prestation professionnelle.</li>
+  </ul>
+</div>
+
+<p class="site-hint"><a href="index.html">&#8592; Revenir à l’accueil</a></p>"""
     return '''<div class="site-eyebrow">Un peu plus à l’aise, chaque jour</div><h1>Mes progrès.</h1><p class="site-lead">Garde une trace de tes essais, repère les notions à revoir et prépare ta prochaine séance.</p>
 <p class="site-local-note site-hint" data-storage-note>Enregistré dans ce navigateur, sur cet appareil.</p><p class="site-warning" id="site-file-warning" hidden>En ouverture directe de fichiers, le partage du suivi entre les pages dépend du navigateur. Pour un suivi commun fiable, utilise le site en ligne. Exporte régulièrement une copie.</p>
 <div class="site-stats"><div class="site-stat"><strong id="site-stat-started">0</strong><span>fiches commencées</span></div><div class="site-stat"><strong id="site-stat-review">0</strong><span>notions à revoir</span></div><div class="site-stat"><strong id="site-stat-validated">0</strong><span>fiches validées par toi</span></div></div>
@@ -230,15 +262,15 @@ def build(only=None):
     targets = [(ROOT / l['path'], 'lesson', l) for l in lessons]
     targets += [(ROOT / 'strategie/reussir_lannee.html', 'method', None),
                 (HERE / 'fiche_squelette.html', 'template', None)]
-    for filename, kind in [('index.html', 'home'), ('chapitres.html', 'catalog'), ('progres.html', 'progress')]:
+    for filename, kind in [('index.html', 'home'), ('chapitres.html', 'catalog'), ('progres.html', 'progress'), ('soutien.html', 'support')]:
         targets.append((ROOT / filename, kind, None))
     for path, kind, lesson in targets:
         if only and path.relative_to(ROOT).as_posix() not in only:
             continue
         prefix = '../' * len(path.relative_to(ROOT).parts[:-1])
         active = 'catalog' if kind in ('lesson', 'template') else kind
-        if kind in ('home', 'catalog', 'progress'):
-            title = {'home': 'Accueil', 'catalog': 'Chapitres', 'progress': 'Mes progrès'}[kind]
+        if kind in ('home', 'catalog', 'progress', 'support'):
+            title = {'home': 'Accueil', 'catalog': 'Chapitres', 'progress': 'Mes progrès', 'support': 'Offrir un café'}[kind]
             source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Cours et exercices interactifs de spécialité mathématiques, en Première et en Terminale, avec un suivi personnel sans compte.">\n<title>{title} · Réussite Spé Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Spé Maths · Spécialité mathématiques, Première et Terminale · Programme 2019<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
         else:
             source = strip_blocks(path.read_text())
@@ -269,7 +301,7 @@ def build(only=None):
             pager += f'<a href="{prefix}{following["path"] if following else "chapitres.html"}"><small>{label if following else "Parcours terminé"} →</small><strong>{esc(following["title"]) if following else "Revenir au programme"}</strong></a></div><a class="site-page-top" href="#site-main">↑ Haut de la fiche</a>'
             source = source.replace('</main>', block('PAGER', pager) + '\n</main>', 1)
         config = json.dumps({'version': 1, 'kind': kind, 'prefix': prefix, 'current': lesson['id'] if lesson else None, 'chapters': chapters}, ensure_ascii=False).replace('</', '<\\/')
-        source = source.replace('</body>', block('SIGN', signature()) + '\n</body>', 1)
+        source = source.replace('</body>', block('SIGN', signature(prefix)) + '\n</body>', 1)
         source = source.replace('</body>', block('SCRIPT', f'<script id="site-config" type="application/json">{config}</script>\n<script>\n{js}\n</script>') + '\n</body>')
         if not path.exists() or source != path.read_text():
             path.write_text(source)
