@@ -57,8 +57,14 @@ def catalog():
                              'goal': fields[3], 'prerequisites': fields[4], 'lessons': []})
     for path in sorted((ROOT / 'chapitres').glob('*/*.html')):
         source = path.read_text()
+        # les pages laissées aux anciennes adresses ne sont pas des fiches
+        if 'http-equiv="refresh"' in source:
+            continue
         title = re.search(r'<h1[^>]*>(.*?)</h1>', source, re.S)
         if not title:
+            continue
+        # une fiche vit dans le dossier qui porte son numéro
+        if int(re.match(r'\d+', path.name.split('_')[0])[0]) != int(path.parent.name[:2]):
             continue
         code = path.name.split('_')[0]
         number = int(re.match(r'\d+', code)[0])
@@ -180,10 +186,10 @@ def hub_content(kind, chapters):
     <button class="site-btn subtle" id="site-demo-new" type="button">Nouvel exercice</button>
   </div>
   <div class="site-demo-solution" id="site-demo-solution-box" hidden></div>
-  <p class="site-hint">Cet exercice vient de la fiche <a href="chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html">1A · Définitions du produit scalaire</a>. Chaque fiche en contient trois, de difficulté croissante, plus un QCM.</p>
+  <p class="site-hint">Cet exercice vient de la fiche <a href="chapitres/02_produit_scalaire/2A_produit_scalaire_definitions.html">2A · Définitions du produit scalaire</a>. Chaque fiche en contient trois, de difficulté croissante, plus un QCM.</p>
 </div>
 
-<div class="site-section-title"><h2>Tout pour avancer</h2></div><div class="site-grid"><a class="site-tile" href="chapitres.html"><span class="site-eyebrow">Le programme</span><h3>Trouver mon chapitre</h3><p>Quatorze chapitres, des bases de Première aux notions de Terminale, avec cours, visualisations et exercices.</p><span class="site-tile-link">Explorer les chapitres &#8594;</span></a><a class="site-tile" href="strategie/reussir_lannee.html#semaine"><span class="site-eyebrow">La méthode</span><h3>Organiser ma séance</h3><p>Une routine simple, un minuteur et des conseils concrets pour travailler en autonomie.</p><span class="site-tile-link">Préparer ma séance &#8594;</span></a></div>
+<div class="site-section-title"><h2>Tout pour avancer</h2></div><div class="site-grid"><a class="site-tile" href="chapitres.html"><span class="site-eyebrow">Le programme</span><h3>Trouver mon chapitre</h3><p>Quinze chapitres, de la Première à la Terminale, avec cours, visualisations et exercices.</p><span class="site-tile-link">Explorer les chapitres &#8594;</span></a><a class="site-tile" href="strategie/reussir_lannee.html#semaine"><span class="site-eyebrow">La méthode</span><h3>Organiser ma séance</h3><p>Une routine simple, un minuteur et des conseils concrets pour travailler en autonomie.</p><span class="site-tile-link">Préparer ma séance &#8594;</span></a></div>
 
 <div class="site-section-title"><h2>Ce que ce site ne fait pas</h2></div>
 <div class="site-tile site-limits">
@@ -196,7 +202,7 @@ def hub_content(kind, chapters):
 
 <p class="site-hint"><span class="site-local-note" data-storage-note>Ton suivi reste dans ce navigateur, sur cet appareil.</span><a href="progres.html#sauvegarde">Garder une copie de mon suivi</a></p>"""
     if kind == 'catalog':
-        content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">En Première, travaille les fiches de ton niveau. En Terminale, commence par les bases de Première du chapitre, puis poursuis. Dans les deux cas, tu peux suivre l’ordre de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
+        content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">Quinze chapitres, du second degré au calcul intégral. En Première, travaille les fiches de ton niveau ; en Terminale, commence par celles de Première du chapitre. L’ordre proposé n’est qu’une suggestion : suis celui de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
         for c in chapters:
             count = len(c['lessons'])
             content += f'<details class="site-chapter" id="ch{c["number"]}" data-catalog-chapter="{c["number"]}"><summary><span class="site-number">{c["number"]:02}</span><span class="site-chapter-title">{esc(c["title"])}<span class="site-chapter-meta">{(f'<b class="site-public site-public-{public(c["lessons"])[0]}">{public(c["lessons"])[1]}</b> · ' + str(count) + (" fiche" if count == 1 else " fiches")) if count else "À venir"}</span></span></summary><div class="site-chapter-content"><div class="site-chapter-intro"><p><strong>Au programme :</strong> {esc(c["goal"])}.</p><p><strong>Les bases utiles :</strong> {esc(c["prerequisites"])}.</p></div>'

@@ -6,6 +6,8 @@ Ce document fixe ce qui ne doit plus changer dans le site. Il a été écrit le 
 
 ## Ce qui est gelé
 
+> **Exception appliquée le 13 septembre 2026.** Les chapitres ont été renumérotés pour placer le second degré en tête, à l'ouverture du site aux élèves de Première. Les trente-sept anciennes adresses ont été conservées : elles redirigent vers les nouvelles, et sont vérifiées par les contrôles du projet. C'est la dernière renumérotation : elle a été faite avant toute diffusion, au moment où elle ne coûtait presque rien. Le gel décrit ci-dessous s'applique désormais aux nouvelles adresses.
+
 ### 1. Les adresses des fiches
 
 Le chemin d'une fiche publiée ne change plus :
@@ -14,7 +16,7 @@ Le chemin d'une fiche publiée ne change plus :
 chapitres/<NN>_<nom_du_chapitre>/<CODE>_<nom_de_la_fiche>.html
 ```
 
-Les trente-six fiches existantes gardent leur adresse actuelle, définitivement. Une fiche n'est ni renommée, ni déplacée, ni supprimée.
+Les trente-sept fiches existantes gardent leur adresse actuelle, définitivement. Une fiche n'est ni renommée, ni déplacée, ni supprimée.
 
 C'est la règle la plus importante : un lien vers la première fiche du dépôt, partagé au tout début du projet, fonctionne encore aujourd'hui. Cette propriété doit survivre à tout le reste.
 
@@ -59,7 +61,7 @@ Elle a déjà changé une fois, l'ancienne étant `carnet_maths_v1`. Le code ré
 
 Elle doit être rare et traitée, pas subie.
 
-**Une adresse doit changer** : l'ancienne continue de fonctionner. Sur un hébergement sans redirection côté serveur, comme le nôtre, l'ancien fichier est conservé et redirige vers le nouveau. On ne supprime jamais une adresse publiée.
+**Une adresse doit changer** : l'ancienne continue de fonctionner. Sur un hébergement sans redirection côté serveur, comme le nôtre, l'ancien fichier est conservé et redirige vers le nouveau. Le script `outils/redirections.py` les engendre. On ne supprime jamais une adresse publiée.
 
 **La clé de stockage doit changer** : la nouvelle version lit l'ancienne clé au premier démarrage et reprend son contenu, sans supprimer l'original. C'est ce qui a été fait pour la clé précédente.
 

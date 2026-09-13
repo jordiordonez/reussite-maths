@@ -96,9 +96,9 @@ Un fichier HTML unique, avec dans l'ordre :
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [7A](chapitres/07_probabilites/7A_probabilites_conditionnelles.html) | Première | Conditionnement, arbres, probabilités totales et indépendance |
-| [7B](chapitres/07_probabilites/7B_variables_aleatoires.html) | Première | Loi, espérance, variance, écart type et jeu équitable |
-| [7C](chapitres/07_probabilites/7C_epreuves_independantes_bernoulli.html) | Terminale | Épreuves indépendantes, Bernoulli, chemins et événements |
+| [7A](chapitres/08_probabilites/8A_probabilites_conditionnelles.html) | Première | Conditionnement, arbres, probabilités totales et indépendance |
+| [7B](chapitres/08_probabilites/8B_variables_aleatoires.html) | Première | Loi, espérance, variance, écart type et jeu équitable |
+| [7C](chapitres/08_probabilites/8C_epreuves_independantes_bernoulli.html) | Terminale | Épreuves indépendantes, Bernoulli, chemins et événements |
 
 Le [dossier du chapitre 7](chapitres/07_probabilites/README.md) décrit ses tests mathématiques indépendants, ses tests navigateur et la génération ciblée à utiliser pendant les relectures parallèles.
 
@@ -106,7 +106,7 @@ Le [dossier du chapitre 7](chapitres/07_probabilites/README.md) décrit ses test
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [8A](chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html) | Terminale | Listes, permutations, combinaisons, coefficients binomiaux, Pascal et chemins à k succès |
+| [8A](chapitres/09_combinatoire_denombrement/9A_combinatoire_denombrement.html) | Terminale | Listes, permutations, combinaisons, coefficients binomiaux, Pascal et chemins à k succès |
 
 Le [dossier du chapitre 8](chapitres/08_combinatoire_denombrement/README.md) précise les démonstrations exigibles, le lien entre 7C et la future loi binomiale, ainsi que ses tests indépendants et navigateur.
 
@@ -114,7 +114,7 @@ Le [dossier du chapitre 8](chapitres/08_combinatoire_denombrement/README.md) pr�
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [9A](chapitres/09_loi_binomiale/9A_loi_binomiale.html) | Terminale | Loi binomiale, probabilités cumulées, intervalles, seuils, moments et simulation |
+| [9A](chapitres/10_loi_binomiale/10A_loi_binomiale.html) | Terminale | Loi binomiale, probabilités cumulées, intervalles, seuils, moments et simulation |
 
 Le [dossier du chapitre 9](chapitres/09_loi_binomiale/README.md) décrit les démonstrations, les tests indépendants des probabilités et des arrondis, ainsi que la génération ciblée.
 
@@ -122,8 +122,8 @@ Le [dossier du chapitre 9](chapitres/09_loi_binomiale/README.md) décrit les dé
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [10A](chapitres/10_trigonometrie/10A_cercle_trigonometrique.html) | Première | Cercle, radians, valeurs remarquables, angles associés, parité et périodicité |
-| [10B](chapitres/10_trigonometrie/10B_derivation_trigonometrie.html) | Terminale | Dérivées, variations, limites en zéro, équations, inéquations et optimisation |
+| [10A](chapitres/11_trigonometrie/11A_cercle_trigonometrique.html) | Première | Cercle, radians, valeurs remarquables, angles associés, parité et périodicité |
+| [10B](chapitres/11_trigonometrie/11B_derivation_trigonometrie.html) | Terminale | Dérivées, variations, limites en zéro, équations, inéquations et optimisation |
 
 Le [dossier du chapitre 10](chapitres/10_trigonometrie/README.md) décrit les conventions de réponse, les tests indépendants, les contrôles aux bornes et la génération ciblée.
 
@@ -131,8 +131,8 @@ Le [dossier du chapitre 10](chapitres/10_trigonometrie/README.md) décrit les co
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [11A](chapitres/11_primitives_equadiff/11A_primitives.html) | Terminale | Notion de primitive, primitives de référence, formes composées, condition initiale |
-| [11B](chapitres/11_primitives_equadiff/11B_equations_differentielles.html) | Terminale | Équations y′ = ay et y′ = ay + b, allure des courbes, modélisation, méthode d'Euler |
+| [11A](chapitres/12_primitives_equadiff/12A_primitives.html) | Terminale | Notion de primitive, primitives de référence, formes composées, condition initiale |
+| [11B](chapitres/12_primitives_equadiff/12B_equations_differentielles.html) | Terminale | Équations y′ = ay et y′ = ay + b, allure des courbes, modélisation, méthode d'Euler |
 
 Ce chapitre n'a pas de partie Première : ces notions n'y figurent pas. Ce qu'il réactive, c'est la dérivation, chercher une primitive étant l'opération inverse.
 
@@ -140,8 +140,8 @@ Ce chapitre n'a pas de partie Première : ces notions n'y figurent pas. Ce qu'il
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [12A](chapitres/12_calcul_integral/12A_integrales_aires.html) | Terminale | Intégrales, aires, primitives, propriétés, encadrements et valeur moyenne |
-| [12B](chapitres/12_calcul_integral/12B_integration_methodes.html) | Terminale | Intégration par parties, suites d’intégrales, rectangles, milieux et trapèzes |
+| [12A](chapitres/13_calcul_integral/13A_integrales_aires.html) | Terminale | Intégrales, aires, primitives, propriétés, encadrements et valeur moyenne |
+| [12B](chapitres/13_calcul_integral/13B_integration_methodes.html) | Terminale | Intégration par parties, suites d’intégrales, rectangles, milieux et trapèzes |
 
 Le [dossier du chapitre 12](chapitres/12_calcul_integral/README.md) précise les démonstrations, les tests indépendants et la construction isolée pendant le travail parallèle sur le chapitre 11.
 
@@ -149,14 +149,14 @@ Le [dossier du chapitre 12](chapitres/12_calcul_integral/README.md) précise les
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [13A](chapitres/13_sommes_variables/13A_sommes_variables.html) | Terminale | Somme de variables, linéarité de l'espérance, additivité de la variance, échantillon |
-| [13B](chapitres/13_sommes_variables/13B_concentration_grands_nombres.html) | Terminale | Inégalité de Bienaymé-Tchebychev, concentration, loi des grands nombres, taille d'échantillon |
+| [13A](chapitres/14_sommes_variables/14A_sommes_variables.html) | Terminale | Somme de variables, linéarité de l'espérance, additivité de la variance, échantillon |
+| [13B](chapitres/14_sommes_variables/14B_concentration_grands_nombres.html) | Terminale | Inégalité de Bienaymé-Tchebychev, concentration, loi des grands nombres, taille d'échantillon |
 
 **Chapitre 15 — Équations et fonctions polynômes du second degré**
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [15A](chapitres/15_second_degre/15A_second_degre.html) | Première | Formes factorisée et canonique, discriminant, racines, signe, somme et produit |
+| [15A](chapitres/01_second_degre/1A_second_degre.html) | Première | Formes factorisée et canonique, discriminant, racines, signe, somme et produit |
 
 Chapitre de Première uniquement. Il ne sert pas en Terminale, d'où son absence initiale, mais c'est un morceau central du programme de Première.
 
@@ -164,12 +164,12 @@ Chapitre de Première uniquement. Il ne sert pas en Terminale, d'où son absence
 
 | Fiche | Niveau | Contenu |
 |---|---|---|
-| [14A](chapitres/14_algorithmique/14A_listes_python.html) | Transversal | Variables, conditions, boucles, fonctions, listes en extension et en compréhension |
-| [14B](chapitres/14_algorithmique/14B_algorithmes_du_programme.html) | Transversal | Tous les algorithmes du programme, chacun relié à son chapitre |
+| [14A](chapitres/15_algorithmique/15A_listes_python.html) | Transversal | Variables, conditions, boucles, fonctions, listes en extension et en compréhension |
+| [14B](chapitres/15_algorithmique/15B_algorithmes_du_programme.html) | Transversal | Tous les algorithmes du programme, chacun relié à son chapitre |
 
 Chapitre transversal : le programme précise qu'il n'introduit aucune notion nouvelle et sert à consolider.
 
-Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
+Le plan complet de l'année, avec l'ordre des quinze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 
 ## Le guide de méthode
 

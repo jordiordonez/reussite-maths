@@ -20,6 +20,11 @@ FORBIDDEN = [
 def check(path):
     ok = True
     html = open(path, encoding="utf-8").read()
+    # Les pages laissées aux anciennes adresses après renumérotation ne sont
+    # pas des fiches : elles redirigent. Voir outils/redirections.py.
+    if 'http-equiv="refresh"' in html:
+        print(f"  → redirection : {os.path.basename(path)}")
+        return True
     low = html.lower()
     for needle, label in REQUIRED:
         if needle.lower() not in low:

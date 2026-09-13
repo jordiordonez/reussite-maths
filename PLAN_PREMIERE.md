@@ -60,9 +60,9 @@ Chaque chapitre indique qui il concerne, à partir du niveau réel de ses fiches
 
 | Badge | Signification | Exemple |
 |---|---|---|
-| **Première** | Le chapitre ne contient que des fiches de Première | 15 · Second degré |
-| **Terminale** | Le chapitre ne contient que des fiches de Terminale | 8 · Dénombrement, 9 · Loi binomiale |
-| **Première et Terminale** | Le chapitre contient les deux | 1 · Produit scalaire, 3 · Dérivation |
+| **Première** | Le chapitre ne contient que des fiches de Première | 1 · Second degré |
+| **Terminale** | Le chapitre ne contient que des fiches de Terminale | 9 · Dénombrement, 10 · Loi binomiale |
+| **Première et Terminale** | Le chapitre contient les deux | 2 · Produit scalaire, 4 · Dérivation |
 
 Le badge est calculé par `outils/build_site.py` à partir des fiches réellement présentes. Ajouter une fiche met le badge à jour tout seul.
 
@@ -70,7 +70,7 @@ Un filtre du catalogue permet déjà de n'afficher que l'un des deux niveaux.
 
 ## Ordre de production
 
-1. ~~**Le second degré**~~ — ✅ fait, fiche 15A.
+1. ~~**Le second degré**~~ — ✅ fait, fiche 1A.
 2. ~~**Les badges de public**~~ — ✅ faits, calculés depuis le niveau réel des fiches.
 3. **Compléter la trigonométrie de Première** — l'enroulement et la démonstration exigible.
 4. **Relire indépendamment** les fiches non encore relues, dont les nouvelles.

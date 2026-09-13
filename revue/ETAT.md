@@ -34,15 +34,15 @@ Ces fiches ont été écrites en appliquant d'emblée les leçons des 255 anomal
 
 | Fiche | Titre | Auteur | Rapport |
 |---|---|---|---|
-| 7A à 7C | Probabilités conditionnelles et variables aléatoires | Codex | `revue/7A.md` à `7C.md` |
-| 8A | Combinatoire et dénombrement | Codex | `revue/8A.md` |
-| 9A | Loi binomiale | Codex | `revue/9A.md` |
-| 10A, 10B | Fonctions trigonométriques | Codex | `revue/10A.md`, `10B.md` |
-| 11A, 11B | Primitives et équations différentielles | Claude | `revue/11A.md`, `11B.md` — 12 et 18 défauts corrigés avant livraison |
-| 12A, 12B | Calcul intégral | Codex | `revue/12A.md`, `12B.md` |
-| 13A, 13B | Sommes de variables aléatoires, loi des grands nombres | Claude | `revue/13A.md`, `13B.md` — 9 et 14 défauts corrigés avant livraison |
-| 15A | Second degré (Première) | Claude | `revue/15A.md` — 16 défauts corrigés avant livraison |
-| 14A, 14B | Algorithmique et programmation | Claude | `revue/14A.md`, `14B.md` — 4 défauts chacune ; 1,85 M de programmes Python réellement exécutés |
+| 7A à 7C | Probabilités conditionnelles et variables aléatoires | Codex | `revue/8A.md` à `7C.md` |
+| 8A | Combinatoire et dénombrement | Codex | `revue/9A.md` |
+| 9A | Loi binomiale | Codex | `revue/10A.md` |
+| 10A, 10B | Fonctions trigonométriques | Codex | `revue/11A.md`, `10B.md` |
+| 11A, 11B | Primitives et équations différentielles | Claude | `revue/12A.md`, `11B.md` — 12 et 18 défauts corrigés avant livraison |
+| 12A, 12B | Calcul intégral | Codex | `revue/13A.md`, `12B.md` |
+| 13A, 13B | Sommes de variables aléatoires, loi des grands nombres | Claude | `revue/14A.md`, `13B.md` — 9 et 14 défauts corrigés avant livraison |
+| 15A | Second degré (Première) | Claude | `revue/1A.md` — 16 défauts corrigés avant livraison |
+| 14A, 14B | Algorithmique et programmation | Claude | `revue/15A.md`, `14B.md` — 4 défauts chacune ; 1,85 M de programmes Python réellement exécutés |
 
 Elles n'ont pas encore été relues par un relecteur indépendant, contrairement aux vingt et une premières.
 
