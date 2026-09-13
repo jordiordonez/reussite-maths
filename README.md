@@ -127,6 +127,15 @@ Le [dossier du chapitre 9](chapitres/09_loi_binomiale/README.md) décrit les dé
 
 Le [dossier du chapitre 10](chapitres/10_trigonometrie/README.md) décrit les conventions de réponse, les tests indépendants, les contrôles aux bornes et la génération ciblée.
 
+**Chapitre 11 — Primitives et équations différentielles**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [11A](chapitres/11_primitives_equadiff/11A_primitives.html) | Terminale | Notion de primitive, primitives de référence, formes composées, condition initiale |
+| [11B](chapitres/11_primitives_equadiff/11B_equations_differentielles.html) | Terminale | Équations y′ = ay et y′ = ay + b, allure des courbes, modélisation, méthode d'Euler |
+
+Ce chapitre n'a pas de partie Première : ces notions n'y figurent pas. Ce qu'il réactive, c'est la dérivation, chercher une primitive étant l'opération inverse.
+
 **Chapitre 12 — Calcul intégral**
 
 | Fiche | Niveau | Contenu |
@@ -135,6 +144,22 @@ Le [dossier du chapitre 10](chapitres/10_trigonometrie/README.md) décrit les co
 | [12B](chapitres/12_calcul_integral/12B_integration_methodes.html) | Terminale | Intégration par parties, suites d’intégrales, rectangles, milieux et trapèzes |
 
 Le [dossier du chapitre 12](chapitres/12_calcul_integral/README.md) précise les démonstrations, les tests indépendants et la construction isolée pendant le travail parallèle sur le chapitre 11.
+
+**Chapitre 13 — Sommes de variables aléatoires et loi des grands nombres**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [13A](chapitres/13_sommes_variables/13A_sommes_variables.html) | Terminale | Somme de variables, linéarité de l'espérance, additivité de la variance, échantillon |
+| [13B](chapitres/13_sommes_variables/13B_concentration_grands_nombres.html) | Terminale | Inégalité de Bienaymé-Tchebychev, concentration, loi des grands nombres, taille d'échantillon |
+
+**Chapitre 14 — Algorithmique et programmation**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [14A](chapitres/14_algorithmique/14A_listes_python.html) | Transversal | Variables, conditions, boucles, fonctions, listes en extension et en compréhension |
+| [14B](chapitres/14_algorithmique/14B_algorithmes_du_programme.html) | Transversal | Tous les algorithmes du programme, chacun relié à son chapitre |
+
+Chapitre transversal : le programme précise qu'il n'introduit aucune notion nouvelle et sert à consolider.
 
 Le plan complet de l'année, avec l'ordre des quatorze chapitres, leurs dépendances et les prérequis de Première à réactiver pour chacun, est dans [`ordre.md`](ordre.md).
 

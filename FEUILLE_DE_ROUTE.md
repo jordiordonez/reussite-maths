@@ -66,12 +66,18 @@ Ces mesures doivent rester compatibles avec le fonctionnement sans compte et hor
 
 ## Ordre suggéré
 
-1. Terminer les deux derniers chapitres.
-2. Relire indépendamment les onze fiches des chapitres 7 à 12.
-3. Geler la navigation.
-4. Construire la page d'entrée.
-5. Ajouter le lien vers une fiche précise et le résumé imprimable.
-6. Écrire la page pour enseignants et parents.
-7. Diffuser auprès du premier cercle, les enseignants, et écouter.
+État au 13 septembre 2026.
+
+| | Étape | Statut |
+|---|---|---|
+| 1 | Terminer les chapitres | ✅ les quatorze sont faits, trente-six fiches |
+| 2 | Geler la navigation | ✅ `CONTRAT_NAVIGATION.md` |
+| 3 | Construire la page d'entrée | ✅ avec un exercice jouable immédiatement |
+| 4 | Relire indépendamment les fiches des chapitres 7 à 14 | ⬜ **prochaine étape** |
+| 5 | Lien vers une fiche précise, résumé imprimable | ⬜ |
+| 6 | Page pour enseignants et parents | ⬜ |
+| 7 | Diffuser auprès des enseignants, et écouter | ⬜ |
+
+L'étape 4 a grandi : quinze fiches sont désormais vérifiées par leur seul auteur, celles des chapitres 7 à 14. Elle reste la condition préalable à toute diffusion. Les vingt et une premières fiches, relues indépendamment, avaient livré 255 anomalies qu'aucun test automatique ne signalait.
 
 Le reste dépendra de ce que ce premier cercle dira.

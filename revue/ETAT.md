@@ -44,3 +44,7 @@ Ces fiches ont été écrites en appliquant d'emblée les leçons des 255 anomal
 | 14A, 14B | Algorithmique et programmation | Claude | `revue/14A.md`, `14B.md` — 4 défauts chacune ; 1,85 M de programmes Python réellement exécutés |
 
 Elles n'ont pas encore été relues par un relecteur indépendant, contrairement aux vingt et une premières.
+
+**Bilan au 13 septembre 2026 : 21 fiches relues indépendamment sur 36.** Les quinze restantes, celles des chapitres 7 à 14, ont été vérifiées par leur auteur selon le même protocole, avec des contrôles sérieux : balayages exhaustifs des exercices, recalcul indépendant des valeurs affichées, et jusqu'à 1,85 million de programmes Python réellement exécutés pour les fiches d'algorithmique. Chacune a trouvé entre quatre et dix-huit défauts avant livraison.
+
+Cela ne remplace pas une relecture indépendante. La relecture des vingt et une premières a corrigé 255 anomalies, dont des énoncés insolubles, des corrections fausses et des félicitations pour des réponses fausses, qu'aucun test automatique ne signalait et qu'un auteur ne voit pas dans son propre travail. C'est la prochaine étape de `FEUILLE_DE_ROUTE.md`.
