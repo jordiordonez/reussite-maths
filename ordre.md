@@ -1,6 +1,8 @@
 # Ordre de traitement des chapitres
 
-Plan de l'année de Terminale spécialité mathématiques, programme officiel de 2019. Chaque chapitre est traité en deux étages : ce qu'il faut réactiver de Première, puis la nouveauté de Terminale.
+Plan de l'année de Terminale spécialité mathématiques, programme officiel de 2019.
+
+Le chapitre 15 sort de cette logique : il relève du seul programme de Première, et a été ajouté quand le site s'est ouvert aux élèves de Première. Voir `PLAN_PREMIERE.md`. Chaque chapitre est traité en deux étages : ce qu'il faut réactiver de Première, puis la nouveauté de Terminale.
 
 Ce document sert à décider quoi produire ensuite. Il se met à jour au fur et à mesure.
 
@@ -33,6 +35,7 @@ Statut : ✅ fait · 🔨 en cours · ⬜ à produire
 | 11 | **Primitives et équations différentielles** | Notion de primitive, primitives des fonctions de référence, équations y′ = f, y′ = ay, y′ = ay + b, problème de Cauchy | Dérivation (chapitre 3), exponentielle (chapitre 5) | 11A, 11B (Term) | ✅ |
 | 12 | **Calcul intégral** | Intégrale et aire, propriétés, lien avec les primitives, valeur moyenne, intégration par parties, méthode des rectangles | Primitives (chapitre 11), aires vues au collège | 12A, 12B (Term) | ✅ |
 | 13 | **Sommes de variables aléatoires et loi des grands nombres** | Somme de variables aléatoires, linéarité de l'espérance, variance d'une somme de variables indépendantes, échantillon, inégalité de Bienaymé-Tchebychev, inégalité de concentration, loi des grands nombres | Espérance et variance (chapitre 7), loi binomiale (chapitre 9) | 13A, 13B (Term) | ✅ |
+| 15 | **Équations et fonctions polynômes du second degré** | — | Formes factorisée et canonique, discriminant, racines, signe, somme et produit des racines | 15A (1re) | ✅ |
 | 14 | **Algorithmique et programmation** | Écriture de fonctions Python liées aux chapitres : seuils, dichotomie, Newton, simulation, comptage | Listes, boucles, fonctions, conditions | 14A, 14B (transversal) | ✅ |
 
 ## Dépendances à respecter

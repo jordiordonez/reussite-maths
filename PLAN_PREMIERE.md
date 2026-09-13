@@ -13,7 +13,7 @@ Les dix rubriques du programme de Première, confrontées aux fiches existantes.
 | Rubrique du programme | Couverture | Fiches |
 |---|---|---|
 | Suites numériques, modèles discrets | ✅ complète | 2A, 2B |
-| Équations, fonctions polynômes du second degré | 🔨 **en cours** | 15A |
+| Équations, fonctions polynômes du second degré | ✅ complète | 15A |
 | Dérivation | ✅ complète | 3A, 3B |
 | Variations et courbes représentatives | ✅ complète | 3C, 4A |
 | Fonction exponentielle | ✅ complète | 5A |
@@ -24,11 +24,11 @@ Les dix rubriques du programme de Première, confrontées aux fiches existantes.
 | Variables aléatoires réelles | ✅ complète | 7B |
 | Algorithmique et programmation | ✅ complète | 14A |
 
-**Quatorze fiches de Première existent déjà.** Le programme est couvert à l'exception de deux points.
+**Quinze fiches de Première existent.** Le programme est couvert à l'exception de deux points.
 
 ## Ce qui manque
 
-### 1. Le second degré — en cours d'écriture
+### 1. Le second degré — ✅ fait le 13 septembre 2026
 
 C'est le seul chapitre entièrement absent. Il n'avait pas été traité parce qu'il ne sert pas directement en Terminale : aucun chapitre de Terminale n'en dépend, il n'était donc pas nécessaire comme socle.
 
@@ -70,8 +70,8 @@ Un filtre du catalogue permet déjà de n'afficher que l'un des deux niveaux.
 
 ## Ordre de production
 
-1. **Le second degré** — en cours. C'est le vrai manque.
-2. **Les badges de public** — immédiat, et c'est ce qui rend le site utilisable par un élève de Première.
+1. ~~**Le second degré**~~ — ✅ fait, fiche 15A.
+2. ~~**Les badges de public**~~ — ✅ faits, calculés depuis le niveau réel des fiches.
 3. **Compléter la trigonométrie de Première** — l'enroulement et la démonstration exigible.
 4. **Relire indépendamment** les fiches non encore relues, dont les nouvelles.
 

@@ -152,6 +152,14 @@ Le [dossier du chapitre 12](chapitres/12_calcul_integral/README.md) précise les
 | [13A](chapitres/13_sommes_variables/13A_sommes_variables.html) | Terminale | Somme de variables, linéarité de l'espérance, additivité de la variance, échantillon |
 | [13B](chapitres/13_sommes_variables/13B_concentration_grands_nombres.html) | Terminale | Inégalité de Bienaymé-Tchebychev, concentration, loi des grands nombres, taille d'échantillon |
 
+**Chapitre 15 — Équations et fonctions polynômes du second degré**
+
+| Fiche | Niveau | Contenu |
+|---|---|---|
+| [15A](chapitres/15_second_degre/15A_second_degre.html) | Première | Formes factorisée et canonique, discriminant, racines, signe, somme et produit |
+
+Chapitre de Première uniquement. Il ne sert pas en Terminale, d'où son absence initiale, mais c'est un morceau central du programme de Première.
+
 **Chapitre 14 — Algorithmique et programmation**
 
 | Fiche | Niveau | Contenu |
