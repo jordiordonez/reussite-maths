@@ -45,6 +45,21 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 .site-sign a{color:#6b7280;text-decoration:underline;text-underline-offset:2px}
 .site-sign a:hover{color:var(--blue)}
 
+/* --- page d'accueil : les deux étages, la démonstration, les limites --- */
+.site-steps .site-tile{position:relative;padding-top:26px}
+.site-step-num{position:absolute;top:-14px;left:22px;width:30px;height:30px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:Georgia,serif;font-weight:700;font-size:15px}
+.site-demo{margin-top:6px}
+.site-demo-statement{font-size:16px;line-height:1.7;margin:0 0 16px}
+.site-demo-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.site-demo-label{font-size:12px;color:#6b7280;flex:0 0 auto}
+.site-demo-input{max-width:190px;min-height:46px}
+.site-demo-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.site-demo-solution{margin-top:14px;background:#f4f2ee;border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.7}
+.site-demo-solution p{margin:.35em 0}
+.site-limits ul{margin:0;padding-left:1.15rem}
+.site-limits li{margin:.5rem 0;line-height:1.65}
+@media(max-width:600px){.site-demo-input{max-width:100%;width:100%}.site-demo-row{gap:8px}}
+
 </style>
 <!-- SITE:STYLE:END -->
 </head>
@@ -67,12 +82,51 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
  <p class="site-announcement" id="site-search-count" role="status"></p><div class="site-search-results" id="site-search-results"></div>
 </dialog>
 <!-- SITE:SHELL:END -->
-<main id="site-main" tabindex="-1"><div class="site-eyebrow">Terminale · Spécialité mathématiques</div>
-<h1>Les maths, à ton rythme.</h1><p class="site-lead">Reprendre les bases, comprendre, puis s’entraîner.<br>Un espace calme pour avancer, une notion après l’autre.</p>
-<div class="site-hero"><div><div class="site-eyebrow" id="site-resume-label">Ta prochaine séance</div><h2 id="site-resume-title">Par quoi commence-t-on ?</h2><p id="site-resume-description">Choisis le chapitre que tu travailles en classe. Chaque parcours commence par les bases de Première avant d’aborder la Terminale.</p><div class="site-hero-actions"><a class="site-btn" id="site-resume-link" href="chapitres.html">Choisir mon chapitre <span aria-hidden="true">→</span></a><a href="strategie/reussir_lannee.html#depart" style="font-size:12px">Comment bien démarrer</a></div></div>
+<main id="site-main" tabindex="-1"><div class="site-eyebrow">Terminale · Enseignement de spécialité · Programme 2019</div>
+<h1>Les maths, à ton rythme.</h1>
+<p class="site-lead">Reprendre les bases de Première, comprendre, puis s’entraîner sur le programme de Terminale.<br>Gratuit, sans compte, et utilisable sans connexion.</p>
+
+<div class="site-hero"><div><div class="site-eyebrow" id="site-resume-label">Ta prochaine séance</div><h2 id="site-resume-title">Par quoi commence-t-on ?</h2><p id="site-resume-description">Choisis le chapitre que tu travailles en classe. Chaque parcours commence par les bases de Première avant d’aborder la Terminale.</p><div class="site-hero-actions"><a class="site-btn" id="site-resume-link" href="chapitres.html">Choisir mon chapitre <span aria-hidden="true">&#8594;</span></a><a href="strategie/reussir_lannee.html#depart" style="font-size:12px">Comment bien démarrer</a></div></div>
 <div class="site-hero-art" aria-hidden="true"><svg viewBox="0 0 200 200" fill="none"><rect x="10" y="10" width="180" height="180" rx="90" fill="#e3ebfa"/><path d="M38 146H173M63 170V32" stroke="#a6bde5"/><path d="M40 144C80 144 95 134 114 110S150 65 164 40" stroke="#2563eb" stroke-width="3"/><path d="m86 146 60-80" stroke="#88a6d9" stroke-width="1.5" stroke-dasharray="4 5"/><circle cx="114" cy="110" r="5" fill="#2563eb"/><circle cx="63" cy="142" r="4" fill="#faf8f5" stroke="#2563eb" stroke-width="2"/><text x="168" y="166" fill="#8299bd" font-family="Georgia" font-size="14">x</text><text x="45" y="37" fill="#8299bd" font-family="Georgia" font-size="14">y</text></svg></div></div>
-<div class="site-section-title"><h2>À travailler aujourd’hui</h2><a href="progres.html">Voir mon suivi →</a></div><div id="site-today" class="site-empty">Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.</div>
-<div class="site-section-title"><h2>Tout pour avancer</h2></div><div class="site-grid"><a class="site-tile" href="chapitres.html"><span class="site-eyebrow">Le programme</span><h3>Trouver mon chapitre</h3><p>Des bases de Première aux notions de Terminale, avec cours, visualisations et exercices.</p><span class="site-tile-link">Explorer les chapitres →</span></a><a class="site-tile" href="strategie/reussir_lannee.html#semaine"><span class="site-eyebrow">La méthode</span><h3>Organiser ma séance</h3><p>Une routine simple, un minuteur et des conseils concrets pour travailler en autonomie.</p><span class="site-tile-link">Préparer ma séance →</span></a></div>
+
+<div class="site-section-title"><h2>À travailler aujourd’hui</h2><a href="progres.html">Voir mon suivi &#8594;</a></div><div id="site-today" class="site-empty">Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.</div>
+
+<div class="site-section-title"><h2>Comment ça marche</h2></div>
+<p class="site-lead" style="font-size:15px;max-width:70ch">Chaque chapitre est traité en deux temps. C’est la seule chose à comprendre pour s’en servir.</p>
+<div class="site-grid site-steps">
+  <div class="site-tile"><span class="site-step-num">1</span><span class="site-eyebrow">Avant le cours</span><h3>Réactiver les bases</h3><p>Les fiches marquées <b>Première</b> reprennent ce dont le chapitre a besoin. À travailler <b>avant</b> que le professeur le commence. C’est ce qui évite d’être perdue dès la première heure.</p></div>
+  <div class="site-tile"><span class="site-step-num">2</span><span class="site-eyebrow">Pendant le cours</span><h3>Aborder la nouveauté</h3><p>Les fiches marquées <b>Terminale</b> traitent ce qui est nouveau cette année, en s’appuyant sur les bases que tu viens de revoir.</p></div>
+</div>
+
+<div class="site-section-title"><h2>Un exercice, tout de suite</h2></div>
+<p class="site-lead" style="font-size:15px;max-width:70ch">Voici à quoi ressemble un exercice du site. Les nombres changent à chaque fois, et la correction est rédigée.</p>
+<div class="site-tile site-demo">
+  <p class="site-demo-statement" id="site-demo-statement"></p>
+  <div class="site-demo-row">
+    <label for="site-demo-answer" class="site-demo-label">Ta réponse</label>
+    <input class="site-input site-demo-input" id="site-demo-answer" type="text" inputmode="text" autocomplete="off" placeholder="un nombre">
+    <button class="site-btn" id="site-demo-check" type="button">Vérifier</button>
+  </div>
+  <p class="site-message" id="site-demo-feedback" role="status"></p>
+  <div class="site-demo-actions">
+    <button class="site-btn subtle" id="site-demo-solution" type="button">Voir la correction</button>
+    <button class="site-btn subtle" id="site-demo-new" type="button">Nouvel exercice</button>
+  </div>
+  <div class="site-demo-solution" id="site-demo-solution-box" hidden></div>
+  <p class="site-hint">Cet exercice vient de la fiche <a href="chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html">1A · Définitions du produit scalaire</a>. Chaque fiche en contient trois, de difficulté croissante, plus un QCM.</p>
+</div>
+
+<div class="site-section-title"><h2>Tout pour avancer</h2></div><div class="site-grid"><a class="site-tile" href="chapitres.html"><span class="site-eyebrow">Le programme</span><h3>Trouver mon chapitre</h3><p>Quatorze chapitres, des bases de Première aux notions de Terminale, avec cours, visualisations et exercices.</p><span class="site-tile-link">Explorer les chapitres &#8594;</span></a><a class="site-tile" href="strategie/reussir_lannee.html#semaine"><span class="site-eyebrow">La méthode</span><h3>Organiser ma séance</h3><p>Une routine simple, un minuteur et des conseils concrets pour travailler en autonomie.</p><span class="site-tile-link">Préparer ma séance &#8594;</span></a></div>
+
+<div class="site-section-title"><h2>Ce que ce site ne fait pas</h2></div>
+<div class="site-tile site-limits">
+  <ul>
+    <li><b>Il ne remplace pas le cours.</b> Il le prépare et le consolide. Ce que dit ton professeur prime toujours.</li>
+    <li><b>Il ne corrige pas tes devoirs.</b> Les exercices sont engendrés par le site, avec leur correction.</li>
+    <li><b>Il n’y a pas de compte.</b> Ton suivi reste dans ce navigateur, sur cet appareil. Personne d’autre n’y a accès, et rien n’est envoyé nulle part.</li>
+  </ul>
+</div>
+
 <p class="site-hint"><span class="site-local-note" data-storage-note>Ton suivi reste dans ce navigateur, sur cet appareil.</span><a href="progres.html#sauvegarde">Garder une copie de mon suivi</a></p></main>
 <footer>Réussite Spé Maths · Terminale spécialité · Programme 2019, année 2026–2027<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>
 <!-- SITE:SIGN:START -->
@@ -498,7 +552,75 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       today.className = 'site-empty'; today.textContent = last ? 'Aucune notion signalée à revoir. Tu peux poursuivre ta dernière fiche ou choisir le chapitre travaillé en classe.' : 'Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.';
     }
   }
-  if (config.kind === 'home') renderHome();
+
+  // --- exercice de démonstration de l'accueil ---
+  // Produit scalaire à partir des coordonnées, tiré de la fiche 1A.
+  // Les valeurs sont exactes : la vérification exige l'égalité.
+  function renderDemo() {
+    const enonce = $('site-demo-statement'), champ = $('site-demo-answer');
+    const retour = $('site-demo-feedback'), boite = $('site-demo-solution-box');
+    if (!enonce || !champ) return;
+    let ex = null;
+
+    const nonNul = (a, b) => { let v = 0; while (v === 0) v = a + Math.floor(Math.random() * (b - a + 1)); return v; };
+    const par = v => (v < 0 ? '(' + v + ')' : String(v));
+
+    function nouveau() {
+      const x = nonNul(-7, 7), y = nonNul(-7, 7), xp = nonNul(-7, 7), yp = nonNul(-7, 7);
+      ex = {x, y, xp, yp, res: x * xp + y * yp};
+      enonce.innerHTML = 'Dans un repère orthonormé, on donne les vecteurs '
+        + '<b>u</b> de coordonnées (' + x + ' ; ' + y + ') et '
+        + '<b>v</b> de coordonnées (' + xp + ' ; ' + yp + ').<br>'
+        + 'Calculer leur produit scalaire.';
+      champ.value = ''; retour.textContent = ''; retour.removeAttribute('data-error');
+      boite.hidden = true; boite.innerHTML = '';
+      $('site-demo-solution').textContent = 'Voir la correction';
+    }
+
+    function lire(v) {
+      const t = String(v || '').trim().replace(/\s+/g, '').replace(',', '.').replace(/[−–—]/g, '-');
+      return t === '' ? NaN : Number(t);
+    }
+
+    function verifier() {
+      const v = lire(champ.value);
+      if (isNaN(v)) { retour.textContent = 'Écris un nombre.'; retour.setAttribute('data-error', 'true'); return; }
+      if (v === ex.res) {
+        retour.textContent = '✓ Correct. Le produit scalaire vaut ' + ex.res + '.';
+        retour.removeAttribute('data-error');
+      } else if (v === ex.x * ex.xp - ex.y * ex.yp) {
+        retour.textContent = '✗ On additionne les deux produits, on ne les soustrait pas.';
+        retour.setAttribute('data-error', 'true');
+      } else if (v === ex.x * ex.yp + ex.y * ex.xp) {
+        retour.textContent = '✗ On multiplie les abscisses entre elles, puis les ordonnées entre elles.';
+        retour.setAttribute('data-error', 'true');
+      } else {
+        retour.textContent = '✗ Pas encore. Calcule x×x′ + y×y′ en surveillant les signes.';
+        retour.setAttribute('data-error', 'true');
+      }
+    }
+
+    function correction() {
+      if (!boite.hidden) { boite.hidden = true; $('site-demo-solution').textContent = 'Voir la correction'; return; }
+      boite.innerHTML = '<p><b>La formule.</b> En repère orthonormé, le produit scalaire vaut x×x′ + y×y′.</p>'
+        + '<p><b>On remplace.</b> ' + ex.x + ' × ' + par(ex.xp) + ' + ' + par(ex.y) + ' × ' + par(ex.yp)
+        + ' = ' + (ex.x * ex.xp) + ' + ' + par(ex.y * ex.yp) + ' = <b>' + ex.res + '</b>.</p>'
+        + '<p><b>Ce que ça dit.</b> Le produit scalaire est un nombre'
+        + (ex.res > 0 ? ', ici positif : l’angle des deux vecteurs est aigu.'
+          : ex.res < 0 ? ', ici négatif : l’angle des deux vecteurs est obtus.'
+          : ' nul : les deux vecteurs sont orthogonaux.') + '</p>';
+      boite.hidden = false;
+      $('site-demo-solution').textContent = 'Masquer la correction';
+    }
+
+    $('site-demo-check').addEventListener('click', verifier);
+    champ.addEventListener('keydown', e => { if (e.key === 'Enter') verifier(); });
+    $('site-demo-solution').addEventListener('click', correction);
+    $('site-demo-new').addEventListener('click', nouveau);
+    nouveau();
+  }
+
+  if (config.kind === 'home') { renderHome(); renderDemo(); }
 
   function date(ts) { return new Date(ts).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short', year: 'numeric'}); }
   function message(id, value, error = false) { $(id).textContent = value; $(id).dataset.error = String(error); }

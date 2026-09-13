@@ -191,6 +191,8 @@ Les captures de contrôle sont écrites dans `/tmp/reussite-maths-qa`.
 
 ## Où va le projet
 
+La structure du site est gelée : adresses des fiches, rubriques du bandeau et clé de sauvegarde ne changent plus. Les règles sont dans [`CONTRAT_NAVIGATION.md`](CONTRAT_NAVIGATION.md).
+
 Les objectifs pour la suite, page d'entrée pour un nouvel élève, partage des fiches, diffusion et mesure, sont décrits dans [`FEUILLE_DE_ROUTE.md`](FEUILLE_DE_ROUTE.md).
 
 ## Licence

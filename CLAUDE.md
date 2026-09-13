@@ -22,6 +22,10 @@ Langue de travail : le contenu destiné à l'élève est en **français** (vocab
 - `vendor/mathjax/` : MathJax 3 (build SVG autonome, polices incluses). Les fiches y font référence en chemin relatif `../../vendor/mathjax/tex-mml-svg.js`, jamais par CDN : c'est ce qui rend le hors connexion réel.
 - `prompt_eines_html.docx` : spécification d'origine (en catalan) des fiches HTML interactives, non publiée. Son contenu est repris dans `outils/prompt_fiche_html.md`.
 
+## Navigation gelée
+
+Les adresses des fiches et des quatre pages principales, l'ordre et l'intitulé des destinations du bandeau, les ancres de section et la clé de stockage du suivi ne changent plus. Voir `CONTRAT_NAVIGATION.md`. Ne renommer ni déplacer aucune fiche publiée.
+
 ## Produire une nouvelle fiche
 
 Partir de `outils/fiche_squelette.html` : le copier dans le dossier du chapitre et le remplir. Il fournit l'en-tête, la navigation, le design, le moteur d'exercices (`wireExercise`), le moteur de QCM (`qcmMap`, `build`) et le bloc responsive, tous testés. Ne jamais repartir d'une page vierge.

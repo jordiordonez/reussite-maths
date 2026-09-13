@@ -135,13 +135,52 @@ def lesson_row(l, prefix=''):
 
 def hub_content(kind, chapters):
     if kind == 'home':
-        return '''<div class="site-eyebrow">Terminale · Spécialité mathématiques</div>
-<h1>Les maths, à ton rythme.</h1><p class="site-lead">Reprendre les bases, comprendre, puis s’entraîner.<br>Un espace calme pour avancer, une notion après l’autre.</p>
-<div class="site-hero"><div><div class="site-eyebrow" id="site-resume-label">Ta prochaine séance</div><h2 id="site-resume-title">Par quoi commence-t-on ?</h2><p id="site-resume-description">Choisis le chapitre que tu travailles en classe. Chaque parcours commence par les bases de Première avant d’aborder la Terminale.</p><div class="site-hero-actions"><a class="site-btn" id="site-resume-link" href="chapitres.html">Choisir mon chapitre <span aria-hidden="true">→</span></a><a href="strategie/reussir_lannee.html#depart" style="font-size:12px">Comment bien démarrer</a></div></div>
+        return """<div class="site-eyebrow">Terminale · Enseignement de spécialité · Programme 2019</div>
+<h1>Les maths, à ton rythme.</h1>
+<p class="site-lead">Reprendre les bases de Première, comprendre, puis s’entraîner sur le programme de Terminale.<br>Gratuit, sans compte, et utilisable sans connexion.</p>
+
+<div class="site-hero"><div><div class="site-eyebrow" id="site-resume-label">Ta prochaine séance</div><h2 id="site-resume-title">Par quoi commence-t-on ?</h2><p id="site-resume-description">Choisis le chapitre que tu travailles en classe. Chaque parcours commence par les bases de Première avant d’aborder la Terminale.</p><div class="site-hero-actions"><a class="site-btn" id="site-resume-link" href="chapitres.html">Choisir mon chapitre <span aria-hidden="true">&#8594;</span></a><a href="strategie/reussir_lannee.html#depart" style="font-size:12px">Comment bien démarrer</a></div></div>
 <div class="site-hero-art" aria-hidden="true"><svg viewBox="0 0 200 200" fill="none"><rect x="10" y="10" width="180" height="180" rx="90" fill="#e3ebfa"/><path d="M38 146H173M63 170V32" stroke="#a6bde5"/><path d="M40 144C80 144 95 134 114 110S150 65 164 40" stroke="#2563eb" stroke-width="3"/><path d="m86 146 60-80" stroke="#88a6d9" stroke-width="1.5" stroke-dasharray="4 5"/><circle cx="114" cy="110" r="5" fill="#2563eb"/><circle cx="63" cy="142" r="4" fill="#faf8f5" stroke="#2563eb" stroke-width="2"/><text x="168" y="166" fill="#8299bd" font-family="Georgia" font-size="14">x</text><text x="45" y="37" fill="#8299bd" font-family="Georgia" font-size="14">y</text></svg></div></div>
-<div class="site-section-title"><h2>À travailler aujourd’hui</h2><a href="progres.html">Voir mon suivi →</a></div><div id="site-today" class="site-empty">Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.</div>
-<div class="site-section-title"><h2>Tout pour avancer</h2></div><div class="site-grid"><a class="site-tile" href="chapitres.html"><span class="site-eyebrow">Le programme</span><h3>Trouver mon chapitre</h3><p>Des bases de Première aux notions de Terminale, avec cours, visualisations et exercices.</p><span class="site-tile-link">Explorer les chapitres →</span></a><a class="site-tile" href="strategie/reussir_lannee.html#semaine"><span class="site-eyebrow">La méthode</span><h3>Organiser ma séance</h3><p>Une routine simple, un minuteur et des conseils concrets pour travailler en autonomie.</p><span class="site-tile-link">Préparer ma séance →</span></a></div>
-<p class="site-hint"><span class="site-local-note" data-storage-note>Ton suivi reste dans ce navigateur, sur cet appareil.</span><a href="progres.html#sauvegarde">Garder une copie de mon suivi</a></p>'''
+
+<div class="site-section-title"><h2>À travailler aujourd’hui</h2><a href="progres.html">Voir mon suivi &#8594;</a></div><div id="site-today" class="site-empty">Tes notions à revoir apparaîtront ici. Après une fiche, indique ce que tu souhaites retravailler.</div>
+
+<div class="site-section-title"><h2>Comment ça marche</h2></div>
+<p class="site-lead" style="font-size:15px;max-width:70ch">Chaque chapitre est traité en deux temps. C’est la seule chose à comprendre pour s’en servir.</p>
+<div class="site-grid site-steps">
+  <div class="site-tile"><span class="site-step-num">1</span><span class="site-eyebrow">Avant le cours</span><h3>Réactiver les bases</h3><p>Les fiches marquées <b>Première</b> reprennent ce dont le chapitre a besoin. À travailler <b>avant</b> que le professeur le commence. C’est ce qui évite d’être perdue dès la première heure.</p></div>
+  <div class="site-tile"><span class="site-step-num">2</span><span class="site-eyebrow">Pendant le cours</span><h3>Aborder la nouveauté</h3><p>Les fiches marquées <b>Terminale</b> traitent ce qui est nouveau cette année, en s’appuyant sur les bases que tu viens de revoir.</p></div>
+</div>
+
+<div class="site-section-title"><h2>Un exercice, tout de suite</h2></div>
+<p class="site-lead" style="font-size:15px;max-width:70ch">Voici à quoi ressemble un exercice du site. Les nombres changent à chaque fois, et la correction est rédigée.</p>
+<div class="site-tile site-demo">
+  <p class="site-demo-statement" id="site-demo-statement"></p>
+  <div class="site-demo-row">
+    <label for="site-demo-answer" class="site-demo-label">Ta réponse</label>
+    <input class="site-input site-demo-input" id="site-demo-answer" type="text" inputmode="text" autocomplete="off" placeholder="un nombre">
+    <button class="site-btn" id="site-demo-check" type="button">Vérifier</button>
+  </div>
+  <p class="site-message" id="site-demo-feedback" role="status"></p>
+  <div class="site-demo-actions">
+    <button class="site-btn subtle" id="site-demo-solution" type="button">Voir la correction</button>
+    <button class="site-btn subtle" id="site-demo-new" type="button">Nouvel exercice</button>
+  </div>
+  <div class="site-demo-solution" id="site-demo-solution-box" hidden></div>
+  <p class="site-hint">Cet exercice vient de la fiche <a href="chapitres/01_produit_scalaire/1A_produit_scalaire_definitions.html">1A · Définitions du produit scalaire</a>. Chaque fiche en contient trois, de difficulté croissante, plus un QCM.</p>
+</div>
+
+<div class="site-section-title"><h2>Tout pour avancer</h2></div><div class="site-grid"><a class="site-tile" href="chapitres.html"><span class="site-eyebrow">Le programme</span><h3>Trouver mon chapitre</h3><p>Quatorze chapitres, des bases de Première aux notions de Terminale, avec cours, visualisations et exercices.</p><span class="site-tile-link">Explorer les chapitres &#8594;</span></a><a class="site-tile" href="strategie/reussir_lannee.html#semaine"><span class="site-eyebrow">La méthode</span><h3>Organiser ma séance</h3><p>Une routine simple, un minuteur et des conseils concrets pour travailler en autonomie.</p><span class="site-tile-link">Préparer ma séance &#8594;</span></a></div>
+
+<div class="site-section-title"><h2>Ce que ce site ne fait pas</h2></div>
+<div class="site-tile site-limits">
+  <ul>
+    <li><b>Il ne remplace pas le cours.</b> Il le prépare et le consolide. Ce que dit ton professeur prime toujours.</li>
+    <li><b>Il ne corrige pas tes devoirs.</b> Les exercices sont engendrés par le site, avec leur correction.</li>
+    <li><b>Il n’y a pas de compte.</b> Ton suivi reste dans ce navigateur, sur cet appareil. Personne d’autre n’y a accès, et rien n’est envoyé nulle part.</li>
+  </ul>
+</div>
+
+<p class="site-hint"><span class="site-local-note" data-storage-note>Ton suivi reste dans ce navigateur, sur cet appareil.</span><a href="progres.html#sauvegarde">Garder une copie de mon suivi</a></p>"""
     if kind == 'catalog':
         content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">Commence par les bases de Première, puis poursuis en Terminale. Tu peux suivre l’ordre de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Bases de Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
         for c in chapters:

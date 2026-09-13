@@ -11,9 +11,9 @@ Il reste deux chapitres au plan de `ordre.md` : les sommes de variables aléatoi
 Deux chantiers de fond passent avant toute diffusion :
 
 - **Relire les onze fiches produites après la relecture.** Les chapitres 7 à 12 ont été vérifiés par leur auteur, pas par un relecteur indépendant. La relecture des vingt et une premières a corrigé 255 anomalies, dont des énoncés insolubles et des corrections fausses, qu'aucun test automatique ne signalait. Un auteur ne voit pas tous ses propres défauts. `revue/PROTOCOLE.md` décrit la méthode, `revue/ETAT.md` distingue déjà les deux catégories.
-- **Geler la navigation.** Elle a changé trois fois. Avant de faire venir des gens, il faut qu'un lien reste valide et qu'un élève qui revient retrouve ses repères.
+- ~~**Geler la navigation.**~~ **Fait le 13 septembre 2026**, voir `CONTRAT_NAVIGATION.md`. Elle avait changé trois fois. Avant de faire venir des gens, il faut qu'un lien reste valide et qu'un élève qui revient retrouve ses repères.
 
-## 2. Une vraie page d'entrée pour un élève qui arrive
+## 2. Une vraie page d'entrée pour un élève qui arrive — **faite le 13 septembre 2026**
 
 Aujourd'hui l'accueil suppose qu'on sait déjà ce qu'on cherche. Un élève qui découvre le site doit comprendre en quelques secondes ce qu'il peut y faire et par où commencer.
 
