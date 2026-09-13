@@ -233,7 +233,6 @@ def hub_content(kind, chapters):
     <li><b>Ce site ne collecte rien.</b> Ni compte, ni traçage, ni formulaire. Votre suivi de travail reste dans votre navigateur et ne m’est jamais transmis.</li>
     <li><b>PayPal, lui, me communique votre nom et votre adresse électronique</b>, ainsi que le montant et la date. C’est le fonctionnement normal d’un paiement.</li>
     <li><b>Je m’en sers uniquement pour vous remercier</b>, si vous avez laissé un message. Aucune liste de diffusion, aucune sollicitation ultérieure, aucune transmission à qui que ce soit.</li>
-    <li><b>Si un don vient manifestement d’un élève</b>, je le rembourse. Cette page s’adresse aux adultes.</li>
   </ul>
 </div>
 
