@@ -106,7 +106,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <div class="site-section-title"><h2>Ce que je vois, et ce que j’en fais</h2></div>
 <div class="site-tile" style="max-width:66ch">
   <ul>
-    <li><b>Ce site ne collecte rien.</b> Ni compte, ni traçage, ni formulaire. Votre suivi de travail reste dans votre navigateur et ne m’est jamais transmis.</li>
+    <li><b>Ce site ne collecte aucune donnée personnelle.</b> Ni compte, ni cookie, ni formulaire. Votre suivi de travail reste dans votre navigateur et ne m’est jamais transmis. Une mesure d’audience (GoatCounter) compte les pages vues, sans cookie et sans conserver l’adresse IP : je sais combien de fois une fiche est ouverte, jamais par qui.</li>
     <li><b>PayPal, lui, me communique votre nom et votre adresse électronique</b>, ainsi que le montant et la date. C’est le fonctionnement normal d’un paiement.</li>
     <li><b>Je m’en sers uniquement pour vous remercier</b>, si vous avez laissé un message. Aucune liste de diffusion, aucune sollicitation ultérieure, aucune transmission à qui que ce soit.</li>
   </ul>
@@ -721,6 +721,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   });
 })();
 
+</script>
+<script>
+if (/^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+  var gc = document.createElement('script'); gc.async = true; gc.src = 'https://gc.zgo.at/count.js';
+  gc.setAttribute('data-goatcounter', 'https://reussite-maths.goatcounter.com/count'); document.head.appendChild(gc);
+}
 </script>
 <!-- SITE:SCRIPT:END -->
 </body>

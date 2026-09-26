@@ -12,6 +12,34 @@ import re
 ROOT = Path(__file__).resolve().parent.parent
 HERE = Path(__file__).resolve().parent
 
+# Mesure d'audience (facultative). Code du compte GoatCounter : 'reussite-maths'
+# donne https://reussite-maths.goatcounter.com. Vide = aucune mesure, et les
+# pages ne font alors aucune requête réseau. GoatCounter ne pose pas de cookie
+# et ne conserve pas l'adresse IP. Le script n'est chargé que depuis le site
+# hébergé (jamais en file:// ni en local) : les fiches restent hors connexion.
+GOATCOUNTER = 'reussite-maths'
+
+
+def analytics_snippet():
+    if not GOATCOUNTER:
+        return ''
+    endpoint = f'https://{GOATCOUNTER}.goatcounter.com/count'
+    return ('<script>\n'
+            "if (/^https?:$/.test(location.protocol) && !/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)) {\n"
+            "  var gc = document.createElement('script'); gc.async = true; gc.src = 'https://gc.zgo.at/count.js';\n"
+            f"  gc.setAttribute('data-goatcounter', '{endpoint}'); document.head.appendChild(gc);\n"
+            '}\n</script>')
+
+
+def support_text(text):
+    """Adapte la page « Offrir un café » à la présence d'une mesure d'audience."""
+    if not GOATCOUNTER:
+        return text
+    return text.replace(
+        '<b>Ce site ne collecte rien.</b> Ni compte, ni traçage, ni formulaire. Votre suivi de travail reste dans votre navigateur et ne m’est jamais transmis.',
+        '<b>Ce site ne collecte aucune donnée personnelle.</b> Ni compte, ni cookie, ni formulaire. Votre suivi de travail reste dans votre navigateur et ne m’est jamais transmis. '
+        'Une mesure d’audience (GoatCounter) compte les pages vues, sans cookie et sans conserver l’adresse IP : je sais combien de fois une fiche est ouverte, jamais par qui.')
+
 
 def plain(value):
     return html.unescape(re.sub(r'<[^>]+>', '', value)).strip()
@@ -216,7 +244,7 @@ def hub_content(kind, chapters):
             content += '</div></details>'
         return content + '<p class="site-empty" id="site-catalog-empty" hidden>Aucune fiche ne correspond. Essaie une autre notion ou le filtre « Tout ».</p>'
     if kind == 'support':
-        return """<div class="site-eyebrow">Facultatif, et sans conséquence</div>
+        return support_text("""<div class="site-eyebrow">Facultatif, et sans conséquence</div>
 <h1>Offrir un café.</h1>
 <p class="site-lead">Ce site est gratuit et le restera. Il n’y a rien à débloquer, rien à payer, aucun compte à créer.</p>
 
@@ -245,7 +273,7 @@ def hub_content(kind, chapters):
   </ul>
 </div>
 
-<p class="site-hint"><a href="index.html">&#8592; Revenir à l’accueil</a></p>"""
+<p class="site-hint"><a href="index.html">&#8592; Revenir à l’accueil</a></p>""")
     return '''<div class="site-eyebrow">Un peu plus à l’aise, chaque jour</div><h1>Mes progrès.</h1><p class="site-lead">Garde une trace de tes essais, repère les notions à revoir et prépare ta prochaine séance.</p>
 <p class="site-local-note site-hint" data-storage-note>Enregistré dans ce navigateur, sur cet appareil.</p><p class="site-warning" id="site-file-warning" hidden>En ouverture directe de fichiers, le partage du suivi entre les pages dépend du navigateur. Pour un suivi commun fiable, utilise le site en ligne. Exporte régulièrement une copie.</p>
 <div class="site-stats"><div class="site-stat"><strong id="site-stat-started">0</strong><span>fiches commencées</span></div><div class="site-stat"><strong id="site-stat-review">0</strong><span>notions à revoir</span></div><div class="site-stat"><strong id="site-stat-validated">0</strong><span>fiches validées par toi</span></div></div>
@@ -302,7 +330,7 @@ def build(only=None):
             source = source.replace('</main>', block('PAGER', pager) + '\n</main>', 1)
         config = json.dumps({'version': 1, 'kind': kind, 'prefix': prefix, 'current': lesson['id'] if lesson else None, 'chapters': chapters}, ensure_ascii=False).replace('</', '<\\/')
         source = source.replace('</body>', block('SIGN', signature(prefix)) + '\n</body>', 1)
-        source = source.replace('</body>', block('SCRIPT', f'<script id="site-config" type="application/json">{config}</script>\n<script>\n{js}\n</script>') + '\n</body>')
+        source = source.replace('</body>', block('SCRIPT', f'<script id="site-config" type="application/json">{config}</script>\n<script>\n{js}\n</script>' + ('\n' + analytics_snippet() if GOATCOUNTER else '')) + '\n</body>')
         if not path.exists() or source != path.read_text():
             path.write_text(source)
     if only:

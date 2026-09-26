@@ -26,6 +26,15 @@ navigation privée, il est temporaire. Un stockage partagé entre les fiches
 ouvertes directement en `file://` dépend du navigateur : utiliser le site hébergé
 pour un suivi commun fiable.
 
+## Mesure d’audience
+
+Le site compte les pages vues avec [GoatCounter](https://www.goatcounter.com/),
+sans cookie, sans conserver l’adresse IP et sans aucune donnée personnelle. Le
+script n’est chargé que depuis le site hébergé : les fiches ouvertes hors
+connexion ou en local ne font aucune requête. La mesure se désactive en vidant
+`GOATCOUNTER` dans `outils/build_site.py` ; la page « Offrir un café » décrit
+ce qui est mesuré.
+
 Les choix de navigation, de style et l’évolution envisagée vers des comptes et
 une offre payante sont décrits dans [`newstyle.md`](newstyle.md).
 
