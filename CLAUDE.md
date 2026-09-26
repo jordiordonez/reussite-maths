@@ -19,6 +19,7 @@ Langue de travail : le contenu destiné à l'élève est en **français** (vocab
 - `outils/` : `prompt_fiche_html.md` (spécification des fiches), `prompts_assistant_ia.md` (source des prompts du guide, valables pour tout assistant IA), `check_fiche.py` (vérification automatique d'une fiche).
 - `index.html` : accueil personnel généré ; `chapitres.html` : catalogue généré ; `progres.html` : suivi local généré. Après ajout d’une fiche, lancer `python3 outils/build_site.py` et mettre à jour le `README.md` de son chapitre. Ne pas éditer les pages générées à la main.
 - `outils/site.css`, `outils/site.js`, `outils/build_site.py` : interface commune, navigation et stockage local. Les blocs `SITE:*` des HTML sont générés ; éditer leurs sources puis régénérer. Le contenu pédagogique hors de ces blocs est préservé. Les choix de produit sont documentés dans `newstyle.md`.
+- Mesure d’audience : `GOATCOUNTER` dans `outils/build_site.py` (compte `reussite-maths`, tableau de bord sur https://reussite-maths.goatcounter.com). Le script GoatCounter est injecté dans le bloc `SITE:SCRIPT` et ne se charge qu’en http(s) hors localhost, jamais en `file://` : les fiches restent hors connexion. Vider la constante désactive tout ; régénérer ensuite. Si la mesure change, mettre à jour la page « Offrir un café » (`support_text`) et le `README.md`, qui décrivent ce qui est collecté.
 - `vendor/mathjax/` : MathJax 3 (build SVG autonome, polices incluses). Les fiches y font référence en chemin relatif `../../vendor/mathjax/tex-mml-svg.js`, jamais par CDN : c'est ce qui rend le hors connexion réel.
 - `prompt_eines_html.docx` : spécification d'origine (en catalan) des fiches HTML interactives, non publiée. Son contenu est repris dans `outils/prompt_fiche_html.md`.
 
@@ -85,4 +86,4 @@ Ce fichier est régénéré à partir du guide public : le modifier directement 
 
 ## Publication
 
-Le site est publié sur GitHub Pages depuis la branche `main`, à la racine. Toute fiche ajoutée doit être référencée dans le `README.md` de son chapitre ; lancer `outils/build_site.py` pour actualiser le catalogue et l’interface, puis vérifier avec `outils/check_fiche.py` avant l’envoi.
+Le site est publié sur GitHub Pages depuis la branche `main`, à la racine. Toute fiche ajoutée doit être référencée dans le `README.md` de son chapitre ; lancer `outils/build_site.py` pour actualiser le catalogue et l’interface, puis vérifier avec `outils/check_fiche.py` avant l’envoi. Pour ne pas compter ses propres visites dans GoatCounter, ouvrir une fois `https://jordiordonez.github.io/reussite-maths/#toggle-goatcounter` dans le navigateur utilisé.
