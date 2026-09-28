@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '../..');
 const base = process.env.SITE_TEST_URL || 'http://127.0.0.1:8765/';
 const output = process.env.CH7_TEST_OUTPUT || '/tmp/chapitre7-qa';
 const key = 'reussite_maths_v1';
-const paths = fs.readdirSync(path.join(root, 'chapitres/07_probabilites')).filter(f=>f.endsWith('.html'));
+const paths = fs.readdirSync(path.join(root, 'chapitres/08_probabilites')).filter(f=>f.endsWith('.html'));
 const oracle = async page => JSON.parse(execFileSync('python3', [path.join(__dirname,'test_math.py'),'oracle'], {
   input: JSON.stringify(await page.evaluate(()=>({code:Chapter7.code,exercises:Chapter7.activeExercises,qcm:Chapter7.activeQcm}))), encoding:'utf8'
 }));
@@ -33,7 +33,7 @@ const close = (actual,expected,label)=>assert(Math.abs(actual-expected)<0.000006
     page.on('pageerror',e=>errors.push(e.message));
     page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('/favicon.ico'))errors.push(r.status()+' '+r.url());});
     for(const file of paths){
-      const code=file.slice(0,2),url=base+'chapitres/07_probabilites/'+file;
+      const code=file.slice(0,2),url=base+'chapitres/08_probabilites/'+file;
       console.log('Vérification '+code);
       await page.goto(url);await waitMath(page);
       assert.equal(await page.locator('.site-side-link[aria-current="page"]').count(),1);
@@ -84,7 +84,7 @@ const close = (actual,expected,label)=>assert(Math.abs(actual-expected)<0.000006
       }
       await waitMath(page);
       // Calculs de visualisation aux frontières, indépendants du modèle JS.
-      if(code==='7A'){
+      if(code==='8A'){
         for(const a of [0,4,10])for(const b of [0,7,10])for(const c of [0,2,10]){
           await setControls(page,{va:a,vb:b,vc:c});
           const text=await page.locator('#visu-values').textContent(),values=await page.locator('#visu-values b').allTextContents();
@@ -97,7 +97,7 @@ const close = (actual,expected,label)=>assert(Math.abs(actual-expected)<0.000006
         await page.locator('#reset-viz').click();await page.locator('#independent').click();
         assert.match(await page.locator('#visu-values').textContent(),/sont indépendants/);
         await page.locator('#reset-viz').click();
-      }else if(code==='7B'){
+      }else if(code==='8B'){
         for(const u of [0,3,10])for(const v of [0,4,10]){
           await setControls(page,{vp0:u,vsplit:v});await waitMath(page);
           const probs=[u/10,(10-u)*v/100,(10-u)*(10-v)/100];
@@ -151,7 +151,7 @@ const close = (actual,expected,label)=>assert(Math.abs(actual-expected)<0.000006
     await degraded.route('**/vendor/mathjax/**',route=>route.abort());
     const local=await degraded.newPage();
     for(const file of paths){
-      await local.goto(base+'chapitres/07_probabilites/'+file);
+      await local.goto(base+'chapitres/08_probabilites/'+file);
       const answers=await oracle(local);
       await local.locator('#ex1-rep').fill(answers.exercises[0]);await local.locator('#ex1-check').click();
       assert.match(await local.locator('#ex1-fb').getAttribute('class'),/good/);

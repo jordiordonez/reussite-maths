@@ -26,7 +26,8 @@
       const f=x=>a*Math[kind](b*x)+c,df=x=>a*b*(kind==='sin'?Math.cos(b*x):-Math.sin(b*x)),y0=f(x0),slope=df(x0);
       ['amplitude','frequency','offset'].forEach(id=>$(id+'-value').textContent=$(id).value);$('abscissa-value').textContent=angle(u);
       const coefficient=kind==='sin'?a*b:-a*b;
-      $('slope-values').textContent=`f′(x) = ${coefficient} ${kind==='sin'?'cos':'sin'}(${b}x). À x₀ = ${angle(u)} : f(x₀) ≈ ${fmt(y0)} ; pente f′(x₀) ≈ ${fmt(slope)}.`;
+      const derivText=coefficient===0?'0':(coefficient===1?'':coefficient===-1?'−':String(coefficient).replace('-','−')+' ')+(kind==='sin'?'cos':'sin')+'('+(b===1?'':b)+'x)';
+      $('slope-values').textContent=`f′(x) = ${derivText}. À x₀ = ${angle(u)} : f(x₀) ≈ ${fmt(y0)} ; pente f′(x₀) ≈ ${fmt(slope)}.`;
       const top=Math.max(1,Math.abs(a)+Math.abs(c),Math.abs(a*b))*1.2,X=x=>40+(x+2*P)/(4*P)*540,Y=y=>140-110*y/top;
       $('derivative-plot').innerHTML='<defs><clipPath id="plot-clip"><rect x="40" y="20" width="540" height="240"/></clipPath></defs>'+axes(X,Y,-2*P,2*P,-top,top)+text(80,32,fmt(top))+text(80,255,fmt(-top))+`<g clip-path="url(#plot-clip)">`+path(f,-2*P,2*P,X,Y,blue)+path(df,-2*P,2*P,X,Y,green)+line(X(-2*P),Y(y0+slope*(-2*P-x0)),X(2*P),Y(y0+slope*(2*P-x0)),'#c2410c','stroke-width="2" stroke-dasharray="7 5" id="tangent-line"')+dot(X(x0),Y(y0),blue,6,'id="function-point"')+dot(X(x0),Y(slope),green,5,'id="slope-point"')+'</g>';
     }

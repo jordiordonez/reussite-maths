@@ -5,7 +5,7 @@ const {execFileSync}=require('node:child_process');
 const fs=require('node:fs'),path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const base=process.env.SITE_TEST_URL||'http://127.0.0.1:8765/';
-const relative='chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html';
+const relative='chapitres/09_combinatoire_denombrement/9A_combinatoire_denombrement.html';
 const output=process.env.CH8_TEST_OUTPUT||'/tmp/chapitre8-qa';
 const key='reussite_maths_v1';
 const oracle=async page=>JSON.parse(execFileSync('python3',[path.join(__dirname,'test_math.py'),'oracle'],{
@@ -29,7 +29,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('/favicon.ico'))errors.push(r.status()+' '+r.url());});
     await page.goto(base+relative);await math(page);
     assert.equal(await page.locator('.site-side-link[aria-current="page"]').count(),1);
-    assert.match(await page.locator('.site-pager a').first().getAttribute('href'),/7C_/);
+    assert.match(await page.locator('.site-pager a').first().getAttribute('href'),/8C_/);
     const expected=await oracle(page);
     for(let i=1;i<=3;i++){
       const answer=expected.exercises[i-1],input=page.locator(`#ex${i}-rep`),fb=page.locator(`#ex${i}-fb`);
@@ -61,7 +61,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
       const score=perfect?'4 / 4':'0 / 4';assert((await page.locator('#qcm-score').textContent()).includes(score));
       await page.locator('.choice').first().evaluate(b=>b.click());await page.waitForTimeout(80);
       const rows=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).journal,key);
-      assert.equal(rows.filter(r=>r.lesson==='8A'&&r.ex==='QCM · '+score&&r.res===(perfect?'ok':'ko')).length,1);
+      assert.equal(rows.filter(r=>r.lesson==='9A'&&r.ex==='QCM · '+score&&r.res===(perfect?'ok':'ko')).length,1);
       if(perfect){await page.locator('#qcm-new').click();assert.equal(await page.locator('#qcm-score').textContent(),'');}
     }
     console.log('PASS QCM : 4/4 et 0/4, boutons verrouillés, enregistrement unique et juste.');
@@ -101,17 +101,17 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await math(page);
     const meanHeight=await page.locator('mjx-container:not([display="true"]) > svg').evaluateAll(es=>es.reduce((s,e)=>s+e.getBoundingClientRect().height,0)/es.length);
     assert(meanHeight>=12&&meanHeight<=35,'formules inline à échelle lisible : '+meanHeight);
-    await page.locator('#visu').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'8A-desktop.png')});
+    await page.locator('#visu').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'9A-desktop.png')});
     for(const width of [390,320,768]){
       await page.setViewportSize({width,height:900});await math(page);
       assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'débordement à '+width);
       for(const id of ['cours','methode','visu','exos','qcm']){
         await page.locator('#'+id).scrollIntoViewIfNeeded();
-        if(width!==768)await page.screenshot({path:path.join(output,`8A-${width}-${id}.png`)});
+        if(width!==768)await page.screenshot({path:path.join(output,`9A-${width}-${id}.png`)});
       }
       if(width===320){
-        await page.locator('.proof').nth(2).screenshot({path:path.join(output,'8A-320-preuve-pascal.png')});
-        await page.locator('#pascal-fig').screenshot({path:path.join(output,'8A-320-triangle.png')});
+        await page.locator('.proof').nth(2).screenshot({path:path.join(output,'9A-320-preuve-pascal.png')});
+        await page.locator('#pascal-fig').screenshot({path:path.join(output,'9A-320-triangle.png')});
       }
     }
     await page.locator('#site-menu').click();assert.equal(await page.locator('#site-menu').getAttribute('aria-expanded'),'true');
@@ -119,9 +119,9 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await page.setViewportSize({width:1440,height:1000});
     await page.locator('#site-lesson-status').selectOption('validated');await page.reload();
     assert.equal(await page.locator('#site-lesson-status').inputValue(),'validated');
-    await page.goto(base+'chapitres.html#ch8');
-    assert.equal(await page.locator('#ch8 [data-lesson="8A"]').count(),1);
-    await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="8A"]').count(),1);
+    await page.goto(base+'chapitres.html#ch9');
+    assert.equal(await page.locator('#ch9 [data-lesson="9A"]').count(),1);
+    await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="9A"]').count(),1);
     console.log('PASS visualisations, preuves, mobile 390/320/768, navigation et persistance.');
     // En file://, toutes les ressources nécessaires sont locales.
     const offline=await browser.newContext({offline:true}),local=await offline.newPage();

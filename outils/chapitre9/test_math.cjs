@@ -1,5 +1,5 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const file=path.resolve(__dirname,'../../chapitres/09_loi_binomiale/9A_loi_binomiale.html');
+const file=path.resolve(__dirname,'../../chapitres/10_loi_binomiale/10A_loi_binomiale.html');
 const source=fs.readFileSync(file,'utf8').match(/<script id="chapter9-model">([\s\S]*?)<\/script>/)[1];
 let seed=20260912;const math=Object.create(Math);math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
 const ctx=vm.createContext({Math:math});vm.runInContext(source,ctx);const M=ctx.Chapter9;

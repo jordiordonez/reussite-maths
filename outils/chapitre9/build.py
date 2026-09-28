@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Assemble uniquement 9A depuis le squelette officiel, sans écrire les autres fiches."""
+"""Assemble uniquement 10A depuis le squelette officiel, sans écrire les autres fiches."""
 from pathlib import Path
 import re
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-TARGET = ROOT / 'chapitres/09_loi_binomiale/9A_loi_binomiale.html'
+TARGET = ROOT / 'chapitres/10_loi_binomiale/10A_loi_binomiale.html'
 
 
 def main():
@@ -43,7 +43,7 @@ def main():
     for i, title in enumerate(titles, 1):
         content += card.replace('ex1', f'ex{i}').replace('Exercice 1', f'Exercice {i} · {title}').replace('Niveau 1', f'Niveau {i}').replace('placeholder="réponse"', f'aria-label="Réponse à l’exercice {i}" placeholder="réponse"').replace('class="feedback"', 'class="feedback" role="status"')
     content += '</section><section id="qcm"><h2>QCM</h2><div class="card"><p>Quatre questions tirées dans une banque de seize. Une seule réponse correcte par question.</p><div id="qcm-container"></div><div class="score" id="qcm-score" role="status"></div><div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div></div></section>'
-    source = skeleton.replace('TITRE DE LA FICHE', '9A · Loi binomiale').replace('Première · Mathématiques', 'Terminale · Mathématiques')
+    source = skeleton.replace('TITRE DE LA FICHE', '10A · Loi binomiale').replace('Première · Mathématiques', 'Terminale · Mathématiques')
     source = re.sub(r'(<main[^>]*>).*?</main>', lambda m: m[1]+'\n'+content+'\n</main>', source, count=1, flags=re.S)
     source = source.replace(script[0], '<script id="chapter9-model">\n'+(HERE/'model.js').read_text()+'\n</script>\n<script>'+engine+'</script>\n<script id="chapter9-visuals">\n'+(HERE/'visuals.js').read_text()+'\n</script>')
     css = '''<style>

@@ -139,7 +139,7 @@ def main():
         stats['laws']+=1
     for r in samples['rounding']:assert fraction(r['output'])==rounded(F(r['input']))
     # Le code pédagogique a un comportement exact aux deux frontières.
-    source=(HERE.parent.parent/'chapitres/09_loi_binomiale/9A_loi_binomiale.html').read_text()
+    source=(HERE.parent.parent/'chapitres/10_loi_binomiale/10A_loi_binomiale.html').read_text()
     code=html.unescape(re.search(r'<pre><code>(from random.*?)</code></pre>',source,re.S)[1]);ns={};exec(compile(code,'simulation de la fiche','exec'),ns)
     for n in [0,1,5,20]:
         assert ns['binomiale'](n,0)==0 and ns['binomiale'](n,1)==n

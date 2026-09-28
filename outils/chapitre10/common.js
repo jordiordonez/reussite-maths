@@ -26,5 +26,8 @@
   function exactTrigQ(kind,data,q,fn,u){const a=trigTex(fn,u),pool=['0','1','-1','\\frac{1}{2}','-\\frac{1}{2}','\\frac{\\sqrt{2}}{2}','-\\frac{\\sqrt{2}}{2}','\\frac{\\sqrt{3}}{2}','-\\frac{\\sqrt{3}}{2}'];return textQ(kind,data,q,'\\('+a+'\\)',shuffle(pool.filter(x=>x!==a)).slice(0,3).map(x=>'\\('+x+'\\)'),`Le cercle et les symétries donnent \\(${a}.\\)`);}
   const par=n=>n<0?'('+n+')':String(n);
   const linear=(a,c)=>a+(c<0?' - '+Math.abs(c):c>0?' + '+c:'');
-  root.T10={R,tex,pi,parseNum,accepts,rnd,pick,shuffle,mod,notable,trigTex,roundedTrig,numQ,textQ,exactTrigQ,par,linear};
+  // Coefficient devant une expression : 1 et −1 ne s'écrivent pas, un négatif de tête sans parenthèses.
+  const term=(k,body)=>k===1?body:k===-1?'-'+body:k+body;
+  const arg=b=>b===1?'x':b+'x';
+  root.T10={R,tex,pi,parseNum,accepts,rnd,pick,shuffle,mod,notable,trigTex,roundedTrig,numQ,textQ,exactTrigQ,par,linear,term,arg};
 })(globalThis);

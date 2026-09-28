@@ -1,9 +1,11 @@
 // Extract the shipped model, not a separate implementation of its verifier.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const dir=path.resolve(__dirname,'../../chapitres/07_probabilites');
+const dir=path.resolve(__dirname,'../../chapitres/08_probabilites');
 const contexts={};
-for(const code of ['7A','7B','7C']){
-  const file=fs.readdirSync(dir).find(f=>f.startsWith(code+'_')&&f.endsWith('.html'));
+// Clé = code source (outils/chapitre7/7X.*, Chapter7.code) ; valeur = code publié depuis la renumérotation.
+const published={'7A':'8A','7B':'8B','7C':'8C'};
+for(const code of Object.keys(published)){
+  const file=fs.readdirSync(dir).find(f=>f.startsWith(published[code]+'_')&&f.endsWith('.html'));
   const html=fs.readFileSync(path.join(dir,file),'utf8');
   const source=html.match(/<script id="chapter7-model">([\s\S]*?)<\/script>/)[1];
   let seed=20260912+code.charCodeAt(1);

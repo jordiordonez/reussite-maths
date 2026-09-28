@@ -55,7 +55,7 @@ def exercise_answer(code,index,d):
 
 CONCEPTS={
  'independence':r'\(P(A\cap B)=P(A)P(B).\)',
- 'disjoint':'Non : l’intersection a une probabilité nulle, mais le produit est positif.',
+ 'disjoint':'Non : l’intersection a une probabilité nulle, mais le produit \\(P(A)P(B)\\) est strictement positif.',
  'nullCondition':'Elle n’est pas définie par la formule du quotient.',
  'constant':'0',
  'meanNotValue':'E(X) = 0, même si X ne prend jamais la valeur 0.',

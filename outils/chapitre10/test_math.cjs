@@ -1,8 +1,9 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const files={ '10A':'10A_cercle_trigonometrique.html','10B':'10B_derivation_trigonometrie.html'};
+// Clés = code interne Chapter10.code (10A/10B) ; fichiers = adresses publiées depuis la renumérotation.
+const files={ '10A':'11A_cercle_trigonometrique.html','10B':'11B_derivation_trigonometrie.html'};
 const models={};
 for(const [code,file] of Object.entries(files)){
-  const source=fs.readFileSync(path.resolve(__dirname,'../../chapitres/10_trigonometrie',file),'utf8').match(/<script id="chapter10-model">([\s\S]*?)<\/script>/)[1];
+  const source=fs.readFileSync(path.resolve(__dirname,'../../chapitres/11_trigonometrie',file),'utf8').match(/<script id="chapter10-model">([\s\S]*?)<\/script>/)[1];
   let seed=20260912+code.charCodeAt(2);const math=Object.create(Math);math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
   const ctx=vm.createContext({Math:math});vm.runInContext(source,ctx);models[code]=ctx.Chapter10;
 }

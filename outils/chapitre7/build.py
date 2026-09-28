@@ -9,10 +9,14 @@ import re
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-DEST = ROOT / 'chapitres/07_probabilites'
-SHEETS = [('7A', 'probabilites_conditionnelles', 'Probabilités conditionnelles et indépendance', 'Première'),
-          ('7B', 'variables_aleatoires', 'Variables aléatoires, espérance et variance', 'Première'),
-          ('7C', 'epreuves_independantes_bernoulli', 'Épreuves indépendantes et schéma de Bernoulli', 'Terminale')]
+# Adresse actuelle depuis la renumérotation du 13/09/2026. L'ancienne
+# (chapitres/07_probabilites/7X_…) est une page de redirection : ne jamais y écrire.
+DEST = ROOT / 'chapitres/08_probabilites'
+# (source dans outils/chapitre7, code publié, nom, titre, niveau)
+SHEETS = [('7A', '8A', 'probabilites_conditionnelles', 'Probabilités conditionnelles et indépendance', 'Première'),
+          ('7B', '8B', 'variables_aleatoires', 'Variables aléatoires, espérance et variance', 'Première'),
+          ('7C', '8C', 'epreuves_independantes_bernoulli', 'Épreuves indépendantes et schéma de Bernoulli', 'Terminale')]
+
 
 
 def main():
@@ -44,18 +48,20 @@ def main():
     .control{display:grid;grid-template-columns:minmax(95px,1fr) 2fr 44px;align-items:center;gap:10px;margin:14px 0}.control label{color:#475569;font-size:12px}.control output{font-size:13px;text-align:right;font-variant-numeric:tabular-nums}.caption{font-size:12px;color:#64748b}.figure{margin:16px 0}.row input{min-width:0;width:160px}.row select{max-width:100%}
     @media(max-width:380px){.control{grid-template-columns:95px 1fr 30px;gap:6px}}
     </style>'''
-    DEST.mkdir(exist_ok=True)
-    for code, slug, title, level in SHEETS:
+    if not DEST.is_dir():
+        raise SystemExit(f'Dossier absent : {DEST}')
+    for src, code, slug, title, level in SHEETS:
         target = DEST / f'{code}_{slug}.html'
-        content = (HERE / f'{code}.html').read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
+        content = (HERE / f'{src}.html').read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
         content += '<section id="exos"><h2>Exercices</h2><p>Réponds avec une fraction (ex. 3/10) ou un décimal exact (ex. 0,3). Aucun arrondi n’est demandé.</p>'
         for i in range(1, 4):
             content += exercise.replace('ex1', f'ex{i}').replace('Exercice 1', f'Exercice {i}').replace('Niveau 1', f'Niveau {i}').replace('placeholder="réponse"', f'aria-label="Réponse à l’exercice {i}" placeholder="fraction ou décimal exact"').replace('class="feedback"', 'class="feedback" role="status"')
         content += '</section><section id="qcm"><h2>QCM</h2><div class="card"><p>Quatre questions tirées dans une banque de douze. Une seule réponse correcte par question.</p><div id="qcm-container"></div><div class="score" id="qcm-score" role="status"></div><div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div></div></section>'
         source = skeleton.replace('TITRE DE LA FICHE', code+' · '+title).replace('Première · Mathématiques', level+' · Mathématiques')
         source = re.sub(r'(<main[^>]*>).*?</main>', lambda m: m[1]+'\n'+content+'\n</main>', source, count=1, flags=re.S)
-        models = (HERE / 'common.js').read_text()+'\n'+(HERE / f'{code}.js').read_text()
-        source = source.replace(engine_match[0], '<script id="chapter7-model">\n'+models+'\n</script>\n<script>'+engine+'</script>\n<script id="chapter7-visuals">\n'+(HERE/'visuals.js').read_text()+'\n</script>')
+        models = (HERE / 'common.js').read_text()+'\n'+(HERE / f'{src}.js').read_text()
+        visuals = (HERE/'visuals.js').read_text()
+        source = source.replace(engine_match[0], '<script id="chapter7-model">\n'+models+'\n</script>\n<script>'+engine+'</script>\n<script id="chapter7-visuals">\n'+visuals+'\n</script>')
         source = source.replace('</head>', css+'\n</head>')
         target.write_text(source)
         print(target.relative_to(ROOT))

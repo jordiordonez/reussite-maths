@@ -5,7 +5,9 @@ const {execFileSync}=require('node:child_process');
 const fs=require('node:fs'),path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const base=process.env.SITE_TEST_URL||'http://127.0.0.1:8765/';
-const files={'12A':'12A_integrales_aires.html','12B':'12B_integration_methodes.html'};
+const files={'12A':'13A_integrales_aires.html','12B':'13B_integration_methodes.html'};
+// Chapter12.code garde le code des sources ; le site identifie la fiche par son code actuel.
+const lessonId={'12A':'13A','12B':'13B'};
 const output=process.env.CH12_TEST_OUTPUT||'/tmp/chapitre12-qa';
 const key='reussite_maths_v1';
 const oracle=async page=>JSON.parse(execFileSync('python3',[path.join(__dirname,'test_math.py'),'oracle'],{
@@ -33,7 +35,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
   const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});
   try{
     for(const [code,file] of Object.entries(files)){
-    const relative="chapitres/12_calcul_integral/"+file;
+    const relative="chapitres/13_calcul_integral/"+file;
     const context=await browser.newContext({viewport:{width:1440,height:1000}});context.setDefaultTimeout(20000);
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
@@ -44,7 +46,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     assert((await page.title()).includes(title));
     assert((await page.locator('h1').textContent()).includes(title));
     assert((await page.locator('.site-side-link[aria-current="page"]').textContent()).includes(title));
-    assert.match(await page.locator('.site-pager a').first().getAttribute('href'),code==='12A'?/10B_|11[AB]_/:/12A_/);
+    assert.match(await page.locator('.site-pager a').first().getAttribute('href'),code==='12A'?/12B_equations_differentielles/:/13A_/);
     const expected=await oracle(page);
     for(let i=1;i<=3;i++){
       const raw=expected.exercises[i-1],parts=raw.split('/'),numerator=BigInt(parts[0]),denominator=BigInt(parts[1]||'1'),input=page.locator(`#ex${i}-rep`),fb=page.locator(`#ex${i}-fb`);
@@ -76,7 +78,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
       const score=perfect?'4 / 4':'0 / 4';assert((await page.locator('#qcm-score').textContent()).includes(score));
       await page.locator('.choice').first().evaluate(b=>b.click());await page.waitForTimeout(80);
       const rows=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).journal,key);
-      assert.equal(rows.filter(r=>r.lesson===code&&r.ex==='QCM · '+score&&r.res===(perfect?'ok':'ko')).length,1);
+      assert.equal(rows.filter(r=>r.lesson===lessonId[code]&&r.ex==='QCM · '+score&&r.res===(perfect?'ok':'ko')).length,1);
       if(perfect){await page.locator('#qcm-new').click();assert.equal(await page.locator('#qcm-score').textContent(),'');}
     }
     console.log(code+' PASS QCM : 4/4 et 0/4, boutons verrouillés, enregistrement unique et juste.');
@@ -160,9 +162,9 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await page.setViewportSize({width:1440,height:1000});
     await page.locator('#site-lesson-status').selectOption('validated');await page.reload();
     assert.equal(await page.locator('#site-lesson-status').inputValue(),'validated');
-    await page.goto(base+'chapitres.html#ch12');
-    assert.equal(await page.locator('#ch12 [data-lesson="'+code+'"]').count(),1);
-    await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="'+code+'"]').count(),1);
+    await page.goto(base+'chapitres.html#ch13');
+    assert.equal(await page.locator('#ch13 [data-lesson="'+lessonId[code]+'"]').count(),1);
+    await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="'+lessonId[code]+'"]').count(),1);
     console.log('PASS visualisations, preuves, mobile 390/320/768, navigation et persistance.');
     // En file://, toutes les ressources nécessaires sont locales.
     const offline=await browser.newContext({offline:true}),local=await offline.newPage();

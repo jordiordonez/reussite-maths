@@ -5,7 +5,8 @@ const {execFileSync}=require('node:child_process');
 const fs=require('node:fs'),path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const base=process.env.SITE_TEST_URL||'http://127.0.0.1:8765/';
-const files={'10A':'10A_cercle_trigonometrique.html','10B':'10B_derivation_trigonometrie.html'};
+// Codes et adresses publiés depuis la renumérotation du 13/09/2026 ; le modèle interne garde Chapter10.code = 10A/10B.
+const files={'11A':'11A_cercle_trigonometrique.html','11B':'11B_derivation_trigonometrie.html'};
 const output=process.env.CH10_TEST_OUTPUT||'/tmp/chapitre10-qa';
 const key='reussite_maths_v1';
 const oracle=async page=>JSON.parse(execFileSync('python3',[path.join(__dirname,'test_math.py'),'oracle'],{
@@ -33,18 +34,18 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
   const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHANNEL?{channel:process.env.PLAYWRIGHT_CHANNEL}:{})});
   try{
     for(const [code,file] of Object.entries(files)){
-    const relative="chapitres/10_trigonometrie/"+file;
+    const relative="chapitres/11_trigonometrie/"+file;
     const context=await browser.newContext({viewport:{width:1440,height:1000}});context.setDefaultTimeout(20000);
     const page=await context.newPage(),errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     page.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('/favicon.ico'))errors.push(r.status()+' '+r.url());});
     await page.goto(base+relative);await math(page);
     assert.equal(await page.locator('.site-side-link[aria-current="page"]').count(),1);
-    const title=code==='10A'?'Cercle trigonométrique':'Fonctions trigonométriques';
+    const title=code==='11A'?'Cercle trigonométrique':'Fonctions trigonométriques';
     assert((await page.title()).includes(title));
     assert((await page.locator('h1').textContent()).includes(title));
     assert((await page.locator('.site-side-link[aria-current="page"]').textContent()).includes(title));
-    assert.match(await page.locator('.site-pager a').first().getAttribute('href'),code==='10A'?/9A_/:/10A_/);
+    assert.match(await page.locator('.site-pager a').first().getAttribute('href'),code==='11A'?/10A_/:/11A_/);
     const expected=await oracle(page);
     for(let i=1;i<=3;i++){
       const raw=expected.exercises[i-1],parts=raw.split('/'),numerator=BigInt(parts[0]),denominator=BigInt(parts[1]||'1'),input=page.locator(`#ex${i}-rep`),fb=page.locator(`#ex${i}-fb`);
@@ -52,7 +53,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
         await input.fill(wrong);await page.locator(`#ex${i}-check`).click();assert.match(await fb.getAttribute('class'),/bad/);
         assert(!/✓|Correct/.test(await fb.textContent()));
       }
-      for(const correct of [raw,`${numerator*7n}/${denominator*7n}`,...(code==='10A'&&i===2?[(Number(numerator)/Number(denominator)).toFixed(3).replace('.',',')]:[])]){
+      for(const correct of [raw,`${numerator*7n}/${denominator*7n}`,...(code==='11A'&&i===2?[(Number(numerator)/Number(denominator)).toFixed(3).replace('.',',')]:[])]){
         await input.fill(correct);await input.press('Enter');assert.match(await fb.getAttribute('class'),/good/);assert.match(await fb.textContent(),/Correct/);
       }
       await page.locator(`#ex${i}-corr`).click();await math(page);
@@ -81,7 +82,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     }
     console.log(code+' PASS QCM : 4/4 et 0/4, boutons verrouillés, enregistrement unique et juste.');
 
-    if(code==='10A'){
+    if(code==='11A'){
       for(const u of [-48,-30,-24,-18,-12,-6,-3,0,2,3,4,6,12,24,48]){
         await set(page,{angle:u});
         const p=await page.locator('#circle-point').evaluate(e=>({x:+e.getAttribute('cx'),y:+e.getAttribute('cy')}));
@@ -143,7 +144,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
       }
       if(width===320){
         await page.locator('.proof').nth(0).screenshot({path:path.join(output,code+'-320-preuve.png')});
-        await page.locator(code==='10A'?'#circle':'#solution-plot').screenshot({path:path.join(output,code+'-320-figure.png')});
+        await page.locator(code==='11A'?'#circle':'#solution-plot').screenshot({path:path.join(output,code+'-320-figure.png')});
       }
     }
     await page.locator('#site-menu').click();assert.equal(await page.locator('#site-menu').getAttribute('aria-expanded'),'true');
@@ -151,8 +152,8 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await page.setViewportSize({width:1440,height:1000});
     await page.locator('#site-lesson-status').selectOption('validated');await page.reload();
     assert.equal(await page.locator('#site-lesson-status').inputValue(),'validated');
-    await page.goto(base+'chapitres.html#ch10');
-    assert.equal(await page.locator('#ch10 [data-lesson="'+code+'"]').count(),1);
+    await page.goto(base+'chapitres.html#ch11');
+    assert.equal(await page.locator('#ch11 [data-lesson="'+code+'"]').count(),1);
     await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="'+code+'"]').count(),1);
     console.log('PASS visualisations, preuves, mobile 390/320/768, navigation et persistance.');
     // En file://, toutes les ressources nécessaires sont locales.
@@ -169,7 +170,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await noStorage.locator('#ex1-rep').fill(String(answers.exercises[0]));await noStorage.locator('#ex1-check').click();
     assert.match(await noStorage.locator('#ex1-fb').getAttribute('class'),/good/);
     assert.match(await noStorage.locator('[data-storage-note]').first().textContent(),/indisponible/);
-    if(code==='10A'){await set(noStorage,{angle:0});assert.match(await noStorage.locator('#circle-values').textContent(),/cos x ≈ 1/);}else{await set(noStorage,{level:12,relation:'eq'});assert.match(await noStorage.locator('#solution-values').textContent(),/∅/);}
+    if(code==='11A'){await set(noStorage,{angle:0});assert.match(await noStorage.locator('#circle-values').textContent(),/cos x ≈ 1/);}else{await set(noStorage,{level:12,relation:'eq'});assert.match(await noStorage.locator('#solution-values').textContent(),/∅/);}
     await degraded.close();assert.deepEqual(errors,[]);
     console.log('PASS hors connexion file:// et mode sans MathJax/stockage ; aucune erreur JS. Captures : '+output);
     await context.close();

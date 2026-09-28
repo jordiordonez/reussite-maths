@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
-"""Assemble uniquement 12A et 12B depuis le squelette officiel."""
+"""Assemble uniquement 13A et 13B (sources 12A, 12B) depuis le squelette officiel."""
 from pathlib import Path
 import re
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-PAGES = {'12A': ('12A_integrales_aires.html', 'Intégrales, aires et valeur moyenne', ['Calculer avec une primitive', 'Une aire entre deux courbes', 'Un débit moyen']), '12B': ('12B_integration_methodes.html', 'Intégration par parties et approximations', ['Intégrer par parties', 'Une suite d’intégrales', 'Un encadrement par rectangles'])}
+# Sources 12A/12B (numérotation d'avant le 13/09/2026) ; fiches publiées sous
+# leur adresse actuelle, chapitre 13. Les anciennes adresses du chapitre 12
+# sont des redirections (outils/redirections.py) : ne jamais y écrire.
+FOLDER = 'chapitres/13_calcul_integral'
+PAGES = {'12A': ('13A', '13A_integrales_aires.html', 'Intégrales, aires et valeur moyenne', ['Calculer avec une primitive', 'Une aire entre deux courbes', 'Un débit moyen']), '12B': ('13B', '13B_integration_methodes.html', 'Intégration par parties et approximations', ['Intégrer par parties', 'Une suite d’intégrales', 'Un encadrement par rectangles'])}
+
+# Consigne de la section Exercices : les trois exercices de 13A demandent une
+# valeur exacte (relecture du 28/09/2026), ceux de 13B mêlent les précisions.
+INTROS = {'12A': 'Les trois exercices demandent une valeur exacte : écris-la en fraction (par exemple 28/3) ou en décimal si elle tombe juste (par exemple 3,5). Une valeur arrondie n’est pas acceptée.',
+          '12B': 'Respecte la précision de chaque exercice : valeur exacte, arrondi au millième ou entier. Les fractions et décimaux équivalents sont acceptés.'}
 
 
-def build(code, filename, title, titles):
-    target = ROOT / 'chapitres/12_calcul_integral' / filename
+def build(code, number, filename, title, titles):
+    target = ROOT / FOLDER / filename
     skeleton = (ROOT / 'outils/fiche_squelette.html').read_text()
     skeleton = re.sub(r'<!-- SITE:([A-Z]+):START -->.*?<!-- SITE:\1:END -->\n?', '', skeleton, flags=re.S)
     card = re.search(r'  <div class="card" id="ex1">.*?</div>\n  </div>', skeleton, re.S)[0]
@@ -39,11 +48,11 @@ def build(code, filename, title, titles):
     content = (HERE / (code + '.html')).read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
     # Deux égalités indépendantes ne doivent pas former une seule ligne trop large.
     content = content.replace(r',\qquad', ',\\]\\[')
-    content += '<section id="exos"><h2>Exercices</h2><p>Respecte la précision de chaque exercice : valeur exacte, arrondi au millième ou entier. Les fractions et décimaux équivalents sont acceptés.</p>'
+    content += '<section id="exos"><h2>Exercices</h2><p>' + INTROS[code] + '</p>'
     for i, ex_title in enumerate(titles, 1):
         content += card.replace('ex1', f'ex{i}').replace('Exercice 1', f'Exercice {i} · {ex_title}').replace('Niveau 1', f'Niveau {i}').replace('placeholder="réponse"', f'aria-label="Réponse à l’exercice {i}" placeholder="réponse"').replace('class="feedback"', 'class="feedback" role="status"')
     content += '</section><section id="qcm"><h2>QCM</h2><div class="card"><p>Quatre questions tirées dans une banque de douze. Une seule réponse correcte par question.</p><div id="qcm-container"></div><div class="score" id="qcm-score" role="status"></div><div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div></div></section>'
-    source = skeleton.replace('TITRE DE LA FICHE', code + ' · ' + title)
+    source = skeleton.replace('TITRE DE LA FICHE', number + ' · ' + title)
     source = source.replace('Première · Mathématiques', 'Terminale · Mathématiques')
     source = re.sub(r'(<main[^>]*>).*?</main>', lambda m: m[1]+'\n'+content+'\n</main>', source, count=1, flags=re.S)
     source = source.replace(script[0], '<script id="chapter12-model">\n'+(HERE/'common.js').read_text()+'\n'+(HERE/(code+'.js')).read_text()+'\n</script>\n<script>'+engine+'</script>\n<script id="chapter12-visuals">\n'+(HERE/'visuals.js').read_text()+'\n</script>')
@@ -62,5 +71,5 @@ def build(code, filename, title, titles):
 
 
 if __name__ == '__main__':
-    for code, (filename, title, titles) in PAGES.items():
-        build(code, filename, title, titles)
+    for code, (number, filename, title, titles) in PAGES.items():
+        build(code, number, filename, title, titles)

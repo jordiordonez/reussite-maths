@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Intègre seulement 12A/12B et les hubs, sans exposer les brouillons parallèles.
+"""Intègre seulement 13A/13B (sources 12A/12B) et les hubs, sans exposer les brouillons parallèles.
 
 Le catalogue conserve les fiches déjà exposées dans chapitres.html, puis ajoute
-12A et 12B. Les nouveaux fichiers de Claude ne sont pas publiés implicitement.
+13A et 13B. Les nouveaux fichiers de Claude ne sont pas publiés implicitement.
 """
 from pathlib import Path
 import importlib.util
@@ -18,11 +18,11 @@ builder=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
 source=(ROOT/'chapitres.html').read_text()
 config=json.loads(re.search(r'<script id="site-config" type="application/json">(.*?)</script>',source,re.S)[1])
-allowed={l['id'] for c in config['chapters'] for l in c['lessons']} | {'12A','12B'}
+allowed={l['id'] for c in config['chapters'] for l in c['lessons']} | {'13A','13B'}
 catalog=builder.catalog()
 for chapter in catalog:
     chapter['lessons']=[l for l in chapter['lessons'] if l['id'] in allowed]
 builder.catalog=lambda:catalog
-builder.build(['chapitres/12_calcul_integral/12A_integrales_aires.html',
-               'chapitres/12_calcul_integral/12B_integration_methodes.html',
+builder.build(['chapitres/13_calcul_integral/13A_integrales_aires.html',
+               'chapitres/13_calcul_integral/13B_integration_methodes.html',
                'index.html','chapitres.html','progres.html'])

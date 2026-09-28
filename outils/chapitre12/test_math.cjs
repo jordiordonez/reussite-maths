@@ -1,7 +1,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const files={'12A':'12A_integrales_aires.html','12B':'12B_integration_methodes.html'},models={};
+const files={'12A':'13A_integrales_aires.html','12B':'13B_integration_methodes.html'},models={};
 for(const [code,file] of Object.entries(files)){
-  const source=fs.readFileSync(path.resolve(__dirname,'../../chapitres/12_calcul_integral',file),'utf8').match(/<script id="chapter12-model">([\s\S]*?)<\/script>/)[1];
+  const source=fs.readFileSync(path.resolve(__dirname,'../../chapitres/13_calcul_integral',file),'utf8').match(/<script id="chapter12-model">([\s\S]*?)<\/script>/)[1];
   let seed=20260912+code.charCodeAt(2);const math=Object.create(Math);math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
   const ctx=vm.createContext({Math:math});vm.runInContext(source,ctx);models[code]=ctx.Chapter12;
 }

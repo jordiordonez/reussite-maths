@@ -145,7 +145,7 @@ def main():
         wanted['value']=wanted[row['method']]
         for key,value in wanted.items():assert abs(r[key]-float(value))<1e-9,(row,key)
         assert wanted['lower']<=exact<=wanted['upper'];stats['rectangles']+=1
-    source=(HERE.parents[1]/'chapitres/12_calcul_integral/12B_integration_methodes.html').read_text()
+    source=(HERE.parents[1]/'chapitres/13_calcul_integral/13B_integration_methodes.html').read_text()
     algorithm=html.unescape(re.search(r'<pre><code>(def rectangles_gauche.*?)</code></pre>',source,re.S)[1]);ns={};exec(algorithm,ns)
     fn=ns['rectangles_gauche'];assert fn(lambda x:x*x,0,1,2)==.125
     for n in [1,2,10,100]:

@@ -124,7 +124,7 @@ def main():
         assert v['last']==list(map(list,objects[v['lastOffset']:v['lastOffset']+24]))
         stats['visual_configurations']+=1
     # Vérifier aussi l'algorithme pédagogique réellement publié dans le cours.
-    page=(HERE.parent.parent/'chapitres/08_combinatoire_denombrement/8A_combinatoire_denombrement.html').read_text()
+    page=(HERE.parent.parent/'chapitres/09_combinatoire_denombrement/9A_combinatoire_denombrement.html').read_text()
     algorithm=html.unescape(re.search(r'<pre><code>(def ligne_pascal.*?)</code></pre>',page,re.S)[1])
     namespace={};exec(compile(algorithm,'algorithme de la fiche','exec'),namespace)
     for n in range(16):

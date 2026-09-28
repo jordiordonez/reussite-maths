@@ -23,7 +23,7 @@
       [[20,20,320*a,120*b],[20,20+120*b,320*a,120*(1-b)],[20+320*a,20,320*(1-a),120*c],[20+320*a,20+120*c,320*(1-a),120*(1-c)]].forEach((r,i)=>node(m,'rect',{x:r[0],y:r[1],width:r[2],height:r[3],fill:colors[i],stroke:'#fff'}));
       const independent=Math.abs(masses[0]-a*total)<1e-12;
       display(`P(A et B) = <b>${num(masses[0])}</b> · P(B) = <b>${num(total)}</b><br>P_B(A) ${total>0?'≈':' :'} <b>${total>0?num(masses[0]/total):'non définie : P(B) = 0'}</b> (affichage à cinq décimales au plus)<br>${independent?'A et B sont indépendants.':'A et B ne sont pas indépendants.'} Somme des feuilles : <b>${num(masses.reduce((s,p)=>s+p,0))}</b>.`);
-      $('visu-edge').textContent=a===0||a===1?'Une branche initiale a une probabilité nulle. Son curseur secondaire est un paramètre formel de l’arbre, pas une probabilité conditionnelle définie sur cet événement ; toutes ses feuilles ont une masse nulle.':'Chaque branche initiale a une probabilité positive : les deux conditionnements sont définis.';
+      $('visu-edge').textContent=a===0||a===1?'Une branche initiale a une probabilité nulle. Son curseur secondaire est un paramètre formel de l’arbre, pas une probabilité conditionnelle définie sur cet événement ; toutes ses feuilles ont une masse nulle.':'Chaque branche initiale a une probabilité strictement positive : les deux conditionnements sont définis.';
     }
     ['va','vb','vc'].forEach(id=>$(id).addEventListener('input',draw));
     $('independent').addEventListener('click',()=>{$('vc').value=$('vb').value;draw();});

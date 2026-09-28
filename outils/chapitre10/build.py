@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
-"""Assemble uniquement 10A et 10B depuis le squelette officiel."""
+"""Assemble les fiches 11A et 11B (sources 10A.*, 10B.*) depuis le squelette officiel."""
 from pathlib import Path
 import re
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-PAGES = {'10A': ('10A_cercle_trigonometrique.html', 'Cercle trigonométrique', ['Degrés et radians', 'Une valeur au millième', 'Une longueur parcourue']), '10B': ('10B_derivation_trigonometrie.html', 'Fonctions trigonométriques', ['Une dérivée en un point', 'Une équation', 'Une aire maximale'])}
+PAGES = {'11A': ('11A_cercle_trigonometrique.html', 'Cercle trigonométrique', ['Degrés et radians', 'Une valeur au millième', 'Une longueur parcourue']), '11B': ('11B_derivation_trigonometrie.html', 'Fonctions trigonométriques', ['Une dérivée en un point', 'Une équation', 'Une aire maximale'])}
 
+# Fiches publiées depuis la renumérotation du 13/09/2026 (10_trigonometrie -> 11_trigonometrie).
+# Les anciennes adresses sont des redirections : ne jamais y écrire.
+SOURCES = {'11A': '10A', '11B': '10B'}
+
+EXOS_INTRO = {
+    '11A': 'Respecte la précision de chaque exercice : valeur exacte, arrondi au millième ou entier. Les fractions et décimaux équivalents sont acceptés.',
+    # Relecture du 28/09/2026 : les trois exercices de 11B demandent une valeur exacte.
+    '11B': 'Les trois exercices demandent une valeur exacte. Une fraction ou un décimal égal à cette valeur est accepté ; un arrondi ne l’est pas.',
+}
 
 def build(code, filename, title, titles):
-    target = ROOT / 'chapitres/10_trigonometrie' / filename
+    target = ROOT / 'chapitres/11_trigonometrie' / filename
     skeleton = (ROOT / 'outils/fiche_squelette.html').read_text()
     skeleton = re.sub(r'<!-- SITE:([A-Z]+):START -->.*?<!-- SITE:\1:END -->\n?', '', skeleton, flags=re.S)
     card = re.search(r'  <div class="card" id="ex1">.*?</div>\n  </div>', skeleton, re.S)[0]
@@ -36,18 +45,18 @@ def build(code, filename, title, titles):
   });
   renderQcm();'''
     engine = re.sub(r'  /\* ---------- démarrage ---------- \*/.*?\n  renderQcm\(\);', lambda _: startup, engine, count=1, flags=re.S)
-    content = (HERE / (code + '.html')).read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
+    content = (HERE / (SOURCES[code] + '.html')).read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
     # Deux égalités indépendantes ne doivent pas former une seule ligne trop large.
     content = content.replace(r',\qquad', ',\\]\\[')
-    content += '<section id="exos"><h2>Exercices</h2><p>Respecte la précision de chaque exercice : valeur exacte, arrondi au millième ou entier. Les fractions et décimaux équivalents sont acceptés.</p>'
+    content += '<section id="exos"><h2>Exercices</h2><p>' + EXOS_INTRO[code] + '</p>'
     for i, ex_title in enumerate(titles, 1):
         content += card.replace('ex1', f'ex{i}').replace('Exercice 1', f'Exercice {i} · {ex_title}').replace('Niveau 1', f'Niveau {i}').replace('placeholder="réponse"', f'aria-label="Réponse à l’exercice {i}" placeholder="réponse"').replace('class="feedback"', 'class="feedback" role="status"')
     content += '</section><section id="qcm"><h2>QCM</h2><div class="card"><p>Quatre questions tirées dans une banque de douze. Une seule réponse correcte par question.</p><div id="qcm-container"></div><div class="score" id="qcm-score" role="status"></div><div class="row"><button id="qcm-new" type="button">Nouveau QCM</button></div></div></section>'
     source = skeleton.replace('TITRE DE LA FICHE', code + ' · ' + title)
-    if code == '10B':
+    if code == '11B':
         source = source.replace('Première · Mathématiques', 'Terminale · Mathématiques')
     source = re.sub(r'(<main[^>]*>).*?</main>', lambda m: m[1]+'\n'+content+'\n</main>', source, count=1, flags=re.S)
-    source = source.replace(script[0], '<script id="chapter10-model">\n'+(HERE/'common.js').read_text()+'\n'+(HERE/(code+'.js')).read_text()+'\n</script>\n<script>'+engine+'</script>\n<script id="chapter10-visuals">\n'+(HERE/'visuals.js').read_text()+'\n</script>')
+    source = source.replace(script[0], '<script id="chapter10-model">\n'+(HERE / 'common.js').read_text()+'\n'+(HERE/(SOURCES[code]+'.js')).read_text()+'\n</script>\n<script>'+engine+'</script>\n<script id="chapter10-visuals">\n'+(HERE / 'visuals.js').read_text()+'\n</script>')
     css = '''<style>
     .tablewrap{overflow-x:auto;margin:1rem 0}table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{padding:10px;border:1px solid #dce2ec;text-align:left}th{background:#edf3ff}
     .control{display:grid;grid-template-columns:60px minmax(40px,1fr) 75px;align-items:center;gap:10px;margin:16px 0}.control label{color:#475569;font-size:12px}.control input{min-width:0;width:100%}.control output{font-size:13px;text-align:right}.caption{font-size:12px;color:#64748b}.figure{margin:16px auto;max-width:620px;display:block}.row input{min-width:0;width:150px}#vevent{display:block;width:100%;margin:10px 0}

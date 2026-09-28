@@ -5,7 +5,7 @@ const {execFileSync}=require('node:child_process');
 const fs=require('node:fs'),path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const base=process.env.SITE_TEST_URL||'http://127.0.0.1:8765/';
-const relative='chapitres/09_loi_binomiale/9A_loi_binomiale.html';
+const relative='chapitres/10_loi_binomiale/10A_loi_binomiale.html';
 const output=process.env.CH9_TEST_OUTPUT||'/tmp/chapitre9-qa';
 const key='reussite_maths_v1';
 const oracle=async page=>JSON.parse(execFileSync('python3',[path.join(__dirname,'test_math.py'),'oracle'],{
@@ -70,7 +70,7 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
       const score=perfect?'4 / 4':'0 / 4';assert((await page.locator('#qcm-score').textContent()).includes(score));
       await page.locator('.choice').first().evaluate(b=>b.click());await page.waitForTimeout(80);
       const rows=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).journal,key);
-      assert.equal(rows.filter(r=>r.lesson==='9A'&&r.ex==='QCM · '+score&&r.res===(perfect?'ok':'ko')).length,1);
+      assert.equal(rows.filter(r=>r.lesson==='10A'&&r.ex==='QCM · '+score&&r.res===(perfect?'ok':'ko')).length,1);
       if(perfect){await page.locator('#qcm-new').click();assert.equal(await page.locator('#qcm-score').textContent(),'');}
     }
     console.log('PASS QCM : 4/4 et 0/4, boutons verrouillés, enregistrement unique et juste.');
@@ -125,17 +125,17 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await math(page);
     const meanHeight=await page.locator('mjx-container:not([display="true"]) > svg').evaluateAll(es=>es.reduce((s,e)=>s+e.getBoundingClientRect().height,0)/es.length);
     assert(meanHeight>=12&&meanHeight<=35,'formules inline à échelle lisible : '+meanHeight);
-    await page.locator('#visu').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'9A-desktop.png')});
+    await page.locator('#visu').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'10A-desktop.png')});
     for(const width of [390,320,768]){
       await page.setViewportSize({width,height:900});await math(page);
       assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'débordement à '+width);
       for(const id of ['cours','methode','visu','exos','qcm']){
         await page.locator('#'+id).scrollIntoViewIfNeeded();
-        if(width!==768)await page.screenshot({path:path.join(output,`9A-${width}-${id}.png`)});
+        if(width!==768)await page.screenshot({path:path.join(output,`10A-${width}-${id}.png`)});
       }
       if(width===320){
-        await page.locator('.proof').nth(0).screenshot({path:path.join(output,'9A-320-preuve-binomiale.png')});
-        await page.locator('#fig').screenshot({path:path.join(output,'9A-320-loi.png')});
+        await page.locator('.proof').nth(0).screenshot({path:path.join(output,'10A-320-preuve-binomiale.png')});
+        await page.locator('#fig').screenshot({path:path.join(output,'10A-320-loi.png')});
       }
     }
     await page.locator('#site-menu').click();assert.equal(await page.locator('#site-menu').getAttribute('aria-expanded'),'true');
@@ -143,9 +143,9 @@ const choose=(n,k)=>{let row=[1];for(let r=1;r<=n;r++)row=Array.from({length:r+1
     await page.setViewportSize({width:1440,height:1000});
     await page.locator('#site-lesson-status').selectOption('validated');await page.reload();
     assert.equal(await page.locator('#site-lesson-status').inputValue(),'validated');
-    await page.goto(base+'chapitres.html#ch9');
-    assert.equal(await page.locator('#ch9 [data-lesson="9A"]').count(),1);
-    await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="9A"]').count(),1);
+    await page.goto(base+'chapitres.html#ch10');
+    assert.equal(await page.locator('#ch10 [data-lesson="10A"]').count(),1);
+    await page.goto(base+'progres.html');assert.equal(await page.locator('#site-journal-lesson option[value="10A"]').count(),1);
     console.log('PASS visualisations, preuves, mobile 390/320/768, navigation et persistance.');
     // En file://, toutes les ressources nécessaires sont locales.
     const offline=await browser.newContext({offline:true}),local=await offline.newPage();
