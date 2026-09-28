@@ -9,6 +9,8 @@ from pathlib import Path
 import glob, os, re
 
 RACINE = Path(__file__).resolve().parent.parent
+# Adresse publique : le lien canonique d'une ancienne adresse désigne la nouvelle.
+SITE_URL = 'https://jordiordonez.github.io/reussite-maths/'
 MAP = {anc: nouv for nouv, anc in enumerate([15] + list(range(1, 15)), start=1)}
 
 GABARIT = """<!DOCTYPE html>
@@ -18,7 +20,7 @@ GABARIT = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Page déplacée · Réussite Spé Maths</title>
-<link rel="canonical" href="{rel}">
+<link rel="canonical" href="{canonique}">
 <meta http-equiv="refresh" content="0; url={rel}">
 <style>body{{margin:0;background:#faf8f5;color:#1f2937;font-family:system-ui,-apple-system,sans-serif;
 display:grid;place-items:center;min-height:100vh;padding:24px;text-align:center;line-height:1.6}}
@@ -34,6 +36,9 @@ a{{color:#2563eb}}</style>
 </html>
 """
 
+def est_redirection(chemin):
+    return 'http-equiv="refresh"' in open(chemin, encoding='utf-8').read(2000)
+
 def titre_de(chemin):
     s = open(chemin, encoding='utf-8').read(4000)
     m = re.search(r'<title>([^<]+)</title>', s)
@@ -41,7 +46,10 @@ def titre_de(chemin):
 
 def construire():
     os.chdir(RACINE)
-    suffixes = {int(d.split('/')[1][:2]): d.split('/')[1] for d in glob.glob('chapitres/*/')}
+    # Seuls les dossiers qui contiennent de vraies fiches sont des nouvelles
+    # adresses : les anciens dossiers, faits de redirections, portent le même numéro.
+    suffixes = {int(d.split('/')[1][:2]): d.split('/')[1] for d in sorted(glob.glob('chapitres/*/'))
+                if any(not est_redirection(f) for f in glob.glob(d + '*.html'))}
     faits = 0
     for anc, nouv in MAP.items():
         dossier_nouv = suffixes.get(nouv)
@@ -56,13 +64,15 @@ def construire():
                 continue
             anc_nom = f'{anc}{m.group(1)}_{m.group(2)}'
             cible = anc_dossier / anc_nom
-            if cible.exists():
+            rel = os.path.relpath(f, cible.parent)
+            texte = GABARIT.format(rel=rel, canonique=SITE_URL + f, titre=titre_de(f))
+            # Réécrite seulement si le gabarit a changé ; jamais supprimée.
+            if cible.exists() and cible.read_text(encoding='utf-8') == texte:
                 continue
             cible.parent.mkdir(parents=True, exist_ok=True)
-            rel = os.path.relpath(f, cible.parent)
-            cible.write_text(GABARIT.format(rel=rel, titre=titre_de(f)), encoding='utf-8')
+            cible.write_text(texte, encoding='utf-8')
             faits += 1
-    print(f"  {faits} redirections créées")
+    print(f"  {faits} redirections créées ou mises à jour")
 
 if __name__ == '__main__':
     construire()

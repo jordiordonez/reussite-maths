@@ -36,7 +36,7 @@ def main():
   renderQcm();'''
     engine = re.sub(r'  /\* ---------- démarrage ---------- \*/.*?\n  renderQcm\(\);', lambda _: startup, engine, count=1, flags=re.S)
     titles = ['Former un identifiant', 'Attribuer des postes distincts', 'Former une équipe sous contrainte']
-    content = (HERE / 'content.html').read_text()
+    content = (HERE / 'content.html').read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
     # Deux égalités indépendantes ne doivent pas former une seule ligne trop large.
     content = content.replace(r',\qquad', ',\\]\\[')
     content += '<section id="exos"><h2>Exercices</h2><p>Donne le nombre exact demandé : un entier positif ou nul, sans arrondi.</p>'

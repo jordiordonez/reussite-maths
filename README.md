@@ -38,6 +38,35 @@ ce qui est mesuré.
 Les choix de navigation, de style et l’évolution envisagée vers des comptes et
 une offre payante sont décrits dans [`newstyle.md`](newstyle.md).
 
+## Référencement
+
+Tout est produit par `outils/build_site.py`, jamais à la main : description
+propre à chaque page (dictionnaire `DESCRIPTIONS` pour les fiches), lien
+canonique absolu, balises Open Graph et Twitter, fil d’Ariane JSON-LD dans les
+fiches, description du site en JSON-LD dans `index.html`, et `sitemap.xml` à la
+racine (pages principales et fiches, sans les anciennes adresses). Les anciennes
+adresses, régénérées par `outils/redirections.py`, portent `noindex` et un lien
+canonique vers la nouvelle. L’image d’aperçu `og-image.png` (1200 × 630) se
+refait après modification de `outils/og_image.html` avec
+`node outils/og_image.cjs` (Playwright). `outils/check_site.py` contrôle
+descriptions uniques, liens canoniques, JSON-LD et sitemap.
+
+Google Search Console :
+
+1. Ajouter une propriété « Préfixe de l’URL » :
+   `https://jordiordonez.github.io/reussite-maths/`.
+2. Choisir la validation « Balise HTML », copier la valeur de `content="…"` dans
+   `GOOGLE_SITE_VERIFICATION`, en tête de `outils/build_site.py`, lancer
+   `python3 outils/build_site.py`, publier, puis cliquer sur « Valider ». La
+   balise n’est ajoutée qu’à `index.html`.
+3. Dans « Sitemaps », envoyer `sitemap.xml`, soit
+   `https://jordiordonez.github.io/reussite-maths/sitemap.xml`.
+
+Pas de `robots.txt` : les robots ne le lisent qu’à la racine du domaine,
+`https://jordiordonez.github.io/robots.txt`, qui dépend du dépôt
+`jordiordonez.github.io` et non de celui-ci. Un fichier placé ici serait ignoré ;
+le sitemap s’envoie donc directement dans Search Console.
+
 ## Ce que contient chaque fiche
 
 Un fichier HTML unique, avec dans l'ordre :

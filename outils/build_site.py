@@ -41,6 +41,180 @@ def support_text(text):
         'Une mesure d’audience (GoatCounter) compte les pages vues, sans cookie et sans conserver l’adresse IP : je sais combien de fois une fiche est ouverte, jamais par qui.')
 
 
+# ---------------------------------------------------------------------------
+# Référencement. Tout est généré ici : ne pas éditer les balises à la main.
+# Adresse publique du site (GitHub Pages). Sert aux liens canoniques, à
+# Open Graph et au sitemap ; les liens de navigation restent relatifs.
+SITE_URL = 'https://jordiordonez.github.io/reussite-maths/'
+SITE_NAME = 'Réussite Spé Maths'
+AUTHOR = 'Jordi Ordóñez Adellach'
+# Image d'aperçu (1200 × 630) pour les partages. Source : outils/og_image.html,
+# capture : node outils/og_image.cjs (Playwright). Fichier : og-image.png.
+OG_IMAGE = 'og-image.png'
+OG_IMAGE_ALT = 'Réussite Spé Maths : fiches interactives de spécialité mathématiques, Première et Terminale'
+# Code de validation de Google Search Console (méthode « Balise HTML ») :
+# coller ici la valeur de content="…", puis régénérer. Vide = pas de balise.
+GOOGLE_SITE_VERIFICATION = ''
+
+# Une description par fiche, écrite à partir de son contenu réel (140–160
+# caractères). Une fiche nouvelle sans entrée reçoit une description
+# construite depuis ses titres de cours ; mieux vaut en écrire une ici.
+DESCRIPTIONS = {
+    '1A': 'Second degré en Première : formes développée, canonique et factorisée, discriminant, racines, signe, somme et produit. Cours, exercices corrigés et QCM.',
+    '2A': 'Produit scalaire en Première : projection orthogonale, cosinus, coordonnées, norme et orthogonalité. Cours, figure à manipuler, exercices corrigés et QCM.',
+    '2B': "Applications du produit scalaire en Première : formule d'Al-Kashi, polarisation, cercle de diamètre [AB], choix de la méthode. Exercices corrigés et QCM.",
+    '2C': 'Géométrie repérée en Première : vecteur normal, équation cartésienne de droite, projeté orthogonal, distance, cercles et paraboles. Exercices corrigés.',
+    '2D': "Produit scalaire dans l'espace en Terminale : orthogonalité, vecteur normal, équation de plan, représentation paramétrique, projeté et distances.",
+    '3A': 'Suites en Première : génération explicite, par récurrence ou par algorithme, représentation graphique et sens de variation. Cours, exercices et QCM.',
+    '3B': 'Suites arithmétiques et géométriques en Première : terme général, sommes, sens de variation et modélisation. Cours, exercices qui se renouvellent et QCM.',
+    '3C': 'Suites en Terminale : raisonnement par récurrence, limites, formes indéterminées, théorème des gendarmes, suites monotones et convergence. Exercices et QCM.',
+    '4A': 'Nombre dérivé et tangente en Première : taux de variation, nombre dérivé, tangente limite des sécantes et son équation. Figure à manipuler, exercices, QCM.',
+    '4B': 'Calcul de dérivées en Première : dérivées de référence, somme, produit, inverse, quotient et g(ax+b), avec les démonstrations. Exercices corrigés et QCM.',
+    '4C': 'Variations et extremums en Première : signe de la dérivée, tableau de variations, extremum local, optimisation et position de courbes. Exercices et QCM.',
+    '4D': "Dérivée d'une fonction composée en Terminale : composer v∘u, ensemble de définition, formule de dérivation, cas usuels et étude de fonction. Exercices.",
+    '4E': "Convexité en Terminale : dérivée seconde, fonction convexe ou concave, caractérisations, point d'inflexion et inégalités. Cours, exercices corrigés et QCM.",
+    '5A': 'Fonctions de référence en Première : carré, cube, inverse, racine carrée, valeur absolue, exponentielle, parité et lecture graphique. Exercices et QCM.',
+    '5B': 'Limites de fonctions en Terminale : asymptotes, opérations sur les limites, formes indéterminées, comparaison et croissances comparées. Exercices et QCM.',
+    '5C': 'Continuité en Terminale : fonction continue, théorème des valeurs intermédiaires, corollaire de la bijection, dichotomie et rédaction type. Exercices, QCM.',
+    '6A': 'Fonction exponentielle en Première : f′ = f, relation fonctionnelle, nombre e, variations, fonctions e^(kt) et modélisation. Cours, exercices corrigés et QCM.',
+    '6B': 'Exponentielle en Terminale : équations, inéquations, limites, croissances comparées, dérivée de e^u et étude complète de fonction. Exercices corrigés et QCM.',
+    '6C': 'Logarithme népérien en Terminale : définition, propriétés algébriques, dérivée, limites, croissances comparées et dérivée de ln(u). Exercices corrigés et QCM.',
+    '7A': 'Calcul vectoriel dans le plan en Première : relation de Chasles, colinéarité, déterminant, base, repère et coordonnées. Cours, exercices corrigés et QCM.',
+    '7B': "Vecteurs de l'espace en Terminale : combinaisons linéaires, colinéarité, coplanarité, bases et repères de l'espace. Cours, exercices corrigés et QCM.",
+    '7C': "Droites et plans de l'espace en Terminale : positions relatives de deux droites, d'une droite et d'un plan, de deux plans, parallélisme. Exercices et QCM.",
+    '8A': 'Probabilités conditionnelles en Première : arbres pondérés, formule des probabilités totales, inversion du conditionnement et indépendance. Exercices, QCM.',
+    '8B': 'Variables aléatoires en Première : loi de probabilité, espérance, variance, écart type, gain et jeu équitable. Cours, exercices qui se renouvellent et QCM.',
+    '8C': "Épreuves indépendantes en Terminale : succession d'épreuves, épreuve et schéma de Bernoulli, chemins d'un arbre, « au moins un ». Exercices corrigés et QCM.",
+    '9A': 'Dénombrement en Terminale : principes additif et multiplicatif, k-uplets, permutations, combinaisons, coefficients binomiaux et triangle de Pascal.',
+    '10A': 'Loi binomiale en Terminale : probabilité de k succès, probabilités cumulées, espérance, variance, seuils, intervalles et simulation. Exercices corrigés, QCM.',
+    '11A': 'Cercle trigonométrique en Première : radians, cosinus et sinus, valeurs remarquables, angles associés, parité et périodicité. Exercices corrigés et QCM.',
+    '11B': 'Fonctions trigonométriques en Terminale : dérivées de sin et cos, variations, limites en 0, équations et inéquations, optimisation. Exercices et QCM.',
+    '12A': 'Primitives en Terminale : définition, primitives de référence, formes composées u′×(v′∘u), primitive passant par un point. Cours, exercices corrigés et QCM.',
+    '12B': "Équations différentielles en Terminale : y′ = ay, y′ = ay + b, condition initiale, allure des courbes, modélisation et méthode d'Euler. Exercices et QCM.",
+    '13A': 'Calcul intégral en Terminale : intégrale et aire, lien avec les primitives, propriétés, encadrement, aire entre deux courbes et valeur moyenne. Exercices.',
+    '13B': "Intégration par parties en Terminale : choix du facteur à dériver, suites d'intégrales, méthodes des rectangles, des milieux et des trapèzes. Exercices, QCM.",
+    '14A': "Sommes de variables aléatoires en Terminale : linéarité de l'espérance, variance et indépendance, loi binomiale, échantillon et moyenne. Exercices et QCM.",
+    '14B': "Loi des grands nombres en Terminale : inégalité de Bienaymé-Tchebychev, inégalité de concentration, taille d'échantillon. Cours, exercices corrigés et QCM.",
+    '15A': 'Python en spé maths : variables, conditions, boucles, fonctions et listes (extension, compréhension, indices, parcours). Cours, exercices corrigés et QCM.',
+    '15B': 'Algorithmes du programme de spé maths : seuil, dichotomie, Newton, Euler, rectangles, simulation et marche aléatoire, en Python. Exercices corrigés et QCM.',
+}
+
+LEVEL_NAMES = {'premiere': 'Première', 'terminale': 'Terminale'}
+
+
+def page_url(rel):
+    """Adresse absolue d'une page, à partir de son chemin relatif à la racine."""
+    return SITE_URL if rel == 'index.html' else SITE_URL + rel
+
+
+def lesson_description(lesson, chapter, source):
+    if lesson['id'] in DESCRIPTIONS:
+        return DESCRIPTIONS[lesson['id']]
+    cours = re.search(r'<section\b[^>]*id="cours"[^>]*>(.*?)</section>', source, re.S)
+    points = [re.sub(r'^\s*\d+\.?\s*', '', plain(h)) for h in re.findall(r'<h3[^>]*>(.*?)</h3>', cours[1] if cours else '', re.S)]
+    text = f'{lesson["title"]} en {LEVEL_NAMES[lesson["level"]]} ({chapter["title"]}) : ' + ', '.join(points)
+    return (text[:150].rsplit(' ', 1)[0].rstrip(',;:') + '…') if len(text) > 155 else text
+
+
+def hub_description(kind, chapters):
+    count = sum(len(c['lessons']) for c in chapters)
+    return {
+        'home': f'{SITE_NAME} : {count} fiches interactives de spécialité mathématiques en Première et Terminale, programme 2019. Cours, exercices corrigés et QCM, sans compte.',
+        'catalog': f'Les {len(chapters)} chapitres de spé maths, du second degré à l’algorithmique : fiches de Première à réviser puis de Terminale, avec cours, exercices et QCM.',
+        'progress': 'Mes progrès : fiches commencées, notions à revoir, carnet de travail et export du suivi de spé maths, enregistrés dans le navigateur, sans créer de compte.',
+        'method': 'Réussir l’année en spé maths : ce que dit la recherche sur l’apprentissage, semaine type, que faire quand on bloque, prompts pour utiliser une IA comme tuteur.',
+    }[kind]
+
+
+def json_ld(data):
+    text = json.dumps(data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    return f'<script type="application/ld+json">{text}</script>'
+
+
+def structured_data(kind, chapters, lesson=None, chapter=None, description=''):
+    if kind == 'home':
+        levels = ['Première', 'Terminale']
+        return json_ld({'@context': 'https://schema.org', '@graph': [
+            {'@type': 'WebSite', '@id': SITE_URL + '#site', 'url': SITE_URL, 'name': SITE_NAME, 'inLanguage': 'fr'},
+            {'@type': 'LearningResource', '@id': SITE_URL + '#ressource', 'url': SITE_URL, 'name': SITE_NAME,
+             'description': description, 'inLanguage': 'fr', 'isPartOf': {'@id': SITE_URL + '#site'},
+             'learningResourceType': ['Cours', 'Exercices', 'QCM', 'Visualisation interactive'],
+             'educationalLevel': levels,
+             'audience': {'@type': 'EducationalAudience', 'educationalRole': 'student'},
+             'about': 'Enseignement de spécialité mathématiques, voie générale, programmes officiels de 2019',
+             'teaches': [c['title'] for c in chapters],
+             'isAccessibleForFree': True,
+             'license': 'https://creativecommons.org/licenses/by-sa/4.0/',
+             'author': {'@type': 'Person', '@id': 'https://www.joasolucions.com/es/sobre#jordi-ordonez', 'url': 'https://www.joasolucions.com/es/sobre', 'name': AUTHOR, 'jobTitle': 'Mathématicien, enseignant'}},
+        ]})
+    if kind == 'lesson':
+        crumbs = [('Accueil', SITE_URL), ('Chapitres', page_url('chapitres.html')),
+                  (chapter['title'], page_url('chapitres.html') + f'#ch{chapter["number"]}'),
+                  (f'{lesson["id"]} · {lesson["title"]}', page_url(lesson['path']))]
+        return json_ld({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
+            {'@type': 'ListItem', 'position': i, 'name': name, 'item': url} for i, (name, url) in enumerate(crumbs, 1)]})
+    return ''
+
+
+def meta_block(rel, title, description, og_type='website', extra=''):
+    """Balises de tête : description, canonique, Open Graph, Twitter."""
+    url = page_url(rel)
+    image = SITE_URL + OG_IMAGE
+    tags = [f'<meta name="description" content="{esc(description)}">',
+            f'<link rel="canonical" href="{url}">',
+            f'<meta property="og:type" content="{og_type}">',
+            f'<meta property="og:site_name" content="{SITE_NAME}">',
+            f'<meta property="og:title" content="{esc(title)}">',
+            f'<meta property="og:description" content="{esc(description)}">',
+            f'<meta property="og:url" content="{url}">',
+            f'<meta property="og:image" content="{image}">',
+            '<meta property="og:image:width" content="1200">',
+            '<meta property="og:image:height" content="630">',
+            f'<meta property="og:image:alt" content="{esc(OG_IMAGE_ALT)}">',
+            '<meta property="og:locale" content="fr_FR">',
+            '<meta name="twitter:card" content="summary_large_image">',
+            f'<meta name="twitter:title" content="{esc(title)}">',
+            f'<meta name="twitter:description" content="{esc(description)}">',
+            f'<meta name="twitter:image" content="{image}">']
+    if rel == 'index.html' and GOOGLE_SITE_VERIFICATION:
+        tags.insert(0, f'<meta name="google-site-verification" content="{esc(GOOGLE_SITE_VERIFICATION)}">')
+    return block('META', '\n'.join(tags) + ('\n' + extra if extra else ''))
+
+
+def last_modified(rels):
+    """Date de dernière modification : celle du dernier commit, ou aujourd'hui
+    si le fichier diffère de ce commit (ou si Git est indisponible)."""
+    import datetime
+    import subprocess
+    today = datetime.date.today().isoformat()
+    try:
+        dirty = set(subprocess.run(['git', 'diff', '--name-only', 'HEAD', '--', *rels], cwd=ROOT,
+                                   capture_output=True, text=True, check=True).stdout.split('\n'))
+    except (OSError, subprocess.CalledProcessError):
+        return {rel: today for rel in rels}
+    dates = {}
+    for rel in rels:
+        if rel in dirty:
+            dates[rel] = today
+            continue
+        out = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', rel], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+        dates[rel] = out or today
+    return dates
+
+
+def write_sitemap(lessons):
+    """sitemap.xml : pages principales et fiches. Ni redirections, ni copie
+    personnelle du guide, ni page de soutien."""
+    rels = ['index.html', 'chapitres.html', 'strategie/reussir_lannee.html', 'progres.html'] + [l['path'] for l in lessons]
+    dates = last_modified(rels)
+    rows = ''.join(f'  <url><loc>{esc(page_url(rel))}</loc><lastmod>{dates[rel]}</lastmod></url>\n' for rel in rels)
+    text = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{rows}</urlset>\n'
+    path = ROOT / 'sitemap.xml'
+    if not path.exists() or path.read_text() != text:
+        path.write_text(text)
+    return len(rels)
+
+
 def plain(value):
     return html.unescape(re.sub(r'<[^>]+>', '', value)).strip()
 
@@ -231,7 +405,7 @@ def hub_content(kind, chapters):
 
 <p class="site-hint"><span class="site-local-note" data-storage-note>Ton suivi reste dans ce navigateur, sur cet appareil.</span><a href="progres.html#sauvegarde">Garder une copie de mon suivi</a></p>"""
     if kind == 'catalog':
-        content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">Quinze chapitres, du second degré au calcul intégral. En Première, travaille les fiches de ton niveau ; en Terminale, commence par celles de Première du chapitre. L’ordre proposé n’est qu’une suggestion : suis celui de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
+        content = '''<div class="site-eyebrow">Le programme à portée de main</div><h1>Chaque chapitre, pas à pas.</h1><p class="site-lead">Quinze chapitres, du second degré à l’algorithmique. En Première, travaille les fiches de ton niveau ; en Terminale, commence par celles de Première du chapitre. L’ordre proposé n’est qu’une suggestion : suis celui de ton professeur.</p><div class="site-catalog-tools"><div class="site-filters" aria-label="Niveau des fiches"><button data-filter="all" aria-pressed="true">Tout</button><button data-filter="premiere" aria-pressed="false">Première</button><button data-filter="terminale" aria-pressed="false">Terminale</button></div><label class="site-input" style="padding:0;border:0"><span class="site-eyebrow">Rechercher un chapitre</span><input class="site-input" id="site-catalog-query" type="search" placeholder="Nom ou notion…"></label></div><p class="site-count" id="site-catalog-count" role="status"></p>'''
         for c in chapters:
             count = len(c['lessons'])
             content += f'<details class="site-chapter" id="ch{c["number"]}" data-catalog-chapter="{c["number"]}"><summary><span class="site-number">{c["number"]:02}</span><span class="site-chapter-title">{esc(c["title"])}<span class="site-chapter-meta">{(f'<b class="site-public site-public-{public(c["lessons"])[0]}">{public(c["lessons"])[1]}</b> · ' + str(count) + (" fiche" if count == 1 else " fiches")) if count else "À venir"}</span></span></summary><div class="site-chapter-content"><div class="site-chapter-intro"><p><strong>Au programme :</strong> {esc(c["goal"])}.</p><p><strong>Les bases utiles :</strong> {esc(c["prerequisites"])}.</p></div>'
@@ -292,6 +466,7 @@ def build(only=None):
                 (HERE / 'fiche_squelette.html', 'template', None)]
     for filename, kind in [('index.html', 'home'), ('chapitres.html', 'catalog'), ('progres.html', 'progress'), ('soutien.html', 'support')]:
         targets.append((ROOT / filename, kind, None))
+    descriptions = {}
     for path, kind, lesson in targets:
         if only and path.relative_to(ROOT).as_posix() not in only:
             continue
@@ -299,7 +474,10 @@ def build(only=None):
         active = 'catalog' if kind in ('lesson', 'template') else kind
         if kind in ('home', 'catalog', 'progress', 'support'):
             title = {'home': 'Accueil', 'catalog': 'Chapitres', 'progress': 'Mes progrès', 'support': 'Offrir un café'}[kind]
-            source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Cours et exercices interactifs de spécialité mathématiques, en Première et en Terminale, avec un suivi personnel sans compte.">\n<title>{title} · Réussite Spé Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Spé Maths · Spécialité mathématiques, Première et Terminale · Programme 2019<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
+            # La page de soutien garde sa tête d'origine : ni balises de partage, ni sitemap.
+            head = ('<meta name="description" content="Cours et exercices interactifs de spécialité mathématiques, en Première et en Terminale, avec un suivi personnel sans compte.">'
+                    if kind == 'support' else '')
+            source = f'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n{head}' + ('\n' if head else '') + f'<title>{title} · Réussite Spé Maths</title>\n</head>\n<body>\n<main id="site-main" tabindex="-1">{hub_content(kind, chapters)}</main>\n<footer>Réussite Spé Maths · Spécialité mathématiques, Première et Terminale · Programme 2019<br>Les fiches fonctionnent hors connexion avec le dossier MathJax local.</footer>\n</body>\n</html>\n'
         else:
             source = strip_blocks(path.read_text())
             # One-time migration of the guide: the original journal is imported
@@ -312,6 +490,26 @@ def build(only=None):
             source = re.sub(r'<main(?: id="site-main" tabindex="-1")?>', '<main id="site-main" tabindex="-1">', source, count=1)
         classes = 'site-with-sidebar' + (' site-hub' if kind in ('home', 'catalog', 'progress') else '') + (' site-guide' if kind == 'method' else '')
         source = re.sub(r'<body[^>]*>', f'<body class="{classes}">', source, count=1)
+        rel = path.relative_to(ROOT).as_posix()
+        meta = ''
+        if lesson:
+            chapter = next(c for c in chapters if lesson in c['lessons'])
+            level = LEVEL_NAMES[lesson['level']]
+            description = lesson_description(lesson, chapter, source)
+            meta = meta_block(rel, f'{lesson["id"]} · {lesson["title"]} · {level}, spé maths', description, 'article',
+                              structured_data('lesson', chapters, lesson, chapter))
+        elif kind in ('home', 'catalog', 'progress', 'method'):
+            description = hub_description(kind, chapters)
+            title = {'home': f'{SITE_NAME} · Spécialité mathématiques, Première et Terminale',
+                     'catalog': f'Les chapitres de spé maths, Première et Terminale · {SITE_NAME}',
+                     'progress': f'Mes progrès · {SITE_NAME}',
+                     'method': f'Réussir l’année en spé maths : la méthode · {SITE_NAME}'}[kind]
+            meta = meta_block(rel, title, description, extra=structured_data(kind, chapters, description=description))
+        elif kind == 'template':
+            meta = block('META', '<meta name="robots" content="noindex">')
+        if meta:
+            descriptions.setdefault(re.search(r'<meta name="description" content="([^"]*)"', meta)[1] if 'name="description"' in meta else rel, []).append(rel)
+            source = source.replace('</head>', meta + '\n</head>', 1)
         source = source.replace('</head>', block('STYLE', '<style>\n' + css + '\n</style>') + '\n</head>')
         source = source.replace(f'<body class="{classes}">', f'<body class="{classes}">\n' + block('SHELL', shell(chapters, prefix, active, lesson)), 1)
         if lesson:
@@ -333,6 +531,16 @@ def build(only=None):
         source = source.replace('</body>', block('SCRIPT', f'<script id="site-config" type="application/json">{config}</script>\n<script>\n{js}\n</script>' + ('\n' + analytics_snippet() if GOATCOUNTER else '')) + '\n</body>')
         if not path.exists() or source != path.read_text():
             path.write_text(source)
+    doubles = [rels for rels in descriptions.values() if len(rels) > 1]
+    if doubles:
+        raise SystemExit(f'Descriptions identiques : {doubles}')
+    if not only:
+        urls = write_sitemap(lessons)
+        import sys
+        sys.dont_write_bytecode = True
+        import redirections  # les anciennes adresses suivent le même gabarit
+        redirections.construire()
+        print(f'sitemap.xml : {urls} adresses.')
     if only:
         print(f'Interface intégrée aux {len(only)} chemins sélectionnés ; catalogue de {len(lessons)} fiches.')
     else:

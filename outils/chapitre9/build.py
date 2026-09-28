@@ -36,7 +36,7 @@ def main():
   renderQcm();'''
     engine = re.sub(r'  /\* ---------- démarrage ---------- \*/.*?\n  renderQcm\(\);', lambda _: startup, engine, count=1, flags=re.S)
     titles = ['Exactement k succès', 'Un intervalle, au millième', 'Une capacité minimale']
-    content = (HERE / 'content.html').read_text()
+    content = (HERE / 'content.html').read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
     # Deux égalités indépendantes ne doivent pas former une seule ligne trop large.
     content = content.replace(r',\qquad', ',\\]\\[')
     content += '<section id="exos"><h2>Exercices</h2><p>Respecte la précision de chaque exercice : valeur exacte, arrondi au millième ou entier. Les fractions et décimaux équivalents sont acceptés.</p>'

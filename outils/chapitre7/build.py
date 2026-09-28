@@ -47,7 +47,7 @@ def main():
     DEST.mkdir(exist_ok=True)
     for code, slug, title, level in SHEETS:
         target = DEST / f'{code}_{slug}.html'
-        content = (HERE / f'{code}.html').read_text()
+        content = (HERE / f'{code}.html').read_text().replace('<meta name="robots" content="noindex">\n', '', 1)
         content += '<section id="exos"><h2>Exercices</h2><p>Réponds avec une fraction (ex. 3/10) ou un décimal exact (ex. 0,3). Aucun arrondi n’est demandé.</p>'
         for i in range(1, 4):
             content += exercise.replace('ex1', f'ex{i}').replace('Exercice 1', f'Exercice {i}').replace('Niveau 1', f'Niveau {i}').replace('placeholder="réponse"', f'aria-label="Réponse à l’exercice {i}" placeholder="fraction ou décimal exact"').replace('class="feedback"', 'class="feedback" role="status"')
