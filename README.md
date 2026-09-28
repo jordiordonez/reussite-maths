@@ -248,6 +248,27 @@ Les fiches restent autonomes ; aucun téléchargement supplémentaire n’est re
 pour la navigation. Les blocs `SITE:*` sont générés, le contenu pédagogique situé
 en dehors de ces blocs reste éditable normalement.
 
+### Fiches assemblées depuis `outils/chapitreN/`
+
+Neuf fiches sont assemblées à partir de sources : 8A à 8C (`outils/chapitre7`), 9A
+(`chapitre8`), 10A (`chapitre9`), 11A et 11B (`chapitre10`), 13A et 13B (`chapitre12`). Les noms
+de dossiers et de fichiers sources gardent l'ancienne numérotation ; chaque `build.py` écrit à
+l'adresse actuelle de la fiche et s'arrête si le dossier de destination manque, pour ne jamais
+écraser une page de redirection.
+
+Depuis le 28 septembre 2026, les sources et les fiches publiées concordent : reconstruire un
+chapitre puis lancer `build_site.py` redonne les fiches publiées octet pour octet. Pour garder
+cette propriété, **corriger dans la source puis reconstruire** :
+
+```bash
+python3 outils/chapitre12/build.py      # par exemple, pour 13A et 13B
+python3 outils/build_site.py
+python3 outils/chapitre12/test_math.py
+```
+
+Une correction faite seulement dans la fiche publiée serait perdue à la prochaine reconstruction.
+Les autres fiches n'ont pas de source : elles s'éditent directement.
+
 Pour la vérification dans un navigateur (Playwright doit être disponible) :
 
 ```bash

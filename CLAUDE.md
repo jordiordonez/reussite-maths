@@ -49,6 +49,10 @@ Règles techniques :
 - Les réponses et explications du QCM vivent dans un objet JS (`qcmMap[i] = {correct, expl}`), **jamais** dans des attributs `onclick` ou `data-` : cela évite les erreurs de parsing et les QCM figés.
 - Pas de dépendance autre que MathJax ; tout le CSS/JS est inline.
 
+## Fiches qui ont une source dans `outils/chapitreN/`
+
+8A-8C, 9A, 10A, 11A-11B et 13A-13B sont assemblées par les `build.py` d'`outils/chapitre7`, 8, 9, 10 et 12 (anciens numéros). Pour ces fiches, corriger la **source** puis reconstruire (`build.py`, puis `build_site.py`) ; ne jamais corriger seulement le HTML publié, sinon la correction disparaît à la reconstruction. Sources et fiches publiées concordent octet pour octet depuis le 28 septembre 2026 (voir le README, « Fiches assemblées depuis outils/chapitreN/ »).
+
 ## Vérification d'une fiche
 
 Il n'y a pas de build. Pour valider une fiche :
