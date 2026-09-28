@@ -389,9 +389,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   const {R,tex,rnd,pick,numQ,textQ,par,add,integral,poly}=T12;
   const polynomial=()=>{const degree=rnd(2,3),coeffs=[rnd(-4,4),rnd(-3,3),pick([-3,-2,-1,1,2,3])];if(degree===3)coeffs.push(pick([-2,-1,1,2]));let a=rnd(-3,0),b=rnd(1,4);if(Math.random()<.3)[a,b]=[b,a];return {coeffs,a,b};};
   const primitive=cs=>{
-    const terms=cs.map((c,i)=>{if(!c)return null;const a=R(Math.abs(c),i+1);return (c<0?'-':'+')+(a.n===a.d?'':tex(a))+'x'+(i?'^{'+(i+1)+'}':'');}).filter(Boolean);
+    const terms=cs.map((c,i)=>{if(!c)return null;const a=R(Math.abs(c),i+1);return (c<0?'-':'+')+(a.n===a.d?'':tex(a))+'x'+(i?'^{'+(i+1)+'}':'');}).filter(Boolean).reverse();
     terms[0]=terms[0].replace(/^\+/,'');
-    return '\\begin{aligned}F(x)&='+terms.join('\\\\&')+'.\\end{aligned}';
+    return 'F(x)='+terms.join('')+'.';
   };
   const generators=[
     ()=>{const d=polynomial(),answer=integral(d.coeffs,d.a,d.b),fa=integral(d.coeffs,0,d.a),fb=integral(d.coeffs,0,d.b);return {data:d,answer,enonce:`<p>Calculer exactement \\(I=\\int_{${d.a}}^{${d.b}}\\left(${poly(d.coeffs)}\\right)\\,dx.\\)</p>`,correction:`<ol><li>Une primitive est \\(${primitive(d.coeffs)}\\) Chaque terme se vérifie en dérivant.</li><li>On calcule \\(F(${d.b})=${tex(fb)}\\) et \\(F(${d.a})=${tex(fa)}.\\)</li><li>On soustrait dans l’ordre des bornes : \\(I=F(${d.b})-F(${d.a})=${tex(answer)}.\\)</li></ol><p>${d.a>d.b?'Les bornes sont inversées : l’intégrale est l’opposée de celle prise dans l’autre sens.':'Une intégrale signée peut être négative ; ce n’est pas nécessairement une aire géométrique.'}</p>`};},
