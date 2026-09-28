@@ -703,7 +703,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
   function exactAt(x, d) {
     if (!isFinite(x)) return false;
     var p = Math.pow(10, d);
-    return Math.abs(Math.round(x * p) / p - x) <= 1e-9 * Math.max(1, Math.abs(x));
+    // tolérance très inférieure au dernier rang affiché (10^-8 au plus fin) : seule l'erreur d'arrondi machine passe
+    return Math.abs(Math.round(x * p) / p - x) <= 1e-12 * Math.max(1, Math.abs(x));
   }
   function decTex(x, d) {
     var s = x.toFixed(d);
@@ -917,8 +918,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var info = 'Condition initiale ' + cond + ' : ';
     if (pt.x0 === 0 || a === 0) {
       info += 'on a \\(C\\,\\mathrm e^{0}=C\\), donc \\(C=' + nb(pt.y0) + '.\\)';
+    } else if (pt.y0 === 0) {
+      info += '\\(C\\,' + eIntTexReal(a * pt.x0) + '=0\\), et comme \\(' + eIntTexReal(a * pt.x0) + '\\neq0\\), \\(C=0.\\)';
     } else {
-      info += '\\(C\\,' + eIntTexReal(a * pt.x0) + '=' + nb(pt.y0) + '\\), donc \\(C=' + nb(pt.y0) + '\\,' + eIntTexReal(-a * pt.x0) + relDec(C0, 3, 8) + '.\\)';
+      info += '\\(C\\,' + eIntTexReal(a * pt.x0) + '=' + nb(pt.y0) + '\\), donc \\(C=' + (Math.abs(pt.y0) === 1 ? coefTex(pt.y0) : nb(pt.y0) + '\\,') + eIntTexReal(-a * pt.x0) + relDec(C0, 3, 8) + '.\\)';
     }
     info += ' Une seule valeur de \\(C\\) convient : <b>une seule courbe passe par M</b>.';
     $('aInfo').innerHTML = info;
@@ -1060,7 +1063,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var k = a === 0 ? null : -b / a;
     var solTex;
     if (a === 0) {
-      solTex = 'y(x)=' + nb(y0) + (b === 0 ? '' : (b > 0 ? '+' + coefTex(b) + 'x' : '-' + coefTex(-b) + 'x'));
+      solTex = 'y(x)=' + (y0 === 0
+        ? (b === 0 ? '0' : coefTex(b) + 'x')
+        : nb(y0) + (b === 0 ? '' : (b > 0 ? '+' + coefTex(b) + 'x' : '-' + coefTex(-b) + 'x')));
     } else if (y0Num * aNum + 4 * b === 0) {           // y0 = k : la solution est constante
       solTex = 'y(x)=' + fracTex(-2 * b, aNum);
     } else {
@@ -1075,7 +1080,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         ? 'Quand \\(a=0\\), la pente \\(y\'=' + nb(b) + '\\) est constante : la ligne brisée d\'Euler suit exactement la droite solution.'
         : 'Ici \\(y_0=k\\) : la solution est la constante \\(' + nb(y0) + '\\), et Euler la reproduit exactement (la pente calculée vaut \\(0\\) à chaque pas).');
     } else {
-      lines += '<b>Écart \\(' + relDec(err, 3, 8) + '.\\)</b> Divise le pas par \\(2\\) : l\'écart est divisé par environ \\(2\\) — la méthode d\'Euler est d\'ordre \\(1.\\)';
+      lines += '<b>Écart \\(' + relDec(err, 3, 8) + '.\\)</b> Quand le pas devient petit, l\'écart est à peu près proportionnel au pas : diviser le pas par \\(2\\) divise alors l\'écart par environ \\(2\\) — la méthode d\'Euler est d\'ordre \\(1.\\) Avec de grands pas, ce rapport peut être très différent.';
     }
     $('eInfo').innerHTML = lines;
     $('eAlgo').innerHTML = 'L\'algorithme : \\(x_{n+1}=x_n+h\\) et \\(y_{n+1}=y_n+h\\,(' + rhsTexNum(a, b) + ').\\) ' +

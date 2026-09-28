@@ -73,8 +73,8 @@ Ces mesures doivent rester compatibles avec le fonctionnement sans compte et hor
 | 1 | Terminer les chapitres | ✅ les quatorze sont faits, trente-six fiches |
 | 2 | Geler la navigation | ✅ `CONTRAT_NAVIGATION.md` |
 | 3 | Construire la page d'entrée | ✅ avec un exercice jouable immédiatement |
-| 4 | Relire indépendamment les fiches des chapitres 7 à 14 | ⬜ **prochaine étape** |
-| 5 | Lien vers une fiche précise, résumé imprimable | ⬜ |
+| 4 | Relire indépendamment les fiches des chapitres 7 à 14 | ✅ 28 septembre 2026, 78 anomalies corrigées (`revue/ETAT.md`) |
+| 5 | Lien vers une fiche précise, résumé imprimable | ⬜ **prochaine étape** |
 | 6 | Page pour enseignants et parents | ⬜ |
 | 7 | Diffuser auprès des enseignants, et écouter | ⬜ |
 

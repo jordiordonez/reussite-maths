@@ -430,7 +430,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <tr><th>\(\Delta\)</th><th>Signe de \(f(x)\)</th></tr>
         <tr><td class="lab">\(\Delta&lt;0\)</td><td>du signe de \(a\) pour <b>tout</b> réel \(x\) (la parenthèse est toujours \(&gt;0\))</td></tr>
         <tr><td class="lab">\(\Delta=0\)</td><td>du signe de \(a\), sauf en \(x_0\) où \(f(x_0)=0\)</td></tr>
-        <tr><td class="lab">\(\Delta&gt;0\)</td><td>du signe de \(a\) à l'extérieur de \([x_1\,;x_2]\), du signe de \(-a\) entre les racines</td></tr>
+        <tr><td class="lab">\(\Delta&gt;0\)</td><td>du signe de \(a\) à l'extérieur de l'intervalle d'extrémités \(x_1\) et \(x_2\), du signe de \(-a\) entre les racines</td></tr>
       </table>
     </div>
     <div class="key"><p><b>La phrase à retenir :</b> \(f(x)\) est <b>du signe de \(a\), sauf entre les racines</b> (et nul en les racines). S'il n'y a pas de racine, il n'y a pas d'exception : le signe de \(a\) partout.</p></div>
@@ -456,7 +456,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <div class="key"><p><b>Un même polynôme, trois questions.</b> Soit \(f(x)=-2x^{2}+12x-10.\)</p>
       <ul>
         <li>« Combien vaut \(f(0)\) ? » — forme développée : \(f(0)=-10.\)</li>
-        <li>« Où la courbe coupe-t-elle l'axe des abscisses ? » — forme factorisée. \(\Delta=144-4\times(-2)\times(-10)=144-80=64\), \(\sqrt{\Delta}=8\), donc \(x_1=\dfrac{-12+8}{-4}=1\) et \(x_2=\dfrac{-12-8}{-4}=5\), d'où \(f(x)=-2(x-1)(x-5).\)</li>
+        <li>« Où la courbe coupe-t-elle l'axe des abscisses ? » — forme factorisée. \(\Delta=144-4\times(-2)\times(-10)=144-80=64\), \(\sqrt{\Delta}=8\), donc \(x_1=\dfrac{-12-8}{-4}=5\) et \(x_2=\dfrac{-12+8}{-4}=1\), d'où \(f(x)=-2(x-1)(x-5).\)</li>
         <li>« Quel est le bénéfice maximal ? » — forme canonique. \(\alpha=-\dfrac{12}{-4}=3\), \(\beta=f(3)=-18+36-10=8\), donc \(f(x)=-2(x-3)^{2}+8\) : maximum \(8\) atteint en \(x=3.\)</li>
       </ul>
       <p>Contrôle de la forme factorisée : \(-2(x-1)(x-5)=-2(x^{2}-6x+5)=-2x^{2}+12x-10.\) Contrôle de la forme canonique : \(-2(x^{2}-6x+9)+8=-2x^{2}+12x-18+8=-2x^{2}+12x-10.\)</p></div>
@@ -981,7 +981,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var q2 = (q1 === p1) ? p2 : p1;
       return { exact: true, t1: fracTex(q1[0], q1[1]), t2: fracTex(q2[0], q2[1]), lo: lo, hi: hi };
     }
-    return { exact: false, t1: 'x_1', t2: 'x_2', lo: lo, hi: hi };
+    // Même convention que le cours et que l'onglet 1 : x_1 = (-b - sqrt(Delta)) / (2a),
+    // qui est la plus petite racine si a > 0 et la plus grande si a < 0.
+    return { exact: false, t1: a > 0 ? 'x_1' : 'x_2', t2: a > 0 ? 'x_2' : 'x_1', lo: lo, hi: hi };
   }
   function rootsTex(a, b, c) {
     var D = b * b - 4 * a * c;
@@ -1013,7 +1015,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       h += '<tr><th>\\(x\\)</th><th>\\(\\left]-\\infty\\,;' + rp.t1 + '\\right[\\)</th><th>\\(' + rp.t1 + '\\)</th><th>\\(\\left]' + rp.t1 + '\\,;' + rp.t2 + '\\right[\\)</th><th>\\(' + rp.t2 + '\\)</th><th>\\(\\left]' + rp.t2 + '\\,;+\\infty\\right[\\)</th></tr>'
         + '<tr><td class="lab">\\(f(x)\\)</td><td class="' + ca + '">\\(' + sa + '\\)</td><td class="zero">\\(0\\)</td><td class="' + co + '">\\(' + so + '\\)</td><td class="zero">\\(0\\)</td><td class="' + ca + '">\\(' + sa + '\\)</td></tr>';
       if (!rp.exact) {
-        h += '<tr><td class="lab" colspan="6" style="text-align:left;font-weight:400">\\(x_1' + irrTex(rp.lo, 3) + '\\) et \\(x_2' + irrTex(rp.hi, 3) + '\\)</td></tr>';
+        h += '<tr><td class="lab" colspan="6" style="text-align:left;font-weight:400">\\(' + rp.t1 + irrTex(rp.lo, 3) + '\\) et \\(' + rp.t2 + irrTex(rp.hi, 3) + '\\)</td></tr>';
       }
     }
     return h + '</table>';
@@ -1517,7 +1519,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
           '\\(f\\) admet un minimum égal à \\(' + be + '\\), atteint en \\(x=' + al + '\\)',
           '\\(f\\) admet un maximum égal à \\(' + al + '\\), atteint en \\(x=' + be + '\\)',
           '\\(f\\) admet un maximum égal à \\(' + be + '\\), atteint en \\(x=' + (-al) + '\\)'], 0,
-        'Le carré est positif ou nul et \\(a=' + a + '<0\\), donc \\(f(x)\\leqslant' + be + '\\), avec égalité quand \\(x-' + al + '=0\\), c\'est-à-dire \\(x=' + al + '.\\)');
+        'Le carré est positif ou nul et \\(a=' + a + '<0\\), donc \\(f(x)\\leqslant' + be + '\\), avec égalité quand \\(x' + signed(-al) + '=0\\), c\'est-à-dire \\(x=' + al + '.\\)');
     },
     // 15 — déterminer le polynôme à partir de ses racines
     function () {

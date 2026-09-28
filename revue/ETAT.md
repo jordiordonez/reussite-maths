@@ -49,3 +49,28 @@ Elles n'ont pas encore été relues par un relecteur indépendant, contrairement
 **Bilan au 13 septembre 2026 : 21 fiches relues indépendamment sur 36.** Les quinze restantes, celles des chapitres 7 à 14, ont été vérifiées par leur auteur selon le même protocole, avec des contrôles sérieux : balayages exhaustifs des exercices, recalcul indépendant des valeurs affichées, et jusqu'à 1,85 million de programmes Python réellement exécutés pour les fiches d'algorithmique. Chacune a trouvé entre quatre et dix-huit défauts avant livraison.
 
 Cela ne remplace pas une relecture indépendante. La relecture des vingt et une premières a corrigé 255 anomalies, dont des énoncés insolubles, des corrections fausses et des félicitations pour des réponses fausses, qu'aucun test automatique ne signalait et qu'un auteur ne voit pas dans son propre travail. C'est la prochaine étape de `FEUILLE_DE_ROUTE.md`.
+
+## Relecture indépendante des quinze fiches restantes et de 15A — 28 septembre 2026
+
+Chaque fiche a été relue par un relecteur indépendant selon `PROTOCOLE.md`, puis chaque correction a été soumise à un vérificateur distinct chargé de la réfuter. Aucune correction n'a été rejetée ; les vérificateurs ont trouvé et corrigé des anomalies supplémentaires. Le détail figure à la fin de chaque `revue/<CODE>.md`.
+
+| Fiche | Titre | Statut | Anomalies corrigées |
+|---|---|---|---|
+| 1A | Second degré (Première) | ✅ | 4 (relecture puis vérification contradictoire) |
+| 8A | Probabilités conditionnelles | ✅ | 6 (relecture puis vérification contradictoire) |
+| 8B | Variables aléatoires | ✅ | 2 (relecture puis vérification contradictoire) |
+| 8C | Épreuves indépendantes, Bernoulli | ✅ | 7 (relecture puis vérification contradictoire) |
+| 9A | Combinatoire et dénombrement | ✅ | 3 (relecture puis vérification contradictoire) |
+| 10A | Loi binomiale | ✅ | 3 (relecture puis vérification contradictoire) |
+| 11A | Cercle trigonométrique | ✅ | 1 (relecture puis vérification contradictoire) |
+| 11B | Dérivation et trigonométrie | ✅ | 5 (relecture puis vérification contradictoire) |
+| 12A | Primitives | ✅ | 9 (relecture puis vérification contradictoire) |
+| 12B | Équations différentielles | ✅ | 4 (relecture puis vérification contradictoire) |
+| 13A | Intégrales et aires | ✅ | 7 (relecture puis vérification contradictoire) |
+| 13B | Méthodes d’intégration | ✅ | 4 (relecture puis vérification contradictoire) |
+| 14A | Sommes de variables aléatoires | ✅ | 4 (relecture puis vérification contradictoire) |
+| 14B | Concentration, loi des grands nombres | ✅ | 5 (relecture puis vérification contradictoire) |
+| 15A | Listes et Python | ✅ | 4 (relecture puis vérification contradictoire) |
+| 15B | Algorithmes du programme | ✅ | 10 (relecture puis vérification contradictoire) |
+
+**Bilan au 28 septembre 2026 : les 37 fiches sont relues indépendamment.** Cette passe a corrigé 78 anomalies, sans en rejeter aucune.

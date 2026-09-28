@@ -345,7 +345,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <div class="key">
       <p><strong>Théorème (admis ici).</strong> Toute fonction <strong>continue</strong> sur un intervalle \(I\) admet des primitives sur \(I.\)</p>
     </div>
-    <p>Ce résultat n'est pas démontré dans ce chapitre : il le sera dans le chapitre du <strong>calcul intégral</strong>, où l'intégrale fournit justement une primitive explicite. Ici, on l'admet et on s'en sert.</p>
+    <p>Ce résultat n'est pas démontré dans ce chapitre : il le sera dans le chapitre du <strong>calcul intégral</strong>, où l'on construit une primitive à l'aide de l'intégrale (sans pour autant obtenir une formule avec les fonctions usuelles, voir ci-dessous). Ici, on l'admet et on s'en sert.</p>
     <div class="warn">
       <p><strong>Attention à ne pas surinterpréter.</strong> « Admettre des primitives » ne veut pas dire « savoir les écrire ». Pour certaines fonctions, <strong>on ne dispose pas de primitive explicite</strong> : aucune expression formée avec les fonctions usuelles (polynômes, quotients, racines, exponentielle, logarithme, sinus, cosinus) ne convient.</p>
       <p>L'exemple le plus célèbre est \(f(x) = \mathrm e^{-x^{2}}.\) Elle est continue sur \(\mathbb{R},\) donc elle <em>a</em> des primitives — mais aucune ne s'écrit avec les fonctions du lycée. Même chose pour \(x \mapsto \dfrac{\sin x}{x}\) sur \(\left]0\,;+\infty\right[.\)</p>
@@ -379,7 +379,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   <div class="card blue">
     <h3>5. Le tableau des primitives de référence</h3>
-    <p>Il s'obtient en lisant <strong>à l'envers</strong> le tableau des dérivées de la fiche 4B. Rien de nouveau à apprendre : c'est la même table, parcourue de droite à gauche.</p>
+    <p>Il s'obtient en lisant <strong>à l'envers</strong> le tableau des dérivées de référence : fiche 4B pour les puissances et la racine carrée, 6A pour l'exponentielle, 6C pour le logarithme, 11B pour sinus et cosinus. Rien de nouveau à apprendre : ce sont les mêmes formules, parcourues de droite à gauche.</p>
     <div class="tablewrap">
       <table>
         <tr><th>\(f(x)\)</th><th>une primitive \(F(x)\)</th><th>sur</th></tr>
@@ -393,10 +393,10 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         <tr><td>\(\mathrm e^{x}\)</td><td>\(\mathrm e^{x}\)</td><td>\(\mathbb{R}\)</td></tr>
         <tr><td>\(\cos x\)</td><td>\(\sin x\)</td><td>\(\mathbb{R}\)</td></tr>
         <tr><td>\(\sin x\)</td><td>\(-\cos x\)</td><td>\(\mathbb{R}\)</td></tr>
-        <tr><td>\(\dfrac{1}{2\sqrt{x}}\) <em>(complément)</em></td><td>\(\sqrt{x}\)</td><td>\(\left]0\,;+\infty\right[\)</td></tr>
+        <tr><td>\(\dfrac{1}{\sqrt{x}}\)</td><td>\(2\sqrt{x}\)</td><td>\(\left]0\,;+\infty\right[\)</td></tr>
       </table>
     </div>
-    <p class="legende">La dernière ligne n'est pas dans la liste officielle des fonctions de référence : elle vient de la lecture inverse de \(\left(\sqrt{x}\right)' = \dfrac{1}{2\sqrt{x}},\) et sert au cas composé du point 6.</p>
+    <p class="legende">La dernière ligne fait partie de la liste officielle des fonctions de référence. Elle vient de la lecture inverse de \(\left(\sqrt{x}\right)' = \dfrac{1}{2\sqrt{x}}\) : une primitive de \(\dfrac{1}{2\sqrt{x}}\) est \(\sqrt{x},\) donc une primitive de \(\dfrac{1}{\sqrt{x}} = 2 \times \dfrac{1}{2\sqrt{x}}\) est \(2\sqrt{x}.\) Elle sert aussi au cas composé du point 6.</p>
     <div class="ok">
       <p>Trois lectures à faire soi-même, pour vérifier que la table dit vrai.</p>
       <ul>
@@ -481,7 +481,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p>Ne jamais se lancer dans un calcul sans avoir classé l'expression. L'arbre ci-dessous se parcourt de haut en bas, on s'arrête à la première réponse « oui ».</p>
     <div class="tree">
       <div class="lvl"><b>1. Est-ce une somme de plusieurs termes ?</b><br>Oui → on traite <strong>chaque terme séparément</strong> (la recherche de primitives est linéaire), puis on additionne, et on met un seul \(+\,k\) à la fin.</div>
-      <div class="lvl"><b>2. Le terme est-il dans le tableau de référence ?</b><br>\(x^{n},\) \(\dfrac1x,\) \(\mathrm e^{x},\) \(\cos x,\) \(\sin x\) → on lit la ligne, on note l'intervalle si la fonction n'est pas définie en \(0.\)</div>
+      <div class="lvl"><b>2. Le terme est-il dans le tableau de référence ?</b><br>\(x^{n},\) \(\dfrac1x,\) \(\dfrac{1}{\sqrt{x}},\) \(\mathrm e^{x},\) \(\cos x,\) \(\sin x\) → on lit la ligne, on note l'intervalle si la fonction n'est pas définie en \(0.\)</div>
       <div class="lvl"><b>3. Sinon, y a-t-il une fonction « intérieure » \(u\) ?</b><br>Une parenthèse élevée à une puissance, un dénominateur, un exposant, un contenu de racine : c'est \(u.\) On calcule \(u'\) et on cherche \(u'\) dans l'expression.
         <div class="lvl">\(u'u^{n}\) → \(\dfrac{u^{n+1}}{n+1}\)</div>
         <div class="lvl">\(\dfrac{u'}{u}\) → \(\ln u\) (sur un intervalle où \(u &gt; 0\))</div>
@@ -499,8 +499,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <p>C'est le seul réflexe à installer : on ne mémorise pas un nouveau tableau, on relit l'ancien de droite à gauche.</p>
     <div class="tablewrap">
       <table>
-        <tr><th>Ce que dit la fiche 4B</th><th>Ce qu'on en déduit ici</th></tr>
-        <tr><td>\(\left(x^{n+1}\right)' = (n+1)x^{n}\)</td><td>une primitive de \(x^{n}\) est \(\dfrac{x^{n+1}}{n+1}\)</td></tr>
+        <tr><th>Ce que disent les fiches de dérivation</th><th>Ce qu'on en déduit ici</th></tr>
+        <tr><td>\(\left(x^{n+1}\right)' = (n+1)x^{n}\)</td><td>une primitive de \(x^{n}\) est \(\dfrac{x^{n+1}}{n+1}\) (pour \(n \neq -1\) ; le cas \(n = -1\) est la ligne suivante)</td></tr>
         <tr><td>\(\left(\ln x\right)' = \dfrac1x\)</td><td>une primitive de \(\dfrac1x\) est \(\ln x\) sur \(\left]0\,;+\infty\right[\)</td></tr>
         <tr><td>\(\left(\mathrm e^{x}\right)' = \mathrm e^{x}\)</td><td>une primitive de \(\mathrm e^{x}\) est \(\mathrm e^{x}\)</td></tr>
         <tr><td>\(\left(\sin x\right)' = \cos x\)</td><td>une primitive de \(\cos x\) est \(\sin x\)</td></tr>
@@ -933,8 +933,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var fTex = polyFrac([[2 * a, 2, 2], [2 * b, 2, 1], [2 * c, 2, 0]]);
     var FTex = polyFrac([[2 * a, 6, 3], [2 * b, 4, 2], [2 * c, 2, 1]]);
-    $('aExpr').innerHTML = '\\(f(x) = ' + fTex + '\\) et \\(F(x) = ' + FTex +
-      (FTex === '0' ? 'k' : ' + k') + ',\\ k \\in \\mathbb{R}.\\)';
+    $('aExpr').innerHTML = '\\(f(x) = ' + fTex + '\\) et \\(F(x) = ' +
+      (FTex === '0' ? '' : FTex + ' + ') + 'k' + ',\\ k \\in \\mathbb{R}.\\)';
     $('aRead').innerHTML =
       'En \\(x_0 ' + valTex(x0) + '\\) : \\(f(x_0) ' + valTex(fx0) + '.\\) ' +
       'La primitive bleue (celle où \\(k ' + valTex(K) + '\\)) y vaut \\(F(x_0) ' + valTex(y0) + ',\\) ' +
@@ -982,12 +982,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     var fTex = polyFrac([[2 * a, 2, 1], [2 * b, 2, 0]]);
     var GTex = polyFrac([[2 * a, 4, 2], [2 * b, 2, 1]]);
-    $('bExpr').innerHTML = '\\(f(x) = ' + fTex + '\\) et \\(F(x) = ' + GTex +
-      (GTex === '0' ? 'k' : ' + k') + ',\\ k \\in \\mathbb{R}.\\)';
+    $('bExpr').innerHTML = '\\(f(x) = ' + fTex + '\\) et \\(F(x) = ' +
+      (GTex === '0' ? '' : GTex + ' + ') + 'k' + ',\\ k \\in \\mathbb{R}.\\)';
     $('bRead').innerHTML =
       'Condition imposée : \\(F(x_0) = y_0\\) avec \\(x_0 ' + valTex(x0) + '\\) et \\(y_0 ' + valTex(y0) + '.\\) ' +
       'Ici \\(G(x_0) ' + valTex(G(x0)) + ',\\) donc \\(k = y_0 - G(x_0) ' + valTex(k) + '.\\) ' +
-      'Une seule des courbes grises passe par le point corail : c\'est la bleue, et il n\'y en a pas d\'autre.';
+      'Parmi toutes les primitives, une seule passe par le point corail : c\'est la bleue. Les courbes grises, décalées verticalement, le manquent toutes.';
     typeset($('bExpr')); typeset($('bRead'));
   }
 
@@ -1078,7 +1078,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       correction: '<p><b>Étape 1.</b> La recherche de primitives est linéaire : on traite chaque terme séparément.</p>' +
         '<ul>' + lignes + '</ul>' +
         '<p><b>Étape 2.</b> On additionne et on ajoute la constante :</p>' +
-        '<p>\\[F(x) = ' + FTex + (FTex === '0' ? 'k' : ' + k') + ',\\quad k \\in \\mathbb{R}.\\]</p>' +
+        '<p>\\[F(x) = ' + (FTex === '0' ? '' : FTex + ' + ') + 'k' + ',\\quad k \\in \\mathbb{R}.\\]</p>' +
         '<p>Donc \\(\\alpha = ' + numTex(A4) + ',\\ \\beta = ' + numTex(A3) + ',\\ \\gamma = ' + numTex(A2) +
         ',\\ \\delta = ' + numTex(A1) + '.\\)</p>' +
         '<p><b>Étape 3 — le contrôle.</b> On dérive la réponse : \\(F\'(x) = ' + verif + ',\\) ' +
@@ -1144,8 +1144,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         ',\\) donc \\(u\'(x) = ' + numTex(a) + '.\\)</p>' +
         '<p><b>Étape 2 — la forme du tableau.</b> Une primitive de \\(u\'\\,\\mathrm e^{u}\\) est \\(\\mathrm e^{u}.\\)</p>' +
         '<p><b>Étape 3 — faire apparaître \\(u\'.\\)</b></p>' +
-        '<p>\\[f(x) = ' + fTex + ' = ' + numTex(lam) + ' \\times \\left[' + numTex(a) + base + '\\right] = ' +
-        numTex(lam) + '\\,u\'(x)\\,\\mathrm e^{u(x)}.\\]</p>' +
+        '<p>\\[f(x) = ' + fTex + ' = ' + (lam === 1 ? '' : numTex(lam) + ' \\times \\left[' + numTex(a) + base + '\\right] = ') +
+        coefTex(lam) + 'u\'(x)\\,\\mathrm e^{u(x)}.\\]</p>' +
         '<p><b>Étape 4 — conclure.</b> \\(F(x) = ' + coefTex(lam) + base + ' + k,\\) donc \\(\\lambda = ' + numTex(lam) + '.\\)</p>' +
         '<p><b>Étape 5 — le contrôle.</b> \\(F\'(x) = ' + numTex(lam) + ' \\times ' + parTex(a) + base + ' = ' +
         fTex + ',\\) c\'est bien \\(f(x).\\)</p>';
@@ -1160,10 +1160,12 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         '<p><b>Étape 1 — repérer \\(u.\\)</b> C\'est l\'exposant : \\(u(x) = ' + uTex +
         ',\\) donc \\(u\'(x) = ' + numTex(2 * a) + 'x.\\)</p>' +
         '<p><b>Étape 2 — la forme du tableau.</b> Une primitive de \\(u\'\\,\\mathrm e^{u}\\) est \\(\\mathrm e^{u}.\\)</p>' +
-        '<p><b>Étape 3 — faire apparaître \\(u\'.\\)</b> Devant l\'exponentielle il y a \\(' + numTex(m) +
-        'x,\\) alors qu\'il faudrait \\(' + numTex(2 * a) + 'x\\) : on multiplie et on divise par la constante qui manque.</p>' +
-        '<p>\\[f(x) = ' + fTex + ' = ' + numTex(lam) + ' \\times \\left[' + numTex(2 * a) + 'x\\,' + base + '\\right] = ' +
-        numTex(lam) + '\\,u\'(x)\\,\\mathrm e^{u(x)}.\\]</p>' +
+        '<p><b>Étape 3 — faire apparaître \\(u\'.\\)</b> ' + (lam === 1
+          ? 'Devant l\'exponentielle il y a exactement \\(u\'(x) = ' + numTex(2 * a) + 'x\\) : aucune constante ne manque.</p>'
+          : 'Devant l\'exponentielle il y a \\(' + numTex(m) +
+            'x,\\) alors qu\'il faudrait \\(' + numTex(2 * a) + 'x\\) : on multiplie et on divise par la constante qui manque.</p>') +
+        '<p>\\[f(x) = ' + fTex + ' = ' + (lam === 1 ? '' : numTex(lam) + ' \\times \\left[' + numTex(2 * a) + 'x\\,' + base + '\\right] = ') +
+        coefTex(lam) + 'u\'(x)\\,\\mathrm e^{u(x)}.\\]</p>' +
         '<p><b>Étape 4 — conclure.</b> \\(F(x) = ' + coefTex(lam) + base + ' + k,\\) donc \\(\\lambda = ' + numTex(lam) + '.\\)</p>' +
         '<p><b>Étape 5 — le contrôle.</b> \\(F\'(x) = ' + numTex(lam) + ' \\times ' + parTex(2 * a) + 'x\\,' + base +
         ' = ' + fTex + ',\\) c\'est bien \\(f(x).\\)</p>';
@@ -1307,8 +1309,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     return {
       t: t, x0: x0, y0: y0, gv: gv, k: k,
       enonce: '<p>Soit \\(f(x) = ' + fTex + '\\) définie sur \\(I = ' + I + '.\\)</p>' +
-        '<p>Les primitives de \\(f\\) sur \\(I\\) sont les fonctions \\(F(x) = ' + GTex +
-        (GTex === '0' ? 'k' : ' + k') + ',\\) avec \\(k \\in \\mathbb{R}.\\)</p>' +
+        '<p>Les primitives de \\(f\\) sur \\(I\\) sont les fonctions \\(F(x) = ' +
+        (GTex === '0' ? '' : GTex + ' + ') + 'k' + ',\\) avec \\(k \\in \\mathbb{R}.\\)</p>' +
         '<p>Détermine la valeur de \\(k\\) pour laquelle \\(F(' + numTex(x0) + ') = ' + numTex(y0) + '.\\)</p>',
       correction: '<p><b>Étape 1 — la forme générale.</b> Une primitive de \\(f\\) sur \\(I\\) est \\(G(x) = ' + GTex +
         ',\\) et toutes les primitives s\'écrivent \\(F(x) = G(x) + k.\\) ' + extra + '</p>' +
@@ -1355,7 +1357,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       return build('Une primitive de \\(f(x) = x^{' + n + '}\\) sur \\(\\mathbb{R}\\) est :',
         ['\\(\\dfrac{x^{' + (n + 1) + '}}{' + (n + 1) + '}\\)', '\\(' + n + 'x^{' + (n - 1) + '}\\)',
          '\\(x^{' + (n + 1) + '}\\)', '\\(\\dfrac{x^{' + (n + 1) + '}}{' + n + '}\\)'], 0,
-        'On monte l\'exposant à \\(' + (n + 1) + '\\) puis on divise par \\(' + (n + 1) + '.\\) La deuxième option est la dérivée, pas une primitive.');
+        'On monte l\'exposant à \\(' + (n + 1) + '\\) puis on divise par \\(' + (n + 1) + '.\\) Quant à \\(' + n + 'x^{' + (n - 1) + '},\\) c\'est la dérivée de \\(x^{' + n + '},\\) pas une primitive.');
     },
     function () { // 2
       return build('\\(F\\) est une primitive de \\(f\\) sur un intervalle \\(I.\\) L\'ensemble des primitives de \\(f\\) sur \\(I\\) est :',
@@ -1366,7 +1368,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     function () { // 3
       return build('Une primitive de \\(f(x) = \\dfrac{1}{x}\\) sur \\(\\left]0\\,;+\\infty\\right[\\) est :',
         ['\\(\\ln x\\)', '\\(-\\dfrac{1}{x^{2}}\\)', '\\(\\dfrac{1}{2x^{2}}\\)', '\\(\\dfrac{x^{2}}{2}\\)'], 0,
-        'C\'est la lecture inverse de \\(\\left(\\ln x\\right)\' = \\dfrac1x.\\) La deuxième option est la dérivée de \\(\\dfrac1x.\\)');
+        'C\'est la lecture inverse de \\(\\left(\\ln x\\right)\' = \\dfrac1x.\\) Quant à \\(-\\dfrac{1}{x^{2}},\\) c\'est la dérivée de \\(\\dfrac1x.\\)');
     },
     function () { // 4
       return build('\\(F(x) = -\\dfrac{1}{x}\\) est une primitive de \\(f(x) = \\dfrac{1}{x^{2}}.\\) Sur lequel de ces ensembles cette phrase a-t-elle un sens ?',
@@ -1431,7 +1433,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       return build('La fonction \\(x \\mapsto \\mathrm e^{-x^{2}}\\) sur \\(\\mathbb{R}\\) :',
         ['admet des primitives, mais aucune ne s\'exprime avec les fonctions usuelles', 'n\'admet aucune primitive',
          'a pour primitive \\(-2x\\,\\mathrm e^{-x^{2}}\\)', 'a pour primitive \\(\\mathrm e^{-x^{2}}\\)'], 0,
-        'Elle est continue sur \\(\\mathbb{R},\\) donc elle a des primitives ; mais on ne dispose pas de primitive explicite. La troisième option est sa dérivée.');
+        'Elle est continue sur \\(\\mathbb{R},\\) donc elle a des primitives ; mais on ne dispose pas de primitive explicite. Quant à \\(-2x\\,\\mathrm e^{-x^{2}},\\) c\'est sa dérivée.');
     },
     function () { // 15
       return build('Une primitive de \\(f(x) = \\dfrac{2x}{x^{2}+1}\\) sur \\(\\mathbb{R}\\) est :',

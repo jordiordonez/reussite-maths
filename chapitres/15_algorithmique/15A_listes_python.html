@@ -381,7 +381,7 @@ else:
   <div class="card blue">
     <h3><span class="num">3</span>Boucle bornée, boucle non bornée</h3>
     <p>Une <strong>boucle bornée</strong> (<code class="inl">for</code>) répète un bloc un nombre de fois <strong>connu à l'avance</strong>. Une <strong>boucle non bornée</strong> (<code class="inl">while</code>) le répète <strong>tant qu'une condition reste vraie</strong>, sans savoir combien de fois.</p>
-    <p><strong>Boucle bornée.</strong> <code class="inl">range(1, 6)</code> engendre les entiers \(1,2,3,4,5\) : le premier est inclus, le dernier est <strong>exclu</strong>. Donc <code class="inl">range(a, b)</code> parcourt \(b-a\) valeurs.</p>
+    <p><strong>Boucle bornée.</strong> <code class="inl">range(1, 6)</code> engendre les entiers \(1,2,3,4,5\) : le premier est inclus, le dernier est <strong>exclu</strong>. Donc <code class="inl">range(a, b)</code> parcourt \(b-a\) valeurs lorsque \(a\leqslant b\) (et aucune si \(b&lt;a\)).</p>
 <pre class="code">s = 0
 for k in range(1, 6):
     s = s + k
@@ -468,7 +468,7 @@ print(D)</pre>
   <div class="card green">
     <h3><span class="num">6</span>Éléments et indices : on compte à partir de zéro</h3>
     <p>Chaque élément d'une liste est repéré par son <strong>indice</strong> (sa position). Le premier élément porte l'indice \(0.\)</p>
-    <div class="box"><p>Si <code class="inl">L</code> contient \(n\) éléments, alors <code class="inl">len(L)</code> vaut \(n\) et les indices valides sont \(0,\,1,\,\dots,\,n-1.\) <strong>Le dernier indice est \(n-1\), pas \(n.\)</strong></p></div>
+    <div class="box"><p>Si <code class="inl">L</code> contient \(n\) éléments, alors <code class="inl">len(L)</code> vaut \(n\) et, en comptant depuis le début, les indices valides sont \(0,\,1,\,\dots,\,n-1.\) <strong>Le dernier indice est \(n-1\), pas \(n.\)</strong> (Python accepte aussi les indices négatifs \(-1,\,\dots,\,-n\), comptés depuis la fin : voir <code class="inl">L[-1]</code> ci-dessous.)</p></div>
 <pre class="code">L = [4, 9, 2, 7, 5]
 print(len(L))
 print(L[0], L[2], L[4])
@@ -671,7 +671,7 @@ for i in range(len(L) + 1):
 7
 5
 IndexError: list index out of range</div>
-    <p>Les cinq éléments sont bien affichés, puis \(i\) vaut \(5\) et <code class="inl">L[5]</code> n'existe pas. La correction tient en un caractère : écrire <code class="inl">range(len(L))</code>.</p>
+    <p>Les cinq éléments sont bien affichés, puis \(i\) vaut \(5\) et <code class="inl">L[5]</code> n'existe pas. La correction consiste à retirer le <code class="inl">+ 1</code> : écrire <code class="inl">range(len(L))</code>.</p>
   </div>
 
   <div class="card coral">
@@ -1291,7 +1291,7 @@ print(r)</pre>
       res: res,
       enonce: '<p><strong>Quel est le contenu de la liste <code class="inl">C</code> ?</strong> Écris les éléments séparés par des virgules, ' +
         'dans l’ordre où ils apparaissent.</p><pre class="code">' + esc(code) + '</pre>',
-      correction: '<p>La compréhension se lit de droite à gauche : on parcourt <code class="inl">L</code>, on garde ' + condTxt +
+      correction: '<p>La compréhension ne s’exécute pas dans l’ordre où elle s’écrit : on parcourt <code class="inl">L</code>, on garde ' + condTxt +
         ', puis on calcule ' + ex.txt + '.</p>' +
         '<div class="tablewrap"><table><tr><th>indice</th><th>x</th><th>test <code class="inl">' + esc(condPy) + '</code></th><th><code class="inl">' + esc(ex.py) + '</code></th></tr>' +
         lignes + '</table></div>' +
@@ -1428,7 +1428,7 @@ print(r)</pre>
       var n = rnd(5, 12);
       var o = [String(n - 1), String(n), String(n + 1), '0'];
       return build('Une liste ' + C('L') + ' contient \\(' + n + '\\) éléments. Quel est l’indice de son <strong>dernier</strong> élément ?', o, 0,
-        'Les indices valides vont de \\(0\\) à \\(n-1\\), donc de \\(0\\) à \\(' + (n - 1) + '\\) ici.');
+        'Comptés depuis le début, les indices vont de \\(0\\) à \\(n-1\\), donc de \\(0\\) à \\(' + (n - 1) + '\\) ici.');
     },
     // 3 — longueur
     function () {

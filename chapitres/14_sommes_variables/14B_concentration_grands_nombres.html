@@ -387,7 +387,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     \[P\bigl(|M_n-\mu|\geqslant\delta\bigr)\leqslant\dfrac{V(M_n)}{\delta^{2}}=\dfrac{V/n}{\delta^{2}}=\dfrac{V}{n\delta^{2}}.\]
     <p><strong>Exemple.</strong> Soit \(X\) de variance \(V=4\), et \(M_{100}\) la moyenne d'un échantillon de taille \(100.\) Alors \(V(M_{100})=\dfrac4{100}=0{,}04\), et avec \(\delta=0{,}5\) :</p>
     \[P\bigl(|M_{100}-\mu|\geqslant0{,}5\bigr)\leqslant\dfrac{4}{100\times0{,}5^{2}}=\dfrac{4}{25}=0{,}16.\]
-    <div class="warn"><strong>L'erreur qui coûte le plus cher.</strong> Au numérateur, c'est \(V=V(X)\), la variance de <strong>une</strong> variable de l'échantillon, pas celle de \(M_n.\) Le \(n\) du dénominateur est exactement là pour traduire le passage de \(V\) à \(\dfrac Vn.\) Écrire \(\dfrac{V(M_n)}{n\delta^{2}}\), c'est diviser deux fois par \(n.\)</div>
+    <div class="warn"><strong>L'erreur qui coûte le plus cher.</strong> Au numérateur, c'est \(V=V(X)\), la variance d'<strong>une seule</strong> variable de l'échantillon, pas celle de \(M_n.\) Le \(n\) du dénominateur est exactement là pour traduire le passage de \(V\) à \(\dfrac Vn.\) Écrire \(\dfrac{V(M_n)}{n\delta^{2}}\), c'est diviser deux fois par \(n.\)</div>
   </div>
 
   <div class="card green">
@@ -539,7 +539,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
     <!-- Onglet 3 : marche aléatoire -->
     <div id="panelM" hidden>
-      <p>Exemple d'algorithme cité par le programme. À chaque pas, on avance de \(+1\) ou de \(-1\) avec la probabilité \(\dfrac12.\) La position \(S_j\) après \(j\) pas est une somme de \(j\) variables indépendantes : \(E(S_j)=0\) et \(\sigma(S_j)=\sqrt j.\) Les courbes en pointillés sont \(\pm\sqrt j\) et \(\pm2\sqrt j\) : la marche y reste presque toujours confinée, comme l'annonce Bienaymé-Tchebychev.</p>
+      <p>Exemple d'algorithme cité par le programme. À chaque pas, on avance de \(+1\) ou de \(-1\) avec la probabilité \(\dfrac12.\) La position \(S_j\) après \(j\) pas est une somme de \(j\) variables indépendantes : \(E(S_j)=0\) et \(\sigma(S_j)=\sqrt j.\) Les courbes en pointillés sont \(\pm\sqrt j\) et \(\pm2\sqrt j.\) Dépasser \(\pm\sqrt j\), c'est-à-dire un écart type, est <strong>normal</strong> : cela arrive souvent. Dépasser \(\pm2\sqrt j\) est beaucoup plus rare : pour chaque \(j\), Bienaymé-Tchebychev garantit \(P\bigl(|S_j|\geqslant2\sqrt j\bigr)\leqslant\dfrac14.\)</p>
       <div class="slider"><label for="nM">pas</label><input type="range" id="nM" min="0" max="8" step="1" value="3"><output id="nMOut">200</output></div>
       <div class="row"><button type="button" id="newWalk" class="secondary">Relancer la marche</button></div>
       <svg id="figM" class="figure" viewBox="0 0 440 300" role="img" aria-label="Trajectoire d une marche aléatoire et enveloppes en racine de j"></svg>
@@ -1397,7 +1397,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var ip = rnd(120, 900), fp = rnd(1, 9);
       var q = ip + '{,}' + fp;
       return build('Le calcul donne \\(n\\geqslant' + q + '.\\) Quelle est la plus petite taille d\'échantillon qui convient ?',
-        [String(ip + 1), String(ip), q, String(ip + 10)], 0,
+        ['\\(' + (ip + 1) + '\\)', '\\(' + ip + '\\)', '\\(' + q + '\\)', '\\(' + (ip + 10) + '\\)'], 0,
         'La condition est \\(n\\geqslant' + q + '\\) : l\'entier \\(' + ip + '\\) ne la vérifie pas, \\(' + (ip + 1) + '\\) la vérifie. On arrondit toujours à l\'entier <b>supérieur</b>.');
     },
     // 11 — calcul complet d'une taille d'échantillon
@@ -1412,7 +1412,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
       var opts = [String(n0), String(n0 - 1), String(sans), String(10 * n0)];
       if (new Set(opts).size < 4) { opts[3] = String(n0 + 7); }
       if (new Set(opts).size < 4) { opts[1] = String(n0 + 3); }
-      return build('Avec \\(V=' + vTex + '\\), une précision \\(\\delta=' + dTex + '\\) et un risque \\(\\alpha=' + aTex + '\\), quelle taille d\'échantillon l\'inégalité de concentration garantit-elle ?',
+      return build('Avec \\(V=' + vTex + '\\), une précision \\(\\delta=' + dTex + '\\) et un risque \\(\\alpha=' + aTex + '\\), quelle est la <b>plus petite</b> taille d\'échantillon dont l\'inégalité de concentration garantit qu\'elle convient ?',
         opts, 0,
         'Il suffit que \\(n\\geqslant\\dfrac{V}{\\alpha\\delta^{2}}=' + fracDecTex(num, den, 2, 4) + '\\), donc \\(n=' + n0 + '.\\)');
     },

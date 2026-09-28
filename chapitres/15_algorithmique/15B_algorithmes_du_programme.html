@@ -308,7 +308,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <header>
   <h1>15B — Les algorithmes du programme</h1>
   <div class="sub">Terminale · Mathématiques</div>
-  <p class="lead">Sept algorithmes cités nommément par le programme officiel : <strong>seuil</strong>, <strong>dichotomie</strong>, <strong>Newton</strong>, <strong>Euler</strong>, <strong>rectangles</strong>, <strong>simulation</strong> et <strong>marche aléatoire</strong>, et la comparaison avec <strong>Bienaymé-Tchebychev</strong>. Chacun est relié au chapitre où il sert.</p>
+  <p class="lead">Sept algorithmes cités nommément par le programme officiel : <strong>seuil</strong>, <strong>dichotomie</strong>, <strong>Newton</strong>, <strong>Euler</strong>, <strong>rectangles</strong>, <strong>simulation</strong> d'un échantillon ou d'une <strong>marche aléatoire</strong>, et la comparaison avec <strong>Bienaymé-Tchebychev</strong>. Chacun est relié au chapitre où il sert.</p>
 </header>
 
 <div class="navbar">
@@ -330,7 +330,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 <!-- ============================ COURS ============================ -->
 <section id="cours">
   <h2><span>1.</span> Cours</h2>
-  <p>Le chapitre d'algorithmique <strong>n'introduit aucune notion nouvelle</strong> : les variables, les boucles, les conditions, les fonctions et les listes sont ceux de la fiche <a href="15A_listes_python.html">14A</a>. Ce qui change, c'est l'<strong>usage</strong> : le programme officiel cite, chapitre par chapitre, des algorithmes à savoir mettre en œuvre. Les voici tous, groupés par domaine, avec le programme Python qui les réalise, ce qu'ils calculent, et le renvoi vers la fiche du chapitre concerné.</p>
+  <p>Le chapitre d'algorithmique <strong>n'introduit aucune notion nouvelle</strong> : les variables, les boucles, les conditions, les fonctions et les listes sont ceux de la fiche <a href="15A_listes_python.html">15A</a>. Ce qui change, c'est l'<strong>usage</strong> : le programme officiel cite, chapitre par chapitre, des algorithmes à savoir mettre en œuvre. Les voici tous, groupés par domaine, avec le programme Python qui les réalise, ce qu'ils calculent, et le renvoi vers la fiche du chapitre concerné.</p>
 
   <div class="card amber">
     <h3>Les sept algorithmes en un coup d'œil</h3>
@@ -372,7 +372,7 @@ print(seuil(1, 2, 1000))</pre>
     <p>Contrôle à la main : \(2^9=512&lt;1000\) et \(2^{10}=1024\geqslant1000\), donc le premier rang qui atteint \(1000\) est bien \(10.\)</p>
     <div class="key"><strong>Ce que renvoie exactement la fonction.</strong> À la sortie de la boucle, \(n\) est le <strong>nombre de tours effectués</strong>, et c'est aussi le <strong>premier rang</strong> tel que \(u_n\geqslant S\), parce que \(u\) contient \(u_n\) après \(n\) tours. Les deux coïncident ici ; ce n'est plus vrai si la suite ne part pas de \(u_0.\)</div>
     <div class="warn"><strong>Le piège.</strong> Si la suite ne tend pas vers \(+\infty\), la condition peut ne jamais devenir fausse et le programme tourne indéfiniment. Avec \(q=1\), la suite est constante : la boucle ne s'arrête jamais. Voir la méthode B.</div>
-    <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../03_suites/3B_suites_arithmetiques_geometriques.html">3B — Suites arithmétiques et géométriques</a> (le seuil d'une suite géométrique) et fiche <a href="../03_suites/3C_recurrence_limites.html">3C — Récurrence et limites de suites</a> (le seuil traduit la définition de \(\lim u_n=+\infty\)). La résolution exacte de \(q^n\geqslant S\) se fait ensuite au logarithme : fiche <a href="../06_exponentielle_logarithme/6C_logarithme_neperien.html">5C</a>.</div>
+    <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../03_suites/3B_suites_arithmetiques_geometriques.html">3B — Suites arithmétiques et géométriques</a> (le seuil d'une suite géométrique) et fiche <a href="../03_suites/3C_recurrence_limites.html">3C — Récurrence et limites de suites</a> (le seuil traduit la définition de \(\lim u_n=+\infty\)). La résolution exacte de \(q^n\geqslant S\) se fait ensuite au logarithme : fiche <a href="../06_exponentielle_logarithme/6C_logarithme_neperien.html">6C</a>.</div>
   </div>
 
   <div class="card blue">
@@ -408,7 +408,7 @@ print(dichotomie(0, 1, 0.001))</pre>
       <p>Ici \(b-a=1\) et \(e=0{,}001\) : il faut \(2^n\geqslant1000\), donc \(n=10\) puisque \(2^9=512\) et \(2^{10}=1024.\) C'est bien ce que le programme a compté.</p>
     </div>
     <div class="warn"><strong>Le test du signe.</strong> On écrit <code class="inl">f(a) * f(m) &lt;= 0</code> et non <code class="inl">f(a) &lt; 0 and f(m) &gt; 0</code> : le produit est négatif ou nul exactement quand les deux valeurs sont de signes contraires ou que l'une est nulle, <em>quel que soit le sens de variation</em> de \(f.\)</div>
-    <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../05_limites_continuite/5C_continuite_tvi.html">5C — Continuité et théorème des valeurs intermédiaires</a> : le théorème donne l'<em>existence</em>, la stricte monotonie donne l'<em>unicité</em>, la dichotomie donne l'<em>encadrement</em>. Le programme officiel cite aussi la dichotomie pour la recherche de valeurs approchées de \(\sqrt2\) ou de \(\pi\) : fiche <a href="../03_suites/3C_recurrence_limites.html">2C</a>.</div>
+    <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../05_limites_continuite/5C_continuite_tvi.html">5C — Continuité et théorème des valeurs intermédiaires</a> : le théorème donne l'<em>existence</em>, la stricte monotonie donne l'<em>unicité</em>, la dichotomie donne l'<em>encadrement</em>. Le programme officiel cite aussi, au chapitre des suites, la recherche de valeurs approchées de \(\sqrt2\) ou de \(\pi\), pour laquelle la dichotomie est une méthode possible : fiche <a href="../03_suites/3C_recurrence_limites.html">3C</a>.</div>
   </div>
 
   <div class="card blue">
@@ -437,7 +437,7 @@ newton(2, 4)</pre>
 3 1.4142156862745099
 4 1.4142135623746899</div>
     <p>On cherche \(\sqrt2\), c'est-à-dire la solution positive de \(x^2-2=0.\) En quatre tours, on obtient \(1{,}41421356\ldots\) : la valeur \(\sqrt2\approx1{,}4142135624\) est retrouvée avec dix décimales justes, alors que la dichotomie en aurait demandé une trentaine d'étapes.</p>
-    <div class="warn"><strong>On se limite aux cas favorables.</strong> Le programme officiel range la méthode de Newton dans les <em>approfondissements possibles</em> et n'exige aucune étude de convergence. On l'emploie donc seulement quand :  \(f\) est dérivable, \(f'\) ne s'annule pas près de la solution, et le point de départ \(x_0\) en est déjà proche. Hors de ces cas, la suite peut osciller ou s'échapper — la dichotomie, elle, converge toujours.</div>
+    <div class="warn"><strong>On se limite aux cas favorables.</strong> Le programme officiel cite la méthode de Newton comme exemple d'algorithme « en se limitant à des cas favorables » (Première, dérivation) et n'exige aucune étude de convergence. On l'emploie donc seulement quand :  \(f\) est dérivable, \(f'\) ne s'annule pas près de la solution, et le point de départ \(x_0\) en est déjà proche. Hors de ces cas, la suite peut osciller ou s'échapper — la dichotomie, elle, converge toujours.</div>
     <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../04_derivation_convexite/4A_nombre_derive_tangente.html">4A — Nombre dérivé et tangente</a> (l'équation de la tangente, c'est toute la méthode) et fiche <a href="../05_limites_continuite/5C_continuite_tvi.html">5C — Continuité et théorème des valeurs intermédiaires</a>, où le programme la cite à côté de la dichotomie.</div>
   </div>
 
@@ -547,7 +547,7 @@ print([marche(10) for i in range(5)])</pre>
 
   <div class="card blue">
     <h3><span class="num">7</span>Fréquence simulée contre majoration de Bienaymé-Tchebychev</h3>
-    <p>Le programme cite nommément cet algorithme : « calculer la probabilité de \(\left(|S_n-pn|&gt;\alpha\sqrt n\right)\), où \(S_n\) suit une loi binomiale \(\mathcal B(n,p)\) ; comparer avec l'inégalité de Bienaymé-Tchebychev ». On simule la probabilité, on calcule la majoration, et on regarde l'écart entre les deux.</p>
+    <p>Le programme cite nommément cet algorithme : « calculer la probabilité de \(\left(|S_n-pn|&gt;\sqrt n\right)\), où \(S_n\) est une variable aléatoire qui suit une loi binomiale \(\mathcal B(n,p)\). Comparer avec l'inégalité de Bienaymé-Tchebychev ». On simule la probabilité, on calcule la majoration, et on regarde l'écart entre les deux.</p>
     <div class="box"><strong>L'inégalité.</strong> Pour une variable aléatoire \(X\) d'espérance \(\mu\) et de variance \(V\), et pour tout réel \(\delta&gt;0\) :
     \[P\left(|X-\mu|\geqslant\delta\right)\leqslant\dfrac{V}{\delta^2}.\]
     Ici \(X=S_n\) suit \(\mathcal B(n,p)\), donc \(\mu=np\) et \(V=np(1-p).\)</div>
@@ -572,10 +572,10 @@ print(frequence(10000, 100, 0.5, 10))
 print(100 * 0.5 * 0.5 / (10 * 10))</pre>
     <div class="outblock"><span class="who">Ce que Python affiche</span>0.0581
 0.25</div>
-    <p>Avec \(n=100\), \(p=0{,}5\) et \(\delta=10\), la fréquence observée de l'événement \(|S_n-50|\geqslant10\) vaut \(\dfrac{581}{10\,000}=0{,}0581\), alors que la majoration vaut \(\dfrac{100\times0{,}5\times0{,}5}{10^2}=\dfrac{25}{100}=0{,}25.\)</p>
+    <p>Avec \(n=100\), \(p=0{,}5\) et \(\delta=\sqrt{100}=10\) (le texte officiel écrit l'inégalité stricte \(&gt;\) ; la fonction <code class="inl">frequence</code> teste l'inégalité large <code class="inl">&gt;=</code>, celle qui figure dans Bienaymé-Tchebychev), la fréquence observée de l'événement \(|S_n-50|\geqslant10\) vaut \(\dfrac{581}{10\,000}=0{,}0581\), alors que la majoration vaut \(\dfrac{100\times0{,}5\times0{,}5}{10^2}=\dfrac{25}{100}=0{,}25.\)</p>
     <div class="key"><strong>Ce que l'algorithme montre.</strong> L'inégalité est <strong>vraie</strong> — \(0{,}0581\leqslant0{,}25\) — mais <strong>loin d'être optimale</strong> : la vraie probabilité est ici plus de quatre fois plus petite que la borne. C'est exactement ce que dit le texte officiel. L'intérêt de l'inégalité n'est pas sa précision, c'est qu'elle vaut <em>pour toute variable aléatoire</em>, sans rien savoir de sa loi.</div>
     <div class="warn"><strong>Deux nombres de natures différentes.</strong> \(0{,}0581\) est une <strong>fréquence observée</strong>, qui change à chaque simulation ; \(0{,}25\) est un <strong>majorant démontré</strong>, qui ne change jamais. Ne pas écrire que la probabilité « vaut » \(0{,}0581.\)</div>
-    <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../14_sommes_variables/14B_concentration_grands_nombres.html">14B — Concentration et loi des grands nombres</a> : l'inégalité de Bienaymé-Tchebychev, l'inégalité de concentration et la taille d'échantillon. La loi binomiale simulée est celle de la fiche <a href="../10_loi_binomiale/10A_loi_binomiale.html">9A</a>.</div>
+    <div class="ok"><strong>Où ça sert →</strong> fiche <a href="../14_sommes_variables/14B_concentration_grands_nombres.html">14B — Concentration et loi des grands nombres</a> : l'inégalité de Bienaymé-Tchebychev, l'inégalité de concentration et la taille d'échantillon. La loi binomiale simulée est celle de la fiche <a href="../10_loi_binomiale/10A_loi_binomiale.html">10A</a>.</div>
   </div>
 </section>
 
@@ -765,7 +765,7 @@ print(seuil(1, 2, 1000))</pre>
       <li><strong>Seuil</strong> : la condition du <code class="inl">while</code> est testée <em>avant</em> chaque tour, et une dernière fois pour sortir. Le compteur \(n\) compte les tours <em>effectués</em>.</li>
       <li><strong>Dichotomie</strong> : à chaque étape la largeur de l'intervalle est <strong>divisée par deux</strong>, et le changement de signe est conservé. Regarde la bande colorée se resserrer.</li>
       <li><strong>Rectangles</strong> : les rectangles pleins sont ceux de gauche, les rectangles en pointillé ceux de droite. La courbe passe entre les deux, donc l'intégrale aussi.</li>
-      <li><strong>Euler</strong> : chaque segment de la ligne brisée a pour pente la valeur imposée par l'équation. L'écart avec la courbe exacte, en gris, grandit avec le nombre de pas.</li>
+      <li><strong>Euler</strong> : chaque segment de la ligne brisée a pour pente la valeur imposée par l'équation. L'écart avec la courbe exacte, en gris, grandit au fil des pas quand la solution s'éloigne de l'équilibre (\(a=1\)) ; quand elle s'en rapproche (\(a=-1\)), il finit par se réduire.</li>
     </ul>
   </div>
 </section>
@@ -1185,8 +1185,17 @@ print(seuil(1, 2, 1000))</pre>
     snap(4, 'La fonction <b>retourne</b> ' + fr(y) + ', valeur approchée de \\(y(' + fr(n * h) + ').\\)',
       [['y', y]], n);
     out = pyf(y);
-    snap(6, 'Affichage. La solution exacte ' + (b === 0 ? 'est \\(y(x)=' + y0 + '\\mathrm e^{' + (a === 1 ? '' : '-') + 'x}\\), donc \\(y(' + fr(n * h) + ')' + relTex(y0 * Math.exp(a * n * h)) + '.\\)'
-      : 'tend vers la valeur d’équilibre \\(' + fr(eq) + '.\\)'), [['y', y]], n);
+    /* Solution exacte : y(x) = (y0 − eq) e^{ax} + eq, avec eq = −b/a. */
+    var cst = y0 - eq, ex = '\\mathrm e^{' + (a === 1 ? '' : '-') + 'x}';
+    var solTex = (b === 0)
+      ? (y0 === 1 ? '' : y0) + ex
+      : (cst > 0 ? (cst === 1 ? '' : cst) + ex + (eq < 0 ? '-' + (-eq) : '+' + eq)
+                 : eq + '-' + (cst === -1 ? '' : -cst) + ex);
+    snap(6, 'Affichage. La solution exacte est \\(y(x)=' + solTex + '\\), donc \\(y(' + fr(n * h) + ')' +
+      relTex(cst * Math.exp(a * n * h) + eq) + '.\\)' +
+      (b === 0 ? '' : (a < 0 ? ' Elle tend vers la valeur d’équilibre \\(' + fr(eq) + '.\\)'
+                             : ' Elle s’éloigne de la valeur d’équilibre \\(' + fr(eq) + '\\) et tend vers \\(+\\infty.\\)')),
+      [['y', y]], n);
     return { code: code, steps: steps, fin: out };
   }
 
@@ -1522,7 +1531,7 @@ print(seuil(1, 2, 1000))</pre>
         '<div class="tablewrap"><table><tr><th>\\(k\\)</th><th>\\(y_k\\)</th><th>pente</th><th>\\(y_{k+1}\\)</th></tr>' + lignes.join('') + '</table></div>' +
         '<p><strong>2. Lecture.</strong> Après \\(' + n + '\\) pas, on est arrivé à l’abscisse \\(' + tex(String(n * h)) + '\\), et la ligne brisée y vaut \\(' + tex(String(y)) + '.\\)</p>' +
         '<div class="ok"><strong>Réponse : \\(' + tex(String(y)) + '.\\)</strong> ' +
-        (b === 0 ? 'La solution exacte est \\(y(x)=' + y0 + '\\mathrm e^{' + (a === 1 ? '' : '-') + 'x}\\), donc \\(y(' + tex(String(n * h)) + ')' + relTex(y0 * Math.exp(a * n * h)) + '.\\)'
+        (b === 0 ? 'La solution exacte est \\(y(x)=' + (y0 === 1 ? '' : y0) + '\\mathrm e^{' + (a === 1 ? '' : '-') + 'x}\\), donc \\(y(' + tex(String(n * h)) + ')' + relTex(y0 * Math.exp(a * n * h)) + '.\\)'
           : 'La solution constante de l’équation est \\(y=' + fr(-b / a) + '\\) : la ligne brisée s’en ' + (a < 0 ? 'approche' : 'éloigne') + '.') + '</div>'
     };
   }
@@ -1671,7 +1680,7 @@ print(seuil(1, 2, 1000))</pre>
       var t = pick([[100, 10], [100, 20], [400, 20], [900, 30], [1600, 40]]);
       var n = t[0], d = t[1], V = n * 0.25;
       return build('\\(S_n\\) suit la loi binomiale \\(\\mathcal B(' + n + '\\,;0{,}5)\\), d’espérance \\(' + (n / 2) + '\\) et de variance \\(' + V +
-        '.\\) Que majore l’inégalité de Bienaymé-Tchebychev pour \\(P\\left(|S_n-' + (n / 2) + '|\\geqslant' + d + '\\right)\\) ?',
+        '.\\) Quel majorant l’inégalité de Bienaymé-Tchebychev donne-t-elle pour \\(P\\left(|S_n-' + (n / 2) + '|\\geqslant' + d + '\\right)\\) ?',
         ['\\(' + tex(String(V / (d * d))) + '\\)', '\\(' + tex(String(V / d)) + '\\)', '\\(' + tex(String(d * d / V)) + '\\)', '\\(' + tex(String(V)) + '\\)'],
         0, 'L’inégalité s’écrit \\(P(|X-\\mu|\\geqslant\\delta)\\leqslant\\dfrac{V}{\\delta^2}=\\dfrac{' + V + '}{' + (d * d) + '}.\\)');
     },

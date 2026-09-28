@@ -472,7 +472,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     <div class="key"><strong>La règle du carré.</strong> Comme \(\sqrt n\) est au dénominateur, <strong>diviser l'écart type par \(2\) coûte \(4\) fois plus d'observations</strong> ; le diviser par \(3\) en coûte \(9\) fois plus ; le diviser par \(10\), \(100\) fois plus. La précision se paie cher.</div>
     <div class="warn"><strong>Somme et moyenne vont en sens contraires.</strong> \(\sigma(S_n)=\sigma\sqrt n\) <strong>grandit</strong> avec \(n\), tandis que \(\sigma(M_n)=\dfrac{\sigma}{\sqrt n}\) <strong>diminue</strong>. Pour le dé et \(n=100\) : \(\sigma(S_{100})\approx17{,}08\) alors que \(\sigma(M_{100})\approx0{,}171.\) Confondre les deux est l'erreur la plus fréquente aux contrôles.</div>
     <p>L'onglet 2 de la visualisation montre l'histogramme de \(M_n\) se resserrer autour de \(\mu\) quand \(n\) grandit, avec l'écart type recalculé à chaque fois.</p>
-    <div class="ok"><strong>Et après ?</strong> La fiche <strong>13B</strong> transforme cette décroissance en une garantie chiffrée : l'inégalité de Bienaymé-Tchebychev, l'inégalité de concentration et la loi des grands nombres.</div>
+    <div class="ok"><strong>Et après ?</strong> La fiche <strong>14B</strong> transforme cette décroissance en une garantie chiffrée : l'inégalité de Bienaymé-Tchebychev, l'inégalité de concentration et la loi des grands nombres.</div>
   </div>
 </section>
 
@@ -1251,9 +1251,9 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
 
   /* --- Exercice 3 : échantillon --- */
   var CTX3 = [
-    { lead: 'Une machine conditionne des sachets de café.', obj: 'sachet', gr: 'la masse', un: 'g' },
-    { lead: 'Un atelier usine des pièces métalliques.', obj: 'pièce', gr: 'la masse', un: 'g' },
-    { lead: 'On relève chaque jour la durée du trajet domicile-travail d\'un salarié.', obj: 'trajet', gr: 'la durée', un: 'min' }
+    { lead: 'Une machine conditionne des sachets de café.', obj: 'un sachet', gr: 'la masse', un: 'g' },
+    { lead: 'Un atelier usine des pièces métalliques.', obj: 'une pièce', gr: 'la masse', un: 'g' },
+    { lead: 'On relève chaque jour la durée du trajet domicile-travail d\'un salarié.', obj: 'un trajet', gr: 'la durée', un: 'min' }
   ];
   function gen3() {
     var ctx = pick(CTX3);
@@ -1265,7 +1265,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var mu = rnd(12, 60) * 5;
     var e = {
       ctx: ctx, r: r, n: n, q: q, s: s, V: V, mu: mu, n4: 4 * n,
-      enonce: '<p>' + ctx.lead + ' Pour un ' + ctx.obj + ' pris au hasard, ' + ctx.gr + ' \\(X\\) (en ' + ctx.un + ') vérifie</p>' +
+      enonce: '<p>' + ctx.lead + ' Pour ' + ctx.obj + ' pris' + (ctx.obj.indexOf('une ') === 0 ? 'e' : '') + ' au hasard, ' + ctx.gr + ' \\(X\\) (en ' + ctx.un + ') vérifie</p>' +
         '\\[E(X)=' + mu + '\\qquad\\text{et}\\qquad V(X)=' + V + '.\\]' +
         '<p>On prélève, de façon <b>indépendante</b>, un échantillon de taille \\(n=' + n + '\\) : les variables \\(X_1,\\dots,X_{' + n + '}\\) sont indépendantes et de même loi que \\(X.\\) On note \\(M_n=\\dfrac{X_1+\\dots+X_{' + n + '}}{' + n + '}\\) la valeur moyenne de l\'échantillon.</p>' +
         '<ol><li>Calculer \\(E(M_n).\\)</li><li>Calculer \\(\\sigma(M_n).\\)</li>' +
@@ -1324,6 +1324,8 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     var idx = shuffle([0, 1, 2, 3]);
     return { q: q, options: idx.map(function (i) { return options[i]; }), correct: idx.indexOf(correctIdx), expl: expl };
   }
+  /* options numériques : toujours en mode mathématique (virgule, fraction, signe moins) */
+  function M(x) { return '\\(' + x + '\\)'; }
   function distinct(vals) {
     var i, j;
     for (i = 0; i < vals.length; i++) {
@@ -1361,7 +1363,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
     function () {
       return build('Pour un réel \\(a\\) quelconque (éventuellement négatif), que vaut \\(\\sigma(aX)\\) ?',
         ['\\(a\\,\\sigma(X)\\)', '\\(a^{2}\\,\\sigma(X)\\)', '\\(|a|\\,\\sigma(X)\\)', '\\(\\sqrt{a}\\,\\sigma(X)\\)'], 2,
-        '\\(\\sigma(aX)=\\sqrt{V(aX)}=\\sqrt{a^{2}V(X)}=|a|\\,\\sigma(X).\\) Le carré de la variance devient une valeur absolue sur l\'écart type : \\(\\sigma(-3X)=3\\,\\sigma(X).\\)');
+        '\\(\\sigma(aX)=\\sqrt{V(aX)}=\\sqrt{a^{2}V(X)}=|a|\\,\\sigma(X).\\) Le carré \\(a^{2}\\) qui apparaît dans la variance devient une valeur absolue sur l\'écart type : \\(\\sigma(-3X)=3\\,\\sigma(X).\\)');
     },
     /* 5 — V(aX+b), numérique */
     function () {
@@ -1371,7 +1373,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [a * a * v, Math.abs(a) * v, a * a * v + b, 2 * Math.abs(a) * v];
       } while (!distinct(o));
       return build('On sait que \\(V(X)=' + v + '.\\) Que vaut \\(V\\!\\left(' + coefTex(a, 'X') + addConstTex(b) + '\\right)\\) ?',
-        [String(o[0]), String(o[1]), String(o[2]), String(o[3])], 0,
+        [String(o[0]), String(o[1]), String(o[2]), String(o[3])].map(M), 0,
         '\\(V(aX+b)=a^{2}V(X)\\) : le coefficient est élevé au carré (\\(' + par(a) + '^{2}=' + (a * a) + '\\)) et la constante \\(' + b + '\\) disparaît, car une translation ne change pas la dispersion.');
     },
     /* 6 — V(aX+bY) avec indépendance, numérique */
@@ -1383,7 +1385,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [a * a * v1 + b * b * v2, a * v1 + b * v2, a * a * v1 + b * v2, a * v1 + b * b * v2];
       } while (!distinct(o));
       return build('\\(X\\) et \\(Y\\) sont <b>indépendantes</b>, avec \\(V(X)=' + v1 + '\\) et \\(V(Y)=' + v2 + '.\\) Que vaut \\(V\\!\\left(' + coefTex(a, 'X') + addTermTex(b, 'Y') + '\\right)\\) ?',
-        [String(o[0]), String(o[1]), String(o[2]), String(o[3])], 0,
+        [String(o[0]), String(o[1]), String(o[2]), String(o[3])].map(M), 0,
         'Les variables étant indépendantes, \\(V(aX+bY)=a^{2}V(X)+b^{2}V(Y)=' + (a * a) + '\\times' + v1 + '+' + (b * b) + '\\times' + v2 + '=' + o[0] + '.\\) Les <b>deux</b> coefficients sont élevés au carré.');
     },
     /* 7 — E(aX+bY+c), numérique */
@@ -1394,7 +1396,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [a * m1 + b * m2 + c, a * m1 + b * m2, a * m2 + b * m1 + c, (a + b) * (m1 + m2) + c];
       } while (m1 === m2 || a === b || c === 0 || !distinct(o));
       return build('\\(E(X)=' + m1 + '\\) et \\(E(Y)=' + m2 + '.\\) Que vaut \\(E\\!\\left(' + coefTex(a, 'X') + addTermTex(b, 'Y') + addConstTex(c) + '\\right)\\) ?',
-        [String(o[0]), String(o[1]), String(o[2]), String(o[3])], 0,
+        [String(o[0]), String(o[1]), String(o[2]), String(o[3])].map(M), 0,
         'Par linéarité : \\(' + a + '\\times' + par(m1) + addTermSigne(b) + par(m2) + addConstTex(c) + '=' + o[0] + '.\\) Aucune hypothèse d\'indépendance n\'est nécessaire.');
     },
     /* 8 — espérance d'une binomiale */
@@ -1405,7 +1407,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [n * p, n * p * (1 - p), n * (1 - p), n * p * p];
       } while (!distinct(o));
       return build('\\(X\\) suit la loi binomiale \\(\\mathcal B\\!\\left(' + n + '\\,;' + ratTex(R(k, 10)) + '\\right).\\) Que vaut \\(E(X)\\) ?',
-        [ratTex(R(n * k, 10)), ratTex(R(n * k * (10 - k), 100)), ratTex(R(n * (10 - k), 10)), ratTex(R(n * k * k, 100))], 0,
+        [ratTex(R(n * k, 10)), ratTex(R(n * k * (10 - k), 100)), ratTex(R(n * (10 - k), 10)), ratTex(R(n * k * k, 100))].map(M), 0,
         'On décompose \\(X\\) en somme de \\(' + n + '\\) variables de Bernoulli de paramètre \\(p\\), chacune d\'espérance \\(p\\) : par linéarité \\(E(X)=np=' + ratTex(R(n * k, 10)) + '.\\)');
     },
     /* 9 — variance d'une binomiale */
@@ -1416,7 +1418,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [n * p * (1 - p), n * p, n * p * p, n * (1 - p)];
       } while (!distinct(o));
       return build('\\(X\\) suit la loi binomiale \\(\\mathcal B\\!\\left(' + n + '\\,;' + ratTex(R(k, 10)) + '\\right).\\) Que vaut \\(V(X)\\) ?',
-        [ratTex(R(n * k * (10 - k), 100)), ratTex(R(n * k, 10)), ratTex(R(n * k * k, 100)), ratTex(R(n * (10 - k), 10))], 0,
+        [ratTex(R(n * k * (10 - k), 100)), ratTex(R(n * k, 10)), ratTex(R(n * k * k, 100)), ratTex(R(n * (10 - k), 10))].map(M), 0,
         'Chaque variable de Bernoulli a pour variance \\(p(1-p)\\) ; les épreuves étant indépendantes, les variances s\'ajoutent : \\(V(X)=np(1-p)=' + ratTex(R(n * k * (10 - k), 100)) + '.\\)');
     },
     /* 10 — la décomposition de la binomiale */
@@ -1442,7 +1444,7 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [s / r, s / n, s * r, s];
       } while (!distinct(o));
       return build('\\((X_1,\\dots,X_{' + n + '})\\) est un échantillon de taille \\(' + n + '\\) d\'une loi d\'écart type \\(\\sigma=' + s + '.\\) Que vaut \\(\\sigma(M_{' + n + '})\\), l\'écart type de la moyenne ?',
-        [ratTex(R(s, r)), ratTex(R(s, n)), String(s * r), String(s)], 0,
+        [ratTex(R(s, r)), ratTex(R(s, n)), String(s * r), String(s)].map(M), 0,
         '\\(\\sigma(M_n)=\\dfrac{\\sigma}{\\sqrt n}=\\dfrac{' + s + '}{' + r + '}=' + ratTex(R(s, r)) + '.\\) C\'est \\(\\sqrt n\\) au dénominateur, pas \\(n.\\)');
     },
     /* 13 — écart type de la somme */
@@ -1453,14 +1455,14 @@ body>.navbar nav a.active,body>nav#nav a.active{background:#e8efff;color:#1d4ed8
         o = [s * r, s / r, s * n, s];
       } while (!distinct(o));
       return build('\\((X_1,\\dots,X_{' + n + '})\\) est un échantillon de taille \\(' + n + '\\) d\'une loi d\'écart type \\(\\sigma=' + s + '.\\) Que vaut \\(\\sigma(S_{' + n + '})\\), l\'écart type de la <b>somme</b> ?',
-        [String(s * r), ratTex(R(s, r)), String(s * n), String(s)], 0,
+        [String(s * r), ratTex(R(s, r)), String(s * n), String(s)].map(M), 0,
         '\\(V(S_n)=n\\sigma^{2}\\), donc \\(\\sigma(S_n)=\\sigma\\sqrt n=' + s + '\\times' + r + '=' + (s * r) + '.\\) L\'écart type de la somme <b>augmente</b> avec \\(n.\\)');
     },
     /* 14 — la règle du carré */
     function () {
       var k = pick([3, 4, 5, 10]);
       return build('Pour diviser par \\(' + k + '\\) l\'écart type de la moyenne d\'un échantillon, il faut multiplier la taille \\(n\\) par…',
-        [String(k * k), String(k), String(2 * k), String(k * k * k)], 0,
+        [String(k * k), String(k), String(2 * k), String(k * k * k)].map(M), 0,
         '\\(\\sigma(M_n)=\\dfrac{\\sigma}{\\sqrt n}\\) : diviser par \\(' + k + '\\) demande que \\(\\sqrt n\\) soit multiplié par \\(' + k + '\\), donc que \\(n\\) soit multiplié par \\(' + k + '^{2}=' + (k * k) + '.\\)');
     },
     /* 15 — les écarts types ne s'ajoutent pas */
